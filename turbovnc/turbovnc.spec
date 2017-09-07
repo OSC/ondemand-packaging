@@ -14,7 +14,7 @@
 %define mandir /opt/TurboVNC/man
 
 # Whether or not to include the Java viewer
-%define java 1
+%define java 0
 
 # Whether or not to include the native infrastructure for the Java viewer
 %define native 1
@@ -27,7 +27,7 @@
 
 # Whether or not to include the TurboJPEG JNI JAR files (used when launching
 # the Java TurboVNC Viewer via Java Web Start)
-%define jnijars 1
+%define jnijars 0
 
 # Directory in which the TurboJPEG JNI JARs can be found
 %if "%{jnijars}" == "1"
@@ -57,7 +57,13 @@ Group:     User Interface/Desktops
 Requires:  bash >= 2.0
 Prereq:    /sbin/chkconfig %{_sysconfdir}/init.d
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
-BuildPrereq: /usr/bin/perl libjpeg-turbo
+BuildRequires: /usr/bin/perl
+BuildRequires: libjpeg-turbo
+BuildRequires: turbojpeg-devel
+BuildRequires: cmake
+BuildRequires: libX11-devel
+BuildRequires: libXext-devel
+BuildRequires: pam-devel
 
 %description
 Virtual Network Computing (VNC) is a remote display system that allows you to
