@@ -3,7 +3,7 @@
 dir='*'
 [ -n "$1" ] && dir=$1
 
-for subdir in dependencies; do
+for subdir in compute; do
   for spec in $subdir/$dir/*.spec; do
     d=$(dirname $spec)
     for source in $(spectool --list-files $spec | awk '{print $2}'); do
