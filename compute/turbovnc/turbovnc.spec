@@ -275,3 +275,6 @@ fi
 %endif
 
 %changelog
+* Tue Sep 12 2017 Trey Dockendorf <tdockendorf@osc.edu> 2.1.1-1
+- new package built with tito
+
