@@ -42,6 +42,9 @@ install -m 444 docs/websockify.1 %{buildroot}%{_mandir}/man1/
 
 
 %changelog
+* Tue Sep 12 2017 Trey Dockendorf <tdockendorf@osc.edu> 0.8.0-1
+- new package built with tito
+
 * Wed Apr 29 2015 Pádraig Brady <pbrady@redhat.com> - 0.6.0-2
 - Support big endian systems - rhbz#1216219
 
