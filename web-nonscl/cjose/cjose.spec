@@ -51,5 +51,8 @@ rm -f ${RPM_BUILD_ROOT}%{_libdir}/lib%{name}.la
 
 
 %changelog
+* Wed Oct 11 2017 Trey Dockendorf <tdockendorf@osc.edu> 0.5.1-1
+- new package built with tito
+
 * Fri Jan 27 2017 Trey Dockendorf <tdockendorf@osc.edu> - 0.4.1-1
 - Initial build of cjose-0.4.1
