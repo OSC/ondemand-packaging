@@ -95,6 +95,9 @@ install -m 700 -d $RPM_BUILD_ROOT%{httpd_pkg_cache_dir}/cache
 %dir %attr(0700, apache, apache) %{httpd_pkg_cache_dir}/cache
 
 %changelog
+* Thu Oct 12 2017 Trey Dockendorf <tdockendorf@osc.edu> 2.3.2-1
+- new package built with tito
+
 * Tue Jul 12 2016 John Dennis <jdennis@redhat.com> - 1.8.10.1-1
 - Upgrade to new upstream
   See /usr/share/doc/mod_auth_openidc/ChangeLog for details
