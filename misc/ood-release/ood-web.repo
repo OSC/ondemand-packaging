@@ -1,0 +1,6 @@
+[ood-web]
+name=Open OnDemand Web Repo
+baseurl=https://yum.osc.edu/ood/develop/web/$DIST/$basearch/
+enabled=1
+gpgcheck=0
+#gpgkey=/etc/pki/rpm-gpg/RPM-GPG-KEY-ood
