@@ -24,9 +24,8 @@ ARCHES=(SRPMS x86_64)
 for t in "${TYPES[@]}"; do
     for d in "${DISTS[@]}"; do
         for a in "${ARCHES[@]}"; do
-            dir=${basedir}/${RELEASE}/${t}/${d}/${a}
-            mkdir -p $dir
-            chown mirror:mirror $dir
+            mkdir -p ${basedir}/${RELEASE}/${t}/${d}/${a}
+            chown mirror:mirror ${basedir}/${RELEASE}
         done
     done
 done
