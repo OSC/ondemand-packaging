@@ -9,6 +9,7 @@ URL:        https://osc.github.io/ood-documentation/
 BuildArch:  noarch
 Source0:    ood-web.repo
 Source1:    ood-compute.repo
+Source2:    RPM-GPG-KEY-ondemand
 
 %description
 Open OnDemand web repository contains open source and other distributable software for
@@ -34,6 +35,8 @@ exit 0
 install -Dpm0644 %{SOURCE0} %{buildroot}%{_sysconfdir}/yum.repos.d/ood-web.repo
 install -Dpm0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/yum.repos.d/ood-compute.repo
 sed "s/\$DIST/$(echo %{?dist} | cut -d. -f2)/g" -i %{buildroot}%{_sysconfdir}/yum.repos.d/ood-*.repo
+install -Dpm0644 %{SOURCE2} %{buildroot}%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand
+install -Dpm0644 %{SOURCE2} %{buildroot}%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand-compute
 
 
 %clean
@@ -41,9 +44,11 @@ exit 0
 
 %files
 %config %{_sysconfdir}/yum.repos.d/ood-web.repo
+%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand
 
 %files -n ood-release-compute
 %config %{_sysconfdir}/yum.repos.d/ood-compute.repo
+%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand-compute
 
 
 %changelog

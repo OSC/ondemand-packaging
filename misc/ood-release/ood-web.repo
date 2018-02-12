@@ -2,12 +2,12 @@
 name=Open OnDemand Web Repo
 baseurl=https://yum.osc.edu/ood/develop/web/$DIST/$basearch/
 enabled=1
-gpgcheck=0
-#gpgkey=/etc/pki/rpm-gpg/RPM-GPG-KEY-ood
+gpgcheck=1
+gpgkey=/etc/pki/rpm-gpg/RPM-GPG-KEY-ondemand
 
 [ood-web-source]
 name=Open OnDemand Web Repo
 baseurl=https://yum.osc.edu/ood/develop/web/$DIST/SRPMS/
 enabled=0
-gpgcheck=0
-#gpgkey=/etc/pki/rpm-gpg/RPM-GPG-KEY-ood
+gpgcheck=1
+gpgkey=/etc/pki/rpm-gpg/RPM-GPG-KEY-ondemand
