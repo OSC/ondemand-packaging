@@ -3,6 +3,5 @@
 *.swo
 .tito/custom/*.pyc
 .tito/custom/__pycache__
-mock/site-defaults.cfg
 node_modules
 
