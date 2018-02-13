@@ -32,8 +32,14 @@ class SRPMBuilder(Builder):
         pass
 
     def cleanup(self):
-        if self.normal_builder:
-            self.normal_builder.cleanup()
+        if self.srpm_location:
+            proj_root = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../..')
+            gpgpass = os.path.join(proj_root, '.gpgpass')
+            if os.path.isfile(gpgpass):
+                run_command_func = run_command if self.quiet else run_command_print
+                info_out("Signing: %s" % self.srpm_location)
+                run_command_func("%s/rpm-sign.exp %s %s" % (proj_root, gpgpass, self.srpm_location))
+        super(SRPMBuilder, self).cleanup()
 
 class MockSignBuilder(MockBuilder):
     def cleanup(self):
@@ -42,8 +48,7 @@ class MockSignBuilder(MockBuilder):
             gpgpass = os.path.join(proj_root, '.gpgpass')
             if os.path.isfile(gpgpass):
                 run_command_func = run_command if self.quiet else run_command_print
-                info_out("Signing:")
                 for a in self.artifacts:
-                    print("  %s" % a)
+                    info_out("Signing: %s" % a)
                     run_command_func("%s/rpm-sign.exp %s %s" % (proj_root, gpgpass, a))
         super(MockSignBuilder, self).cleanup()
