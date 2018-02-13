@@ -5,4 +5,5 @@
 .tito/custom/__pycache__
 node_modules
 .gpgpass
+mock/site-defaults.cfg
 
