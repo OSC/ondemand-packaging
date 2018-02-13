@@ -15,7 +15,7 @@ Source files are referenced by git-annex.  Builds are handled by tito and mock.
 
 Run:
 
-* `git clone https://github.com/OSC/ood-packaging -b develop`
+* `git clone https://github.com/OSC/ondemand-packaging -b develop`
 * `git annex init` to set up this repo for using git annex
 * `./setup_sources.sh` to register git-annex file URLs
 
@@ -62,7 +62,7 @@ and non-SCL variants.  Anything under the `web` directory will require the scl c
     * `compute` - Use `compute`
     * `web-nonscl` - Use `web-nonscl`
     * `web` - Use `web-scl`
-    * `misc/ood-release` - Use `release`
+    * `misc/ondemand-release` - Use `release`
 
 ## How does this repo work?
 
