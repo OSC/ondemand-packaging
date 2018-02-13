@@ -56,7 +56,9 @@ and non-SCL variants.  Anything under the `web` directory will require the scl c
 
 1. Tag package after changing to package directory:
   * `tito tag --keep-version`
-2. Release package
+2. Push new tag and commit to origin
+  * `git push --tags origin master`
+3. Release package
   * `RSYNC_USERNAME=mirror tito release --all-starting-with=web-scl`
   * The value for `--all-starting-with` varies based on parent directory of package directory
     * `compute` - Use `compute`
