@@ -1,6 +1,6 @@
-
-from tito.builder.main import Builder
-from tito.common import create_builder
+import os
+from tito.builder.main import Builder, MockBuilder
+from tito.common import create_builder, run_command, run_command_print, info_out
 
 class SRPMBuilder(Builder):
     def __init__(self, name=None, tag=None, build_dir=None,
@@ -34,3 +34,16 @@ class SRPMBuilder(Builder):
     def cleanup(self):
         if self.normal_builder:
             self.normal_builder.cleanup()
+
+class MockSignBuilder(MockBuilder):
+    def cleanup(self):
+        if self.artifacts:
+            proj_root = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../..')
+            gpgpass = os.path.join(proj_root, '.gpgpass')
+            if os.path.isfile(gpgpass):
+                run_command_func = run_command if self.quiet else run_command_print
+                info_out("Signing:")
+                for a in self.artifacts:
+                    print("  %s" % a)
+                    run_command_func("%s/rpm-sign.exp %s %s" % (proj_root, gpgpass, a))
+        super(MockSignBuilder, self).cleanup()

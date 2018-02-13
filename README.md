@@ -93,3 +93,18 @@ git-annex metadata is part of the tagged commit, even the binary content is
 effectively under source control.
 
 This repository is branched for major releases.
+
+## Support GPG signing
+
+Two files must be setup.  The local GPG keyring must have both private and public keys used by OnDemand.  Once the GPG keyring has key imported setup `~/.rpmmacros`
+
+```
+cat > ~/.rpmmacros <<EOF
+%_signature gpg
+%_gpg_path $HOME/.gnupg
+%_gpg_name OnDemand Release Signing Key
+%_gpg /usr/bin/gpg
+EOF
+```
+
+Next the private key passphrase needs to be added to `.gpgpass` under this repo.
