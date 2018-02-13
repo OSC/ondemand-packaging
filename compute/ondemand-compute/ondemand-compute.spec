@@ -1,5 +1,5 @@
-Name:       ood-compute
-Version:    1.1
+Name:       ondemand-compute
+Version:    1.3
 Release:    1%{?dist}
 Summary:    Open OnDemand Compute meta package
 
@@ -29,7 +29,4 @@ exit 0
 %files
 
 %changelog
-* Fri Sep 15 2017 Trey Dockendorf <tdockendorf@osc.edu> 1.1-1
-- Initial package for OOD 1.1
-
 
