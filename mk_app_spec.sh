@@ -23,3 +23,7 @@ sed -r \
     -e "s/APP_NAME/${APP_NAME}/g" \
     -e "s/VERSION/${VERSION}/g"\
     $APP_SPEC_SOURCE > $APP_SPEC_DEST
+
+cd $PACKAGE_DIR
+spectool -g -S $(basename $APP_SPEC_DEST)
+git annex add v${VERSION}.tar.gz
