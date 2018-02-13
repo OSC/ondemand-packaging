@@ -35,12 +35,17 @@ DESCRIPTION
 export PASSENGER_APP_ENV=production
 export PASSENGER_BASE_URI=/pun/sys/%{app_name}
 mkdir -p %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}
-[ -x bin/setup ] && bin/setup
+if [ -x bin/setup ]; then
+    bin/setup
+else
+    cp -a ./. %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/
+fi
 
 
 %files
 %defattr(-,root,root)
 %{_localstatedir}/www/ood/apps/sys/%{app_name}
+%{_localstatedir}/www/ood/apps/sys/%{app_name}/manifest.yml
 
 
 %changelog
