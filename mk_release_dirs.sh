@@ -9,7 +9,7 @@ if [ -z "$RELEASE" ]; then
 fi
 
 if [[ "$TARGET" == "public" ]]; then
-    basedir="/var/www/repos/public/ood"
+    basedir="/var/www/repos/public/ondemand"
 elif [[ "$TARGET" == "internal" ]]; then
     basedir="/var/www/repos/internal/osc-ondemand"
 else
