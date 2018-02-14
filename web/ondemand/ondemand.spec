@@ -222,4 +222,7 @@ exit 0
 
 
 %changelog
+* Wed Feb 14 2018 Trey Dockendorf <tdockendorf@osc.edu> 1.3.0-1
+- update ondemand to v1.3.0 (jeremywnicklas@gmail.com)
+
 
