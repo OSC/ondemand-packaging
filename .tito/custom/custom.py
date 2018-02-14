@@ -1,4 +1,5 @@
 import os
+from tito.release.main import YumRepoReleaser
 from tito.builder.main import Builder, MockBuilder
 from tito.common import create_builder, run_command, run_command_print, info_out
 
@@ -52,3 +53,25 @@ class MockSignBuilder(MockBuilder):
                     info_out("Signing: %s" % a)
                     run_command_func("%s/rpm-sign.exp %s %s" % (proj_root, gpgpass, a))
         super(MockSignBuilder, self).cleanup()
+
+class YumRepoReleaserKeepOld(YumRepoReleaser):
+    def __init__(self, name=None, tag=None, build_dir=None,
+            config=None, user_config=None,
+            target=None, releaser_config=None, no_cleanup=False,
+            test=False, auto_accept=False, **kwargs):
+        super(YumRepoReleaserKeepOld, self).__init__(name, tag, build_dir,
+            config, user_config,
+            target, releaser_config, no_cleanup,
+            test, auto_accept, **kwargs)
+        if self.releaser_config.has_option(self.target, "keepold"):
+            self.keepold = self.releaser_config.getboolean(self.target, "keepold")
+        else:
+            self.keepold = False
+
+    def prune_other_versions(self, temp_dir):
+        if self.keepold:
+            info_out("YumRepoReleaserKeepOld: skip prune_other_versions")
+        else:
+            info_out("YumRepoReleaserKeepOld: running prune_other_versions")
+            super(YumRepoReleaserKeepOld, self).prune_other_versions(temp_dir)
+
