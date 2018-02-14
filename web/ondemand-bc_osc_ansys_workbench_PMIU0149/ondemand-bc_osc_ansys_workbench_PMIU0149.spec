@@ -50,3 +50,6 @@ cp -a ./. %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/
 
 
 %changelog
+* Wed Feb 14 2018 Trey Dockendorf <tdockendorf@osc.edu> 0.2.0-1
+- new package built with tito
+
