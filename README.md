@@ -41,6 +41,13 @@ and non-SCL variants.  Anything under the `web` directory will require the scl c
 
 ## HOWTO: create a new core package or dependency
 
+For apps there is a bootstrap process that automates much of the initial setup.
+
+1. Run: `./mk_app_spec.sh <repo name> <app name> <version>`
+2. Update description and summary and adjust build and install dependencies
+
+Manually adding spec file:
+
 1. Add the spec to a subdirectory under one of the following directories
   * compute - packages intended for compute nodes
   * web-nonscl - packages for web host that do not require SCL
@@ -59,12 +66,16 @@ and non-SCL variants.  Anything under the `web` directory will require the scl c
 2. Push new tag and commit to origin
   * `git push --tags origin master`
 3. Release package
-  * `RSYNC_USERNAME=mirror tito release --all-starting-with=web-scl`
-  * The value for `--all-starting-with` varies based on parent directory of package directory
-    * `compute` - Use `compute`
-    * `web-nonscl` - Use `web-nonscl`
-    * `web` - Use `web-scl`
-    * `misc/ondemand-release` - Use `release`
+  * `./release.sh <spec directory(s)>`
+  * Example: `./release.sh web/ondemand-*`
+  * Manual:
+    * `RSYNC_USERNAME=mirror tito release --all-starting-with=web-scl`
+    * The value for `--all-starting-with` varies based on parent directory of package directory
+      * `compute` - Use `compute`
+      * `web-nonscl` - Use `web-nonscl`
+      * `web` - Use `web-scl`
+      * `misc/ondemand-release` - Use `release`
+      * `web/mod_auth_openidc` - Use `web-httpd24`
 
 ## How does this repo work?
 
