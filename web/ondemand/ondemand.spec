@@ -1,6 +1,6 @@
 %global package_name ondemand
 %global package_version 1.3.0
-%global package_release 1
+%global package_release 2
 
 Name:      %{package_name}
 Version:   %{package_version}
@@ -29,7 +29,10 @@ AutoReqProv:     no
 BuildRequires:   sqlite-devel, curl, make
 BuildRequires:   rh-ruby22, rh-ruby22-rubygem-rake, rh-ruby22-rubygem-bundler, rh-ruby22-ruby-devel, nodejs010, git19
 Requires:        sudo, lsof, sqlite-devel, cronie, wget, curl, make
-Requires:        httpd24, httpd24-mod_ssl, httpd24-mod_ldap, nginx16, rh-passenger40, rh-ruby22, rh-ruby22-rubygem-rake, rh-ruby22-rubygem-bundler, rh-ruby22-ruby-devel, nodejs010, git19
+Requires:        httpd24, httpd24-mod_ssl, httpd24-mod_ldap
+Requires:        nginx16, rh-passenger40
+Requires:        rh-ruby22, rh-ruby22-rubygem-rake, rh-ruby22-rubygem-bundler, rh-ruby22-ruby-devel, rh-ruby22-rubygems, rh-ruby22-rubygems-devel
+Requires:        nodejs010, git19
 
 %if %{with systemd}
 BuildRequires: systemd
