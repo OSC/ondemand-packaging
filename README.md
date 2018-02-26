@@ -80,6 +80,8 @@ Manually adding spec file:
   * `tito tag --keep-version`
 2. Push new tag and commit to origin
   * `git push --tags origin master`
+3. Go back to root of this repo:
+  * `cd ../..`
 3. Release package
   * `./release.sh <spec directory(s)>`
   * Example: `./release.sh web/ondemand-bc_osc_abaqus`
