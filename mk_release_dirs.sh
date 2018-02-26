@@ -25,7 +25,7 @@ for t in "${TYPES[@]}"; do
     for d in "${DISTS[@]}"; do
         for a in "${ARCHES[@]}"; do
             mkdir -p ${basedir}/${RELEASE}/${t}/${d}/${a}
-            chown mirror:mirror ${basedir}/${RELEASE}
+            chown oodpkg:oodpkg ${basedir}/${RELEASE}
         done
     done
 done

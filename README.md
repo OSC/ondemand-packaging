@@ -84,7 +84,7 @@ Manually adding spec file:
   * `./release.sh <spec directory(s)>`
   * Example: `./release.sh web/ondemand-*`
   * Manual:
-    * `RSYNC_USERNAME=mirror tito release --all-starting-with=web-scl`
+    * `RSYNC_USERNAME=oodpkg tito release --all-starting-with=web-scl`
     * The value for `--all-starting-with` varies based on parent directory of package directory
       * `compute` - Use `compute`
       * `web-nonscl` - Use `web-nonscl`

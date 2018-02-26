@@ -36,7 +36,7 @@ for p in "${packages[@]}"; do
     fi
     echo "RELEASE: $package"
     cd $p
-    RSYNC_USERNAME=mirror tito release --all-starting-with=$release
+    RSYNC_USERNAME=oodpkg tito release --all-starting-with=$release
     cd $DIR
 done
 
