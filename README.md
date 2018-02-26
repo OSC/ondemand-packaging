@@ -59,6 +59,21 @@ Manually adding spec file:
   * `git annex add example-1.0.0.tar.gz`
 4. Submit pull request to `develop` branch
 
+## HOWTO: Update package
+
+1. Update spec file with new version
+2. Change to package directory
+3. Download source
+  * `spectool -g -S example.spec`
+4. Add the source to git annex by running
+  * `git annex add example-2.0.0.tar.gz`
+5. Remove old source
+  * `git annex drop example-1.0.0.tar.gz`
+  * `git rm example-1.0.0.tar.gz`
+6. Commit changes
+7. Test build [[#howto-test-a-package]]
+8. Release Package [[#howto-release-package]]
+
 ## HOWTO: release package
 
 1. Tag package after changing to package directory:
