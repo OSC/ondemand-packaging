@@ -48,6 +48,9 @@ cp -a ./. %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/
 
 
 %changelog
+* Mon Feb 26 2018 Trey Dockendorf <tdockendorf@osc.edu> 0.3.0-1
+- Bump ondemand-bc_osc_ansys_workbench to 0.3.0 (tdockendorf@osc.edu)
+
 * Tue Feb 13 2018 Trey Dockendorf <tdockendorf@osc.edu> 0.2.0-1
 - new package built with tito
 
