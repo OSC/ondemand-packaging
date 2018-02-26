@@ -71,8 +71,8 @@ Manually adding spec file:
   * `git annex drop example-1.0.0.tar.gz`
   * `git rm example-1.0.0.tar.gz`
 6. Commit changes
-7. Test build [[#howto-test-a-package]]
-8. Release Package [[#howto-release-package]]
+7. Test build [HOWTO: test a package](#howto-test-a-package)
+8. Release Package [HOWTO: release package](#howto-release-package)
 
 ## HOWTO: release package
 
