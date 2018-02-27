@@ -1,6 +1,6 @@
 %global package_name ondemand
-%global package_version 1.3.0
-%global package_release 2
+%global package_version 1.3.1
+%global package_release 1
 
 Name:      %{package_name}
 Version:   %{package_version}
@@ -138,7 +138,6 @@ EOF
 sed -i 's/^HTTPD24_HTTPD_SCLS_ENABLED=.*/HTTPD24_HTTPD_SCLS_ENABLED="httpd24 rh-ruby22"/' \
     /opt/rh/httpd24/service-environment
 /opt/ood/nginx_stage/sbin/update_nginx_stage &>/dev/null || :
-/opt/ood/ood-portal-generator/sbin/update_ood_portal &>/dev/null || :
 touch %{_localstatedir}/www/ood/apps/sys/dashboard/tmp/restart.txt
 touch %{_localstatedir}/www/ood/apps/sys/shell/tmp/restart.txt
 touch %{_localstatedir}/www/ood/apps/sys/files/tmp/restart.txt
@@ -168,6 +167,7 @@ fi
 
 
 %posttrans
+if /opt/ood/ood-portal-generator/sbin/update_ood_portal &>/dev/null; then
 %if %{with systemd}
 /bin/systemctl try-restart httpd24-httpd.service httpd24-htcacheclean.service &>/dev/null || :
 %else
@@ -175,6 +175,7 @@ fi
 /sbin/service httpd24-htcacheclean condrestart &>/dev/null
 exit 0
 %endif
+fi
 
 
 %files
@@ -225,10 +226,6 @@ exit 0
 
 
 %changelog
-* Thu Feb 15 2018 Trey Dockendorf <tdockendorf@osc.edu> 1.3.0-2
-- Add rh-ruby22-rubygems and rh-ruby22-rubygems-devel as dependencies to
-  ondemand package (tdockendorf@osc.edu)
-
 * Wed Feb 14 2018 Trey Dockendorf <tdockendorf@osc.edu> 1.3.0-1
 - update ondemand to v1.3.0 (jeremywnicklas@gmail.com)
 
