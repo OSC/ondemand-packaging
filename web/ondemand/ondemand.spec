@@ -226,6 +226,9 @@ fi
 
 
 %changelog
+* Tue Feb 27 2018 Jeremy Nicklas <jnicklas@osc.edu> 1.3.1-2
+- set apache config as ghost (jnicklas@osc.edu)
+
 * Tue Feb 27 2018 Trey Dockendorf <tdockendorf@osc.edu> 1.3.1-1
 - Bump ondemand to 1.3.1 (jnicklas@osc.edu)
 
