@@ -1,6 +1,6 @@
 %global package_name ondemand
 %global package_version 1.3.1
-%global package_release 1
+%global package_release 2
 
 Name:      %{package_name}
 Version:   %{package_version}
@@ -219,7 +219,7 @@ fi
 
 %config %{_sysconfdir}/sudoers.d/ood
 %config(noreplace) %{_sysconfdir}/cron.d/ood
-%config(noreplace) /opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf
+%ghost %config(noreplace) /opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf
 %if %{with systemd}
 %config %{_sysconfdir}/systemd/system/httpd24-httpd.service.d/ood.conf
 %endif
