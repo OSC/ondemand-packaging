@@ -31,11 +31,11 @@ Configuration for mock is supplied in mock/ and can be used to build any of
 the packages locally and quickly.
 
 ```sh
-tito build --rpm --test --builder tito.builder.MockBuilder --output $(mktemp -d) --arg mock_config_dir=mock/ --dist=.el7 --arg mock=el7-nonscl
+tito build --rpm --test --builder tito.builder.MockBuilder --output $(mktemp -d) --arg mock_config_dir=mock/ --dist=.el7 --arg mock=el7-scl
 ```
 
 The last argument is the name of the mock config in mock/, which includes SCL
-and non-SCL variants.  Anything under the `web` directory will require the scl configuration like `el7-scl`.
+and non-SCL variants.  If SCL is not needed for the build then use `el7-nonscl`.
 
 **Notice:** tito works only on committed changes! If you are changing the `.spec` files, make sure you commit those changes before running `tito build` command.
 
