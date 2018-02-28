@@ -1,6 +1,7 @@
+%{!?ncpus: %define ncpus 12}
 %global package_name ondemand
 %global package_version 1.3.1
-%global package_release 3
+%global package_release 4
 
 Name:      %{package_name}
 Version:   %{package_version}
@@ -55,7 +56,7 @@ export SCL_SOURCE=$(command -v scl_source)
 if [ "$SCL_SOURCE" ]; then
   source "$SCL_SOURCE" enable $SCL_PKGS &> /dev/null || :
 fi
-rake
+rake -mj%{ncpus}
 
 
 %install
@@ -218,7 +219,7 @@ fi
 %config(noreplace,missingok) %{_sharedstatedir}/nginx/config/apps/sys/myjobs.conf
 %config(noreplace,missingok) %{_sharedstatedir}/nginx/config/apps/sys/bc_desktop.conf
 
-%config %{_sysconfdir}/sudoers.d/ood
+%config(noreplace) %{_sysconfdir}/sudoers.d/ood
 %config(noreplace) %{_sysconfdir}/cron.d/ood
 %ghost %config(noreplace) /opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf
 %if %{with systemd}
