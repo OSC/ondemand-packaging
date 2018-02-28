@@ -1,7 +1,7 @@
 %{!?ncpus: %define ncpus 12}
 %global package_name ondemand
 %global package_version 1.3.1
-%global package_release 4
+%global package_release 5
 
 Name:      %{package_name}
 Version:   %{package_version}
@@ -115,7 +115,7 @@ cat >> %{buildroot}%{_sysconfdir}/sudoers.d/ood << EOF
 Defaults:apache !requiretty, !authenticate
 apache ALL=(ALL) NOPASSWD: /opt/ood/nginx_stage/sbin/nginx_stage
 EOF
-chmod 600 %{buildroot}%{_sysconfdir}/sudoers.d/ood
+%__chmod 440 %{buildroot}%{_sysconfdir}/sudoers.d/ood
 
 mkdir -p %{buildroot}%{_sysconfdir}/cron.d
 cat >> %{buildroot}%{_sysconfdir}/cron.d/ood << EOF
@@ -132,6 +132,7 @@ KillSignal=SIGTERM
 KillMode=process
 PrivateTmp=false
 EOF
+%__chmod 444 %{buildroot}%{_sysconfdir}/systemd/system/httpd24-httpd.service.d/ood.conf
 %endif
 
 
