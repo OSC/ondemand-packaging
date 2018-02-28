@@ -66,31 +66,31 @@ if [ "$SCL_SOURCE" ]; then
   source "$SCL_SOURCE" enable $SCL_PKGS &> /dev/null || :
 fi
 rake install PREFIX=%{buildroot}/opt/ood
-mkdir -p %{buildroot}%{_localstatedir}/www/ood/public
-mkdir -p %{buildroot}%{_localstatedir}/www/ood/discover
-mkdir -p %{buildroot}%{_localstatedir}/www/ood/register
-mkdir -p %{buildroot}%{_localstatedir}/www/ood/apps/sys
-mkdir -p %{buildroot}%{_localstatedir}/www/ood/apps/usr
-mv %{buildroot}/opt/ood/apps/dashboard %{buildroot}%{_localstatedir}/www/ood/apps/sys/dashboard
-mv %{buildroot}/opt/ood/apps/shell %{buildroot}%{_localstatedir}/www/ood/apps/sys/shell
-mv %{buildroot}/opt/ood/apps/files %{buildroot}%{_localstatedir}/www/ood/apps/sys/files
-mv %{buildroot}/opt/ood/apps/file-editor %{buildroot}%{_localstatedir}/www/ood/apps/sys/file-editor
-mv %{buildroot}/opt/ood/apps/activejobs %{buildroot}%{_localstatedir}/www/ood/apps/sys/activejobs
-mv %{buildroot}/opt/ood/apps/myjobs %{buildroot}%{_localstatedir}/www/ood/apps/sys/myjobs
-mv %{buildroot}/opt/ood/apps/bc_desktop %{buildroot}%{_localstatedir}/www/ood/apps/sys/bc_desktop
-mkdir -p %{buildroot}%{_sharedstatedir}/nginx/config/puns
-mkdir -p %{buildroot}%{_sharedstatedir}/nginx/config/apps/sys
-mkdir -p %{buildroot}%{_sharedstatedir}/nginx/config/apps/usr
-mkdir -p %{buildroot}%{_sharedstatedir}/nginx/config/apps/dev
+%__mkdir_p %{buildroot}%{_localstatedir}/www/ood/public
+%__mkdir_p %{buildroot}%{_localstatedir}/www/ood/discover
+%__mkdir_p %{buildroot}%{_localstatedir}/www/ood/register
+%__mkdir_p %{buildroot}%{_localstatedir}/www/ood/apps/sys
+%__mkdir_p %{buildroot}%{_localstatedir}/www/ood/apps/usr
+%__mv %{buildroot}/opt/ood/apps/dashboard %{buildroot}%{_localstatedir}/www/ood/apps/sys/dashboard
+%__mv %{buildroot}/opt/ood/apps/shell %{buildroot}%{_localstatedir}/www/ood/apps/sys/shell
+%__mv %{buildroot}/opt/ood/apps/files %{buildroot}%{_localstatedir}/www/ood/apps/sys/files
+%__mv %{buildroot}/opt/ood/apps/file-editor %{buildroot}%{_localstatedir}/www/ood/apps/sys/file-editor
+%__mv %{buildroot}/opt/ood/apps/activejobs %{buildroot}%{_localstatedir}/www/ood/apps/sys/activejobs
+%__mv %{buildroot}/opt/ood/apps/myjobs %{buildroot}%{_localstatedir}/www/ood/apps/sys/myjobs
+%__mv %{buildroot}/opt/ood/apps/bc_desktop %{buildroot}%{_localstatedir}/www/ood/apps/sys/bc_desktop
+%__mkdir_p %{buildroot}%{_sharedstatedir}/nginx/config/puns
+%__mkdir_p %{buildroot}%{_sharedstatedir}/nginx/config/apps/sys
+%__mkdir_p %{buildroot}%{_sharedstatedir}/nginx/config/apps/usr
+%__mkdir_p %{buildroot}%{_sharedstatedir}/nginx/config/apps/dev
 
-install -D -m 644 build/ood-portal-generator/share/ood_portal_example.yml \
+%__install -D -m 644 build/ood-portal-generator/share/ood_portal_example.yml \
     %{buildroot}%{_sysconfdir}/ood/config/ood_portal.yml
-mkdir -p %{buildroot}/opt/rh/httpd24/root/etc/httpd/conf.d
+%__mkdir_p %{buildroot}/opt/rh/httpd24/root/etc/httpd/conf.d
 %{buildroot}/opt/ood/ood-portal-generator/bin/generate \
     -c %{buildroot}%{_sysconfdir}/ood/config/ood_portal.yml \
     -o %{buildroot}/opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf
 
-install -D -m 644 build/nginx_stage/share/nginx_stage_example.yml \
+%__install -D -m 644 build/nginx_stage/share/nginx_stage_example.yml \
     %{buildroot}%{_sysconfdir}/ood/config/nginx_stage.yml
 touch %{buildroot}%{_sharedstatedir}/nginx/config/apps/sys/dashboard.conf
 touch %{buildroot}%{_sharedstatedir}/nginx/config/apps/sys/shell.conf
@@ -101,32 +101,32 @@ touch %{buildroot}%{_sharedstatedir}/nginx/config/apps/sys/myjobs.conf
 touch %{buildroot}%{_sharedstatedir}/nginx/config/apps/sys/bc_desktop.conf
 (
 export NGINX_STAGE_CONFIG_FILE=$(mktemp)
-cat > $NGINX_STAGE_CONFIG_FILE << EOF
+%__cat > $NGINX_STAGE_CONFIG_FILE << EOF
 app_config_path:
   sys: '%{buildroot}%{_sharedstatedir}/nginx/config/apps/sys/%%{name}.conf'
 EOF
 %{buildroot}/opt/ood/nginx_stage/sbin/nginx_stage \
     app_reset --sub-uri=/pun
-rm -f $NGINX_STAGE_CONFIG_FILE
+%__rm -f $NGINX_STAGE_CONFIG_FILE
 )
 
-mkdir -p %{buildroot}%{_sysconfdir}/sudoers.d
-cat >> %{buildroot}%{_sysconfdir}/sudoers.d/ood << EOF
+%__mkdir_p %{buildroot}%{_sysconfdir}/sudoers.d
+%__cat >> %{buildroot}%{_sysconfdir}/sudoers.d/ood << EOF
 Defaults:apache !requiretty, !authenticate
 apache ALL=(ALL) NOPASSWD: /opt/ood/nginx_stage/sbin/nginx_stage
 EOF
 %__chmod 440 %{buildroot}%{_sysconfdir}/sudoers.d/ood
 
-mkdir -p %{buildroot}%{_sysconfdir}/cron.d
-cat >> %{buildroot}%{_sysconfdir}/cron.d/ood << EOF
+%__mkdir_p %{buildroot}%{_sysconfdir}/cron.d
+%__cat >> %{buildroot}%{_sysconfdir}/cron.d/ood << EOF
 #!/bin/bash
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
 0 */2 * * * root [ -f /opt/ood/nginx_stage/sbin/update_nginx_stage ] && /opt/ood/nginx_stage/sbin/update_nginx_stage --quiet
 EOF
 
 %if %{with systemd}
-mkdir -p %{buildroot}%{_sysconfdir}/systemd/system/httpd24-httpd.service.d
-cat >> %{buildroot}%{_sysconfdir}/systemd/system/httpd24-httpd.service.d/ood.conf << EOF
+%__mkdir_p %{buildroot}%{_sysconfdir}/systemd/system/httpd24-httpd.service.d
+%__cat >> %{buildroot}%{_sysconfdir}/systemd/system/httpd24-httpd.service.d/ood.conf << EOF
 [Service]
 KillSignal=SIGTERM
 KillMode=process
@@ -137,7 +137,7 @@ EOF
 
 
 %post
-sed -i 's/^HTTPD24_HTTPD_SCLS_ENABLED=.*/HTTPD24_HTTPD_SCLS_ENABLED="httpd24 rh-ruby22"/' \
+%__sed -i 's/^HTTPD24_HTTPD_SCLS_ENABLED=.*/HTTPD24_HTTPD_SCLS_ENABLED="httpd24 rh-ruby22"/' \
     /opt/rh/httpd24/service-environment
 /opt/ood/nginx_stage/sbin/update_nginx_stage &>/dev/null || :
 touch %{_localstatedir}/www/ood/apps/sys/dashboard/tmp/restart.txt
@@ -163,7 +163,7 @@ fi
 
 %preun
 if [ "$1" -eq 0 ]; then
-sed -i 's/^HTTPD24_HTTPD_SCLS_ENABLED=.*/HTTPD24_HTTPD_SCLS_ENABLED="httpd24"/' \
+%__sed -i 's/^HTTPD24_HTTPD_SCLS_ENABLED=.*/HTTPD24_HTTPD_SCLS_ENABLED="httpd24"/' \
     /opt/rh/httpd24/service-environment
 /opt/ood/nginx_stage/sbin/nginx_stage nginx_clean --force &>/dev/null || :
 fi
