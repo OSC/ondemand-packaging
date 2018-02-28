@@ -15,7 +15,7 @@ Source files are referenced by git-annex.  Builds are handled by tito and mock.
 
 Run:
 
-* `git clone https://github.com/OSC/ondemand-packaging -b develop`
+* `git clone https://github.com/OSC/ondemand-packaging`
 * `git annex init` to set up this repo for using git annex
 * `./setup_sources.sh` to register git-annex file URLs
 
