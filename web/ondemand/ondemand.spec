@@ -1,6 +1,6 @@
 %global package_name ondemand
 %global package_version 1.3.1
-%global package_release 2
+%global package_release 3
 
 Name:      %{package_name}
 Version:   %{package_version}
@@ -145,17 +145,11 @@ touch %{_localstatedir}/www/ood/apps/sys/file-editor/tmp/restart.txt
 touch %{_localstatedir}/www/ood/apps/sys/activejobs/tmp/restart.txt
 touch %{_localstatedir}/www/ood/apps/sys/myjobs/tmp/restart.txt
 
+%if %{with systemd}
+/bin/systemctl daemon-reload &>/dev/null || :
+%endif
 
-%preun
-if [ "$1" -eq 0 ]; then
-sed -i 's/^HTTPD24_HTTPD_SCLS_ENABLED=.*/HTTPD24_HTTPD_SCLS_ENABLED="httpd24"/' \
-    /opt/rh/httpd24/service-environment
-/opt/ood/nginx_stage/sbin/nginx_stage nginx_clean --force &>/dev/null || :
-fi
-
-
-%postun
-if [ "$1" -eq 0 ]; then
+if /opt/ood/ood-portal-generator/sbin/update_ood_portal &>/dev/null; then
 %if %{with systemd}
 /bin/systemctl try-restart httpd24-httpd.service httpd24-htcacheclean.service &>/dev/null || :
 %else
@@ -165,10 +159,17 @@ exit 0
 %endif
 fi
 
+%preun
+if [ "$1" -eq 0 ]; then
+sed -i 's/^HTTPD24_HTTPD_SCLS_ENABLED=.*/HTTPD24_HTTPD_SCLS_ENABLED="httpd24"/' \
+    /opt/rh/httpd24/service-environment
+/opt/ood/nginx_stage/sbin/nginx_stage nginx_clean --force &>/dev/null || :
+fi
 
-%posttrans
-if /opt/ood/ood-portal-generator/sbin/update_ood_portal &>/dev/null; then
+%postun
+if [ "$1" -eq 0 ]; then
 %if %{with systemd}
+/bin/systemctl daemon-reload &>/dev/null || :
 /bin/systemctl try-restart httpd24-httpd.service httpd24-htcacheclean.service &>/dev/null || :
 %else
 /sbin/service httpd24-httpd condrestart &>/dev/null
@@ -221,7 +222,7 @@ fi
 %config(noreplace) %{_sysconfdir}/cron.d/ood
 %ghost %config(noreplace) /opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf
 %if %{with systemd}
-%config %{_sysconfdir}/systemd/system/httpd24-httpd.service.d/ood.conf
+%config(noreplace) %{_sysconfdir}/systemd/system/httpd24-httpd.service.d/ood.conf
 %endif
 
 
