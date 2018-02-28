@@ -229,6 +229,10 @@ fi
 
 
 %changelog
+* Wed Feb 28 2018 Trey Dockendorf <tdockendorf@osc.edu> 1.3.1-5
+- Set modes to be more restrictive. Matches OSC puppet environment but still
+  functions the same (tdockendorf@osc.edu)
+
 * Wed Feb 28 2018 Trey Dockendorf <tdockendorf@osc.edu> 1.3.1-4
 - Try to speed up builds by doing rake in parallel (tdockendorf@osc.edu)
 - Set sudo config to noreplace (tdockendorf@osc.edu)
