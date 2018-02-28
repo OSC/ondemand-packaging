@@ -227,6 +227,11 @@ fi
 
 
 %changelog
+* Wed Feb 28 2018 Trey Dockendorf <tdockendorf@osc.edu> 1.3.1-3
+- Move %%posttrans into %%post (#23) Run daemon-reload for systemd in %%post
+  and %%postun (#22) Make systemd unit file override %%config(noreplace)
+  (tdockendorf@osc.edu)
+
 * Tue Feb 27 2018 Jeremy Nicklas <jnicklas@osc.edu> 1.3.1-2
 - set apache config as ghost (jnicklas@osc.edu)
 
