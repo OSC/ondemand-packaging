@@ -228,6 +228,10 @@ fi
 
 
 %changelog
+* Wed Feb 28 2018 Trey Dockendorf <tdockendorf@osc.edu> 1.3.1-4
+- Try to speed up builds by doing rake in parallel (tdockendorf@osc.edu)
+- Set sudo config to noreplace (tdockendorf@osc.edu)
+
 * Wed Feb 28 2018 Trey Dockendorf <tdockendorf@osc.edu> 1.3.1-3
 - Move %%posttrans into %%post (#23) Run daemon-reload for systemd in %%post
   and %%postun (#22) Make systemd unit file override %%config(noreplace)
