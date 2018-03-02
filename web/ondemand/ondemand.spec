@@ -86,9 +86,7 @@ rake install PREFIX=%{buildroot}/opt/ood
 %__install -D -m 644 build/ood-portal-generator/share/ood_portal_example.yml \
     %{buildroot}%{_sysconfdir}/ood/config/ood_portal.yml
 %__mkdir_p %{buildroot}/opt/rh/httpd24/root/etc/httpd/conf.d
-%{buildroot}/opt/ood/ood-portal-generator/bin/generate \
-    -c %{buildroot}%{_sysconfdir}/ood/config/ood_portal.yml \
-    -o %{buildroot}/opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf
+touch %{buildroot}/opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf
 
 %__install -D -m 644 build/nginx_stage/share/nginx_stage_example.yml \
     %{buildroot}%{_sysconfdir}/ood/config/nginx_stage.yml
@@ -98,17 +96,6 @@ touch %{buildroot}%{_sharedstatedir}/nginx/config/apps/sys/files.conf
 touch %{buildroot}%{_sharedstatedir}/nginx/config/apps/sys/file-editor.conf
 touch %{buildroot}%{_sharedstatedir}/nginx/config/apps/sys/activejobs.conf
 touch %{buildroot}%{_sharedstatedir}/nginx/config/apps/sys/myjobs.conf
-touch %{buildroot}%{_sharedstatedir}/nginx/config/apps/sys/bc_desktop.conf
-(
-export NGINX_STAGE_CONFIG_FILE=$(mktemp)
-%__cat > $NGINX_STAGE_CONFIG_FILE << EOF
-app_config_path:
-  sys: '%{buildroot}%{_sharedstatedir}/nginx/config/apps/sys/%%{name}.conf'
-EOF
-%{buildroot}/opt/ood/nginx_stage/sbin/nginx_stage \
-    app_reset --sub-uri=/pun
-%__rm -f $NGINX_STAGE_CONFIG_FILE
-)
 
 %__mkdir_p %{buildroot}%{_sysconfdir}/sudoers.d
 %__cat >> %{buildroot}%{_sysconfdir}/sudoers.d/ood << EOF
@@ -139,27 +126,19 @@ EOF
 %post
 %__sed -i 's/^HTTPD24_HTTPD_SCLS_ENABLED=.*/HTTPD24_HTTPD_SCLS_ENABLED="httpd24 rh-ruby22"/' \
     /opt/rh/httpd24/service-environment
-/opt/ood/nginx_stage/sbin/update_nginx_stage &>/dev/null || :
-touch %{_localstatedir}/www/ood/apps/sys/dashboard/tmp/restart.txt
-touch %{_localstatedir}/www/ood/apps/sys/shell/tmp/restart.txt
-touch %{_localstatedir}/www/ood/apps/sys/files/tmp/restart.txt
-touch %{_localstatedir}/www/ood/apps/sys/file-editor/tmp/restart.txt
-touch %{_localstatedir}/www/ood/apps/sys/activejobs/tmp/restart.txt
-touch %{_localstatedir}/www/ood/apps/sys/myjobs/tmp/restart.txt
 
 %if %{with systemd}
 /bin/systemctl daemon-reload &>/dev/null || :
 %endif
 
-if /opt/ood/ood-portal-generator/sbin/update_ood_portal &>/dev/null; then
-%if %{with systemd}
-/bin/systemctl try-restart httpd24-httpd.service httpd24-htcacheclean.service &>/dev/null || :
-%else
-/sbin/service httpd24-httpd condrestart &>/dev/null
-/sbin/service httpd24-htcacheclean condrestart &>/dev/null
-exit 0
-%endif
-fi
+# These NGINX app configs need to exist before rebuilding them
+touch %{_sharedstatedir}/nginx/config/apps/sys/dashboard.conf
+touch %{_sharedstatedir}/nginx/config/apps/sys/shell.conf
+touch %{_sharedstatedir}/nginx/config/apps/sys/files.conf
+touch %{_sharedstatedir}/nginx/config/apps/sys/file-editor.conf
+touch %{_sharedstatedir}/nginx/config/apps/sys/activejobs.conf
+touch %{_sharedstatedir}/nginx/config/apps/sys/myjobs.conf
+
 
 %preun
 if [ "$1" -eq 0 ]; then
@@ -168,10 +147,35 @@ if [ "$1" -eq 0 ]; then
 /opt/ood/nginx_stage/sbin/nginx_stage nginx_clean --force &>/dev/null || :
 fi
 
+
 %postun
 if [ "$1" -eq 0 ]; then
 %if %{with systemd}
 /bin/systemctl daemon-reload &>/dev/null || :
+/bin/systemctl try-restart httpd24-httpd.service httpd24-htcacheclean.service &>/dev/null || :
+%else
+/sbin/service httpd24-httpd condrestart &>/dev/null
+/sbin/service httpd24-htcacheclean condrestart &>/dev/null
+exit 0
+%endif
+fi
+
+
+%posttrans
+# Rebuild NGINX app configs and restart PUNs w/ no active connections
+/opt/ood/nginx_stage/sbin/update_nginx_stage &>/dev/null || :
+
+# Restart apps in case PUN wasn't restarted
+touch %{_localstatedir}/www/ood/apps/sys/dashboard/tmp/restart.txt
+touch %{_localstatedir}/www/ood/apps/sys/shell/tmp/restart.txt
+touch %{_localstatedir}/www/ood/apps/sys/files/tmp/restart.txt
+touch %{_localstatedir}/www/ood/apps/sys/file-editor/tmp/restart.txt
+touch %{_localstatedir}/www/ood/apps/sys/activejobs/tmp/restart.txt
+touch %{_localstatedir}/www/ood/apps/sys/myjobs/tmp/restart.txt
+
+# Rebuild Apache config and restart Apache httpd if config changed
+if /opt/ood/ood-portal-generator/sbin/update_ood_portal &>/dev/null; then
+%if %{with systemd}
 /bin/systemctl try-restart httpd24-httpd.service httpd24-htcacheclean.service &>/dev/null || :
 %else
 /sbin/service httpd24-httpd condrestart &>/dev/null
@@ -192,6 +196,7 @@ fi
 %{_localstatedir}/www/ood/apps/sys/activejobs
 %{_localstatedir}/www/ood/apps/sys/myjobs
 %{_localstatedir}/www/ood/apps/sys/bc_desktop
+%exclude %{_localstatedir}/www/ood/apps/sys/*/tmp/*
 
 %dir %{_localstatedir}/www/ood
 %dir %{_localstatedir}/www/ood/public
@@ -212,17 +217,16 @@ fi
 %dir %{_sharedstatedir}/nginx/config/apps/sys
 %dir %{_sharedstatedir}/nginx/config/apps/usr
 %dir %{_sharedstatedir}/nginx/config/apps/dev
-%config(noreplace,missingok) %{_sharedstatedir}/nginx/config/apps/sys/dashboard.conf
-%config(noreplace,missingok) %{_sharedstatedir}/nginx/config/apps/sys/shell.conf
-%config(noreplace,missingok) %{_sharedstatedir}/nginx/config/apps/sys/files.conf
-%config(noreplace,missingok) %{_sharedstatedir}/nginx/config/apps/sys/file-editor.conf
-%config(noreplace,missingok) %{_sharedstatedir}/nginx/config/apps/sys/activejobs.conf
-%config(noreplace,missingok) %{_sharedstatedir}/nginx/config/apps/sys/myjobs.conf
-%config(noreplace,missingok) %{_sharedstatedir}/nginx/config/apps/sys/bc_desktop.conf
+%ghost %{_sharedstatedir}/nginx/config/apps/sys/dashboard.conf
+%ghost %{_sharedstatedir}/nginx/config/apps/sys/shell.conf
+%ghost %{_sharedstatedir}/nginx/config/apps/sys/files.conf
+%ghost %{_sharedstatedir}/nginx/config/apps/sys/file-editor.conf
+%ghost %{_sharedstatedir}/nginx/config/apps/sys/activejobs.conf
+%ghost %{_sharedstatedir}/nginx/config/apps/sys/myjobs.conf
 
 %config(noreplace) %{_sysconfdir}/sudoers.d/ood
 %config(noreplace) %{_sysconfdir}/cron.d/ood
-%ghost %config(noreplace) /opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf
+%ghost /opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf
 %if %{with systemd}
 %config(noreplace) %{_sysconfdir}/systemd/system/httpd24-httpd.service.d/ood.conf
 %endif
