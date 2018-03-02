@@ -47,6 +47,9 @@ cp -a ./. %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/
 
 
 %changelog
+* Fri Mar 02 2018 Trey Dockendorf <tdockendorf@osc.edu> 0.1.1-1
+- Downgrade bc_osc_comsol to 0.1.1 (tdockendorf@osc.edu)
+
 * Tue Feb 13 2018 Trey Dockendorf <tdockendorf@osc.edu> 0.2.0-1
 - new package built with tito
 
