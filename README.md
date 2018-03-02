@@ -31,7 +31,7 @@ Configuration for mock is supplied in mock/ and can be used to build any of
 the packages locally and quickly.
 
 ```sh
-tito build --rpm --test --builder tito.builder.MockBuilder --output $(mktemp -d) --arg mock_config_dir=mock/ --dist=.el7 --arg mock=el7-scl
+tito build --rpm --test --builder custom.MockSignBuilder --output $(mktemp -d) --arg mock_config_dir=mock/ --dist=.el7 --arg mock=el7-scl
 ```
 
 The last argument is the name of the mock config in mock/, which includes SCL

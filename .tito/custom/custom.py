@@ -43,6 +43,36 @@ class SRPMBuilder(Builder):
         super(SRPMBuilder, self).cleanup()
 
 class MockSignBuilder(MockBuilder):
+    def _build_in_mock(self):
+        run_command_func = run_command if self.quiet else run_command_print
+        if not self.speedup:
+            print("Initializing mock...")
+            run_command_func("mock %s -r %s --init" % (self.mock_cmd_args, self.mock_tag))
+        else:
+            print("Skipping mock --init due to speedup option.")
+
+        #print("Installing deps in mock...")
+        #run_command_func("mock %s -r %s %s" % (
+        #    self.mock_cmd_args, self.mock_tag, self.srpm_location))
+        print("Building RPMs in mock...")
+        run_command_func('mock %s -r %s --rebuild %s' %
+                (self.mock_cmd_args, self.mock_tag, self.srpm_location))
+        mock_output_dir = os.path.join(self.rpmbuild_dir, "mockoutput")
+        run_command_func("mock %s -r %s --copyout /builddir/build/RPMS/ %s" %
+                (self.mock_cmd_args, self.mock_tag, mock_output_dir))
+
+        # Copy everything mock wrote out to /tmp/tito:
+        files = os.listdir(mock_output_dir)
+        run_command_func("cp -v %s/*.rpm %s" %
+                (mock_output_dir, self.rpmbuild_basedir))
+        print
+        info_out("Wrote:")
+        for rpm in files:
+            rpm_path = os.path.join(self.rpmbuild_basedir, rpm)
+            print("  %s" % rpm_path)
+            self.artifacts.append(rpm_path)
+        print
+
     def cleanup(self):
         if self.artifacts:
             proj_root = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../..')
