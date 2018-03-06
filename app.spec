@@ -39,8 +39,10 @@ DESCRIPTION
 
 
 %install
+%if %{with passenger}
 export PASSENGER_APP_ENV=production
 export PASSENGER_BASE_URI=/pun/sys/%{app_name}
+%endif
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}
 if [ -x bin/setup ]; then
   bin/setup
