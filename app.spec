@@ -80,8 +80,8 @@ touch %{_localstatedir}/www/ood/apps/sys/%{app_name}/tmp/restart.txt
 %files
 %defattr(-,root,root)
 %{_localstatedir}/www/ood/apps/sys/%{app_name}
-%{_localstatedir}/www/ood/apps/sys/%{app_name}/tmp/*
 %{_localstatedir}/www/ood/apps/sys/%{app_name}/manifest.yml
+%exclude %{_localstatedir}/www/ood/apps/sys/%{app_name}/tmp/*
 %if %{with passenger}
 %ghost %{_sharedstatedir}/nginx/config/apps/sys/%{app_name}.conf
 %endif
