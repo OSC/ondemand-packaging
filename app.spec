@@ -41,35 +41,46 @@ DESCRIPTION
 %install
 export PASSENGER_APP_ENV=production
 export PASSENGER_BASE_URI=/pun/sys/%{app_name}
-mkdir -p %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}
+%__mkdir_p %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}
 if [ -x bin/setup ]; then
-    bin/setup
+  bin/setup
 fi
-cp -a ./. %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/
+%__cp -a ./. %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/
 %if %{with passenger}
 touch %{buildroot}%{_sharedstatedir}/nginx/config/apps/sys/%{app_name}.conf
 %endif
 
-%posttrans
-%if %{with passenger}
-# Generate NGINX app config during installation/upgrade
-/opt/ood/nginx_stage/sbin/update_nginx_stage &>/dev/null || :
 
-# Do not forget to restart app if it is a Passenger app
-touch %{_localstatedir}/www/ood/apps/sys/%{app_name}/tmp/restart.txt
+%post
+%if %{with passenger}
+# This NGINX app config needs to exist before it can be rebuilt
+touch %{_sharedstatedir}/nginx/config/apps/sys/%{app_name}.conf
 %endif
+
 
 %postun
 if [[ $1 -eq 0 ]]; then
 %if %{with passenger}
-  # Clean up NGINX app config after uninstallation
+  # On uninstallation restart PUNs w/ no active connections
   /opt/ood/nginx_stage/sbin/update_nginx_stage &>/dev/null || :
 %endif
 fi
 
+
+%posttrans
+%if %{with passenger}
+# Rebuild NGINX app config and restart PUNs w/ no active connections
+/opt/ood/nginx_stage/sbin/update_nginx_stage &>/dev/null || :
+
+# Restart app in case PUN wasn't restarted
+touch %{_localstatedir}/www/ood/apps/sys/%{app_name}/tmp/restart.txt
+%endif
+
+
 %files
 %defattr(-,root,root)
 %{_localstatedir}/www/ood/apps/sys/%{app_name}
+%{_localstatedir}/www/ood/apps/sys/%{app_name}/tmp/*
 %{_localstatedir}/www/ood/apps/sys/%{app_name}/manifest.yml
 %if %{with passenger}
 %ghost %{_sharedstatedir}/nginx/config/apps/sys/%{app_name}.conf
