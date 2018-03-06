@@ -4,7 +4,7 @@
 %global app_name bc_osc_jupyter
 
 Name:     ondemand-%{app_name}
-Version:  0.3.0
+Version:  0.4.1
 Release:  1%{?dist}
 Summary:  Batch Connect - OSC Jupyter Notebook
 
@@ -31,8 +31,6 @@ An interactive app designed for OSC OnDemand that launches a Jupyter Notebook se
 
 
 %install
-export PASSENGER_APP_ENV=production
-export PASSENGER_BASE_URI=/pun/sys/%{app_name}
 mkdir -p %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}
 if [ -x bin/setup ]; then
     bin/setup
