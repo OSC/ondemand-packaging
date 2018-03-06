@@ -4,7 +4,7 @@
 %global app_name bc_osc_jupyter_spark
 
 Name:     ondemand-%{app_name}
-Version:  0.0.3
+Version:  0.1.0
 Release:  1%{?dist}
 Summary:  SUMMARY
 
@@ -30,8 +30,6 @@ DESCRIPTION
 
 
 %install
-export PASSENGER_APP_ENV=production
-export PASSENGER_BASE_URI=/pun/sys/%{app_name}
 mkdir -p %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}
 if [ -x bin/setup ]; then
     bin/setup
