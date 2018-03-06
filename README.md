@@ -44,6 +44,7 @@ and non-SCL variants.  If SCL is not needed for the build then use `el7-nonscl`.
 For apps there is a bootstrap process that automates much of the initial setup.
 
 1. Run: `./mk_app_spec.sh <repo name> <app name> <version>`
+  * Example: `./mk_app_spec osc-systemstatus systemstatus 1.0.0`
 2. Update description and summary and adjust build and install dependencies
 
 Manually adding spec file:
