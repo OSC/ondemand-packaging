@@ -44,6 +44,9 @@ cp -a ./. %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/
 
 
 %changelog
+* Tue Mar 06 2018 Jeremy Nicklas <jnicklas@osc.edu> 0.1.0-1
+- Bump bc_osc_jupyter_spark to 0.1.0 (jnicklas@osc.edu)
+
 * Tue Feb 13 2018 Trey Dockendorf <tdockendorf@osc.edu> 0.0.3-1
 - new package built with tito
 
