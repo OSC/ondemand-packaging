@@ -58,7 +58,7 @@ Manually adding spec file:
   * `spectool -g -S example.spec`
 3. Add the source to git annex by running:
   * `git annex add example-1.0.0.tar.gz`
-4. Submit pull request to `develop` branch
+4. Submit pull request to `master` branch
 
 ## HOWTO: Update package
 
