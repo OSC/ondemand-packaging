@@ -18,7 +18,7 @@ Summary:  System Status for OSC Clusters
 Group:    System Environment/Daemons
 License:  MIT
 URL:      https://code.osu.edu/wiag/%{repo_name}
-Source0:  https://code.osu.edu/wiag/%{repo_name}/repository/v%{version}/archive.tar.gz
+Source0:  https://code.osu.edu/wiag/%{repo_name}/repository/v%{version}/archive.tar.gz#/v%{version}.tar.gz
 
 BuildRequires:  sqlite-devel curl make
 BuildRequires:  rh-ruby22 rh-ruby22-rubygem-rake rh-ruby22-rubygem-bundler rh-ruby22-ruby-devel nodejs010 git19
