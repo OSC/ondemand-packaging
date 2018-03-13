@@ -48,6 +48,9 @@ cp -a ./. %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/
 
 
 %changelog
+* Tue Mar 13 2018 Brian McMichael <brian@brianmcmichael.com> 0.4.0-1
+- Update ansys_workbench to v0.4.0 (brian@brianmcmichael.com)
+
 * Mon Feb 26 2018 Trey Dockendorf <tdockendorf@osc.edu> 0.3.0-1
 - Bump ondemand-bc_osc_ansys_workbench to 0.3.0 (tdockendorf@osc.edu)
 
