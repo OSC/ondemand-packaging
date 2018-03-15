@@ -140,3 +140,28 @@ EOF
 ```
 
 Next the private key passphrase needs to be added to `.gpgpass` under this repo.
+
+## HOWTO: Increment repo release
+
+TODO
+
+## HOWTO: Create release repo
+
+A release repo would be created after when it's time to release OnDemand 1.3, for example.
+
+1. Create 1.3 branch of this repo from master
+2. Ensure release RPMs have correct version and repo path
+  * See [HOWTO: Increment repo release](#howto-increment-repo-release)
+3. Ensure release-manifest.yaml is up-to-date with desired package versions
+4. As `oodpkg` user from OSC repo server, run `sync-release.py`
+  * `./sync-release.py --release 1.3`
+  * NOTE: Run with `--force` if existing RPMs need to be overwritten, which should be rare
+  * NOTE: Run with `--clean` if RPMs need to be removed from release repo
+
+## HOWTO: Bootstrap latest release
+
+This only has to be done once
+
+```
+./sync-release.py --release latest
+```
