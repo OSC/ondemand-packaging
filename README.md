@@ -143,20 +143,27 @@ Next the private key passphrase needs to be added to `.gpgpass` under this repo.
 
 ## HOWTO: Increment repo release
 
-TODO
+This step will be done after a release branch is created. For example, after `1.3` branch is created this workflow would be performed to stage master for future `1.4` work.
+
+1. Ensure on the `master` branch
+2. Run `bump-release.py`, example going from `1.3` to `1.4`
+  * `./bump-release.py -p 1.3 -n 1.4`
+3. Commit each package separately and run release process
 
 ## HOWTO: Create release repo
 
 A release repo would be created after when it's time to release OnDemand 1.3, for example.
 
 1. Create 1.3 branch of this repo from master
-2. Ensure release RPMs have correct version and repo path
-  * See [HOWTO: Increment repo release](#howto-increment-repo-release)
-3. Ensure release-manifest.yaml is up-to-date with desired package versions
-4. As `oodpkg` user from OSC repo server, run `sync-release.py`
+2. Ensure release-manifest.yaml is up-to-date with desired package versions
+3. As `oodpkg` user from OSC repo server, run `sync-release.py`
   * `./sync-release.py --release 1.3`
   * NOTE: Run with `--force` if existing RPMs need to be overwritten, which should be rare
   * NOTE: Run with `--clean` if RPMs need to be removed from release repo
+4. In `master` branch bump OnDemand release specific packages
+  * See [HOWTO: Increment repo release](#howto-increment-repo-release)
+
+Any changes that need to be made to package versions after a release repo is created will be done by repeating steps #3 and #4 from above.
 
 ## HOWTO: Bootstrap latest release
 
