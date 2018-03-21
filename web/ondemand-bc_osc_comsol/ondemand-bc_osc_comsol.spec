@@ -47,6 +47,10 @@ cp -a ./. %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/
 
 
 %changelog
+* Wed Mar 21 2018 Jeremy Nicklas <jnicklas@osc.edu> 0.3.0-1
+- Bump bc_osc_comsol to 0.3.0 (jnicklas@osc.edu)
+- Remove old version (tdockendorf@osc.edu)
+
 * Tue Mar 13 2018 Trey Dockendorf <tdockendorf@osc.edu> 0.2.0-1
 - Upgrade ondemand-bc_osc_comsol back to 0.2.0 (tdockendorf@osc.edu)
 
