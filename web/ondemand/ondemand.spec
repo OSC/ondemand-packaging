@@ -233,6 +233,11 @@ fi
 
 
 %changelog
+* Mon Mar 26 2018 Jeremy Nicklas <jnicklas@osc.edu> 1.3.2-1
+- Bump ondemand to 1.3.2 (jnicklas@osc.edu)
+- set web server configs as ghost (jnicklas@osc.edu)
+- Use macros where possible (tdockendorf@osc.edu)
+
 * Wed Feb 28 2018 Trey Dockendorf <tdockendorf@osc.edu> 1.3.1-5
 - Set modes to be more restrictive. Matches OSC puppet environment but still
   functions the same (tdockendorf@osc.edu)
