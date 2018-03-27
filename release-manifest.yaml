@@ -16,7 +16,7 @@ httpd24-mod_auth_openidc:
 httpd24-mod_auth_openidc-debuginfo:
   - 2.3.2-1
 ondemand:
-  - 1.3.1-5
+  - 1.3.2-1
 
 # compute
 ondemand-compute:
