@@ -233,6 +233,9 @@ fi
 
 
 %changelog
+* Tue Mar 27 2018 Jeremy Nicklas <jnicklas@osc.edu> 1.3.3-1
+- Bump ondemand to 1.3.3 (jnicklas@osc.edu)
+
 * Mon Mar 26 2018 Jeremy Nicklas <jnicklas@osc.edu> 1.3.2-1
 - Bump ondemand to 1.3.2 (jnicklas@osc.edu)
 - set web server configs as ghost (jnicklas@osc.edu)
