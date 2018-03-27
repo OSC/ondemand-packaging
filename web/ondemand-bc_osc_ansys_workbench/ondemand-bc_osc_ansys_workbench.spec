@@ -48,6 +48,9 @@ cp -a ./. %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/
 
 
 %changelog
+* Tue Mar 27 2018 Jeremy Nicklas <jnicklas@osc.edu> 0.5.0-1
+- Bump bc_osc_ansys_workbench to 0.5.0 (jnicklas@osc.edu)
+
 * Mon Feb 26 2018 Trey Dockendorf <tdockendorf@osc.edu> 0.3.0-1
 - Bump ondemand-bc_osc_ansys_workbench to 0.3.0 (tdockendorf@osc.edu)
 
