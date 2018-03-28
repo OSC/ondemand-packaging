@@ -42,6 +42,9 @@ An interactive app designed for OSC OnDemand that launches a Jupyter Notebook se
 
 
 %changelog
+* Wed Mar 28 2018 Jeremy Nicklas <jnicklas@osc.edu> 0.5.0-1
+- Bump bc_osc_jupyter to 0.5.0 (jnicklas@osc.edu)
+
 * Tue Mar 06 2018 Jeremy Nicklas <jnicklas@osc.edu> 0.4.1-1
 - Bump bc_osc_jupyter to 0.4.1 (jnicklas@osc.edu)
 
