@@ -4,9 +4,9 @@
 %global app_name bc_osc_jupyter_spark
 
 Name:     ondemand-%{app_name}
-Version:  0.1.0
+Version:  0.2.0
 Release:  1%{?dist}
-Summary:  SUMMARY
+Summary:  Batch Connect - OSC Jupyter Notebook Server + Spark
 
 Group:    System Environment/Daemons
 License:  MIT
@@ -20,7 +20,8 @@ Requires: ondemand
 AutoReqProv: no
 
 %description
-DESCRIPTION
+An interactive app designed for OSC OnDemand that launches a Jupyter Notebook server and an Apache Spark cluster within an Owens batch job.
+
 
 %prep
 %setup -q -n %{repo_name}-%{version}
@@ -30,11 +31,8 @@ DESCRIPTION
 
 
 %install
-mkdir -p %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}
-if [ -x bin/setup ]; then
-    bin/setup
-fi
-cp -a ./. %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/
+%__mkdir_p %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}
+%__cp -a ./. %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/
 
 
 %files
