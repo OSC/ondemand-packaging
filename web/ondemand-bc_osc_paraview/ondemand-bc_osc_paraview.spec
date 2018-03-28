@@ -41,6 +41,9 @@ DESCRIPTION
 
 
 %changelog
+* Wed Mar 28 2018 Jeremy Nicklas <jnicklas@osc.edu> 0.3.0-1
+- Bump bc_osc_paraview to 0.3.0 (jnicklas@osc.edu)
+
 * Tue Feb 13 2018 Trey Dockendorf <tdockendorf@osc.edu> 0.2.0-1
 - new package built with tito
 
