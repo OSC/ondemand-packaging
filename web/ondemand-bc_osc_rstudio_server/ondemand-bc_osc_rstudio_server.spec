@@ -41,6 +41,9 @@ DESCRIPTION
 
 
 %changelog
+* Wed Apr 18 2018 Jeremy Nicklas <jnicklas@osc.edu> 0.5.0-1
+- Bump bc_osc_rstudio_server to 0.5.0 (jnicklas@osc.edu)
+
 * Wed Mar 28 2018 Jeremy Nicklas <jnicklas@osc.edu> 0.4.0-1
 - Bump bc_osc_rstudio_server to 0.4.0 (jnicklas@osc.edu)
 
