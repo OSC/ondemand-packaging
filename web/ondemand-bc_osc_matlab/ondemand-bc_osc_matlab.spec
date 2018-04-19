@@ -46,6 +46,9 @@ cp -a ./. %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/
 
 
 %changelog
+* Thu Apr 19 2018 Jeremy Nicklas <jnicklas@osc.edu> 0.3.0-1
+- Bump bc_osc_matlab to 0.3.0 (jnicklas@osc.edu)
+
 * Mon Feb 26 2018 Jeremy Nicklas <jnicklas@osc.edu> 0.2.0-1
 - Bump bc_osc_matlab to 0.2.0 (jnicklas@osc.edu)
 
