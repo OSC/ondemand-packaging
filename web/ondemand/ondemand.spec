@@ -234,6 +234,9 @@ fi
 
 
 %changelog
+* Mon Apr 30 2018 Jeremy Nicklas <jnicklas@osc.edu> 1.3.6-1
+- Bump ondemand to 1.3.6 (jnicklas@osc.edu)
+
 * Fri Apr 20 2018 Jeremy Nicklas <jnicklas@osc.edu> 1.3.5-2
 - add version file for ondemand (jnicklas@osc.edu)
 
