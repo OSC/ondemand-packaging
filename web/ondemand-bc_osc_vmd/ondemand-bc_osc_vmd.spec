@@ -42,3 +42,6 @@ A Batch Connect app designed for OSC OnDemand that launches VMD within an Owens 
 
 
 %changelog
+* Mon Apr 30 2018 Jeremy Nicklas <jnicklas@osc.edu> 0.1.0-1
+- new package built with tito
+
