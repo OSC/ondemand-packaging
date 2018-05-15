@@ -234,6 +234,9 @@ fi
 
 
 %changelog
+* Tue May 15 2018 Jeremy Nicklas <jnicklas@osc.edu> 1.3.7-1
+- Bump ondemand to 1.3.7 (jnicklas@osc.edu)
+
 * Mon Apr 30 2018 Jeremy Nicklas <jnicklas@osc.edu> 1.3.6-1
 - Bump ondemand to 1.3.6 (jnicklas@osc.edu)
 
