@@ -98,6 +98,7 @@ Usage examples:
     # Determine if SRPM/RPM needs to be copie to release repo
     # If a given SRPM/RPM is in the manifest, copy to release repo
     for r in sorted(rpms):
+        copy = True
         rpm_info = get_rpm_info(r)
         name = rpm_info['name']
         if name not in manifest:
@@ -105,14 +106,20 @@ Usage examples:
             continue
         version = rpm_info['ver'].replace('.el7', '').replace('.el6', '')
         if version not in manifest[name]:
-            logger.debug("Skipping %s-%s", name, version)
+            logger.debug("Skipping %s-%s, not in manifest", name, version)
             continue
         dest = r.replace('/latest/', "/%s/" % args.release)
         if os.path.isfile(dest) and not args.force:
+            copy = False
             logger.debug("%s already exists, skipping", dest)
+        if name in copied_manifest:
+            if version not in copied_manifest[name]:
+                copied_manifest[name].append(version)
+        else:
+            copied_manifest[name] = [version]
+        if not copy:
             continue
         logger.info("Copy %s -> %s", r, dest)
-        copied_manifest[name] = version
         shutil.copy2(r, dest)
 
     # Check for files in manifest that were not found in latest repo
