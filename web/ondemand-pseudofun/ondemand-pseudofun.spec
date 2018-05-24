@@ -80,3 +80,6 @@ touch %{_localstatedir}/www/ood/apps/sys/%{app_name}/tmp/restart.txt
 %ghost %{_sharedstatedir}/nginx/config/apps/sys/%{app_name}.conf
 
 %changelog
+* Thu May 24 2018 Jeremy Nicklas <jnicklas@osc.edu> 0.1.0-1
+- new package built with tito
+
