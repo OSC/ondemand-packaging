@@ -12,7 +12,7 @@
 
 Name:     ondemand-%{app_name}
 Version:  1.4.0
-Release:  1%{?dist}
+Release:  2%{?dist}
 Summary:  System Status for OSC Clusters
 
 Group:    System Environment/Daemons
@@ -52,6 +52,7 @@ fi
 
 
 %install
+%__rm ./log/production.log
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}
 %__cp -a ./. %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/
 %if %{with passenger}
