@@ -101,6 +101,9 @@ touch %{_localstatedir}/www/ood/apps/sys/%{app_name}/tmp/restart.txt
 %endif
 
 %changelog
+* Wed Jul 18 2018 Trey Dockendorf <tdockendorf@osc.edu> 1.4.0-2
+- Remove production.log (tdockendorf@osc.edu)
+
 * Wed Mar 07 2018 Trey Dockendorf <tdockendorf@osc.edu> 1.4.0-1
 - new package built with tito
 
