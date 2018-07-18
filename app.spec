@@ -51,6 +51,7 @@ fi
 
 
 %install
+%__rm ./log/production.log
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}
 %__cp -a ./. %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/
 %if %{with passenger}

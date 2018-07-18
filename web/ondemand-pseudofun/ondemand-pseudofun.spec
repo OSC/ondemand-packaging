@@ -5,7 +5,7 @@
 
 Name:     ondemand-%{app_name}
 Version:  0.2.0
-Release:  1%{?dist}
+Release:  2%{?dist}
 Summary:  Pseudogene Functional Network
 
 Group:    System Environment/Daemons
@@ -39,6 +39,7 @@ bin/setup
 
 
 %install
+%__rm        ./log/production.log
 %__mkdir_p   %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}
 %__cp -a ./. %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/
 %__mkdir_p   %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/tmp

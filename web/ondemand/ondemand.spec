@@ -1,7 +1,7 @@
 %{!?ncpus: %define ncpus 12}
 %global package_name ondemand
 %global package_version 1.3.7
-%global package_release 1
+%global package_release 2
 
 Name:      %{package_name}
 Version:   %{package_version}
@@ -66,6 +66,7 @@ if [ "$SCL_SOURCE" ]; then
   source "$SCL_SOURCE" enable $SCL_PKGS &> /dev/null || :
 fi
 rake install PREFIX=%{buildroot}/opt/ood
+%__rm %{buildroot}/opt/ood/apps/*/log/production.log
 echo "%{package_version}" > %{buildroot}/opt/ood/VERSION
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/public
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/discover
