@@ -235,6 +235,9 @@ fi
 
 
 %changelog
+* Wed Jul 18 2018 Trey Dockendorf <tdockendorf@osc.edu> 1.3.7-2
+- Remove production.log (tdockendorf@osc.edu)
+
 * Tue May 15 2018 Jeremy Nicklas <jnicklas@osc.edu> 1.3.7-1
 - Bump ondemand to 1.3.7 (jnicklas@osc.edu)
 
