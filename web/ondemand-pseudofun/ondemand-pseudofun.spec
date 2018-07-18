@@ -81,6 +81,9 @@ touch %{_localstatedir}/www/ood/apps/sys/%{app_name}/tmp/restart.txt
 %ghost %{_sharedstatedir}/nginx/config/apps/sys/%{app_name}.conf
 
 %changelog
+* Wed Jul 18 2018 Trey Dockendorf <tdockendorf@osc.edu> 0.2.0-2
+- Remove production.log (tdockendorf@osc.edu)
+
 * Tue May 29 2018 Jeremy Nicklas <jnicklas@osc.edu> 0.2.0-1
 - Bump pseudofun to 0.2.0 (jnicklas@osc.edu)
 
