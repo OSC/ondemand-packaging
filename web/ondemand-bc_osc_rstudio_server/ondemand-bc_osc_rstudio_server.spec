@@ -41,6 +41,9 @@ DESCRIPTION
 
 
 %changelog
+* Thu Aug 02 2018 Morgan Rodgers <mrodgers@osc.edu> 0.6.0-1
+- Add R 3.5.0 as an option for RStudio Server (mrodgers@osc.edu)
+
 * Wed Apr 18 2018 Jeremy Nicklas <jnicklas@osc.edu> 0.5.0-1
 - Bump bc_osc_rstudio_server to 0.5.0 (jnicklas@osc.edu)
 
