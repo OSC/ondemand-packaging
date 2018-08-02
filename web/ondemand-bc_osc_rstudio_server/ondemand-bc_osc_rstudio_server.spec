@@ -4,7 +4,7 @@
 %global app_name bc_osc_rstudio_server
 
 Name:     ondemand-%{app_name}
-Version:  0.5.0
+Version:  0.6.0
 Release:  1%{?dist}
 Summary:  SUMMARY
 
