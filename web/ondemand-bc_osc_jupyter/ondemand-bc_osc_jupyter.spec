@@ -42,6 +42,9 @@ An interactive app designed for OSC OnDemand that launches a Jupyter Notebook se
 
 
 %changelog
+* Tue Aug 14 2018 Morgan Rodgers <mrodgers@osc.edu> 0.7.0-1
+- Added support for Julia 1.0 kernel (mrodgers@osc.edu)
+
 * Fri Apr 27 2018 Jeremy Nicklas <jnicklas@osc.edu> 0.6.2-1
 - Bump bc_osc_jupyter to 0.6.2 (jnicklas@osc.edu)
 
