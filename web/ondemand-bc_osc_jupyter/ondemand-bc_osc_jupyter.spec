@@ -4,7 +4,7 @@
 %global app_name bc_osc_jupyter
 
 Name:     ondemand-%{app_name}
-Version:  0.6.2
+Version:  0.7.0
 Release:  1%{?dist}
 Summary:  Batch Connect - OSC Jupyter Notebook
 
