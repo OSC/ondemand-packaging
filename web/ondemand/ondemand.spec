@@ -1,6 +1,6 @@
 %{!?ncpus: %define ncpus 12}
 %global package_name ondemand
-%global package_version 1.4.0
+%global package_version 1.4.1
 %global package_release 2
 
 Name:      %{package_name}
