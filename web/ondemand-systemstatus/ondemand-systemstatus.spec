@@ -11,7 +11,7 @@
 %endif
 
 Name:     ondemand-%{app_name}
-Version:  1.4.0
+Version:  2.0.0
 Release:  2%{?dist}
 Summary:  System Status for OSC Clusters
 
@@ -52,7 +52,6 @@ fi
 
 
 %install
-%__rm ./log/production.log
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}
 %__cp -a ./. %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/
 %if %{with passenger}
@@ -101,6 +100,10 @@ touch %{_localstatedir}/www/ood/apps/sys/%{app_name}/tmp/restart.txt
 %endif
 
 %changelog
+* Wed Sep 12 2018 Morgan Rodgers <mrodgers@osc.edu> 2.0.0-2
+- Fix for change from Rails to Sinatra (mrodgers@osc.edu)
+- Bump SystemStatus to v2.0.0 (mrodgers@osc.edu)
+
 * Wed Jul 18 2018 Trey Dockendorf <tdockendorf@osc.edu> 1.4.0-2
 - Remove production.log (tdockendorf@osc.edu)
 

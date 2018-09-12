@@ -4,7 +4,7 @@
 %global app_name bc_osc_ansys_workbench
 
 Name:     ondemand-%{app_name}
-Version:  0.5.0
+Version:  0.6.0
 Release:  1%{?dist}
 Summary:  Batch Connect - OSC ANSYS Workbench
 
@@ -48,6 +48,9 @@ cp -a ./. %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/
 
 
 %changelog
+* Fri Jul 27 2018 Morgan Rodgers <mrodgers@osc.edu> 0.6.0-1
+- Fix license reservation bug (mrodgers@osc.edu)
+
 * Tue Mar 27 2018 Jeremy Nicklas <jnicklas@osc.edu> 0.5.0-1
 - Bump bc_osc_ansys_workbench to 0.5.0 (jnicklas@osc.edu)
 
