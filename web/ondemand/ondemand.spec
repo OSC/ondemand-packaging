@@ -235,6 +235,10 @@ fi
 
 
 %changelog
+* Thu Sep 13 2018 Morgan Rodgers <mrodgers@osc.edu> 1.4.1-2
+- Bump OOD version to 1.4.1 (mrodgers@osc.edu)
+- Bump ondemand version to v1.4.0 (mrodgers@osc.edu)
+
 * Wed Jul 18 2018 Trey Dockendorf <tdockendorf@osc.edu> 1.3.7-2
 - Remove production.log (tdockendorf@osc.edu)
 
