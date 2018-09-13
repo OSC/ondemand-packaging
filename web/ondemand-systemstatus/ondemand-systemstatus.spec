@@ -11,7 +11,7 @@
 %endif
 
 Name:     ondemand-%{app_name}
-Version:  2.0.0
+Version:  2.0.1
 Release:  2%{?dist}
 Summary:  System Status for OSC Clusters
 
