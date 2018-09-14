@@ -235,6 +235,9 @@ fi
 
 
 %changelog
+* Fri Sep 14 2018 Morgan Rodgers <mrodgers@osc.edu> 1.4.2-2
+- Bump OOD version to v1.4.2 (mrodgers@osc.edu)
+
 * Thu Sep 13 2018 Morgan Rodgers <mrodgers@osc.edu> 1.4.1-2
 - Bump OOD version to 1.4.1 (mrodgers@osc.edu)
 - Bump ondemand version to v1.4.0 (mrodgers@osc.edu)
