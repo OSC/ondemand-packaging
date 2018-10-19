@@ -11,7 +11,7 @@
 %endif
 
 Name:     ondemand-%{app_name}
-Version:  2.0.0
+Version:  2.0.1
 Release:  2%{?dist}
 Summary:  System Status for OSC Clusters
 
@@ -100,6 +100,9 @@ touch %{_localstatedir}/www/ood/apps/sys/%{app_name}/tmp/restart.txt
 %endif
 
 %changelog
+* Thu Sep 13 2018 Morgan Rodgers <mrodgers@osc.edu> 2.0.1-2
+- Update systemsetatus to v2.0.1 (mrodgers@osc.edu)
+
 * Wed Sep 12 2018 Morgan Rodgers <mrodgers@osc.edu> 2.0.0-2
 - Fix for change from Rails to Sinatra (mrodgers@osc.edu)
 - Bump SystemStatus to v2.0.0 (mrodgers@osc.edu)

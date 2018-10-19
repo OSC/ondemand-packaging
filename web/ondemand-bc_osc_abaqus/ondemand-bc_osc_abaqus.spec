@@ -4,7 +4,7 @@
 %global app_name bc_osc_abaqus
 
 Name:     ondemand-%{app_name}
-Version:  0.2.0
+Version:  0.4.0
 Release:  1%{?dist}
 Summary:  Batch Connect - OSC Abaqus/CAE
 
@@ -46,6 +46,9 @@ cp -a ./. %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/
 
 
 %changelog
+* Thu Sep 13 2018 Morgan Rodgers <mrodgers@osc.edu> 0.4.0-1
+- Update abaqus to v0.4.0 (mrodgers@osc.edu)
+
 * Tue Feb 13 2018 Trey Dockendorf <tdockendorf@osc.edu> 0.2.0-1
 - new package built with tito
 

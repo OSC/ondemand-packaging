@@ -4,7 +4,7 @@
 %global app_name bc_osc_jupyter
 
 Name:     ondemand-%{app_name}
-Version:  0.8.0
+Version:  0.9.0
 Release:  1%{?dist}
 Summary:  Batch Connect - OSC Jupyter Notebook
 
@@ -42,6 +42,9 @@ An interactive app designed for OSC OnDemand that launches a Jupyter Notebook se
 
 
 %changelog
+* Thu Sep 20 2018 Morgan Rodgers <mrodgers@osc.edu> 0.9.0-1
+- Update Jupyter to v0.9.0 (mrodgers@osc.edu)
+
 * Fri Aug 24 2018 Morgan Rodgers <mrodgers@osc.edu> 0.8.0-1
 - Add IJulia kernel for Julia 0.6.4 (mrodgers@osc.edu)
 
