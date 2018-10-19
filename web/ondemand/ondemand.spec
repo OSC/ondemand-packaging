@@ -1,6 +1,6 @@
 %{!?ncpus: %define ncpus 12}
 %global package_name ondemand
-%global package_version 1.4.2
+%global package_version 1.4.3
 %global package_release 2
 
 Name:      %{package_name}
@@ -28,12 +28,12 @@ Source0:   https://github.com/OSC/%{package_name}/archive/v%{package_version}.ta
 AutoReqProv:     no
 
 BuildRequires:   sqlite-devel, curl, make
-BuildRequires:   rh-ruby22, rh-ruby22-rubygem-rake, rh-ruby22-rubygem-bundler, rh-ruby22-ruby-devel, nodejs010, git19
+BuildRequires:   rh-ruby24, rh-ruby24-rubygem-rake, rh-ruby24-rubygem-bundler, rh-ruby24-ruby-devel, rh-nodejs6, rh-git29
 Requires:        sudo, lsof, sqlite-devel, cronie, wget, curl, make
 Requires:        httpd24, httpd24-mod_ssl, httpd24-mod_ldap
 Requires:        nginx16, rh-passenger40
-Requires:        rh-ruby22, rh-ruby22-rubygem-rake, rh-ruby22-rubygem-bundler, rh-ruby22-ruby-devel, rh-ruby22-rubygems, rh-ruby22-rubygems-devel
-Requires:        nodejs010, git19
+Requires:        rh-ruby24, rh-ruby24-rubygem-rake, rh-ruby24-rubygem-bundler, rh-ruby24-ruby-devel, rh-ruby24-rubygems, rh-ruby24-rubygems-devel
+Requires:        rh-nodejs6, rh-git29
 
 %if %{with systemd}
 BuildRequires: systemd
@@ -51,7 +51,7 @@ access, job submission and interactive work on compute nodes.
 
 
 %build
-export SCL_PKGS="rh-ruby22 nodejs010 git19"
+export SCL_PKGS="rh-ruby24 rh-nodejs6 rh-git29"
 export SCL_SOURCE=$(command -v scl_source)
 if [ "$SCL_SOURCE" ]; then
   source "$SCL_SOURCE" enable $SCL_PKGS &> /dev/null || :
@@ -60,7 +60,7 @@ rake -mj%{ncpus}
 
 
 %install
-export SCL_PKGS="rh-ruby22"
+export SCL_PKGS="rh-ruby24"
 export SCL_SOURCE=$(command -v scl_source)
 if [ "$SCL_SOURCE" ]; then
   source "$SCL_SOURCE" enable $SCL_PKGS &> /dev/null || :
@@ -126,7 +126,7 @@ EOF
 
 
 %post
-%__sed -i 's/^HTTPD24_HTTPD_SCLS_ENABLED=.*/HTTPD24_HTTPD_SCLS_ENABLED="httpd24 rh-ruby22"/' \
+%__sed -i 's/^HTTPD24_HTTPD_SCLS_ENABLED=.*/HTTPD24_HTTPD_SCLS_ENABLED="httpd24 rh-ruby24"/' \
     /opt/rh/httpd24/service-environment
 
 %if %{with systemd}
