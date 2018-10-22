@@ -47,6 +47,9 @@ cp -a ./. %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/
 
 
 %changelog
+* Mon Oct 22 2018 Morgan Rodgers <mrodgers@osc.edu> 0.4.0-1
+- Update COMSOL multiphysics to v0.4.0 (mrodgers@osc.edu)
+
 * Wed Mar 21 2018 Jeremy Nicklas <jnicklas@osc.edu> 0.3.0-1
 - Bump bc_osc_comsol to 0.3.0 (jnicklas@osc.edu)
 - Remove old version (tdockendorf@osc.edu)
