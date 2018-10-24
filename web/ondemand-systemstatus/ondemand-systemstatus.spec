@@ -21,7 +21,7 @@ URL:      https://github.com/AweSim-OSC/%{repo_name}
 Source0:  https://github.com/AweSim-OSC/%{repo_name}/archive/v%{version}.tar.gz
 
 BuildRequires:  sqlite-devel curl make
-BuildRequires:  rh-ruby22 rh-ruby22-rubygem-rake rh-ruby22-rubygem-bundler rh-ruby22-ruby-devel nodejs010 git19
+BuildRequires:  rh-ruby24 rh-ruby24-rubygem-rake rh-ruby24-rubygem-bundler rh-ruby24-ruby-devel rh-nodejs6 rh-git29
 Requires:       ondemand
 
 # Disable automatic dependencies as it causes issues with bundled gems and
@@ -41,7 +41,7 @@ This app displays the current system status of available system clusters.
 export PASSENGER_APP_ENV=production
 export PASSENGER_BASE_URI=/pun/sys/%{app_name}
 %endif
-export SCL_PKGS="rh-ruby22 nodejs010 git19"
+export SCL_PKGS="rh-ruby24 rh-nodejs6 rh-git29"
 export SCL_SOURCE=$(command -v scl_source)
 if [ -x bin/setup ]; then
   if [ "$SCL_SOURCE" ]; then
