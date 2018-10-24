@@ -12,7 +12,7 @@
 
 Name:     ondemand-%{app_name}
 Version:  2.0.1
-Release:  2%{?dist}
+Release:  3%{?dist}
 Summary:  System Status for OSC Clusters
 
 Group:    System Environment/Daemons
@@ -100,6 +100,10 @@ touch %{_localstatedir}/www/ood/apps/sys/%{app_name}/tmp/restart.txt
 %endif
 
 %changelog
+* Wed Oct 24 2018 Morgan Rodgers <mrodgers@osc.edu>
+- Update dependencies for systemstatus (mrodgers@osc.edu)
+- Update pseudofun (mrodgers@osc.edu)
+
 * Thu Sep 13 2018 Morgan Rodgers <mrodgers@osc.edu> 2.0.1-2
 - Update systemsetatus to v2.0.1 (mrodgers@osc.edu)
 
