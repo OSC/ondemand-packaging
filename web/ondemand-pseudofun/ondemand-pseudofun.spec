@@ -4,7 +4,7 @@
 %global app_name pseudofun
 
 Name:     ondemand-%{app_name}
-Version:  0.2.0
+Version:  0.2.1
 Release:  2%{?dist}
 Summary:  Pseudogene Functional Network
 
