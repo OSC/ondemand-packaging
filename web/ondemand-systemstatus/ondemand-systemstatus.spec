@@ -100,6 +100,11 @@ touch %{_localstatedir}/www/ood/apps/sys/%{app_name}/tmp/restart.txt
 %endif
 
 %changelog
+* Wed Oct 24 2018 Morgan Rodgers <mrodgers@osc.edu> 2.0.1-3
+- Bump release on systemstatus so Puppet picks up on the change
+  (mrodgers@osc.edu)
+- Update dependencies for systemstatus (mrodgers@osc.edu)
+
 * Wed Oct 24 2018 Morgan Rodgers <mrodgers@osc.edu>
 - Update dependencies for systemstatus (mrodgers@osc.edu)
 - Update pseudofun (mrodgers@osc.edu)
