@@ -14,7 +14,7 @@ URL:      https://github.com/OSC/%{repo_name}
 Source0:  https://github.com/OSC/%{repo_name}/archive/v%{version}.tar.gz
 
 BuildRequires:  sqlite-devel curl make
-BuildRequires:  rh-ruby22 rh-ruby22-rubygem-rake rh-ruby22-rubygem-bundler rh-ruby22-ruby-devel nodejs010 git19
+BuildRequires:  rh-ruby24 rh-ruby24-rubygem-rake rh-ruby24-rubygem-bundler rh-ruby24-ruby-devel rh-nodejs6 rh-git29
 Requires:       ondemand
 
 # Disable automatic dependencies as it causes issues with bundled gems and
@@ -31,7 +31,7 @@ the Zhang Lab of Computational Genomics and Proteomics at OSU BMI.
 
 
 %build
-source scl_source enable rh-ruby22 nodejs010 git19 &> /dev/null || :
+source scl_source enable rh-ruby24 rh-nodejs6 rh-git29 &> /dev/null || :
 
 export PASSENGER_APP_ENV=production
 export PASSENGER_BASE_URI=/pun/sys/%{app_name}
