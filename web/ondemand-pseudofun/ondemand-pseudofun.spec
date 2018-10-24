@@ -81,6 +81,9 @@ touch %{_localstatedir}/www/ood/apps/sys/%{app_name}/tmp/restart.txt
 %ghost %{_sharedstatedir}/nginx/config/apps/sys/%{app_name}.conf
 
 %changelog
+* Wed Oct 24 2018 Morgan Rodgers <mrodgers@osc.edu> 0.2.1-2
+- Update pseudofun dependencies (mrodgers@osc.edu)
+
 * Wed Jul 18 2018 Trey Dockendorf <tdockendorf@osc.edu> 0.2.0-2
 - Remove production.log (tdockendorf@osc.edu)
 
