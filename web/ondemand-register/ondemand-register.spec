@@ -4,7 +4,7 @@
 %global app_name register
 
 Name:     ondemand-%{app_name}
-Version:  0.2.0
+Version:  0.3.0
 Release:  1%{?dist}
 Summary:  OSC OnDemand Open ID Connect CI Logon Registration page
 
