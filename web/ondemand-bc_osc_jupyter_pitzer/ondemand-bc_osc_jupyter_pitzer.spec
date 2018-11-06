@@ -42,6 +42,8 @@ An interactive app designed for OSC OnDemand that launches a Jupyter Notebook se
 
 
 %changelog
+* Tue Nov 06 2018 Morgan Rodgers <mrodgers@osc.edu> 0.10.0-1
+- Addition of Jupyter for Pitzer
 * Thu Sep 20 2018 Morgan Rodgers <mrodgers@osc.edu> 0.9.0-1
 - Update Jupyter to v0.9.0 (mrodgers@osc.edu)
 
