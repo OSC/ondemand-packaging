@@ -54,6 +54,9 @@ exit 0
 
 
 %changelog
+* Tue Nov 20 2018 Trey Dockendorf <tdockendorf@osc.edu> 1-1
+- new package built with tito
+
 * Wed Feb 28 2018 Trey Dockendorf <tdockendorf@osc.edu> 1.3-1
 - new package built with tito
 
