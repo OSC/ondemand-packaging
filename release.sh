@@ -6,6 +6,7 @@ declare -A release_map=(
     ["web-nonscl"]="web-nonscl"
     ["web"]="web-scl"
     ["misc/ondemand-release"]="release"
+    ["misc/ondemand-release-latest"]="release"
     ["web/mod_auth_openidc"]="web-httpd24"
 )
 
