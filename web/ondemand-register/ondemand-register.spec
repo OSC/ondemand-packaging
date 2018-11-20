@@ -4,7 +4,7 @@
 %global app_name register
 
 Name:     ondemand-%{app_name}
-Version:  0.2.0
+Version:  0.3.0
 Release:  1%{?dist}
 Summary:  OSC OnDemand Open ID Connect CI Logon Registration page
 
@@ -41,6 +41,9 @@ cp -R ./* %{buildroot}%{_localstatedir}/www/ood/%{app_name}
 
 
 %changelog
+* Thu Oct 25 2018 Morgan Rodgers <mrodgers@osc.edu> 0.3.0-1
+- Bump ondemand-register version (mrodgers@osc.edu)
+
 * Tue Feb 13 2018 Trey Dockendorf <tdockendorf@osc.edu> 0.2.0-1
 - new package built with tito
 

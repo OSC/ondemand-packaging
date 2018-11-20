@@ -12,7 +12,7 @@
 
 Name:     ondemand-%{app_name}
 Version:  2.0.1
-Release:  2%{?dist}
+Release:  3%{?dist}
 Summary:  System Status for OSC Clusters
 
 Group:    System Environment/Daemons
@@ -21,7 +21,7 @@ URL:      https://github.com/AweSim-OSC/%{repo_name}
 Source0:  https://github.com/AweSim-OSC/%{repo_name}/archive/v%{version}.tar.gz
 
 BuildRequires:  sqlite-devel curl make
-BuildRequires:  rh-ruby22 rh-ruby22-rubygem-rake rh-ruby22-rubygem-bundler rh-ruby22-ruby-devel nodejs010 git19
+BuildRequires:  rh-ruby24 rh-ruby24-rubygem-rake rh-ruby24-rubygem-bundler rh-ruby24-ruby-devel rh-nodejs6 rh-git29
 Requires:       ondemand
 
 # Disable automatic dependencies as it causes issues with bundled gems and
@@ -41,7 +41,7 @@ This app displays the current system status of available system clusters.
 export PASSENGER_APP_ENV=production
 export PASSENGER_BASE_URI=/pun/sys/%{app_name}
 %endif
-export SCL_PKGS="rh-ruby22 nodejs010 git19"
+export SCL_PKGS="rh-ruby24 rh-nodejs6 rh-git29"
 export SCL_SOURCE=$(command -v scl_source)
 if [ -x bin/setup ]; then
   if [ "$SCL_SOURCE" ]; then
@@ -100,6 +100,15 @@ touch %{_localstatedir}/www/ood/apps/sys/%{app_name}/tmp/restart.txt
 %endif
 
 %changelog
+* Wed Oct 24 2018 Morgan Rodgers <mrodgers@osc.edu> 2.0.1-3
+- Bump release on systemstatus so Puppet picks up on the change
+  (mrodgers@osc.edu)
+- Update dependencies for systemstatus (mrodgers@osc.edu)
+
+* Wed Oct 24 2018 Morgan Rodgers <mrodgers@osc.edu>
+- Update dependencies for systemstatus (mrodgers@osc.edu)
+- Update pseudofun (mrodgers@osc.edu)
+
 * Thu Sep 13 2018 Morgan Rodgers <mrodgers@osc.edu> 2.0.1-2
 - Update systemsetatus to v2.0.1 (mrodgers@osc.edu)
 

@@ -4,7 +4,7 @@
 %global app_name pseudofun
 
 Name:     ondemand-%{app_name}
-Version:  0.2.0
+Version:  0.2.1
 Release:  2%{?dist}
 Summary:  Pseudogene Functional Network
 
@@ -14,7 +14,7 @@ URL:      https://github.com/OSC/%{repo_name}
 Source0:  https://github.com/OSC/%{repo_name}/archive/v%{version}.tar.gz
 
 BuildRequires:  sqlite-devel curl make
-BuildRequires:  rh-ruby22 rh-ruby22-rubygem-rake rh-ruby22-rubygem-bundler rh-ruby22-ruby-devel nodejs010 git19
+BuildRequires:  rh-ruby24 rh-ruby24-rubygem-rake rh-ruby24-rubygem-bundler rh-ruby24-ruby-devel rh-nodejs6 rh-git29
 Requires:       ondemand
 
 # Disable automatic dependencies as it causes issues with bundled gems and
@@ -31,7 +31,7 @@ the Zhang Lab of Computational Genomics and Proteomics at OSU BMI.
 
 
 %build
-source scl_source enable rh-ruby22 nodejs010 git19 &> /dev/null || :
+source scl_source enable rh-ruby24 rh-nodejs6 rh-git29 &> /dev/null || :
 
 export PASSENGER_APP_ENV=production
 export PASSENGER_BASE_URI=/pun/sys/%{app_name}
@@ -81,6 +81,9 @@ touch %{_localstatedir}/www/ood/apps/sys/%{app_name}/tmp/restart.txt
 %ghost %{_sharedstatedir}/nginx/config/apps/sys/%{app_name}.conf
 
 %changelog
+* Wed Oct 24 2018 Morgan Rodgers <mrodgers@osc.edu> 0.2.1-2
+- Update pseudofun dependencies (mrodgers@osc.edu)
+
 * Wed Jul 18 2018 Trey Dockendorf <tdockendorf@osc.edu> 0.2.0-2
 - Remove production.log (tdockendorf@osc.edu)
 
