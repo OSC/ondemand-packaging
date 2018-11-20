@@ -1,6 +1,6 @@
 Name:       ondemand-release-web-latest
 Version:    1
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    Open OnDemand web repository files
 
 Group:      Applications/System
@@ -11,18 +11,18 @@ Source0:    ondemand-web.repo
 Source1:    ondemand-compute.repo
 Source2:    RPM-GPG-KEY-ondemand
 Obsoletes:  ondemand-release-web
-%define _rpmfilename %%{NAME}%{?dist}.rpm
 
 %description
 Open OnDemand web repository contains open source and other distributable software for
 distributions in RPM format. This package contains the repository configuration
 for Yum.
 
-%package -n ondemand-release-compute
+%package -n ondemand-release-compute-latest
 Summary:        Open OnDemand compute repository files
 Group:          Applications/System
+Obsoletes:      ondemand-release-compute
 
-%description -n ondemand-release-compute
+%description -n ondemand-release-compute-latest
 Open OnDemand compute repository contains open source and other distributable software for
 distributions in RPM format. This package contains the repository configuration
 for Yum.
@@ -48,15 +48,12 @@ exit 0
 %config %{_sysconfdir}/yum.repos.d/ondemand-web.repo
 %{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand
 
-%files -n ondemand-release-compute
+%files -n ondemand-release-compute-latest
 %config %{_sysconfdir}/yum.repos.d/ondemand-compute.repo
 %{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand-compute
 
 
 %changelog
-* Tue Nov 20 2018 Trey Dockendorf <tdockendorf@osc.edu> 1-1
-- new package built with tito
-
 * Wed Feb 28 2018 Trey Dockendorf <tdockendorf@osc.edu> 1.3-1
 - new package built with tito
 
