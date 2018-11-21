@@ -144,8 +144,6 @@ Usage examples:
     parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter, epilog=usage_examples)
     parser.add_argument('-d', '--debug', action='store_true', default=False)
     parser.add_argument('-f', '--force', help='overwrite existing RPMs', action='store_true', default=False)
-    #parser.add_argument('-t', '--tag', help='passenger tag to use', required=True)
-    #parser.add_argument('-r', '--release', help='tito RPM release to use', required=True, choices=release_config.sections())
     parser.add_argument('--pkey', help='SSH private key to use for uploading RPMs', default=pkey)
     args = parser.parse_args()
 
@@ -194,41 +192,6 @@ Usage examples:
             sys.exit(1)
         logger.debug("rpm_rsync=%s srpm_rsync=%s dist=%s", rpm_rsync, srpm_rsync, dist)
         run(passenger_root, cache_dir, output_dir, work_dir, rpm_host, rpm_path, srpm_host, srpm_path, dist, args)
-    #
-    # rpm_rsync = config.get(args.release, 'rsync')
-    # rpm_rsync_args = config.get(args.release, 'rsync_args')
-    # srpm_rsync = config.get("%s-source" % args.release, 'rsync')
-    # srpm_rsync_args = config.get("%s-source" % args.release, 'rsync_args')
-    # if 'el7' in args.release:
-    #     dist = 'el7'
-    # elif 'el6' in args.release:
-    #     dist = 'el6'
-    # else:
-    #     logger.error("Unable to determine dist from release %s", args.release)
-    #     sys.exit(1)
-    # logger.debug("rpm_rsync=%s rpm_rsync_args=%s srpm_rsync=%s srpm_rsync_args=%s dist=%s", rpm_rsync, rpm_rsync_args, srpm_rsync, srpm_rsync_args, dist)
-    #
-    # passenger_root = tempfile.mkdtemp()
-    # cache_dir = tempfile.mkdtemp()
-    # output_dir = tempfile.mkdtemp()
-    # work_dir = tempfile.mkdtemp()
-    # logger.debug("passenger=%s cache=%s output=%s work=%s", passenger_root, cache_dir, output_dir, work_dir)
-    # success = get_passenger(args.tag, passenger_root)
-    # if not success:
-    #     sys.exit(1)
-    # rpms, srpms = build_packages(passenger_root, cache_dir, output_dir, work_dir, dist)
-    # if not rpms or not srpms:
-    #     sys.exit(1)
-    # success = sign_packages(rpms)
-    # if not success:
-    #     sys.exit(1)
-    # success = sign_packages(srpms)
-    # if not success:
-    #     sys.exit(1)
-    # release_packages(rpms, rpm_rsync, args.pkey)
-    # release_packages(srpms, srpm_rsync, args.pkey)
-    # update_repo(rpm_rsync, args.pkey)
-    # update_repo(srpm_rsync, args.pkey)
 
 if __name__ == '__main__':
     main()
