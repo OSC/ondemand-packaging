@@ -96,6 +96,19 @@ Manually adding spec file:
       * `misc/ondemand-release` - Use `release`
       * `web/mod_auth_openidc` - Use `web-httpd24`
 
+## HOWTO: Build and release Passenger and NGINX
+
+1. Ensure `passenger-release.ini` has the correct value for `tag`.
+2. Run the script that builds and releases:
+  * `./passenger-release.py`
+
+The script for passenger performs the following steps:
+* Clone passenger git repo using specified git `tag` value
+* Build passenger and nginx RPMs
+* GPG Sign RPMs and SRPMs
+* SFTP upload signed RPMs and SRPMs to repo server
+* Update repo metadata
+
 ## How does this repo work?
 
 This repo contains a directory per source package and some tito configuration
