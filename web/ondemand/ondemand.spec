@@ -4,8 +4,8 @@
 %global package_release 3
 
 Name:      %{package_name}
-Version:   %{package_version}
-Release:   %{package_release}%{?dist}
+Version:   1.4.4
+Release:   3
 Summary:   Web server that provides users access to HPC resources
 
 Group:     System Environment/Daemons
