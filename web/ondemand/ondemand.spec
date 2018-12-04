@@ -236,6 +236,9 @@ fi
 
 
 %changelog
+* Tue Dec 04 2018 Trey Dockendorf <tdockendorf@osc.edu> 1.4.4-4
+- Fix release (tdockendorf@osc.edu)
+
 * Tue Dec 04 2018 Trey Dockendorf <tdockendorf@osc.edu> 1.4.4-3
 - Fix dependency on nginx to use correct epoch number
 
