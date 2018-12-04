@@ -1,7 +1,7 @@
 %{!?ncpus: %define ncpus 12}
 %global package_name ondemand
 %global package_version 1.4.4
-%global package_release 2
+%global package_release 3
 
 Name:      %{package_name}
 Version:   %{package_version}
@@ -31,7 +31,7 @@ BuildRequires:   sqlite-devel, curl, make
 BuildRequires:   rh-ruby24, rh-ruby24-rubygem-rake, rh-ruby24-rubygem-bundler, rh-ruby24-ruby-devel, rh-nodejs6, rh-git29
 Requires:        sudo, lsof, sqlite-devel, cronie, wget, curl, make
 Requires:        httpd24, httpd24-mod_ssl, httpd24-mod_ldap
-Requires:        nginx = 1.14.0
+Requires:        nginx = 100:1.14.0
 Requires:        passenger = 5.3.7
 Requires:        rh-ruby24, rh-ruby24-rubygem-rake, rh-ruby24-rubygem-bundler, rh-ruby24-ruby-devel, rh-ruby24-rubygems, rh-ruby24-rubygems-devel
 Requires:        rh-nodejs6, rh-git29
@@ -236,6 +236,9 @@ fi
 
 
 %changelog
+* Tue Dec 04 2018 Trey Dockendorf <tdockendorf@osc.edu> 1.4.4-3
+- Fix dependency on nginx to use correct epoch number
+
 * Tue Dec 04 2018 Morgan Rodgers <mrodgers@osc.edu> 1.4.4-2
 - Ondemand 1.4.4 (mrodgers@osc.edu)
 
