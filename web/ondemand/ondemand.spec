@@ -1,11 +1,11 @@
 %{!?ncpus: %define ncpus 12}
 %global package_name ondemand
 %global package_version 1.4.4
-%global package_release 3
+%global package_release 4
 
 Name:      %{package_name}
 Version:   1.4.4
-Release:   3
+Release:   %{package_release}%{?dist}
 Summary:   Web server that provides users access to HPC resources
 
 Group:     System Environment/Daemons
