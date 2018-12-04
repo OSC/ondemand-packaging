@@ -236,6 +236,9 @@ fi
 
 
 %changelog
+* Tue Dec 04 2018 Morgan Rodgers <mrodgers@osc.edu> 1.4.4-2
+- Ondemand 1.4.4 (mrodgers@osc.edu)
+
 * Fri Oct 19 2018 Morgan Rodgers <mrodgers@osc.edu> 1.4.3-2
 - Ondemand dependency update and switch to monorepo (mrodgers@osc.edu)
 
