@@ -1,6 +1,6 @@
 %{!?ncpus: %define ncpus 12}
 %global package_name ondemand
-%global package_version 1.4.3
+%global package_version 1.4.4
 %global package_release 2
 
 Name:      %{package_name}
@@ -31,7 +31,8 @@ BuildRequires:   sqlite-devel, curl, make
 BuildRequires:   rh-ruby24, rh-ruby24-rubygem-rake, rh-ruby24-rubygem-bundler, rh-ruby24-ruby-devel, rh-nodejs6, rh-git29
 Requires:        sudo, lsof, sqlite-devel, cronie, wget, curl, make
 Requires:        httpd24, httpd24-mod_ssl, httpd24-mod_ldap
-Requires:        nginx16, rh-passenger40
+Requires:        nginx = 1.14.0
+Requires:        passenger = 5.3.7
 Requires:        rh-ruby24, rh-ruby24-rubygem-rake, rh-ruby24-rubygem-bundler, rh-ruby24-ruby-devel, rh-ruby24-rubygems, rh-ruby24-rubygems-devel
 Requires:        rh-nodejs6, rh-git29
 
