@@ -236,6 +236,9 @@ fi
 
 
 %changelog
+* Wed Dec 19 2018 Morgan Rodgers <mrodgers@osc.edu> 1.4.5-1
+- OnDemand 1.4.5 release (mrodgers@osc.edu)
+
 * Tue Dec 04 2018 Trey Dockendorf <tdockendorf@osc.edu> 1.4.4-4
 - Fix release (tdockendorf@osc.edu)
 
