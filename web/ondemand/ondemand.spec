@@ -4,7 +4,7 @@
 %global package_release 1
 
 Name:      %{package_name}
-Version:   1.4.5
+Version:   %{package_version}
 Release:   %{package_release}%{?dist}
 Summary:   Web server that provides users access to HPC resources
 
