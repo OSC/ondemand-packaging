@@ -1,7 +1,7 @@
 %{!?ncpus: %define ncpus 12}
 %global package_name ondemand
 %global package_version 1.4.5
-%global package_release 1
+%global package_release 2
 
 Name:      %{package_name}
 Version:   %{package_version}
@@ -163,6 +163,20 @@ exit 0
 %endif
 fi
 
+%pretrans -p <lua>
+path = "/var/www/ood/apps/sys/files/node_modules/cloudcmd"
+st = posix.stat(path)
+if st and st.type == "directory" then
+  status = os.rename(path, path .. ".rpmmoved")
+  if not status then
+    suffix = 0
+    while not status do
+      suffix = suffix + 1
+      status = os.rename(path .. ".rpmmoved", path .. ".rpmmoved." .. suffix)
+    end
+    os.rename(path, path .. ".rpmmoved")
+  end
+end
 
 %posttrans
 # Rebuild NGINX app configs and restart PUNs w/ no active connections
