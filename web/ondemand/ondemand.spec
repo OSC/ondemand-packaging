@@ -250,6 +250,11 @@ fi
 
 
 %changelog
+* Thu Dec 20 2018 Trey Dockendorf <tdockendorf@osc.edu> 1.4.5-2
+- Fix so that cloudcmd node module directory is able to be replaced with a
+  symlink (tdockendorf@osc.edu)
+- Actually use package_version for version (tdockendorf@osc.edu)
+
 * Wed Dec 19 2018 Morgan Rodgers <mrodgers@osc.edu> 1.4.5-1
 - OnDemand 1.4.5 release (mrodgers@osc.edu)
 
