@@ -244,6 +244,10 @@ fi
 
 
 %changelog
+* Thu Dec 20 2018 Trey Dockendorf <tdockendorf@osc.edu> 1.4.5-3
+- Change cloudcmd symlink to directory during RPM build to avoid warnings
+  during yum update (tdockendorf@osc.edu)
+
 * Thu Dec 20 2018 Trey Dockendorf <tdockendorf@osc.edu> 1.4.5-2
 - Fix so that cloudcmd node module directory is able to be replaced with a
   symlink (tdockendorf@osc.edu)
