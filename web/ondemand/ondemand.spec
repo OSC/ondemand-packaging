@@ -244,6 +244,9 @@ fi
 
 
 %changelog
+* Fri Dec 21 2018 Morgan Rodgers <mrodgers@osc.edu> 1.4.6-3
+- Revert ood_portal_generator version string (mrodgers@osc.edu)
+
 * Thu Dec 20 2018 Trey Dockendorf <tdockendorf@osc.edu> 1.4.5-3
 - Change cloudcmd symlink to directory during RPM build to avoid warnings
   during yum update (tdockendorf@osc.edu)
