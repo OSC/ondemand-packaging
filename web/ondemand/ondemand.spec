@@ -244,6 +244,9 @@ fi
 
 
 %changelog
+* Thu Dec 27 2018 Trey Dockendorf <tdockendorf@osc.edu> 1.4.7-1
+- Update OnDemand to 1.4.7 (tdockendorf@osc.edu)
+
 * Fri Dec 21 2018 Morgan Rodgers <mrodgers@osc.edu> 1.4.6-3
 - Revert ood_portal_generator version string (mrodgers@osc.edu)
 
