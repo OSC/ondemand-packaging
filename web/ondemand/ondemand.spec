@@ -244,6 +244,9 @@ fi
 
 
 %changelog
+* Wed Jan 02 2019 Morgan Rodgers <mrodgers@osc.edu> 1.4.9-1
+- Update OnDemand to v 1.4.9 (mrodgers@osc.edu)
+
 * Mon Dec 31 2018 Morgan Rodgers <mrodgers@osc.edu> 1.4.8-1
 - Update OnDemand to 1.4.8 (mrodgers@osc.edu)
 
