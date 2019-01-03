@@ -52,6 +52,9 @@ exit 0
 
 
 %changelog
+* Thu Jan 03 2019 Trey Dockendorf <tdockendorf@osc.edu> 1.4-1
+- Bump to 1.4 ./bump-release.py -p 1.3 -n 1.4 (tdockendorf@osc.edu)
+
 * Wed Feb 28 2018 Trey Dockendorf <tdockendorf@osc.edu> 1.3-1
 - new package built with tito
 
