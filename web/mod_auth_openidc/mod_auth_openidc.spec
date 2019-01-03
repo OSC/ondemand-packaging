@@ -94,6 +94,9 @@ install -m 700 -d $RPM_BUILD_ROOT%{httpd_pkg_cache_dir}/cache
 %dir %attr(0700, apache, apache) %{httpd_pkg_cache_dir}/cache
 
 %changelog
+* Thu Jan 03 2019 Trey Dockendorf <tdockendorf@osc.edu> 2.3.10-1
+- Upgrade mod_auth_openidc to 2.3.10 (tdockendorf@osc.edu)
+
 * Thu Oct 12 2017 Trey Dockendorf <tdockendorf@osc.edu> 2.3.2-1
 - new package built with tito
 
