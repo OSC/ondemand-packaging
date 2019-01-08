@@ -1,5 +1,5 @@
 Name:       ondemand-compute
-Version:    1.3
+Version:    1.4
 Release:    1%{?dist}
 Summary:    Open OnDemand Compute meta package
 
@@ -29,6 +29,9 @@ exit 0
 %files
 
 %changelog
+* Thu Jan 03 2019 Trey Dockendorf <tdockendorf@osc.edu> 1.4-1
+- Bump to 1.4 ./bump-release.py -p 1.3 -n 1.4 (tdockendorf@osc.edu)
+
 * Tue Feb 13 2018 Trey Dockendorf <tdockendorf@osc.edu> 1.3-1
 - new package built with tito
 

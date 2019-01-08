@@ -100,6 +100,7 @@ Usage examples:
     for r in sorted(rpms):
         copy = True
         rpm_info = get_rpm_info(r)
+        logger.debug("RPM info for %s: %s", r, rpm_info)
         name = rpm_info['name']
         if name not in manifest:
             logger.warning("%s not in manifest", name)

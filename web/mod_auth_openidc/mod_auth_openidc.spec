@@ -17,14 +17,14 @@
 %global httpd_pkg_cache_dir %{?scl:%{_scl_root}}/var/cache/httpd/mod_auth_openidc
 
 Name:		%{?scl_prefix}mod_auth_openidc
-Version:	2.3.2
+Version:	2.3.10
 Release:	1%{?dist}
 Summary:	OpenID Connect auth module for Apache HTTP Server
 
 Group:		System Environment/Daemons
 License:	ASL 2.0
-URL:		https://github.com/pingidentity/mod_auth_openidc
-Source0:	https://github.com/pingidentity/mod_auth_openidc/archive/v%{version}.tar.gz
+URL:		https://github.com/zmartzone/mod_auth_openidc
+Source0:	https://github.com/zmartzone/mod_auth_openidc/archive/v%{version}.tar.gz
 
 BuildRequires:	%{?scl_prefix}httpd-devel
 BuildRequires:	openssl-devel
@@ -85,7 +85,6 @@ install -m 700 -d $RPM_BUILD_ROOT%{httpd_pkg_cache_dir}/cache
 %endif
 %doc ChangeLog
 %doc AUTHORS
-%doc DISCLAIMER
 %doc README.md
 %{_httpd_moddir}/mod_auth_openidc.so
 %config(noreplace) %{_httpd_modconfdir}/10-auth_openidc.conf
@@ -95,6 +94,9 @@ install -m 700 -d $RPM_BUILD_ROOT%{httpd_pkg_cache_dir}/cache
 %dir %attr(0700, apache, apache) %{httpd_pkg_cache_dir}/cache
 
 %changelog
+* Thu Jan 03 2019 Trey Dockendorf <tdockendorf@osc.edu> 2.3.10-1
+- Upgrade mod_auth_openidc to 2.3.10 (tdockendorf@osc.edu)
+
 * Thu Oct 12 2017 Trey Dockendorf <tdockendorf@osc.edu> 2.3.2-1
 - new package built with tito
 
