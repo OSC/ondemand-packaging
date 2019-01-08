@@ -48,6 +48,9 @@ cp -a ./. %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/
 
 
 %changelog
+* Tue Jan 08 2019 Morgan Rodgers <mrodgers@osc.edu> 0.7.0-1
+- Update Ansys to v0.7.0 (mrodgers@osc.edu)
+
 * Fri Jul 27 2018 Morgan Rodgers <mrodgers@osc.edu> 0.6.0-1
 - Fix license reservation bug (mrodgers@osc.edu)
 
