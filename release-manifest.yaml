@@ -17,10 +17,13 @@ httpd24-mod_auth_openidc-debuginfo:
   - 2.3.10-1
 nginx:
   - 1.14.0-1.p5.3.7
+  - 1.14.0-2.p5.3.7
 nginx-filesystem:
   - 1.14.0-1.p5.3.7
+  - 1.14.0-2.p5.3.7
 nginx-debuginfo:
   - 1.14.0-1.p5.3.7
+  - 1.14.0-2.p5.3.7
 passenger:
   - 5.3.7-1
 passenger-debuginfo:
