@@ -14,9 +14,9 @@ import tempfile
 logger = logging.getLogger()
 
 
-def get_passenger(tag, root):
+def get_passenger(repo, tag, root):
     logger.info("Git cloning passenger %s to %s", tag, root)
-    clone_cmd = ['git', 'clone', '--branch', tag, 'https://github.com/phusion/passenger.git', root]
+    clone_cmd = ['git', 'clone', '--branch', tag, repo, root]
     logger.debug("Executing %s", ' '.join(clone_cmd))
     process = subprocess.Popen(clone_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = process.communicate()
@@ -162,6 +162,7 @@ Usage examples:
     config = ConfigParser.ConfigParser()
     logger.debug("Loading config file %s", config_path)
     config.read(config_path)
+    repo = config.get('main', 'repo')
     tag = config.get('main', 'tag')
     releases = config.get('main', 'releases').split(',')
 
@@ -170,7 +171,7 @@ Usage examples:
     output_dir = tempfile.mkdtemp()
     work_dir = tempfile.mkdtemp()
     logger.debug("passenger=%s cache=%s output=%s work=%s", passenger_root, cache_dir, output_dir, work_dir)
-    success = get_passenger(tag, passenger_root)
+    success = get_passenger(repo, tag, passenger_root)
     if not success:
         sys.exit(1)
 
