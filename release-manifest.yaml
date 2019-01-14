@@ -33,7 +33,7 @@ passenger-devel:
 passenger-doc:
   - 5.3.7-1
 ondemand:
-  - 1.4.9-1
+  - 1.4.10-1
 
 # compute
 ondemand-compute:
