@@ -47,3 +47,6 @@ EOF
 %{_root_sysconfdir}/rpm/macros.%{scl}-config
 
 %changelog
+* Tue Jan 15 2019 Trey Dockendorf <tdockendorf@osc.edu> 1.4-1
+- new package built with tito
+
