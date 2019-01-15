@@ -62,6 +62,9 @@ EOF
 %{_root_sysconfdir}/rpm/macros.%{scl_name_base}-scldevel
 
 %changelog
+* Tue Jan 15 2019 Trey Dockendorf <tdockendorf@osc.edu> 1.4-2
+- Add ondemand-scldevel subpackage to ondemand-runtime (tdockendorf@osc.edu)
+
 * Tue Jan 15 2019 Trey Dockendorf <tdockendorf@osc.edu> 1.4-1
 - new package built with tito
 
