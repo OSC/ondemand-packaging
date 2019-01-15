@@ -6,7 +6,7 @@
 
 Name:      ondemand-runtime
 Version:   1.4
-Release:   2%{?dist}
+Release:   3%{?dist}
 Summary:   Package that handles %{scl} Software Collection.
 License:   MIT
 
@@ -50,6 +50,7 @@ EOF
 cat >> %{buildroot}%{_root_sysconfdir}/rpm/macros.%{scl_name_base}-scldevel << EOF
 %%scl_%{scl_name_base} %{scl}
 %%scl_prefix_%{scl_name_base} %{scl_prefix}
+%%_scl_prefix_%{scl_name_base} %{_scl_prefix}
 EOF
 
 %files -f filelist
