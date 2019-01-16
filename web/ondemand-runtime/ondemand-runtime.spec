@@ -4,8 +4,8 @@
 %scl_package %scl
 
 Name:      ondemand-runtime
-Version:   1.4
-Release:   4%{?dist}
+Version:   1.5
+Release:   1%{?dist}
 Summary:   Package that handles %{scl} Software Collection.
 License:   MIT
 
@@ -44,6 +44,7 @@ export PATH="%{_bindir}:%{_sbindir}\${PATH:+:\${PATH}}"
 export LD_LIBRARY_PATH="%{_libdir}\${LD_LIBRARY_PATH:+:\${LD_LIBRARY_PATH}}"
 export MANPATH="%{_mandir}:\${MANPATH:-}"
 export PKG_CONFIG_PATH="%{_libdir}/pkgconfig\${PKG_CONFIG_PATH:+:\${PKG_CONFIG_PATH}}"
+export RUBYLIB="%{_datadir}/ruby/vendor_ruby:%{_libdir}/ruby/vendor_ruby\${RUBYLIB:+:\${RUBYLIB}}"
 EOF
 
 cat >> %{buildroot}%{_root_sysconfdir}/rpm/macros.%{scl_name_base}-scldevel << EOF
