@@ -63,6 +63,9 @@ EOF
 %{_root_sysconfdir}/rpm/macros.%{scl_name_base}-scldevel
 
 %changelog
+* Wed Jan 16 2019 Trey Dockendorf <tdockendorf@osc.edu> 1.5-1
+- Bump ondemand-runtime to 1.5 and add RUBYLIB (tdockendorf@osc.edu)
+
 * Wed Jan 16 2019 Trey Dockendorf <tdockendorf@osc.edu> 1.4-4
 - Disable nfsmountable for ondemand-runtime to hopefully avoid files ending up
   in /etc (tdockendorf@osc.edu)
