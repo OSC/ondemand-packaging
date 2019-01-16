@@ -64,6 +64,7 @@ Usage examples:
     specs_to_modify = [
         'compute/ondemand-compute/ondemand-compute.spec',
         'misc/ondemand-release/ondemand-release.spec',
+        'web/ondemand-runtime/ondemand-runtime.spec',
     ]
     files_to_modify = [
         'misc/ondemand-release/ondemand-compute.repo',
