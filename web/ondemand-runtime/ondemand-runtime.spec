@@ -5,7 +5,7 @@
 
 Name:      ondemand-runtime
 Version:   1.5
-Release:   1%{?dist}
+Release:   2%{?dist}
 Summary:   Package that handles %{scl} Software Collection.
 License:   MIT
 
@@ -38,6 +38,8 @@ packages depending on %{scl} Software Collection.
 
 %install
 %scl_install
+mkdir -p %{buildroot}/opt/rh
+ln -s ../ood/ondemand %{buildroot}/opt/rh/%{scl}
 cat >> %{buildroot}%{_scl_scripts}/enable << EOF
 . scl_source enable httpd24 rh-ruby24 rh-nodejs6 rh-git29
 export PATH="%{_bindir}:%{_sbindir}\${PATH:+:\${PATH}}"
@@ -55,6 +57,7 @@ EOF
 
 %files -f filelist
 %scl_files
+/opt/rh/%{scl}
 
 %files -n ondemand-build
 %{_root_sysconfdir}/rpm/macros.%{scl}-config
