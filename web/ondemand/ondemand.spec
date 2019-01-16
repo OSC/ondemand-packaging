@@ -153,6 +153,14 @@ touch %{_sharedstatedir}/ondemand-nginx/config/apps/sys/activejobs.conf
 touch %{_sharedstatedir}/ondemand-nginx/config/apps/sys/myjobs.conf
 
 # Migrate from OnDemand 1.4
+if [ $1 -gt 1 ]; then
+    cat > /tmp/nginx_stage.yml <<EOF
+pun_pid_path: '/var/run/nginx/%%{user}/passenger.pid'
+pun_socket_path: '/var/run/nginx/%%{user}/passenger.sock'
+EOF
+NGINX_STAGE_CONFIG_FILE=/tmp/nginx_stage.yml /opt/ood/nginx_stage/sbin/nginx_stage nginx_clean --force &>/dev/null || :
+rm -f /tmp/nginx_stage.yml
+fi
 if [ -d %{_sharedstatedir}/nginx/tmp ]; then
     for d in `find %{_sharedstatedir}/nginx/tmp -maxdepth 1 -mindepth 1 -type d` ; do
         new=$(echo $d | sed 's|%{_sharedstatedir}/nginx|%{_sharedstatedir}/ondemand-nginx|g')
