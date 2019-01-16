@@ -89,10 +89,10 @@ fi
 %__mv %{buildroot}/opt/ood/apps/activejobs %{buildroot}%{_localstatedir}/www/ood/apps/sys/activejobs
 %__mv %{buildroot}/opt/ood/apps/myjobs %{buildroot}%{_localstatedir}/www/ood/apps/sys/myjobs
 %__mv %{buildroot}/opt/ood/apps/bc_desktop %{buildroot}%{_localstatedir}/www/ood/apps/sys/bc_desktop
-%__mkdir_p %{buildroot}%{_sharedstatedir}/nginx/config/puns
-%__mkdir_p %{buildroot}%{_sharedstatedir}/nginx/config/apps/sys
-%__mkdir_p %{buildroot}%{_sharedstatedir}/nginx/config/apps/usr
-%__mkdir_p %{buildroot}%{_sharedstatedir}/nginx/config/apps/dev
+%__mkdir_p %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/puns
+%__mkdir_p %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys
+%__mkdir_p %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/usr
+%__mkdir_p %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/dev
 
 %__install -D -m 644 build/ood-portal-generator/share/ood_portal_example.yml \
     %{buildroot}%{_sysconfdir}/ood/config/ood_portal.yml
@@ -101,12 +101,12 @@ touch %{buildroot}/opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf
 
 %__install -D -m 644 build/nginx_stage/share/nginx_stage_example.yml \
     %{buildroot}%{_sysconfdir}/ood/config/nginx_stage.yml
-touch %{buildroot}%{_sharedstatedir}/nginx/config/apps/sys/dashboard.conf
-touch %{buildroot}%{_sharedstatedir}/nginx/config/apps/sys/shell.conf
-touch %{buildroot}%{_sharedstatedir}/nginx/config/apps/sys/files.conf
-touch %{buildroot}%{_sharedstatedir}/nginx/config/apps/sys/file-editor.conf
-touch %{buildroot}%{_sharedstatedir}/nginx/config/apps/sys/activejobs.conf
-touch %{buildroot}%{_sharedstatedir}/nginx/config/apps/sys/myjobs.conf
+touch %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys/dashboard.conf
+touch %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys/shell.conf
+touch %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys/files.conf
+touch %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys/file-editor.conf
+touch %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys/activejobs.conf
+touch %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys/myjobs.conf
 
 %__mkdir_p %{buildroot}%{_sysconfdir}/sudoers.d
 %__cat >> %{buildroot}%{_sysconfdir}/sudoers.d/ood << EOF
@@ -143,13 +143,42 @@ EOS
 %endif
 
 # These NGINX app configs need to exist before rebuilding them
-touch %{_sharedstatedir}/nginx/config/apps/sys/dashboard.conf
-touch %{_sharedstatedir}/nginx/config/apps/sys/shell.conf
-touch %{_sharedstatedir}/nginx/config/apps/sys/files.conf
-touch %{_sharedstatedir}/nginx/config/apps/sys/file-editor.conf
-touch %{_sharedstatedir}/nginx/config/apps/sys/activejobs.conf
-touch %{_sharedstatedir}/nginx/config/apps/sys/myjobs.conf
+touch %{_sharedstatedir}/ondemand-nginx/config/apps/sys/dashboard.conf
+touch %{_sharedstatedir}/ondemand-nginx/config/apps/sys/shell.conf
+touch %{_sharedstatedir}/ondemand-nginx/config/apps/sys/files.conf
+touch %{_sharedstatedir}/ondemand-nginx/config/apps/sys/file-editor.conf
+touch %{_sharedstatedir}/ondemand-nginx/config/apps/sys/activejobs.conf
+touch %{_sharedstatedir}/ondemand-nginx/config/apps/sys/myjobs.conf
 
+# Migrate from OnDemand 1.4
+if [ -d %{_sharedstatedir}/nginx/tmp ]; then
+    for d in `find %{_sharedstatedir}/nginx/tmp -maxdepth 1 -mindepth 1 -type d` ; do
+        new=$(echo $d | sed 's|%{_sharedstatedir}/nginx|%{_sharedstatedir}/ondemand-nginx|g')
+        if [ -d $new ]; then
+            continue
+        fi
+        cp -a $d $new
+    done
+fi
+if [ -d %{_sharedstatedir}/nginx/config ]; then
+    for d in `find %{_sharedstatedir}/nginx/config -type d`; do
+        new=$(echo $d | sed 's|%{_sharedstatedir}/nginx|%{_sharedstatedir}/ondemand-nginx|g')
+        if [ -d $new ]; then
+            continue
+        fi
+        install -d $new
+    done
+    for f in `find %{_sharedstatedir}/nginx/config -type f`; do
+        new=$(echo $f | sed 's|%{_sharedstatedir}/nginx|%{_sharedstatedir}/ondemand-nginx|g')
+        if [ -f $new ]; then
+            continue
+        fi
+        cp -a $f $new
+    done
+    for d in `find %{_localstatedir}/log/nginx -maxdepth 1 -mindepth 1 -type d`; do
+        cp -a $d %{_localstatedir}/log/ondemand-nginx/
+    done
+fi
 
 %preun
 if [ "$1" -eq 0 ]; then
@@ -226,18 +255,18 @@ fi
 %config(noreplace,missingok) %{_sysconfdir}/ood/config/nginx_stage.yml
 %config(noreplace,missingok) %{_sysconfdir}/ood/config/ood_portal.yml
 
-%dir %{_sharedstatedir}/nginx/config
-%dir %{_sharedstatedir}/nginx/config/puns
-%dir %{_sharedstatedir}/nginx/config/apps
-%dir %{_sharedstatedir}/nginx/config/apps/sys
-%dir %{_sharedstatedir}/nginx/config/apps/usr
-%dir %{_sharedstatedir}/nginx/config/apps/dev
-%ghost %{_sharedstatedir}/nginx/config/apps/sys/dashboard.conf
-%ghost %{_sharedstatedir}/nginx/config/apps/sys/shell.conf
-%ghost %{_sharedstatedir}/nginx/config/apps/sys/files.conf
-%ghost %{_sharedstatedir}/nginx/config/apps/sys/file-editor.conf
-%ghost %{_sharedstatedir}/nginx/config/apps/sys/activejobs.conf
-%ghost %{_sharedstatedir}/nginx/config/apps/sys/myjobs.conf
+%dir %{_sharedstatedir}/ondemand-nginx/config
+%dir %{_sharedstatedir}/ondemand-nginx/config/puns
+%dir %{_sharedstatedir}/ondemand-nginx/config/apps
+%dir %{_sharedstatedir}/ondemand-nginx/config/apps/sys
+%dir %{_sharedstatedir}/ondemand-nginx/config/apps/usr
+%dir %{_sharedstatedir}/ondemand-nginx/config/apps/dev
+%ghost %{_sharedstatedir}/ondemand-nginx/config/apps/sys/dashboard.conf
+%ghost %{_sharedstatedir}/ondemand-nginx/config/apps/sys/shell.conf
+%ghost %{_sharedstatedir}/ondemand-nginx/config/apps/sys/files.conf
+%ghost %{_sharedstatedir}/ondemand-nginx/config/apps/sys/file-editor.conf
+%ghost %{_sharedstatedir}/ondemand-nginx/config/apps/sys/activejobs.conf
+%ghost %{_sharedstatedir}/ondemand-nginx/config/apps/sys/myjobs.conf
 
 %config(noreplace) %{_sysconfdir}/sudoers.d/ood
 %config(noreplace) %{_sysconfdir}/cron.d/ood
