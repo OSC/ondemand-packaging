@@ -2,11 +2,10 @@
 %global scl_name_base %scl
 %global _scl_prefix /opt/ood
 %scl_package %scl
-%global nfsmountable 0
 
 Name:      ondemand-runtime
 Version:   1.4
-Release:   3%{?dist}
+Release:   4%{?dist}
 Summary:   Package that handles %{scl} Software Collection.
 License:   MIT
 
