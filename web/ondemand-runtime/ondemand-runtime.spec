@@ -62,6 +62,10 @@ EOF
 %{_root_sysconfdir}/rpm/macros.%{scl_name_base}-scldevel
 
 %changelog
+* Wed Jan 16 2019 Trey Dockendorf <tdockendorf@osc.edu> 1.4-4
+- Disable nfsmountable for ondemand-runtime to hopefully avoid files ending up
+  in /etc (tdockendorf@osc.edu)
+
 * Tue Jan 15 2019 Trey Dockendorf <tdockendorf@osc.edu> 1.4-3
 - Add _scl_prefix_ondemand macro (tdockendorf@osc.edu)
 
