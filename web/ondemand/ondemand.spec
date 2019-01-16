@@ -1,7 +1,12 @@
 %{!?ncpus: %define ncpus 12}
 %global package_name ondemand
-%global package_version 1.5.0
-%global package_release 1
+%global major 1
+%global minor 4
+%global patch 10
+#%global ondemand_version %{major}.%{minor}
+%global ondemand_version 1.5
+%global package_version %{major}.%{minor}.%{patch}
+%global package_release 2
 
 Name:      %{package_name}
 Version:   %{package_version}
@@ -27,14 +32,16 @@ Source0:   https://github.com/OSC/%{package_name}/archive/v%{package_version}.ta
 # node.js packages used in the apps
 AutoReqProv:     no
 
+BuildRequires:   ondemand-runtime = %{ondemand_version}
 BuildRequires:   sqlite-devel, curl, make
 BuildRequires:   rh-ruby24, rh-ruby24-rubygem-rake, rh-ruby24-rubygem-bundler, rh-ruby24-ruby-devel, rh-nodejs6, rh-git29
 Requires:        sudo, lsof, sqlite-devel, cronie, wget, curl, make
 Requires:        httpd24, httpd24-mod_ssl, httpd24-mod_ldap
-Requires:        nginx = 100:1.14.0
-Requires:        passenger = 5.3.7
+Requires:        ondemand-nginx = 1.14.0
+Requires:        ondemand-passenger = 5.3.7
 Requires:        rh-ruby24, rh-ruby24-rubygem-rake, rh-ruby24-rubygem-bundler, rh-ruby24-ruby-devel, rh-ruby24-rubygems, rh-ruby24-rubygems-devel
 Requires:        rh-nodejs6, rh-git29
+Requires:        ondemand-runtime = %{ondemand_version}
 
 %if %{with systemd}
 BuildRequires: systemd
@@ -52,20 +59,13 @@ access, job submission and interactive work on compute nodes.
 
 
 %build
-export SCL_PKGS="rh-ruby24 rh-nodejs6 rh-git29"
-export SCL_SOURCE=$(command -v scl_source)
-if [ "$SCL_SOURCE" ]; then
-  source "$SCL_SOURCE" enable $SCL_PKGS &> /dev/null || :
-fi
+scl enable ondemand - << \EOS
 rake -mj%{ncpus}
+EOS
 
 
 %install
-export SCL_PKGS="rh-ruby24"
-export SCL_SOURCE=$(command -v scl_source)
-if [ "$SCL_SOURCE" ]; then
-  source "$SCL_SOURCE" enable $SCL_PKGS &> /dev/null || :
-fi
+scl enable ondemand - << \EOS
 rake install PREFIX=%{buildroot}/opt/ood
 %__rm %{buildroot}/opt/ood/apps/*/log/production.log
 echo "%{package_version}" > %{buildroot}/opt/ood/VERSION
@@ -132,10 +132,10 @@ PrivateTmp=false
 EOF
 %__chmod 444 %{buildroot}%{_sysconfdir}/systemd/system/httpd24-httpd.service.d/ood.conf
 %endif
-
+EOS
 
 %post
-%__sed -i 's/^HTTPD24_HTTPD_SCLS_ENABLED=.*/HTTPD24_HTTPD_SCLS_ENABLED="httpd24 rh-ruby24"/' \
+%__sed -i 's/^HTTPD24_HTTPD_SCLS_ENABLED=.*/HTTPD24_HTTPD_SCLS_ENABLED="httpd24 ondemand"/' \
     /opt/rh/httpd24/service-environment
 
 %if %{with systemd}
@@ -199,7 +199,11 @@ fi
 %files
 %defattr(-,root,root)
 
-/opt/ood
+/opt/ood/VERSION
+/opt/ood/mod_ood_proxy
+/opt/ood/nginx_stage
+/opt/ood/ood-portal-generator
+/opt/ood/ood_auth_map
 %{_localstatedir}/www/ood/apps/sys/dashboard
 %{_localstatedir}/www/ood/apps/sys/shell
 %{_localstatedir}/www/ood/apps/sys/files
