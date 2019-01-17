@@ -153,7 +153,7 @@ touch %{_sharedstatedir}/ondemand-nginx/config/apps/sys/activejobs.conf
 touch %{_sharedstatedir}/ondemand-nginx/config/apps/sys/myjobs.conf
 
 # Migrate from OnDemand 1.4
-if [ $1 -gt 1 ]; then
+if [ $1 -gt 1 ] && [ -d %{_sharedstatedir}/nginx/config ]; then
     cat > /tmp/nginx_stage.yml <<EOF
 pun_pid_path: '/var/run/nginx/%%{user}/passenger.pid'
 pun_socket_path: '/var/run/nginx/%%{user}/passenger.sock'
