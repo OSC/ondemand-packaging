@@ -48,6 +48,9 @@ cp -a ./. %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/
 
 
 %changelog
+* Thu Jan 24 2019 Morgan Rodgers <mrodgers@osc.edu> 0.7.4-1
+- Update Ansys to version 0.7.4 (mrodgers@osc.edu)
+
 * Thu Jan 24 2019 Morgan Rodgers <mrodgers@osc.edu> 0.7.3-1
 - Ansys version 0.7.3 (mrodgers@osc.edu)
 
