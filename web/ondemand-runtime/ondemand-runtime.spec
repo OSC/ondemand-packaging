@@ -3,9 +3,14 @@
 %global _scl_prefix /opt/ood
 %scl_package %scl
 
+%global ruby rh-ruby24
+%global nodejs rh-nodejs6
+%global git rh-git29
+%global apache httpd24
+
 Name:      ondemand-runtime
 Version:   1.5
-Release:   2%{?dist}
+Release:   3%{?dist}
 Summary:   Package that handles %{scl} Software Collection.
 License:   MIT
 
@@ -32,6 +37,41 @@ Summary: Package shipping development files for %{scl}
 %description -n ondemand-scldevel
 Package shipping development files, especially useful for development of
 packages depending on %{scl} Software Collection.
+
+%package -n ondemand-ruby
+Summary: Meta package for pulling in SCL Ruby %{ruby}
+Requires: %{ruby}
+Requires: %{ruby}-rubygem-rake
+Requires: %{ruby}-rubygem-bundler
+Requires: %{ruby}-ruby-devel
+Requires: %{ruby}-rubygems
+Requires: %{ruby}-rubygems-devel
+
+%description -n ondemand-ruby
+Meta package for pulling in SCL Ruby %{ruby}
+
+%package -n ondemand-nodejs
+Summary: Meta package for pulling in SCL nodejs %{nodejs}
+Requires: %{nodejs}
+
+%description -n ondemand-nodejs
+Meta package for pulling in SCL nodejs %{nodejs}
+
+%package -n ondemand-git
+Summary: Meta package for pulling in SCL git %{git}
+Requires: %{git}
+
+%description -n ondemand-git
+Meta package for pulling in SCL git %{git}
+
+%package -n ondemand-apache
+Summary: Meta package for pulling in SCL apache %{apache}
+Requires: %{apache}
+Requires: %{apache}-mod_ssl
+Requires: %{apache}-mod_ldap
+
+%description -n ondemand-apache
+Meta package for pulling in SCL apache %{apache}
 
 %prep
 %setup -c -T
