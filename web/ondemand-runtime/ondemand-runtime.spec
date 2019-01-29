@@ -10,16 +10,16 @@
 
 Name:      ondemand-runtime
 Version:   1.5
-Release:   3%{?dist}
+Release:   4%{?dist}
 Summary:   Package that handles %{scl} Software Collection.
 License:   MIT
 
 BuildRequires:  scl-utils-build
 Requires:       scl-utils
-Requires:       rh-ruby24-runtime
-Requires:       rh-nodejs6-runtime
-Requires:       rh-git29-runtime
-Requires:       httpd24-runtime
+Requires:       %{ruby}-runtime
+Requires:       %{nodejs}-runtime
+Requires:       %{git}-runtime
+Requires:       %{apache}-runtime
 
 %description
 Package shipping essential scripts to work with %{scl} Software Collection.
@@ -81,7 +81,7 @@ Meta package for pulling in SCL apache %{apache}
 mkdir -p %{buildroot}/opt/rh
 ln -s ../ood/ondemand %{buildroot}/opt/rh/%{scl}
 cat >> %{buildroot}%{_scl_scripts}/enable << EOF
-. scl_source enable httpd24 rh-ruby24 rh-nodejs6 rh-git29
+. scl_source enable %{apache} %{ruby} %{nodejs} %{git}
 export PATH="%{_bindir}:%{_sbindir}\${PATH:+:\${PATH}}"
 export LD_LIBRARY_PATH="%{_libdir}\${LD_LIBRARY_PATH:+:\${LD_LIBRARY_PATH}}"
 export MANPATH="%{_mandir}:\${MANPATH:-}"
@@ -104,6 +104,14 @@ EOF
 
 %files -n ondemand-scldevel
 %{_root_sysconfdir}/rpm/macros.%{scl_name_base}-scldevel
+
+%files -n ondemand-ruby
+
+%files -n ondemand-nodejs
+
+%files -n ondemand-git
+
+%files -n ondemand-apache
 
 %changelog
 * Tue Jan 29 2019 Trey Dockendorf <tdockendorf@osc.edu> 1.5-3
