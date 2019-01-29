@@ -114,6 +114,10 @@ EOF
 %files -n ondemand-apache
 
 %changelog
+* Tue Jan 29 2019 Trey Dockendorf <tdockendorf@osc.edu> 1.5-4
+- Fix meta packages to actually get created Ensure SCL variables are used
+  everywhere so only one place to update dependencies (tdockendorf@osc.edu)
+
 * Tue Jan 29 2019 Trey Dockendorf <tdockendorf@osc.edu> 1.5-3
 - Add meta packages to define SCL dependencies (tdockendorf@osc.edu)
 
