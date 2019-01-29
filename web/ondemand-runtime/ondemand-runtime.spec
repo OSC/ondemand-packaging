@@ -10,7 +10,7 @@
 
 Name:      ondemand-runtime
 Version:   1.5
-Release:   4%{?dist}
+Release:   5%{?dist}
 Summary:   Package that handles %{scl} Software Collection.
 License:   MIT
 
@@ -67,6 +67,7 @@ Meta package for pulling in SCL git %{git}
 %package -n ondemand-apache
 Summary: Meta package for pulling in SCL apache %{apache}
 Requires: %{apache}
+Requires: %{apache}-httpd-devel
 Requires: %{apache}-mod_ssl
 Requires: %{apache}-mod_ldap
 
@@ -93,6 +94,14 @@ cat >> %{buildroot}%{_root_sysconfdir}/rpm/macros.%{scl_name_base}-scldevel << E
 %%scl_%{scl_name_base} %{scl}
 %%scl_prefix_%{scl_name_base} %{scl_prefix}
 %%_scl_prefix_%{scl_name_base} %{_scl_prefix}
+%%scl_%{scl_name_base}_ruby %{ruby}
+%%scl_%{scl_name_base}_prefix_ruby %{ruby}-
+%%scl_%{scl_name_base}_nodejs %{nodejs}
+%%scl_%{scl_name_base}_prefix_nodejs %{nodejs}-
+%%scl_%{scl_name_base}_git %{git}
+%%scl_%{scl_name_base}_prefix_git %{git}-
+%%scl_%{scl_name_base}_apache %{apache}
+%%scl_%{scl_name_base}_prefix_apache %{apache}-
 EOF
 
 %files -f filelist
