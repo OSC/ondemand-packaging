@@ -123,6 +123,10 @@ EOF
 %files -n ondemand-apache
 
 %changelog
+* Tue Jan 29 2019 Trey Dockendorf <tdockendorf@osc.edu> 1.5-5
+- Depend on apache devel and add some more marcos to aid in package development
+  using ondemand (tdockendorf@osc.edu)
+
 * Tue Jan 29 2019 Trey Dockendorf <tdockendorf@osc.edu> 1.5-4
 - Fix meta packages to actually get created Ensure SCL variables are used
   everywhere so only one place to update dependencies (tdockendorf@osc.edu)
