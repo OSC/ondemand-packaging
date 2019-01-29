@@ -106,6 +106,9 @@ EOF
 %{_root_sysconfdir}/rpm/macros.%{scl_name_base}-scldevel
 
 %changelog
+* Tue Jan 29 2019 Trey Dockendorf <tdockendorf@osc.edu> 1.5-3
+- Add meta packages to define SCL dependencies (tdockendorf@osc.edu)
+
 * Wed Jan 16 2019 Trey Dockendorf <tdockendorf@osc.edu> 1.5-2
 - Add symlink /opt/rh/ondemand so that httpd24 assumption of loading SCL from
   /opt/rh will work (tdockendorf@osc.edu)
