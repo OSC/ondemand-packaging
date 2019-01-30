@@ -1,12 +1,11 @@
 %{!?ncpus: %define ncpus 12}
 %global package_name ondemand
 %global major 1
-%global minor 4
-%global patch 10
-#%global ondemand_version %{major}.%{minor}
-%global ondemand_version 1.5
+%global minor 5
+%global patch 0
+%global ondemand_version %{major}.%{minor}
 %global package_version %{major}.%{minor}.%{patch}
-%global package_release 2
+%global package_release 1
 
 Name:      %{package_name}
 Version:   %{package_version}
