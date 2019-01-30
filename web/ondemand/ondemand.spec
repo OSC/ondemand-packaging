@@ -1,6 +1,10 @@
 %{!?ncpus: %define ncpus 12}
 %global package_name ondemand
-%global package_version 1.5.0
+%global major 1
+%global minor 5
+%global patch 1
+%global ondemand_version %{major}.%{minor}
+%global package_version %{major}.%{minor}.%{patch}
 %global package_release 1
 
 Name:      %{package_name}
@@ -27,14 +31,19 @@ Source0:   https://github.com/OSC/%{package_name}/archive/v%{package_version}.ta
 # node.js packages used in the apps
 AutoReqProv:     no
 
+BuildRequires:   ondemand-runtime = %{ondemand_version}
 BuildRequires:   sqlite-devel, curl, make
-BuildRequires:   rh-ruby24, rh-ruby24-rubygem-rake, rh-ruby24-rubygem-bundler, rh-ruby24-ruby-devel, rh-nodejs6, rh-git29
+BuildRequires:   ondemand-ruby = %{ondemand_version}
+BuildRequires:   ondemand-nodejs = %{ondemand_version}
+BuildRequires:   ondemand-git = %{ondemand_version}
 Requires:        sudo, lsof, sqlite-devel, cronie, wget, curl, make
-Requires:        httpd24, httpd24-mod_ssl, httpd24-mod_ldap
-Requires:        nginx = 100:1.14.0
-Requires:        passenger = 5.3.7
-Requires:        rh-ruby24, rh-ruby24-rubygem-rake, rh-ruby24-rubygem-bundler, rh-ruby24-ruby-devel, rh-ruby24-rubygems, rh-ruby24-rubygems-devel
-Requires:        rh-nodejs6, rh-git29
+Requires:        ondemand-apache = %{ondemand_version}
+Requires:        ondemand-nginx = 1.14.0
+Requires:        ondemand-passenger = 5.3.7
+Requires:        ondemand-ruby = %{ondemand_version}
+Requires:        ondemand-nodejs = %{ondemand_version}
+Requires:        ondemand-git = %{ondemand_version}
+Requires:        ondemand-runtime = %{ondemand_version}
 
 %if %{with systemd}
 BuildRequires: systemd
@@ -52,20 +61,13 @@ access, job submission and interactive work on compute nodes.
 
 
 %build
-export SCL_PKGS="rh-ruby24 rh-nodejs6 rh-git29"
-export SCL_SOURCE=$(command -v scl_source)
-if [ "$SCL_SOURCE" ]; then
-  source "$SCL_SOURCE" enable $SCL_PKGS &> /dev/null || :
-fi
+scl enable ondemand - << \EOS
 rake -mj%{ncpus}
+EOS
 
 
 %install
-export SCL_PKGS="rh-ruby24"
-export SCL_SOURCE=$(command -v scl_source)
-if [ "$SCL_SOURCE" ]; then
-  source "$SCL_SOURCE" enable $SCL_PKGS &> /dev/null || :
-fi
+scl enable ondemand - << \EOS
 rake install PREFIX=%{buildroot}/opt/ood
 %__rm %{buildroot}/opt/ood/apps/*/log/production.log
 echo "%{package_version}" > %{buildroot}/opt/ood/VERSION
@@ -89,10 +91,10 @@ fi
 %__mv %{buildroot}/opt/ood/apps/activejobs %{buildroot}%{_localstatedir}/www/ood/apps/sys/activejobs
 %__mv %{buildroot}/opt/ood/apps/myjobs %{buildroot}%{_localstatedir}/www/ood/apps/sys/myjobs
 %__mv %{buildroot}/opt/ood/apps/bc_desktop %{buildroot}%{_localstatedir}/www/ood/apps/sys/bc_desktop
-%__mkdir_p %{buildroot}%{_sharedstatedir}/nginx/config/puns
-%__mkdir_p %{buildroot}%{_sharedstatedir}/nginx/config/apps/sys
-%__mkdir_p %{buildroot}%{_sharedstatedir}/nginx/config/apps/usr
-%__mkdir_p %{buildroot}%{_sharedstatedir}/nginx/config/apps/dev
+%__mkdir_p %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/puns
+%__mkdir_p %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys
+%__mkdir_p %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/usr
+%__mkdir_p %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/dev
 
 %__install -D -m 644 build/ood-portal-generator/share/ood_portal_example.yml \
     %{buildroot}%{_sysconfdir}/ood/config/ood_portal.yml
@@ -101,12 +103,12 @@ touch %{buildroot}/opt/rh/httpd24/root/etc/httpd/conf.d/ood-portal.conf
 
 %__install -D -m 644 build/nginx_stage/share/nginx_stage_example.yml \
     %{buildroot}%{_sysconfdir}/ood/config/nginx_stage.yml
-touch %{buildroot}%{_sharedstatedir}/nginx/config/apps/sys/dashboard.conf
-touch %{buildroot}%{_sharedstatedir}/nginx/config/apps/sys/shell.conf
-touch %{buildroot}%{_sharedstatedir}/nginx/config/apps/sys/files.conf
-touch %{buildroot}%{_sharedstatedir}/nginx/config/apps/sys/file-editor.conf
-touch %{buildroot}%{_sharedstatedir}/nginx/config/apps/sys/activejobs.conf
-touch %{buildroot}%{_sharedstatedir}/nginx/config/apps/sys/myjobs.conf
+touch %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys/dashboard.conf
+touch %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys/shell.conf
+touch %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys/files.conf
+touch %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys/file-editor.conf
+touch %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys/activejobs.conf
+touch %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys/myjobs.conf
 
 %__mkdir_p %{buildroot}%{_sysconfdir}/sudoers.d
 %__cat >> %{buildroot}%{_sysconfdir}/sudoers.d/ood << EOF
@@ -132,10 +134,10 @@ PrivateTmp=false
 EOF
 %__chmod 444 %{buildroot}%{_sysconfdir}/systemd/system/httpd24-httpd.service.d/ood.conf
 %endif
-
+EOS
 
 %post
-%__sed -i 's/^HTTPD24_HTTPD_SCLS_ENABLED=.*/HTTPD24_HTTPD_SCLS_ENABLED="httpd24 rh-ruby24"/' \
+%__sed -i 's/^HTTPD24_HTTPD_SCLS_ENABLED=.*/HTTPD24_HTTPD_SCLS_ENABLED="httpd24 ondemand"/' \
     /opt/rh/httpd24/service-environment
 
 %if %{with systemd}
@@ -143,13 +145,51 @@ EOF
 %endif
 
 # These NGINX app configs need to exist before rebuilding them
-touch %{_sharedstatedir}/nginx/config/apps/sys/dashboard.conf
-touch %{_sharedstatedir}/nginx/config/apps/sys/shell.conf
-touch %{_sharedstatedir}/nginx/config/apps/sys/files.conf
-touch %{_sharedstatedir}/nginx/config/apps/sys/file-editor.conf
-touch %{_sharedstatedir}/nginx/config/apps/sys/activejobs.conf
-touch %{_sharedstatedir}/nginx/config/apps/sys/myjobs.conf
+touch %{_sharedstatedir}/ondemand-nginx/config/apps/sys/dashboard.conf
+touch %{_sharedstatedir}/ondemand-nginx/config/apps/sys/shell.conf
+touch %{_sharedstatedir}/ondemand-nginx/config/apps/sys/files.conf
+touch %{_sharedstatedir}/ondemand-nginx/config/apps/sys/file-editor.conf
+touch %{_sharedstatedir}/ondemand-nginx/config/apps/sys/activejobs.conf
+touch %{_sharedstatedir}/ondemand-nginx/config/apps/sys/myjobs.conf
 
+# Migrate from OnDemand 1.4
+if [ $1 -gt 1 ] && [ -d %{_sharedstatedir}/nginx/config ]; then
+    cat > /tmp/nginx_stage.yml <<EOF
+pun_config_path: '/var/lib/nginx/config/puns/%%{user}.conf'
+pun_pid_path: '/var/run/nginx/%%{user}/passenger.pid'
+pun_socket_path: '/var/run/nginx/%%{user}/passenger.sock'
+EOF
+NGINX_STAGE_CONFIG_FILE=/tmp/nginx_stage.yml /opt/ood/nginx_stage/sbin/nginx_stage nginx_clean --force &>/dev/null || :
+rm -f /tmp/nginx_stage.yml
+fi
+if [ -d %{_sharedstatedir}/nginx/tmp ]; then
+    for d in `find %{_sharedstatedir}/nginx/tmp -maxdepth 1 -mindepth 1 -type d` ; do
+        new=$(echo $d | sed 's|%{_sharedstatedir}/nginx|%{_sharedstatedir}/ondemand-nginx|g')
+        if [ -d $new ]; then
+            continue
+        fi
+        cp -a $d $new
+    done
+fi
+if [ -d %{_sharedstatedir}/nginx/config ]; then
+    for d in `find %{_sharedstatedir}/nginx/config -type d`; do
+        new=$(echo $d | sed 's|%{_sharedstatedir}/nginx|%{_sharedstatedir}/ondemand-nginx|g')
+        if [ -d $new ]; then
+            continue
+        fi
+        install -d $new
+    done
+    for f in `find %{_sharedstatedir}/nginx/config -type f`; do
+        new=$(echo $f | sed 's|%{_sharedstatedir}/nginx|%{_sharedstatedir}/ondemand-nginx|g')
+        if [ -f $new ]; then
+            continue
+        fi
+        cp -a $f $new
+    done
+    for d in `find %{_localstatedir}/log/nginx -maxdepth 1 -mindepth 1 -type d`; do
+        cp -a $d %{_localstatedir}/log/ondemand-nginx/
+    done
+fi
 
 %preun
 if [ "$1" -eq 0 ]; then
@@ -199,7 +239,11 @@ fi
 %files
 %defattr(-,root,root)
 
-/opt/ood
+/opt/ood/VERSION
+/opt/ood/mod_ood_proxy
+/opt/ood/nginx_stage
+/opt/ood/ood-portal-generator
+/opt/ood/ood_auth_map
 %{_localstatedir}/www/ood/apps/sys/dashboard
 %{_localstatedir}/www/ood/apps/sys/shell
 %{_localstatedir}/www/ood/apps/sys/files
@@ -222,18 +266,18 @@ fi
 %config(noreplace,missingok) %{_sysconfdir}/ood/config/nginx_stage.yml
 %config(noreplace,missingok) %{_sysconfdir}/ood/config/ood_portal.yml
 
-%dir %{_sharedstatedir}/nginx/config
-%dir %{_sharedstatedir}/nginx/config/puns
-%dir %{_sharedstatedir}/nginx/config/apps
-%dir %{_sharedstatedir}/nginx/config/apps/sys
-%dir %{_sharedstatedir}/nginx/config/apps/usr
-%dir %{_sharedstatedir}/nginx/config/apps/dev
-%ghost %{_sharedstatedir}/nginx/config/apps/sys/dashboard.conf
-%ghost %{_sharedstatedir}/nginx/config/apps/sys/shell.conf
-%ghost %{_sharedstatedir}/nginx/config/apps/sys/files.conf
-%ghost %{_sharedstatedir}/nginx/config/apps/sys/file-editor.conf
-%ghost %{_sharedstatedir}/nginx/config/apps/sys/activejobs.conf
-%ghost %{_sharedstatedir}/nginx/config/apps/sys/myjobs.conf
+%dir %{_sharedstatedir}/ondemand-nginx/config
+%dir %{_sharedstatedir}/ondemand-nginx/config/puns
+%dir %{_sharedstatedir}/ondemand-nginx/config/apps
+%dir %{_sharedstatedir}/ondemand-nginx/config/apps/sys
+%dir %{_sharedstatedir}/ondemand-nginx/config/apps/usr
+%dir %{_sharedstatedir}/ondemand-nginx/config/apps/dev
+%ghost %{_sharedstatedir}/ondemand-nginx/config/apps/sys/dashboard.conf
+%ghost %{_sharedstatedir}/ondemand-nginx/config/apps/sys/shell.conf
+%ghost %{_sharedstatedir}/ondemand-nginx/config/apps/sys/files.conf
+%ghost %{_sharedstatedir}/ondemand-nginx/config/apps/sys/file-editor.conf
+%ghost %{_sharedstatedir}/ondemand-nginx/config/apps/sys/activejobs.conf
+%ghost %{_sharedstatedir}/ondemand-nginx/config/apps/sys/myjobs.conf
 
 %config(noreplace) %{_sysconfdir}/sudoers.d/ood
 %config(noreplace) %{_sysconfdir}/cron.d/ood
@@ -244,6 +288,23 @@ fi
 
 
 %changelog
+* Wed Jan 30 2019 Trey Dockendorf <tdockendorf@osc.edu> 1.5.1-1
+- Update to 1.5.1 (tdockendorf@osc.edu)
+- Prep for 1.5.0 build (tdockendorf@osc.edu)
+- Remove ondemand-scl patch (tdockendorf@osc.edu)
+- Have ondemand depend on ondemand meta packages and not direct SCLs
+  (tdockendorf@osc.edu)
+- Need pun_config_path too (tdockendorf@osc.edu)
+- Only kill off old PUNs if upgrade and old PUN config directory still exists,
+  hopefully once someone cleans up old config directory the upgrade steps will
+  stop (tdockendorf@osc.edu)
+- Add logic to kill of PUNs before upgrading so stray processes are not left
+  behind (tdockendorf@osc.edu)
+- Apply ondemand-scl patch (tdockendorf@osc.edu)
+- Use /var/lib/ondemand-nginx and add logic to migrate /var/lib/nginx to
+  /var/lib/ondemand-nginx (tdockendorf@osc.edu)
+- Update ondemand package to support ondemand SCL (tdockendorf@osc.edu)
+
 * Wed Jan 30 2019 Morgan Rodgers <mrodgers@osc.edu> 1.5.0-1
 - Update OnDemand to version 1.5.0 (mrodgers@osc.edu)
 
