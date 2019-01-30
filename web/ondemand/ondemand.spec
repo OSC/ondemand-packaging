@@ -35,13 +35,16 @@ AutoReqProv:     no
 
 BuildRequires:   ondemand-runtime = %{ondemand_version}
 BuildRequires:   sqlite-devel, curl, make
-BuildRequires:   rh-ruby24, rh-ruby24-rubygem-rake, rh-ruby24-rubygem-bundler, rh-ruby24-ruby-devel, rh-nodejs6, rh-git29
+BuildRequires:   ondemand-ruby = %{ondemand_version}
+BuildRequires:   ondemand-nodejs = %{ondemand_version}
+BuildRequires:   ondemand-git = %{ondemand_version}
 Requires:        sudo, lsof, sqlite-devel, cronie, wget, curl, make
-Requires:        httpd24, httpd24-mod_ssl, httpd24-mod_ldap
+Requires:        ondemand-apache = %{ondemand_version}
 Requires:        ondemand-nginx = 1.14.0
 Requires:        ondemand-passenger = 5.3.7
-Requires:        rh-ruby24, rh-ruby24-rubygem-rake, rh-ruby24-rubygem-bundler, rh-ruby24-ruby-devel, rh-ruby24-rubygems, rh-ruby24-rubygems-devel
-Requires:        rh-nodejs6, rh-git29
+Requires:        ondemand-ruby = %{ondemand_version}
+Requires:        ondemand-nodejs = %{ondemand_version}
+Requires:        ondemand-git = %{ondemand_version}
 Requires:        ondemand-runtime = %{ondemand_version}
 
 %if %{with systemd}
