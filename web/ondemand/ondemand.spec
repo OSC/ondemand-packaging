@@ -288,6 +288,23 @@ fi
 
 
 %changelog
+* Wed Jan 30 2019 Trey Dockendorf <tdockendorf@osc.edu> 1.5.1-1
+- Update to 1.5.1 (tdockendorf@osc.edu)
+- Prep for 1.5.0 build (tdockendorf@osc.edu)
+- Remove ondemand-scl patch (tdockendorf@osc.edu)
+- Have ondemand depend on ondemand meta packages and not direct SCLs
+  (tdockendorf@osc.edu)
+- Need pun_config_path too (tdockendorf@osc.edu)
+- Only kill off old PUNs if upgrade and old PUN config directory still exists,
+  hopefully once someone cleans up old config directory the upgrade steps will
+  stop (tdockendorf@osc.edu)
+- Add logic to kill of PUNs before upgrading so stray processes are not left
+  behind (tdockendorf@osc.edu)
+- Apply ondemand-scl patch (tdockendorf@osc.edu)
+- Use /var/lib/ondemand-nginx and add logic to migrate /var/lib/nginx to
+  /var/lib/ondemand-nginx (tdockendorf@osc.edu)
+- Update ondemand package to support ondemand SCL (tdockendorf@osc.edu)
+
 * Wed Jan 30 2019 Morgan Rodgers <mrodgers@osc.edu> 1.5.0-1
 - Update OnDemand to version 1.5.0 (mrodgers@osc.edu)
 
