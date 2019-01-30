@@ -17,7 +17,6 @@ Group:     System Environment/Daemons
 License:   MIT
 URL:       https://osc.github.io/Open-OnDemand
 Source0:   https://github.com/OSC/%{package_name}/archive/v%{package_version}.tar.gz
-Patch0:    ondemand-scl.patch
 
 # Disable debuginfo as it causes issues with bundled gems that build libraries
 %global debug_package %{nil}
@@ -60,7 +59,6 @@ access, job submission and interactive work on compute nodes.
 
 %prep
 %setup -q -n %{package_name}-%{package_version}
-%patch0 -p1
 
 
 %build
