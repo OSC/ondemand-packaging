@@ -4,7 +4,7 @@
 %global app_name bc_osc_ansys_workbench
 
 Name:     ondemand-%{app_name}
-Version:  0.7.4
+Version:  0.8.0
 Release:  1%{?dist}
 Summary:  Batch Connect - OSC ANSYS Workbench
 
@@ -48,6 +48,9 @@ cp -a ./. %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/
 
 
 %changelog
+* Thu Jan 31 2019 Morgan Rodgers <mrodgers@osc.edu> 0.8.0-1
+- Update Ansys 0.8.0 (mrodgers@osc.edu)
+
 * Thu Jan 24 2019 Morgan Rodgers <mrodgers@osc.edu> 0.7.4-1
 - Update Ansys to version 0.7.4 (mrodgers@osc.edu)
 
