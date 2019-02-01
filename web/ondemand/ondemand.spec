@@ -2,7 +2,7 @@
 %global package_name ondemand
 %global major 1
 %global minor 5
-%global patch 1
+%global patch 2
 %global ondemand_version %{major}.%{minor}
 %global package_version %{major}.%{minor}.%{patch}
 %global package_release 1
@@ -159,36 +159,37 @@ pun_config_path: '/var/lib/nginx/config/puns/%%{user}.conf'
 pun_pid_path: '/var/run/nginx/%%{user}/passenger.pid'
 pun_socket_path: '/var/run/nginx/%%{user}/passenger.sock'
 EOF
-NGINX_STAGE_CONFIG_FILE=/tmp/nginx_stage.yml /opt/ood/nginx_stage/sbin/nginx_stage nginx_clean --force &>/dev/null || :
-rm -f /tmp/nginx_stage.yml
-fi
-if [ -d %{_sharedstatedir}/nginx/tmp ]; then
-    for d in `find %{_sharedstatedir}/nginx/tmp -maxdepth 1 -mindepth 1 -type d` ; do
+    NGINX_STAGE_CONFIG_FILE=/tmp/nginx_stage.yml /opt/ood/nginx_stage/sbin/nginx_stage nginx_clean --force &>/dev/null || :
+    rm -f /tmp/nginx_stage.yml
+    for d in `find %{_sharedstatedir}/nginx/tmp -maxdepth 1 -mindepth 1 -type d 2>/dev/null` ; do
         new=$(echo $d | sed 's|%{_sharedstatedir}/nginx|%{_sharedstatedir}/ondemand-nginx|g')
         if [ -d $new ]; then
             continue
         fi
         cp -a $d $new
     done
-fi
-if [ -d %{_sharedstatedir}/nginx/config ]; then
-    for d in `find %{_sharedstatedir}/nginx/config -type d`; do
+    for d in `find %{_sharedstatedir}/nginx/config -type d 2>/dev/null`; do
         new=$(echo $d | sed 's|%{_sharedstatedir}/nginx|%{_sharedstatedir}/ondemand-nginx|g')
         if [ -d $new ]; then
             continue
         fi
         install -d $new
     done
-    for f in `find %{_sharedstatedir}/nginx/config -type f`; do
+    for f in `find %{_sharedstatedir}/nginx/config -type f 2>/dev/null`; do
         new=$(echo $f | sed 's|%{_sharedstatedir}/nginx|%{_sharedstatedir}/ondemand-nginx|g')
         if [ -f $new ]; then
             continue
         fi
         cp -a $f $new
     done
-    for d in `find %{_localstatedir}/log/nginx -maxdepth 1 -mindepth 1 -type d`; do
-        cp -a $d %{_localstatedir}/log/ondemand-nginx/
+    for d in `find %{_localstatedir}/log/nginx -maxdepth 1 -mindepth 1 -type d 2>/dev/null`; do
+        new=$(echo $d | sed 's|%{_localstatedir}/log/nginx|%{_localstatedir}/log/ondemand-nginx|g')
+        if [ -d $new ]; then
+            continue
+        fi
+        cp -a $d $new
     done
+    mv %{_sharedstatedir}/nginx/config %{_sharedstatedir}/nginx/config.bak
 fi
 
 %preun
@@ -225,7 +226,7 @@ touch %{_localstatedir}/www/ood/apps/sys/activejobs/tmp/restart.txt
 touch %{_localstatedir}/www/ood/apps/sys/myjobs/tmp/restart.txt
 
 # Rebuild Apache config and restart Apache httpd if config changed
-if /opt/ood/ood-portal-generator/sbin/update_ood_portal &>/dev/null; then
+if /opt/ood/ood-portal-generator/sbin/update_ood_portal --rpm ; then
 %if %{with systemd}
 /bin/systemctl try-restart httpd24-httpd.service httpd24-htcacheclean.service &>/dev/null || :
 %else
