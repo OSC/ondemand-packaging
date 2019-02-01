@@ -305,6 +305,10 @@ fi
 
 
 %changelog
+* Fri Feb 01 2019 Trey Dockendorf <tdockendorf@osc.edu> 1.5.2-2
+- Handle 1.3 to 1.5 upgrades and better upgrade handling Add /var/tmp/ondemand-
+  nginx (tdockendorf@osc.edu)
+
 * Fri Feb 01 2019 Trey Dockendorf <tdockendorf@osc.edu> 1.5.2-1
 - Bump ondemand to 1.5.2 Improve 1.4 to 1.5 upgrade and don't suppress ood-
   portal-generator output during package installs (tdockendorf@osc.edu)
