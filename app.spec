@@ -100,3 +100,6 @@ touch %{_localstatedir}/www/ood/apps/sys/%{app_name}/tmp/restart.txt
 %endif
 
 %changelog
+* Sat Feb 02 2019 Trey Dockendorf <tdockendorf@osc.edu> VERSION-1
+- new package built with tito
+
