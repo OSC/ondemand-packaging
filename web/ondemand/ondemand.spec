@@ -305,6 +305,10 @@ fi
 
 
 %changelog
+* Sat Feb 02 2019 Trey Dockendorf <tdockendorf@osc.edu> 1.5.2-3
+- No longer set HTTPD24_HTTPD_SCLS_ENABLED, causes problems on RHEL 6 and not
+  needed (tdockendorf@osc.edu)
+
 * Fri Feb 01 2019 Trey Dockendorf <tdockendorf@osc.edu> 1.5.2-2
 - Handle 1.3 to 1.5 upgrades and better upgrade handling Add /var/tmp/ondemand-
   nginx (tdockendorf@osc.edu)
