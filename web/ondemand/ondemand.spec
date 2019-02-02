@@ -5,7 +5,7 @@
 %global patch 2
 %global ondemand_version %{major}.%{minor}
 %global package_version %{major}.%{minor}.%{patch}
-%global package_release 2
+%global package_release 3
 
 Name:      %{package_name}
 Version:   %{package_version}
@@ -138,7 +138,7 @@ EOF
 EOS
 
 %post
-%__sed -i 's/^HTTPD24_HTTPD_SCLS_ENABLED=.*/HTTPD24_HTTPD_SCLS_ENABLED="httpd24 ondemand"/' \
+%__sed -i 's/^HTTPD24_HTTPD_SCLS_ENABLED=.*/HTTPD24_HTTPD_SCLS_ENABLED="httpd24"/' \
     /opt/rh/httpd24/service-environment
 
 %if %{with systemd}
