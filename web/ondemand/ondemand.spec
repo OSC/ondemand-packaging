@@ -305,6 +305,10 @@ fi
 
 
 %changelog
+* Sun Feb 03 2019 Trey Dockendorf <tdockendorf@osc.edu> 1.5.2-4
+- Copy from config.rpmsave because earlier step removed app configs from
+  original path (tdockendorf@osc.edu)
+
 * Sat Feb 02 2019 Trey Dockendorf <tdockendorf@osc.edu> 1.5.2-3
 - No longer set HTTPD24_HTTPD_SCLS_ENABLED, causes problems on RHEL 6 and not
   needed (tdockendorf@osc.edu)
