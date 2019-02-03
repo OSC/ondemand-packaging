@@ -42,7 +42,7 @@ Usage examples:
     parser.add_argument('-f', '--force', help='overwrite existing RPMs', action='store_true', default=False)
     parser.add_argument('-c', '--clean', help='remove non-manifest RPMs from release repo', action='store_true', default=False)
     parser.add_argument('-b', '--repo-base', help="Repo base directory (default: %(default)s)", default='/var/www/repos/public/ondemand')
-    parser.add_argument('-m', '--manifest', help="Release manifest path", default=os.path.join(os.path.dirname(__file__), 'release-manifest.yaml'))
+    parser.add_argument('-m', '--manifest', help="Release manifest path (default: %(default)s)", default=os.path.join(os.path.dirname(__file__), 'release-manifest.yaml'))
     parser.add_argument('-r', '--release', help="Release version", required=True)
     args = parser.parse_args()
 
@@ -65,14 +65,23 @@ Usage examples:
     release_dir = os.path.join(args.repo_base, args.release)
     rpms = []
     manifest = {}
+    manifest_data = {}
     copied_manifest = {}
 
     # Read manifest
     if os.path.isfile(args.manifest):
         with open(args.manifest, 'r') as f:
-            manifest = yaml.load(f)
+            manifest_data = yaml.load(f)
     else:
         logger.error("Manifest %s not found", args.manifest)
+
+    # Build manifest
+    for k,v in manifest_data.iteritems():
+        if isinstance(v, dict):
+            for p in v['packages']:
+                manifest[p] = v['versions']
+        else:
+            manifest[k] = v
 
     # Prep release directories
     for t in ['compute', 'web']:
