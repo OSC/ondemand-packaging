@@ -42,7 +42,7 @@ ondemand-SCL:
   versions:
     - 1.5-5
 ondemand:
-  - 1.5.2-4
+  - 1.5.2-5
 
 # compute
 ondemand-compute:
