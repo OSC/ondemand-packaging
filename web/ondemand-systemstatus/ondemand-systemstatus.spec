@@ -98,6 +98,10 @@ touch %{_localstatedir}/www/ood/apps/sys/%{app_name}/tmp/restart.txt
 %endif
 
 %changelog
+* Sun Feb 03 2019 Trey Dockendorf <tdockendorf@osc.edu> 2.0.1-4
+- Update passenger apps to use new /var/lib/ondemand-nginx paths and new
+  ondemand SCL for ondemand 1.5 (tdockendorf@osc.edu)
+
 * Wed Oct 24 2018 Morgan Rodgers <mrodgers@osc.edu> 2.0.1-3
 - Bump release on systemstatus so Puppet picks up on the change
   (mrodgers@osc.edu)
