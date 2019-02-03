@@ -5,7 +5,7 @@
 %global patch 2
 %global ondemand_version %{major}.%{minor}
 %global package_version %{major}.%{minor}.%{patch}
-%global package_release 3
+%global package_release 4
 
 Name:      %{package_name}
 Version:   %{package_version}
@@ -180,14 +180,14 @@ EOF
         fi
         cp -a $d $new
     done
-    for d in `find %{_sharedstatedir}/nginx/config -type d 2>/dev/null`; do
+    for d in `find %{_sharedstatedir}/nginx/config.rpmsave -type d 2>/dev/null`; do
         new=$(echo $d | sed 's|%{_sharedstatedir}/nginx|%{_sharedstatedir}/ondemand-nginx|g')
         if [ -d $new ]; then
             continue
         fi
         install -d $new
     done
-    for f in `find %{_sharedstatedir}/nginx/config -type f 2>/dev/null`; do
+    for f in `find %{_sharedstatedir}/nginx/config.rpmsave -type f 2>/dev/null`; do
         new=$(echo $f | sed 's|%{_sharedstatedir}/nginx|%{_sharedstatedir}/ondemand-nginx|g')
         if [ -f $new ]; then
             continue
