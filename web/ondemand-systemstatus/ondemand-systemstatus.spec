@@ -12,7 +12,7 @@
 
 Name:     ondemand-%{app_name}
 Version:  2.0.1
-Release:  3%{?dist}
+Release:  4%{?dist}
 Summary:  System Status for OSC Clusters
 
 Group:    System Environment/Daemons
@@ -21,7 +21,10 @@ URL:      https://github.com/AweSim-OSC/%{repo_name}
 Source0:  https://github.com/AweSim-OSC/%{repo_name}/archive/v%{version}.tar.gz
 
 BuildRequires:  sqlite-devel curl make
-BuildRequires:  rh-ruby24 rh-ruby24-rubygem-rake rh-ruby24-rubygem-bundler rh-ruby24-ruby-devel rh-nodejs6 rh-git29
+BuildRequires:  ondemand-runtime
+BuildRequires:  ondemand-ruby
+BuildRequires:  ondemand-nodejs
+BuildRequires:  ondemand-git
 Requires:       ondemand
 
 # Disable automatic dependencies as it causes issues with bundled gems and
@@ -37,26 +40,21 @@ This app displays the current system status of available system clusters.
 
 
 %build
+scl enable ondemand - << \EOS
 %if %{with passenger}
 export PASSENGER_APP_ENV=production
 export PASSENGER_BASE_URI=/pun/sys/%{app_name}
 %endif
-export SCL_PKGS="rh-ruby24 rh-nodejs6 rh-git29"
-export SCL_SOURCE=$(command -v scl_source)
-if [ -x bin/setup ]; then
-  if [ "$SCL_SOURCE" ]; then
-    source "$SCL_SOURCE" enable $SCL_PKGS &> /dev/null || :
-  fi
-  bin/setup
-fi
+bin/setup
+EOS
 
 
 %install
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}
 %__cp -a ./. %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/
 %if %{with passenger}
-%__mkdir_p %{buildroot}%{_sharedstatedir}/nginx/config/apps/sys
-touch %{buildroot}%{_sharedstatedir}/nginx/config/apps/sys/%{app_name}.conf
+%__mkdir_p %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys
+touch %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys/%{app_name}.conf
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/tmp
 touch %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/tmp/restart.txt
 %endif
@@ -65,7 +63,7 @@ touch %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/tmp/restart.txt
 %post
 %if %{with passenger}
 # This NGINX app config needs to exist before it can be rebuilt
-touch %{_sharedstatedir}/nginx/config/apps/sys/%{app_name}.conf
+touch %{_sharedstatedir}/ondemand-nginx/config/apps/sys/%{app_name}.conf
 
 if [ $1 -eq 1 ]; then
   # Rebuild NGINX app config and restart PUNs w/ no active connections
@@ -96,7 +94,7 @@ touch %{_localstatedir}/www/ood/apps/sys/%{app_name}/tmp/restart.txt
 %{_localstatedir}/www/ood/apps/sys/%{app_name}/manifest.yml
 %if %{with passenger}
 %ghost %{_localstatedir}/www/ood/apps/sys/%{app_name}/tmp/restart.txt
-%ghost %{_sharedstatedir}/nginx/config/apps/sys/%{app_name}.conf
+%ghost %{_sharedstatedir}/ondemand-nginx/config/apps/sys/%{app_name}.conf
 %endif
 
 %changelog

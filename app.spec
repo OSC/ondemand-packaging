@@ -39,11 +39,11 @@ DESCRIPTION
 
 
 %build
+scl enable ondemand - << \EOS
 %if %{with passenger}
 export PASSENGER_APP_ENV=production
 export PASSENGER_BASE_URI=/pun/sys/%{app_name}
 %endif
-scl enable ondemand - << \EOS
 bin/setup
 EOS
 

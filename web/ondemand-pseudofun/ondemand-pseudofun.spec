@@ -5,7 +5,7 @@
 
 Name:     ondemand-%{app_name}
 Version:  0.2.1
-Release:  2%{?dist}
+Release:  3%{?dist}
 Summary:  Pseudogene Functional Network
 
 Group:    System Environment/Daemons
@@ -14,7 +14,10 @@ URL:      https://github.com/OSC/%{repo_name}
 Source0:  https://github.com/OSC/%{repo_name}/archive/v%{version}.tar.gz
 
 BuildRequires:  sqlite-devel curl make
-BuildRequires:  rh-ruby24 rh-ruby24-rubygem-rake rh-ruby24-rubygem-bundler rh-ruby24-ruby-devel rh-nodejs6 rh-git29
+BuildRequires:  ondemand-runtime
+BuildRequires:  ondemand-ruby
+BuildRequires:  ondemand-nodejs
+BuildRequires:  ondemand-git
 Requires:       ondemand
 
 # Disable automatic dependencies as it causes issues with bundled gems and
@@ -31,11 +34,11 @@ the Zhang Lab of Computational Genomics and Proteomics at OSU BMI.
 
 
 %build
-source scl_source enable rh-ruby24 rh-nodejs6 rh-git29 &> /dev/null || :
-
+scl enable ondemand - << \EOS
 export PASSENGER_APP_ENV=production
 export PASSENGER_BASE_URI=/pun/sys/%{app_name}
 bin/setup
+EOS
 
 
 %install
@@ -45,15 +48,15 @@ bin/setup
 %__mkdir_p   %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/tmp
 touch        %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/tmp/restart.txt
 
-%__mkdir_p   %{buildroot}%{_sharedstatedir}/nginx/config/apps/sys
-touch        %{buildroot}%{_sharedstatedir}/nginx/config/apps/sys/%{app_name}.conf
+%__mkdir_p   %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys
+touch        %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys/%{app_name}.conf
 
 
 %post
 # Install (not upgrade)
 if [ $1 -eq 1 ]; then
   # This NGINX app config needs to exist before it can be rebuilt
-  touch %{_sharedstatedir}/nginx/config/apps/sys/%{app_name}.conf
+  touch %{_sharedstatedir}/ondemand-nginx/config/apps/sys/%{app_name}.conf
 
   # Rebuild NGINX app config and restart PUNs w/ no active connections
   /opt/ood/nginx_stage/sbin/update_nginx_stage &>/dev/null || :
@@ -78,7 +81,7 @@ touch %{_localstatedir}/www/ood/apps/sys/%{app_name}/tmp/restart.txt
 %{_localstatedir}/www/ood/apps/sys/%{app_name}
 %{_localstatedir}/www/ood/apps/sys/%{app_name}/manifest.yml
 %ghost %{_localstatedir}/www/ood/apps/sys/%{app_name}/tmp/restart.txt
-%ghost %{_sharedstatedir}/nginx/config/apps/sys/%{app_name}.conf
+%ghost %{_sharedstatedir}/ondemand-nginx/config/apps/sys/%{app_name}.conf
 
 %changelog
 * Wed Oct 24 2018 Morgan Rodgers <mrodgers@osc.edu> 0.2.1-2
