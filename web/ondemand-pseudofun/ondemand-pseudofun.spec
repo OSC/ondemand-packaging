@@ -84,6 +84,10 @@ touch %{_localstatedir}/www/ood/apps/sys/%{app_name}/tmp/restart.txt
 %ghost %{_sharedstatedir}/ondemand-nginx/config/apps/sys/%{app_name}.conf
 
 %changelog
+* Sun Feb 03 2019 Trey Dockendorf <tdockendorf@osc.edu> 0.2.1-3
+- Update passenger apps to use new /var/lib/ondemand-nginx paths and new
+  ondemand SCL for ondemand 1.5 (tdockendorf@osc.edu)
+
 * Wed Oct 24 2018 Morgan Rodgers <mrodgers@osc.edu> 0.2.1-2
 - Update pseudofun dependencies (mrodgers@osc.edu)
 
