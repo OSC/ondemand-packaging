@@ -305,6 +305,9 @@ fi
 
 
 %changelog
+* Sun Feb 03 2019 Trey Dockendorf <tdockendorf@osc.edu> 1.5.2-5
+- Fix Update to not copy config.rpmsave to config.rpmsave (tdockendorf@osc.edu)
+
 * Sun Feb 03 2019 Trey Dockendorf <tdockendorf@osc.edu> 1.5.2-4
 - Copy from config.rpmsave because earlier step removed app configs from
   original path (tdockendorf@osc.edu)
