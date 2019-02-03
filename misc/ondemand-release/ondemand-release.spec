@@ -52,6 +52,9 @@ exit 0
 
 
 %changelog
+* Sun Feb 03 2019 Trey Dockendorf <tdockendorf@osc.edu> 1.5-1
+- Bump release to 1.5 (tdockendorf@osc.edu)
+
 * Thu Jan 03 2019 Trey Dockendorf <tdockendorf@osc.edu> 1.4-1
 - Bump to 1.4 ./bump-release.py -p 1.3 -n 1.4 (tdockendorf@osc.edu)
 
