@@ -54,7 +54,7 @@ def build_packages(passenger, cache, output, work, dist, debug):
             print stdout
     rc = process.poll()
     if rc != 0:
-        logger.error("Failed to build packages, rc=%s", rc)
+        logger.error("Failed to build packages, rc=%s work=%s output=%s", rc, work, output)
         return False, False
     rpm_dir = os.path.join(output, dist)
     if not os.path.isdir(rpm_dir):
