@@ -306,6 +306,9 @@ fi
 
 
 %changelog
+* Tue Feb 05 2019 Trey Dockendorf <tdockendorf@osc.edu> 1.5.2-6
+- Re-added rh-ruby24 back into apache startup (tdockendorf@osc.edu)
+
 * Sun Feb 03 2019 Trey Dockendorf <tdockendorf@osc.edu> 1.5.2-5
 - Fix Update to not copy config.rpmsave to config.rpmsave (tdockendorf@osc.edu)
 
