@@ -5,7 +5,7 @@
 %global patch 2
 %global ondemand_version %{major}.%{minor}
 %global package_version %{major}.%{minor}.%{patch}
-%global package_release 5
+%global package_release 6
 
 Name:      %{package_name}
 Version:   %{package_version}
@@ -32,6 +32,7 @@ Source0:   https://github.com/OSC/%{package_name}/archive/v%{package_version}.ta
 AutoReqProv:     no
 
 BuildRequires:   ondemand-runtime = %{ondemand_version}
+BuildRequires:   ondemand-scldevel = %{ondemand_version}
 BuildRequires:   sqlite-devel, curl, make
 BuildRequires:   ondemand-ruby = %{ondemand_version}
 BuildRequires:   ondemand-nodejs = %{ondemand_version}
@@ -138,7 +139,7 @@ EOF
 EOS
 
 %post
-%__sed -i 's/^HTTPD24_HTTPD_SCLS_ENABLED=.*/HTTPD24_HTTPD_SCLS_ENABLED="httpd24"/' \
+%__sed -i 's/^HTTPD24_HTTPD_SCLS_ENABLED=.*/HTTPD24_HTTPD_SCLS_ENABLED="httpd24 %{?scl_ondemand_ruby}"/' \
     /opt/rh/httpd24/service-environment
 
 %if %{with systemd}
