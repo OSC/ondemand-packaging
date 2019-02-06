@@ -13,21 +13,21 @@ PACKAGES=()
 
 function usage()
 {
-	echo "Usage: ./build.sh [OPTIONS] PACKAGE [PACKAGE]"
-	echo "Build RPM packages."
-	echo
-	echo "Required options:"
-	echo "  -w DIR     Path to work directory (for temporary files)"
-	echo "  -o DIR     Path in which to store build products"
-	echo
-	echo "Optional options:"
-	echo "  -j NUM     Set build concurrency. Default: 1"
-	echo "  -d NAMES   Build only for given distributions. This is a space-separated list"
-	echo "             of distribution names."
-	echo "             Default: $DISTRIBUTIONS"
-	echo "  -T         Show all tasks"
+    echo "Usage: ./build.sh [OPTIONS] PACKAGE [PACKAGE]"
+    echo "Build RPM packages."
+    echo
+    echo "Required options:"
+    echo "  -w DIR     Path to work directory (for temporary files)"
+    echo "  -o DIR     Path in which to store build products"
+    echo
+    echo "Optional options:"
+    echo "  -j NUM     Set build concurrency. Default: 1"
+    echo "  -d NAMES   Build only for given distributions. This is a space-separated list"
+    echo "             of distribution names."
+    echo "             Default: $DISTRIBUTIONS"
+    echo "  -T         Show all tasks"
     echo "  -D         Do not clean up docker image"
-	echo "  -h         Show usage"
+    echo "  -h         Show usage"
 }
 
 function parse_options()
