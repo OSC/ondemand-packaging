@@ -219,3 +219,22 @@ gpg --gen-key --batch gen
 ```
 
 Substitute `Name-Real` and `Name-Email` with site specific values.  The value of `Name-Real` needs to be passed to `build.sh` at build time via the `-G` flag.
+
+## Build RPM
+
+Builds are performed using Docker.
+
+The following example will build an RPM for CentOS/RHEL 7.  The RPMs will be written to /tmp/output/el7 and signed by GPG key named 'My Site Key'.  The files `.gpgpass` and `ondemand.sec` must exist at the root of this repo.
+
+```
+./build.sh -w /tmp/work -o /tmp/output -d el7 /path/to/app/directory/with/spec
+```
+
+The last argument is the path to a directory holding spec file for the package you wish to build.
+
+If there are errors during build you can either check under the path for `-w` or build with `-D` flag.  If you build with `-D` flag you can access the container doing something like the following:
+
+```
+./build.sh -w /tmp/work -o /tmp/output -d el7 -D /path/to/app/directory/with/spec
+docker exec -it ondemand-packaging-$(whoami) /bin/bash
+```
