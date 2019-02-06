@@ -109,26 +109,26 @@ fi
 
 CONTAINER="ondemand-packaging-$(whoami)"
 for p in "${PACKAGES[@]}"; do
+    set -x
+    docker run \
+    --detach --rm \
+    --name $CONTAINER \
+    --privileged \
+    --cap-add=SYS_ADMIN \
+    -v "${DIR}:/ondemand-packaging:ro" \
+    -v "${p}:/package:ro" \
+    -v "$WORK_DIR:/work" \
+    -v "$OUTPUT_DIR:/output" \
+    -e "DISTRO=${distro}" \
+    -e "PACKAGE=${p}" \
+    -e "OOD_UID=`/usr/bin/id -u`" \
+    -e "OOD_GID=`/usr/bin/id -g`" \
+    -e "LC_CTYPE=en_US.UTF-8" \
+    $BUILDBOX_IMAGE \
+    /usr/sbin/init
+
     for distro in $DISTRIBUTIONS ; do
         echo "BULID: package=${p} distro=${distro}"
-        set -x
-        docker run \
-        --detach --rm \
-        --name $CONTAINER \
-        --privileged \
-        --cap-add=SYS_ADMIN \
-        -v "${DIR}:/ondemand-packaging:ro" \
-        -v "${p}:/package:ro" \
-        -v "$WORK_DIR:/work" \
-        -v "$OUTPUT_DIR:/output" \
-        -e "DISTRO=${distro}" \
-        -e "PACKAGE=${p}" \
-        -e "OOD_UID=`/usr/bin/id -u`" \
-        -e "OOD_GID=`/usr/bin/id -g`" \
-        -e "LC_CTYPE=en_US.UTF-8" \
-        $BUILDBOX_IMAGE \
-        /usr/sbin/init
-
         docker exec \
         $TTY_ARGS \
         -e "DISTRO=${distro}" \
@@ -141,10 +141,10 @@ for p in "${PACKAGES[@]}"; do
         /ondemand-packaging/build/setuser ood \
         rake -f /ondemand-packaging/build/Rakefile run
         echo "EXIT: $?"
-        if $CLEAN_DOCKER ; then
-            docker kill $CONTAINER
-        fi
     done
+    if $CLEAN_DOCKER ; then
+        docker kill $CONTAINER
+    fi
 done
 
 exit 0
