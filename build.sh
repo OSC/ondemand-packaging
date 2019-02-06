@@ -6,10 +6,20 @@ WORK_DIR=
 OUTPUT_DIR=
 CONCURRENCY=1
 DISTRIBUTIONS="el6 el7"
+GPG_NAME='OnDemand Release Signing Key'
 SHOW_TASKS=false
 CLEAN_DOCKER=true
-BUILDBOX_IMAGE='ohiosupercomputer/ondemand_buildbox:0.0.1'
+BUILDBOX_IMAGE='ohiosupercomputer/ondemand_buildbox:0.0.2'
 PACKAGES=()
+GPG_SIGN=true
+if [ ! -f ${DIR}/.gpgpass ]; then
+    echo '!!! GPG SIGNING DISABLED : .gpgpass not found !!!'
+    GPG_SIGN=false
+fi
+if [ ! -f ${DIR}/ondemand.sec ]; then
+    echo '!!! GPG SIGNING DISABLED : ondemand.sec not found !!!'
+    GPG_SIGN=false
+fi
 
 function usage()
 {
@@ -25,6 +35,8 @@ function usage()
     echo "  -d NAMES   Build only for given distributions. This is a space-separated list"
     echo "             of distribution names."
     echo "             Default: $DISTRIBUTIONS"
+    echo "  -G NAME    GPG key name"
+    echo "             Default: $GPG_NAME"
     echo "  -T         Show all tasks"
     echo "  -D         Do not clean up docker image"
     echo "  -h         Show usage"
@@ -35,34 +47,37 @@ function parse_options()
 	local OPTIND=1
 	local ORIG_ARGV
 	local opt
-	while getopts "w:o:j:d:TDh" opt; do
-		case "$opt" in
-		w)
-			WORK_DIR="$OPTARG"
-			;;
-		o)
-			OUTPUT_DIR="$OPTARG"
-			;;
-		j)
-			CONCURRENCY=$OPTARG
-			;;
-		d)
-			DISTRIBUTIONS="$OPTARG"
-			;;
-		T)
-			SHOW_TASKS=true
-			;;
+    while getopts "w:o:j:d:G:TDh" opt; do
+        case "$opt" in
+        w)
+        	WORK_DIR="$OPTARG"
+        	;;
+        o)
+        	OUTPUT_DIR="$OPTARG"
+        	;;
+        j)
+        	CONCURRENCY=$OPTARG
+        	;;
+        d)
+        	DISTRIBUTIONS="$OPTARG"
+        	;;
+        G)
+            GPG_NAME="$OPTARG"
+            ;;
+        T)
+        	SHOW_TASKS=true
+        	;;
         D)
             CLEAN_DOCKER=false
             ;;
-		h)
-			usage
-			exit
-			;;
-		*)
-			return 1
-			;;
-		esac
+        h)
+        	usage
+        	exit
+        	;;
+        *)
+        	return 1
+        	;;
+        esac
 	done
 
 	(( OPTIND -= 1 )) || true
@@ -133,6 +148,8 @@ for p in "${PACKAGES[@]}"; do
         $TTY_ARGS \
         -e "DISTRO=${distro}" \
         -e "PACKAGE=${p}" \
+        -e "GPG_SIGN=${GPG_SIGN}" \
+        -e "GPG_NAME=${GPG_NAME}" \
         -e "OOD_UID=`/usr/bin/id -u`" \
         -e "OOD_GID=`/usr/bin/id -g`" \
         -e "LC_CTYPE=en_US.UTF-8" \

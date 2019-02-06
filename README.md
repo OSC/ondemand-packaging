@@ -193,3 +193,29 @@ cd docker-image
 docker build -t ohiosupercomputer/ondemand_buildbox:0.0.1 .
 docker push ohiosupercomputer/ondemand_buildbox:0.0.1
 ```
+
+## GPG Setup
+
+First create a GPG public and private key.  This should only be done once.  The passphrase used should be saved to `.gpgpass` file and `ondemand.sec` file saved to root of this repo.  The `ondemand.pub` will be needed by anyone wishing to install the GPG signed packages.
+
+```
+cat > gen <<EOF
+Key-Type: RSA
+Key-Length: 2048
+Key-Usage: encrypt
+Subkey-Type: RSA
+Subkey-Length: 2048
+Subkey-Usage: encrypt
+Name-Real: OnDemand Release Signing Key
+Name-Email: packages@osc.edu
+Expire-Date: 0
+%pubring ondemand.pub
+%secring ondemand.sec
+%commit
+%echo done
+EOF
+
+gpg --gen-key --batch gen
+```
+
+Substitute `Name-Real` and `Name-Email` with site specific values.  The value of `Name-Real` needs to be passed to `build.sh` at build time via the `-G` flag.

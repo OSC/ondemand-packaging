@@ -36,7 +36,6 @@ run sudo -u ood -H rpmdev-setuptree
 sudo -u ood -H cat >> /home/ood/.rpmmacros <<EOF
 %_signature gpg
 %_gpg_path ~/.gnupg
-%_gpg_name OnDemand Release Signing Key
 %_gpg /usr/bin/gpg
 EOF
 

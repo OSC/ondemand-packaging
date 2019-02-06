@@ -30,6 +30,7 @@ end
 namespace :build do
   desc "Bootstrap build environment"
   task :bootstrap do |task|
+    sh "echo '%_gpg_name #{ENV['GPG_NAME']}' >> ~/.rpmmacros"
     sh 'rm -rf ~/.gnupg'
     sh 'gpg --import /ondemand-packaging/ondemand.sec'
   end
@@ -56,11 +57,13 @@ namespace :build do
 
   desc "Build Finish"
   task :finish do |task|
-    sh "rm -rf /output/*"
+    sh "rm -rf /output/#{DISTRO}/*"
     sh "mkdir -p /output/#{DISTRO}"
     sh "cp /work/#{DISTRO}/*.rpm /output/#{DISTRO}/"
-    get_rpms("/output/#{DISTRO}").each do |rpm|
-      sh "/ondemand-packaging/rpm-sign.exp /ondemand-packaging/.gpgpass #{rpm}"
+    if ENV['GPG_SIGN'] == 'true'
+      get_rpms("/output/#{DISTRO}").each do |rpm|
+        sh "/ondemand-packaging/rpm-sign.exp /ondemand-packaging/.gpgpass #{rpm}"
+      end
     end
   end
 end
