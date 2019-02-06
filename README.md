@@ -185,3 +185,11 @@ This only has to be done once
 ```
 ./sync-release.py --release latest
 ```
+
+## Build ondemand_buildbox Docker container
+
+```
+cd docker-image
+docker build -t ohiosupercomputer/ondemand_buildbox:0.0.1 .
+docker push ohiosupercomputer/ondemand_buildbox:0.0.1
+```

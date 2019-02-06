@@ -1,0 +1,71 @@
+
+DISTRO = ENV['DISTRO']
+PACKAGE = ENV['PACKAGE']
+MOCK_CONFIG = {
+  'el6' => 'epel-6-x86_64',
+  'el7' => 'epel-7-x86_64',
+}
+
+def get_spec(dir)
+  files = Dir["#{dir}/*.spec"]
+  files[0]
+end
+
+def get_srpm()
+  files = Dir['/home/ood/rpmbuild/SRPMS/*.src.rpm']
+  files[0]
+end
+
+def get_rpms(dir)
+  rpms = []
+  Dir["#{dir}/*.rpm"].each do |rpm|
+    if rpm =~ /\.src\.rpm$/
+      next
+    end
+    rpms << rpm
+  end
+  rpms
+end
+
+namespace :build do
+  desc "Bootstrap build environment"
+  task :bootstrap do |task|
+    sh 'rm -rf ~/.gnupg'
+    sh 'gpg --import /ondemand-packaging/ondemand.sec'
+  end
+
+  desc "Build SRPM"
+  task :srpm do |task|
+    sh "cp -r /package/* /home/ood/rpmbuild/SOURCES/"
+    # Hack needed to remove git annex symlinks
+    sh 'find /home/ood/rpmbuild/SOURCES -type l -exec unlink {} \;'
+    spec = get_spec('/home/ood/rpmbuild/SOURCES')
+    sh "spectool -g -R -S #{spec}"
+    sh "rpmbuild -bs #{spec}"
+  end
+
+  desc "Build RPM"
+  task :rpm => [:bootstrap, :srpm] do |task|
+    srpm = get_srpm()
+    sh "mkdir -p /work/#{DISTRO}"
+    puts "RPM from #{srpm} for #{PACKAGE} #{DISTRO}"
+    sh "/usr/bin/mock --verbose -r #{MOCK_CONFIG[DISTRO]} " +
+      "--resultdir /work/#{DISTRO} " +
+      "rebuild #{srpm}"
+  end
+
+  desc "Build Finish"
+  task :finish do |task|
+    sh "rm -rf /output/*"
+    sh "mkdir -p /output/#{DISTRO}"
+    sh "cp /work/#{DISTRO}/*.rpm /output/#{DISTRO}/"
+    get_rpms("/output/#{DISTRO}").each do |rpm|
+      sh "/ondemand-packaging/rpm-sign.exp /ondemand-packaging/.gpgpass #{rpm}"
+    end
+  end
+end
+
+task :run do
+  Rake::Task['build:rpm'].invoke
+  Rake::Task['build:finish'].invoke
+end
