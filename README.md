@@ -224,7 +224,7 @@ Substitute `Name-Real` and `Name-Email` with site specific values.  The value of
 
 Builds are performed using Docker.
 
-The following example will build an RPM for CentOS/RHEL 7.  The RPMs will be written to /tmp/output/el7 and signed by GPG key named 'My Site Key'.  The files `.gpgpass` and `ondemand.sec` must exist at the root of this repo.
+The following example will build an RPM for CentOS/RHEL 7.  The RPMs will be written to /tmp/output/el7 and signed by GPG key named 'My Site Key'.  The files `.gpgpass` and `ondemand.sec` must exist at the root of this repo if you wish to perform GPG signing.
 
 ```
 ./build.sh -w /tmp/work -o /tmp/output -d el7 -G 'My Site Key' /path/to/app/directory/with/spec
