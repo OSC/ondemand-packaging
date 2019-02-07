@@ -51,6 +51,7 @@ namespace :build do
     sh "mkdir -p /work/#{DISTRO}"
     puts "RPM from #{srpm} for #{PACKAGE} #{DISTRO}"
     sh "/usr/bin/mock --verbose -r #{MOCK_CONFIG[DISTRO]} " +
+      "--enable-network " +
       "--resultdir /work/#{DISTRO} " +
       "rebuild #{srpm}"
   end
