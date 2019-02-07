@@ -11,7 +11,7 @@ REPO_NAME="$1"
 APP_NAME="$2"
 VERSION="$3"
 APP_SPEC_SOURCE="${DIR}/app.spec"
-PACKAGE_DIR="${DIR}/web/ondemand-${APP_NAME}"
+PACKAGE_DIR="${DIR}/../web/ondemand-${APP_NAME}"
 APP_SPEC_DEST="${PACKAGE_DIR}/ondemand-${APP_NAME}.spec"
 
 if [ ! -d $PACKAGE_DIR ]; then
