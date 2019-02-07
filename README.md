@@ -1,6 +1,10 @@
 # OnDemand packaging
 
-This repositories branches contain RPM spec files for OnDemand's dependencies and core applications.
+#### Table of Contents
+
+1. [Requirements](#requirements)
+2. [Install](#install)
+
 
 ## Requirements
 
@@ -10,7 +14,7 @@ Source files are referenced by git-annex.  Builds are handled by Docker.
 * [docker](https://www.docker.com/get-started)
 * [virtualenv](https://virtualenv.pypa.io/en/latest/)
 
-## HOWTO: checkout
+## Install
 
 Run:
 
@@ -18,26 +22,6 @@ Run:
 * `git annex init` to set up this repo for using git annex
 * `./setup_sources.sh -D` to register git-annex file URLs
 * `make`
-
-## HOWTO: test a package
-
-Before tagging a build, please test it.  Using tito's --test flag, you can
-generate test (S)RPMs by first committing your changes locally, then it will
-use the SHA in the RPM version.
-
-### With mock
-
-Configuration for mock is supplied in mock/ and can be used to build any of
-the packages locally and quickly.
-
-```sh
-tito build --rpm --test --builder custom.MockSignBuilder --output $(mktemp -d) --arg mock_config_dir=mock/ --dist=.el7 --arg mock=el7-scl
-```
-
-The last argument is the name of the mock config in mock/, which includes SCL
-and non-SCL variants.  If SCL is not needed for the build then use `el7-nonscl`.
-
-**Notice:** tito works only on committed changes! If you are changing the `.spec` files, make sure you commit those changes before running `tito build` command.
 
 ## HOWTO: create a new core package or dependency
 
@@ -75,28 +59,7 @@ Manually adding spec file:
 7. Test build [HOWTO: test a package](#howto-test-a-package)
 8. Release Package [HOWTO: release package](#howto-release-package)
 
-## HOWTO: release package
-
-1. Tag package after changing to package directory:
-  * `tito tag --keep-version`
-2. Push new tag and commit to origin
-  * `git push --tags origin master`
-3. Go back to root of this repo:
-  * `cd ../..`
-3. Release package
-  * `./release.sh <spec directory(s)>`
-  * Example: `./release.sh web/ondemand-bc_osc_abaqus`
-  * Example wildcard: `./release.sh web/ondemand-*`
-  * Manual:
-    * `RSYNC_USERNAME=oodpkg tito release --all-starting-with=web-scl`
-    * The value for `--all-starting-with` varies based on parent directory of package directory
-      * `compute` - Use `compute`
-      * `web-nonscl` - Use `web-nonscl`
-      * `web` - Use `web-scl`
-      * `misc/ondemand-release` - Use `release`
-      * `web/mod_auth_openidc` - Use `web-httpd24`
-
-## HOWTO: Build and release Passenger and NGINX
+## Build and release Passenger and NGINX
 
 1. Ensure `passenger-release.ini` has the correct value for `tag`.
 2. Run the build script:
