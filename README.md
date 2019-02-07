@@ -4,12 +4,10 @@ This repositories branches contain RPM spec files for OnDemand's dependencies an
 
 ## Requirements
 
-Source files are referenced by git-annex.  Builds are handled by tito and mock.
+Source files are referenced by git-annex.  Builds are handled by Docker.
 
 * [git-annex](http://git-annex.branchable.com/)
-* [tito](https://github.com/dgoodwin/tito) 0.6.1 or higher
-* [mock](http://fedoraproject.org/wiki/Projects/Mock)
-* scl-utils-build package (Fedora or Red Hat repositories)
+* [docker](https://www.docker.com/get-started)
 
 ## HOWTO: checkout
 
@@ -17,7 +15,7 @@ Run:
 
 * `git clone https://github.com/OSC/ondemand-packaging`
 * `git annex init` to set up this repo for using git annex
-* `./setup_sources.sh` to register git-annex file URLs
+* `./setup_sources.sh -D` to register git-annex file URLs
 
 ## HOWTO: test a package
 
