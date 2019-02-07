@@ -2,10 +2,10 @@
 %global package_name ondemand
 %global major 1
 %global minor 5
-%global patch 2
+%global patch 3
 %global ondemand_version %{major}.%{minor}
 %global package_version %{major}.%{minor}.%{patch}
-%global package_release 6
+%global package_release 1
 
 Name:      %{package_name}
 Version:   %{package_version}
@@ -306,6 +306,9 @@ fi
 
 
 %changelog
+* Thu Feb 07 2019 Morgan Rodgers <mrodgers@osc.edu> 1.5.3-1
+- Bump release to 1.5.3 (mrodgers@osc.edu)
+
 * Tue Feb 05 2019 Trey Dockendorf <tdockendorf@osc.edu> 1.5.2-6
 - Re-added rh-ruby24 back into apache startup (tdockendorf@osc.edu)
 
