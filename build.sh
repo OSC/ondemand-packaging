@@ -8,8 +8,10 @@ CONCURRENCY=1
 DISTRIBUTIONS="el6 el7"
 GPG_NAME='OnDemand Release Signing Key'
 SHOW_TASKS=false
+TASK=run
 CLEAN_DOCKER=true
-BUILDBOX_IMAGE='ohiosupercomputer/ondemand_buildbox:0.0.2'
+BUILDBOX_IMAGE='ohiosupercomputer/ondemand_buildbox:0.0.3'
+CONTAINER="ondemand-packaging-$(whoami)"
 PACKAGES=()
 GPG_SIGN=true
 if [ ! -f ${DIR}/.gpgpass ]; then
@@ -20,6 +22,7 @@ if [ ! -f ${DIR}/ondemand.sec ]; then
     echo '!!! GPG SIGNING DISABLED : ondemand.sec not found !!!'
     GPG_SIGN=false
 fi
+DEBUG=false
 
 function usage()
 {
@@ -39,8 +42,32 @@ function usage()
     echo "             Default: $GPG_NAME"
     echo "  -S         Skip GPG signing"
     echo "  -T         Show all tasks"
+    echo "  -t TASK    Task to run, Default: $TASK"
     echo "  -D         Do not clean up docker image"
+    echo "  -d         Show debug information"
     echo "  -h         Show usage"
+}
+
+function echo_blue()
+{
+    echo -e "\033[0;34m${1}\033[0m"
+}
+
+function echo_red()
+{
+    echo -e "\033[0;31m${1}\033[0m"
+}
+
+function echo_green()
+{
+    echo -e "\033[0;32m${1}\033[0m"
+}
+
+function kill_container()
+{
+    local CONTAINER="$1"
+    echo_blue "Killing container ${CONTAINER}"
+    docker kill $CONTAINER 1>/dev/null
 }
 
 function parse_options()
@@ -48,7 +75,7 @@ function parse_options()
 	local OPTIND=1
 	local ORIG_ARGV
 	local opt
-    while getopts "w:o:j:d:G:STDh" opt; do
+    while getopts "w:o:j:d:G:STt:Dh" opt; do
         case "$opt" in
         w)
         	WORK_DIR="$OPTARG"
@@ -71,6 +98,9 @@ function parse_options()
         T)
         	SHOW_TASKS=true
         	;;
+        t)
+            TASK="$OPTARG"
+            ;;
         D)
             CLEAN_DOCKER=false
             ;;
@@ -126,28 +156,46 @@ else
 	TTY_ARGS=
 fi
 
-CONTAINER="ondemand-packaging-$(whoami)"
+if $DEBUG; then
+    RAKE_FLAGS=''
+else
+    RAKE_FLAGS='-q'
+fi
+
 for p in "${PACKAGES[@]}"; do
-    set -x
-    docker run \
-    --detach --rm \
-    --name $CONTAINER \
-    --privileged \
-    --cap-add=SYS_ADMIN \
-    -v "${DIR}:/ondemand-packaging:ro" \
-    -v "${p}:/package:ro" \
-    -v "$WORK_DIR:/work" \
-    -v "$OUTPUT_DIR:/output" \
-    -e "DISTRO=${distro}" \
-    -e "PACKAGE=${p}" \
-    -e "OOD_UID=`/usr/bin/id -u`" \
-    -e "OOD_GID=`/usr/bin/id -g`" \
-    -e "LC_CTYPE=en_US.UTF-8" \
-    $BUILDBOX_IMAGE \
-    /usr/sbin/init
+    if $DEBUG; then
+        set -x
+    fi
+
+    if docker inspect $CONTAINER 2>/dev/null 1>/dev/null ; then
+        if $CLEAN_DOCKER; then
+            kill_container $CONTAINER
+            START_CONTAINER=true
+        else
+            START_CONTAINER=false
+        fi
+    else
+        START_CONTAINER=true
+    fi
+
+    if $START_CONTAINER; then
+        echo_blue "Starting container ${CONTAINER}"
+        CONTAINER_ID=$(docker run \
+        --detach --rm \
+        --name $CONTAINER \
+        --privileged \
+        --cap-add=SYS_ADMIN \
+        -v "${DIR}:/ondemand-packaging:ro" \
+        -v "${p}:/package:ro" \
+        -v "$WORK_DIR:/work" \
+        -v "$OUTPUT_DIR:/output" \
+        $BUILDBOX_IMAGE \
+        /usr/sbin/init)
+        echo_green "Container started with ID ${CONTAINER_ID}"
+    fi
 
     for distro in $DISTRIBUTIONS ; do
-        echo "BULID: package=${p} distro=${distro}"
+        echo_blue "Build STARTED: package=${p} distro=${distro} task=${TASK}"
         docker exec \
         $TTY_ARGS \
         -e "DISTRO=${distro}" \
@@ -156,15 +204,21 @@ for p in "${PACKAGES[@]}"; do
         -e "GPG_NAME=${GPG_NAME}" \
         -e "OOD_UID=`/usr/bin/id -u`" \
         -e "OOD_GID=`/usr/bin/id -g`" \
+        -e "DEBUG=${DEBUG}" \
         -e "LC_CTYPE=en_US.UTF-8" \
         $CONTAINER \
         /ondemand-packaging/build/inituidgid.sh \
         /ondemand-packaging/build/setuser ood \
-        rake -f /ondemand-packaging/build/Rakefile run
-        echo "EXIT: $?"
+        rake ${RAKE_FLAGS} -f /ondemand-packaging/build/Rakefile ${TASK}
+        if [ $? -ne 0 ]; then
+            echo_red "Build FAILED: package=${p} distro=${distro}"
+        else
+            echo_green "Build SUCCESS: package=${p} distro=${distro}"
+            echo_green "Check ${OUTPUT_DIR}/${distro} for RPMs"
+        fi
     done
     if $CLEAN_DOCKER ; then
-        docker kill $CONTAINER
+        kill_container $CONTAINER
     fi
 done
 

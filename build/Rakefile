@@ -1,3 +1,4 @@
+require_relative 'build_lib'
 
 DISTRO = ENV['DISTRO']
 PACKAGE = ENV['PACKAGE']
@@ -5,6 +6,11 @@ MOCK_CONFIG = {
   'el6' => 'epel-6-x86_64',
   'el7' => 'epel-7-x86_64',
 }
+if ENV['DEBUG'] == 'true'
+  cmd_suffix = ''
+else
+  cmd_suffix = '2>/dev/null 1>/dev/null'
+end
 
 def get_spec(dir)
   files = Dir["#{dir}/*.spec"]
@@ -30,40 +36,53 @@ end
 namespace :build do
   desc "Bootstrap build environment"
   task :bootstrap do |task|
+    puts "== #{task.name} ==".blue
+    puts "\tClean build environment".blue
+    sh "rm -rf /home/ood/rpmbuild/*/*"
+    puts "\tBootstrap GPG".blue
     sh "echo '%_gpg_name #{ENV['GPG_NAME']}' >> ~/.rpmmacros"
     sh 'rm -rf ~/.gnupg'
-    sh 'gpg --import /ondemand-packaging/ondemand.sec'
+    sh "gpg --import /ondemand-packaging/ondemand.sec #{cmd_suffix}"
   end
 
   desc "Build SRPM"
-  task :srpm do |task|
+  task :srpm => :bootstrap do |task|
+    puts "== #{task.name} ==".blue
     sh "cp -r /package/* /home/ood/rpmbuild/SOURCES/"
     # Hack needed to remove git annex symlinks
     sh 'find /home/ood/rpmbuild/SOURCES -type l -exec unlink {} \;'
     spec = get_spec('/home/ood/rpmbuild/SOURCES')
-    sh "spectool -g -R -S #{spec}"
-    sh "rpmbuild -bs #{spec}"
+    puts "\tDownload sources defined in #{spec}".blue
+    sh "spectool -g -R -S #{spec} #{cmd_suffix}"
+    puts "\tBuild SRPM for #{spec}".blue
+    sh "rpmbuild -bs #{spec} #{cmd_suffix}"
   end
 
   desc "Build RPM"
-  task :rpm => [:bootstrap, :srpm] do |task|
+  task :rpm => :srpm do |task|
+    puts "== #{task.name} ==".blue
     srpm = get_srpm()
+    sh "rm -rf /work/#{DISTRO}/*"
     sh "mkdir -p /work/#{DISTRO}"
-    puts "RPM from #{srpm} for #{PACKAGE} #{DISTRO}"
+    puts "\tRPM from #{srpm} for #{PACKAGE} #{DISTRO}".blue
     sh "/usr/bin/mock --verbose -r #{MOCK_CONFIG[DISTRO]} " +
       "--enable-network " +
       "--resultdir /work/#{DISTRO} " +
-      "rebuild #{srpm}"
+      "rebuild #{srpm} #{cmd_suffix}"
   end
 
   desc "Build Finish"
-  task :finish do |task|
+  task :finish => :rpm do |task|
+    puts "== #{task.name} ==".blue
+    puts "\tCleaning /output/#{DISTRO}".blue
     sh "rm -rf /output/#{DISTRO}/*"
     sh "mkdir -p /output/#{DISTRO}"
+    puts "\tcopy /work/#{DISTRO}/*.rpm /output/#{DISTRO}/".blue
     sh "cp /work/#{DISTRO}/*.rpm /output/#{DISTRO}/"
     if ENV['GPG_SIGN'] == 'true'
       get_rpms("/output/#{DISTRO}").each do |rpm|
-        sh "/ondemand-packaging/rpm-sign.exp /ondemand-packaging/.gpgpass #{rpm}"
+        puts "\tGPG signing #{rpm}".blue
+        sh "/ondemand-packaging/rpm-sign.exp /ondemand-packaging/.gpgpass #{rpm} #{cmd_suffix}"
       end
     end
   end
