@@ -37,6 +37,7 @@ function usage()
     echo "             Default: $DISTRIBUTIONS"
     echo "  -G NAME    GPG key name"
     echo "             Default: $GPG_NAME"
+    echo "  -S         Skip GPG signing"
     echo "  -T         Show all tasks"
     echo "  -D         Do not clean up docker image"
     echo "  -h         Show usage"
@@ -47,7 +48,7 @@ function parse_options()
 	local OPTIND=1
 	local ORIG_ARGV
 	local opt
-    while getopts "w:o:j:d:G:TDh" opt; do
+    while getopts "w:o:j:d:G:STDh" opt; do
         case "$opt" in
         w)
         	WORK_DIR="$OPTARG"
@@ -63,6 +64,9 @@ function parse_options()
         	;;
         G)
             GPG_NAME="$OPTARG"
+            ;;
+        S)
+            GPG_SIGN=false
             ;;
         T)
         	SHOW_TASKS=true
