@@ -185,3 +185,66 @@ This only has to be done once
 ```
 ./sync-release.py --release latest
 ```
+
+## Build ondemand_buildbox Docker container
+
+```
+cd docker-image
+docker build -t ohiosupercomputer/ondemand_buildbox:0.0.1 .
+docker push ohiosupercomputer/ondemand_buildbox:0.0.1
+```
+
+## GPG Setup
+
+First create a GPG public and private key.  This should only be done once.  The passphrase used should be saved to `.gpgpass` file and `ondemand.sec` file saved to root of this repo.  The `ondemand.pub` will be needed by anyone wishing to install the GPG signed packages.
+
+```
+cat > gen <<EOF
+Key-Type: RSA
+Key-Length: 2048
+Key-Usage: encrypt
+Subkey-Type: RSA
+Subkey-Length: 2048
+Subkey-Usage: encrypt
+Name-Real: My Site Key
+Name-Email: packages@example.com
+Expire-Date: 0
+%pubring ondemand.pub
+%secring ondemand.sec
+%commit
+%echo done
+EOF
+
+gpg --gen-key --batch gen
+```
+
+Substitute `Name-Real` and `Name-Email` with site specific values.  The value of `Name-Real` needs to be passed to `build.sh` at build time via the `-G` flag.
+
+## Build RPM
+
+Builds are performed using Docker.
+
+The following example will build an RPM for CentOS/RHEL 7.  The RPMs will be written to /tmp/output/el7 and signed by GPG key named 'My Site Key'.  The files `.gpgpass` and `ondemand.sec` must exist at the root of this repo if you wish to perform GPG signing.
+
+```
+./build.sh -w /tmp/work -o /tmp/output -d el7 -G 'My Site Key' /path/to/app/directory/with/spec
+```
+
+The last argument is the path to a directory holding spec file for the package you wish to build.
+
+If there are errors during build you can either check under the path for `-w` or build with `-D` flag.  If you build with `-D` flag you can access the container doing something like the following:
+
+```
+./build.sh -w /tmp/work -o /tmp/output -d el7 -G 'My Site Key' -D /path/to/app/directory/with/spec
+docker exec -it ondemand-packaging-$(whoami) /bin/bash
+```
+
+## Publish RPMs (OSC)
+
+If `./build.sh` had `-o /tmp/output` then the following command will upload the produced RPMs to the repo server:
+
+```
+./release.py /tmp/output/*
+```
+
+**CAUTION**: The `--force` flag is required if you wish to overwrite existing RPMs.
