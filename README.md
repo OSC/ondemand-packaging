@@ -97,8 +97,10 @@ Manually adding spec file:
 ## HOWTO: Build and release Passenger and NGINX
 
 1. Ensure `passenger-release.ini` has the correct value for `tag`.
-2. Run the script that builds and releases:
-  * `./passenger-release.py`
+2. Run the build script:
+  * `./build.sh -w /tmp/work -o /tmp/output -t build:passenger_nginx passenger-release.py`
+3. Publish RPMs (OSC)
+  * `./release.py /tmp/output/*`
 
 The script for passenger performs the following steps:
 * Clone passenger git repo using specified git `tag` value
