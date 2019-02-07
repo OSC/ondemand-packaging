@@ -218,7 +218,7 @@ for p in "${PACKAGES[@]}"; do
             else
                 debug_flag=''
             fi
-            ${DIR}/passenger-release.py -w $WORK_DIR -o $OUTPUT_DIR -D $distro $debug_flag
+            ${DIR}/build/passenger-nginx.py -w $WORK_DIR -o $OUTPUT_DIR -D $distro $debug_flag
         fi
         docker exec \
         $TTY_ARGS \

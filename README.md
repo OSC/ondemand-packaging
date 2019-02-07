@@ -98,7 +98,7 @@ Manually adding spec file:
 
 1. Ensure `passenger-release.ini` has the correct value for `tag`.
 2. Run the build script:
-  * `./build.sh -w /tmp/work -o /tmp/output -t build:passenger_nginx passenger-release.py`
+  * `./build.sh -w /tmp/work -o /tmp/output -t build:passenger_nginx $(pwd)/build/passenger-nginx.py`
 3. Publish RPMs (OSC)
   * `./release.py /tmp/output/*`
 

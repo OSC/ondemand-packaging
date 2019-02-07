@@ -95,7 +95,7 @@ Usage examples:
     ch.setFormatter(formatter)
     logger.addHandler(ch)
 
-    config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'passenger-release.ini')
+    config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'passenger-nginx.ini')
     config = ConfigParser.ConfigParser()
     logger.debug("Loading config file %s", config_path)
     config.read(config_path)
