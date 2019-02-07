@@ -212,6 +212,14 @@ for p in "${PACKAGES[@]}"; do
 
     for distro in $DISTRIBUTIONS ; do
         echo_blue "Build STARTED: package=${p} distro=${distro} task=${TASK}"
+        if [ "$TASK" == 'build:passenger_nginx' ]; then
+            if $DEBUG; then
+                debug_flag='-d'
+            else
+                debug_flag=''
+            fi
+            ${DIR}/passenger-release.py -w $WORK_DIR -o $OUTPUT_DIR -D $distro $debug_flag
+        fi
         docker exec \
         $TTY_ARGS \
         -e "DISTRO=${distro}" \

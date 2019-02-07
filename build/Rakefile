@@ -79,11 +79,22 @@ namespace :build do
     sh "mkdir -p /output/#{DISTRO}"
     puts "\tcopy /work/#{DISTRO}/*.rpm /output/#{DISTRO}/".blue
     sh "cp /work/#{DISTRO}/*.rpm /output/#{DISTRO}/"
+  end
+
+  desc 'Sign RPMs'
+  task :gpgsign do |task|
+    puts "== #{task.name} ==".blue
+    get_rpms("/output/#{DISTRO}").each do |rpm|
+      puts "\tGPG signing #{rpm}".blue
+      sh "/ondemand-packaging/rpm-sign.exp /ondemand-packaging/.gpgpass #{rpm} #{cmd_suffix}"
+    end
+  end
+
+  desc 'Build Passenger and NGINX'
+  task :passenger_nginx => :bootstrap do |task|
+    puts "== #{task.name} ==".blue
     if ENV['GPG_SIGN'] == 'true'
-      get_rpms("/output/#{DISTRO}").each do |rpm|
-        puts "\tGPG signing #{rpm}".blue
-        sh "/ondemand-packaging/rpm-sign.exp /ondemand-packaging/.gpgpass #{rpm} #{cmd_suffix}"
-      end
+      Rake::Task['build:gpgsign'].invoke
     end
   end
 end
@@ -91,4 +102,7 @@ end
 task :run do
   Rake::Task['build:rpm'].invoke
   Rake::Task['build:finish'].invoke
+  if ENV['GPG_SIGN'] == 'true'
+    Rake::Task['build:gpgsign'].invoke
+  end
 end
