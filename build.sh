@@ -44,7 +44,7 @@ function usage()
     echo "  -T         Show all tasks"
     echo "  -t TASK    Task to run, Default: $TASK"
     echo "  -D         Do not clean up docker image"
-    echo "  -d         Show debug information"
+    echo "  -v         Show debug information"
     echo "  -h         Show usage"
 }
 
@@ -75,7 +75,7 @@ function parse_options()
 	local OPTIND=1
 	local ORIG_ARGV
 	local opt
-    while getopts "w:o:j:d:G:STt:Dh" opt; do
+    while getopts "w:o:j:d:G:STt:Dvh" opt; do
         case "$opt" in
         w)
         	WORK_DIR="$OPTARG"
@@ -103,6 +103,9 @@ function parse_options()
             ;;
         D)
             CLEAN_DOCKER=false
+            ;;
+        v)
+            DEBUG=true
             ;;
         h)
         	usage
@@ -167,6 +170,19 @@ for p in "${PACKAGES[@]}"; do
         set -x
     fi
 
+    GIT_ANNEX=false
+    if which git-annex 2>/dev/null 1>/dev/null ; then
+        for f in `git-annex find --include='*' ${p}`; do
+            GIT_ANNEX=true
+            break
+        done
+    fi
+    if $GIT_ANNEX ; then
+        echo_blue "Unlocking git-annex sources at ${p}"
+        git-annex get $p 1>/dev/null
+        git-annex unlock $p 1>/dev/null
+    fi
+
     if docker inspect $CONTAINER 2>/dev/null 1>/dev/null ; then
         if $CLEAN_DOCKER; then
             kill_container $CONTAINER
@@ -217,6 +233,10 @@ for p in "${PACKAGES[@]}"; do
             echo_green "Check ${OUTPUT_DIR}/${distro} for RPMs"
         fi
     done
+    if $GIT_ANNEX; then
+        echo_blue "Locking git-annex sources at ${p}"
+        git-annex lock --force $p 1>/dev/null
+    fi
     if $CLEAN_DOCKER ; then
         kill_container $CONTAINER
     fi

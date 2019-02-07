@@ -1,4 +1,60 @@
-#!/bin/bash -x
+#!/bin/bash
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source ${DIR}/build/env
+
+DOCKER=false
+
+function usage()
+{
+    echo "Usage: ./setup_sources.sh [OPTIONS]"
+    echo "Setup git annex sources."
+    echo
+    echo "Optional options:"
+    echo "  -D         Setup sources using docker"
+    echo "  -h         Show usage"
+}
+
+function parse_options()
+{
+	local OPTIND=1
+	local ORIG_ARGV
+	local opt
+    while getopts "Dh" opt; do
+        case "$opt" in
+        D)
+            DOCKER=true
+            ;;
+        h)
+            usage
+            exit
+            ;;
+        *)
+            return 1
+            ;;
+        esac
+	done
+
+	(( OPTIND -= 1 )) || true
+	shift $OPTIND || true
+	ORIG_ARGV=("$@")
+}
+
+parse_options "$@"
+
+if $DOCKER; then
+    docker run -it \
+    -v $(pwd):/ondemand-packaging \
+    -e "OOD_UID=`/usr/bin/id -u`" \
+    -e "OOD_GID=`/usr/bin/id -g`" \
+    $BUILDBOX_IMAGE \
+    /ondemand-packaging/build/inituidgid.sh \
+    /ondemand-packaging/build/setuser ood \
+    /ondemand-packaging/setup_sources.sh
+    exit $?
+fi
+
+cd $DIR
 
 if [ $# -gt 0 ]; then
     dirs=($@)

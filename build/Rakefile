@@ -48,12 +48,12 @@ namespace :build do
   desc "Build SRPM"
   task :srpm => :bootstrap do |task|
     puts "== #{task.name} ==".blue
-    sh "cp -r /package/* /home/ood/rpmbuild/SOURCES/"
-    # Hack needed to remove git annex symlinks
-    sh 'find /home/ood/rpmbuild/SOURCES -type l -exec unlink {} \;'
+    sh 'find /package -type f -exec cp {} /home/ood/rpmbuild/SOURCES/ \;'
     spec = get_spec('/home/ood/rpmbuild/SOURCES')
-    puts "\tDownload sources defined in #{spec}".blue
-    sh "spectool -g -R -S #{spec} #{cmd_suffix}"
+    if Dir['/home/ood/rpmbuild/SOURCES/*.tar.gz'].empty? && Dir['/home/ood/rpmbuild/SOURCES/*.zip'].empty?
+        puts "\tDownloading sources defined in #{spec}".blue
+        sh "spectool -g -R -S #{spec} #{cmd_suffix}"
+    end
     puts "\tBuild SRPM for #{spec}".blue
     sh "rpmbuild -bs #{spec} #{cmd_suffix}"
   end
