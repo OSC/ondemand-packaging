@@ -70,21 +70,6 @@ def build_packages(passenger, cache, output, work, dist, debug):
             rpms.append(path)
     return rpms, srpms
 
-def sign_packages(packages):
-    gpgpass = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.gpgpass')
-    sign_cmd = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'rpm-sign.exp')
-    for p in packages:
-        logger.info("GPG Signing %s", p)
-        cmd = [sign_cmd, gpgpass, p]
-        logger.debug("Executing: %s", ' '.join(cmd))
-        process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        out, err = process.communicate()
-        exit_code = process.returncode
-        if exit_code != 0:
-            logger.error("GPG sign error: %s", out + err)
-            return False
-    return True
-
 def main():
     usage_examples = """
 Usage examples:
@@ -128,12 +113,6 @@ Usage examples:
 
     rpms, srpms = build_packages(passenger_root, cache_dir, output_dir, work_dir, args.dist, args.debug)
     if not rpms or not srpms:
-        sys.exit(1)
-    success = sign_packages(rpms)
-    if not success:
-        sys.exit(1)
-    success = sign_packages(srpms)
-    if not success:
         sys.exit(1)
 
 if __name__ == '__main__':
