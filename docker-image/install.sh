@@ -25,7 +25,7 @@ header "Installing dependencies"
 run yum update -y
 run yum install -y epel-release centos-release-scl
 run yum install -y rubygem-rake sudo git git-annex which expect \
-    rpm-build rpmdevtools mock rpm-sign scl-utils-build
+    rpm-build rpmdevtools mock rpm-sign scl-utils-build docker
 
 header "Miscellaneous"
 run cp /build/sudoers.conf /etc/sudoers.d/ood
