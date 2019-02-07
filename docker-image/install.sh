@@ -42,6 +42,9 @@ EOF
 run cp /build/epel-6-x86_64.cfg /etc/mock/epel-6-x86_64.cfg
 run cp /build/epel-7-x86_64.cfg /etc/mock/epel-7-x86_64.cfg
 
+run sudo -u ood -H git config --global user.email "packages@osc.edu"
+run sudo -u ood -H git config --global user.name "OnDemand Packaging"
+
 header "Cleaning up"
 run yum clean all
 run rm -rf /build
