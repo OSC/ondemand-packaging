@@ -2,10 +2,10 @@
 %global package_name ondemand
 %global major 1
 %global minor 5
-%global patch 2
+%global patch 3
 %global ondemand_version %{major}.%{minor}
 %global package_version %{major}.%{minor}.%{patch}
-%global package_release 6
+%global package_release 1
 
 Name:      %{package_name}
 Version:   %{package_version}
