@@ -238,3 +238,13 @@ If there are errors during build you can either check under the path for `-w` or
 ./build.sh -w /tmp/work -o /tmp/output -d el7 -G 'My Site Key' -D /path/to/app/directory/with/spec
 docker exec -it ondemand-packaging-$(whoami) /bin/bash
 ```
+
+## Publish RPMs (OSC)
+
+If `./build.sh` had `-o /tmp/output` then the following command will upload the produced RPMs to the repo server:
+
+```
+./release.py /tmp/output/*
+```
+
+**CAUTION**: The `--force` flag is required if you wish to overwrite existing RPMs.
