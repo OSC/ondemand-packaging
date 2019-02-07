@@ -1,6 +1,7 @@
 #!/bin/bash
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source ${DIR}/build/env
 
 WORK_DIR=
 OUTPUT_DIR=
@@ -10,7 +11,6 @@ GPG_NAME='OnDemand Release Signing Key'
 SHOW_TASKS=false
 TASK=run
 CLEAN_DOCKER=true
-BUILDBOX_IMAGE='ohiosupercomputer/ondemand_buildbox:0.1.0'
 CONTAINER="ondemand-packaging-$(whoami)"
 PACKAGES=()
 GPG_SIGN=true
