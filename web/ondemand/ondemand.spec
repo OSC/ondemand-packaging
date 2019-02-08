@@ -5,7 +5,7 @@
 %global patch 4
 %global ondemand_version %{major}.%{minor}
 %global package_version %{major}.%{minor}.%{patch}
-%global package_release 1
+%global package_release 2
 
 Name:      %{package_name}
 Version:   %{package_version}
