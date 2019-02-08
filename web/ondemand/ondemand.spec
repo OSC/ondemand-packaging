@@ -306,6 +306,9 @@ fi
 
 
 %changelog
+* Fri Feb 08 2019 Morgan Rodgers <mrodgers@osc.edu> 1.5.4-2
+- Second build for 1.5.4 (mrodgers@osc.edu)
+
 * Fri Feb 08 2019 Morgan Rodgers <mrodgers@osc.edu> 1.5.4-1
 - Bump release to 1.5.4 (mrodgers@osc.edu)
 
