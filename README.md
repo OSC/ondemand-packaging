@@ -8,6 +8,7 @@ Source files are referenced by git-annex.  Builds are handled by Docker.
 
 * [git-annex](http://git-annex.branchable.com/)
 * [docker](https://www.docker.com/get-started)
+* [virtualenv](https://virtualenv.pypa.io/en/latest/)
 
 ## HOWTO: checkout
 
@@ -16,6 +17,7 @@ Run:
 * `git clone https://github.com/OSC/ondemand-packaging`
 * `git annex init` to set up this repo for using git annex
 * `./setup_sources.sh -D` to register git-annex file URLs
+* `make`
 
 ## HOWTO: test a package
 
@@ -244,7 +246,7 @@ docker exec -it ondemand-packaging-$(whoami) /bin/bash
 If `./build.sh` had `-o /tmp/output` then the following command will upload the produced RPMs to the repo server:
 
 ```
-./release.py /tmp/output/*
+./virtualenv/bin/python ./release.py /tmp/output/*
 ```
 
 **CAUTION**: The `--force` flag is required if you wish to overwrite existing RPMs.

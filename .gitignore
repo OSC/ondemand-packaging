@@ -7,4 +7,4 @@ node_modules
 .gpgpass
 ondemand.sec
 mock/site-defaults.cfg
-
+virtualenv
