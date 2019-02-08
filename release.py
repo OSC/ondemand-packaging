@@ -56,7 +56,7 @@ def main():
 Usage examples:
 
     Release RPMs
-        %(prog)s /tmp/output
+        %(prog)s /tmp/output/*
 
     """
     parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter, epilog=usage_examples)
