@@ -2,10 +2,10 @@
 %global package_name ondemand
 %global major 1
 %global minor 5
-%global patch 3
+%global patch 4
 %global ondemand_version %{major}.%{minor}
 %global package_version %{major}.%{minor}.%{patch}
-%global package_release 1
+%global package_release 2
 
 Name:      %{package_name}
 Version:   %{package_version}
@@ -306,6 +306,12 @@ fi
 
 
 %changelog
+* Fri Feb 08 2019 Morgan Rodgers <mrodgers@osc.edu> 1.5.4-2
+- Second build for 1.5.4 (mrodgers@osc.edu)
+
+* Fri Feb 08 2019 Morgan Rodgers <mrodgers@osc.edu> 1.5.4-1
+- Bump release to 1.5.4 (mrodgers@osc.edu)
+
 * Thu Feb 07 2019 Morgan Rodgers <mrodgers@osc.edu> 1.5.3-1
 - Bump release to 1.5.3 (mrodgers@osc.edu)
 
