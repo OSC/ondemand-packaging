@@ -165,6 +165,15 @@ else
     RAKE_FLAGS='-q'
 fi
 
+if [ ! -d $WORK_DIR ]; then
+    echo_blue "Creating work directory: ${WORK_DIR}"
+    mkdir -p $WORK_DIR
+fi
+if [ ! -d $OUTPUT_DIR ]; then
+    echo_blue "Creating output directory: ${OUTPUT_DIR}"
+    mkdir -p $OUTPUT_DIR
+fi
+
 for p in "${PACKAGES[@]}"; do
     if $DEBUG; then
         set -x
