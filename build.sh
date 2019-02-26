@@ -219,16 +219,18 @@ for p in "${PACKAGES[@]}"; do
         echo_green "Container started with ID ${CONTAINER_ID}"
     fi
 
+    if [ "$TASK" == 'build:passenger_nginx' ]; then
+        if $DEBUG; then
+            debug_flag='-d'
+        else
+            debug_flag=''
+        fi
+        echo_blue "Build STARTED: passenger-nginx distro=${DISTRIBUTIONS}"
+        ${DIR}/build/passenger-nginx.py -w $WORK_DIR -o $OUTPUT_DIR -D $DISTRIBUTIONS $debug_flag
+    fi
+
     for distro in $DISTRIBUTIONS ; do
         echo_blue "Build STARTED: package=${p} distro=${distro} task=${TASK}"
-        if [ "$TASK" == 'build:passenger_nginx' ]; then
-            if $DEBUG; then
-                debug_flag='-d'
-            else
-                debug_flag=''
-            fi
-            ${DIR}/build/passenger-nginx.py -w $WORK_DIR -o $OUTPUT_DIR -D $distro $debug_flag
-        fi
         docker exec \
         $TTY_ARGS \
         -e "DISTRO=${distro}" \
