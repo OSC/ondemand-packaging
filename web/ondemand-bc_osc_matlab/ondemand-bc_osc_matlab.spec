@@ -5,7 +5,7 @@
 
 Name:     ondemand-%{app_name}
 Version:  0.4.0
-Release:  1%{?dist}
+Release:  2%{?dist}
 Summary:  SUMMARY
 
 Group:    System Environment/Daemons
@@ -37,6 +37,7 @@ if [ -x bin/setup ]; then
     bin/setup
 fi
 cp -a ./. %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/
+echo v%{version} > %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/VERSION
 
 
 %files
