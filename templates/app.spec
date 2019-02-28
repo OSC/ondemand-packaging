@@ -52,6 +52,7 @@ EOS
 %__rm ./log/production.log
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}
 %__cp -a ./. %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/
+echo v%{version} > %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/VERSION
 %if %{with passenger}
 %__mkdir_p %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys
 touch %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys/%{app_name}.conf
