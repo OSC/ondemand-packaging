@@ -26,7 +26,7 @@ ondemand-nginx:
     - ondemand-nginx-filesystem
     - ondemand-nginx-debuginfo
   versions:
-    - 1.14.0-1.p5.3.7
+    - 1.14.0-2.p5.3.7
 ondemand-passenger:
   packages:
     - ondemand-passenger
@@ -34,7 +34,7 @@ ondemand-passenger:
     - ondemand-passenger-devel
     - ondemand-passenger-doc
   versions:
-    - 5.3.7-1
+    - 5.3.7-2
 ondemand-runtime:
   packages:
     - ondemand-apache
