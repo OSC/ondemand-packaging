@@ -10,6 +10,7 @@ DISTRIBUTIONS="el6 el7"
 GPG_NAME='OnDemand Release Signing Key'
 SHOW_TASKS=false
 TASK=run
+CLEAN_OUTPUT=true
 CLEAN_DOCKER=true
 CONTAINER="ondemand-packaging-$(whoami)"
 PACKAGES=()
@@ -43,6 +44,7 @@ function usage()
     echo "  -S         Skip GPG signing"
     echo "  -T         Show all tasks"
     echo "  -t TASK    Task to run, Default: $TASK"
+    echo "  -C         Do not clean up output directory"
     echo "  -D         Do not clean up docker image"
     echo "  -v         Show debug information"
     echo "  -h         Show usage"
@@ -75,7 +77,7 @@ function parse_options()
 	local OPTIND=1
 	local ORIG_ARGV
 	local opt
-    while getopts "w:o:j:d:G:STt:Dvh" opt; do
+    while getopts "w:o:j:d:G:STt:CDvh" opt; do
         case "$opt" in
         w)
         	WORK_DIR="$OPTARG"
@@ -100,6 +102,9 @@ function parse_options()
         	;;
         t)
             TASK="$OPTARG"
+            ;;
+        C)
+            CLEAN_OUTPUT=false
             ;;
         D)
             CLEAN_DOCKER=false
@@ -163,6 +168,13 @@ if $DEBUG; then
     RAKE_FLAGS=''
 else
     RAKE_FLAGS='-q'
+fi
+
+if $CLEAN_OUTPUT; then
+    if [ -d $OUTPUT_DIR ]; then
+        echo_blue "Cleaning output directory: ${OUTPUT_DIR}"
+        rm -rf ${OUTPUT_DIR}/*
+    fi
 fi
 
 if [ ! -d $WORK_DIR ]; then
