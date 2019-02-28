@@ -5,7 +5,7 @@
 
 Name:     ondemand-%{app_name}
 Version:  0.8.0
-Release:  1%{?dist}
+Release:  2%{?dist}
 Summary:  Batch Connect - OSC ANSYS Workbench
 
 Group:    System Environment/Daemons
@@ -39,6 +39,7 @@ if [ -x bin/setup ]; then
     bin/setup
 fi
 cp -a ./. %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/
+echo v%{version} > %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/VERSION
 
 
 %files

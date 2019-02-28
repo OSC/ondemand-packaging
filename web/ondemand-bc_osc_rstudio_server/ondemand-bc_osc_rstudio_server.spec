@@ -5,7 +5,7 @@
 
 Name:     ondemand-%{app_name}
 Version:  0.6.0
-Release:  1%{?dist}
+Release:  2%{?dist}
 Summary:  SUMMARY
 
 Group:    System Environment/Daemons
@@ -32,6 +32,7 @@ DESCRIPTION
 %install
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}
 %__cp -a ./. %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/
+echo v%{version} > %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/VERSION
 
 
 %files

@@ -5,7 +5,7 @@
 
 Name:     ondemand-%{app_name}
 Version:  0.2.1
-Release:  3%{?dist}
+Release:  4%{?dist}
 Summary:  Pseudogene Functional Network
 
 Group:    System Environment/Daemons
@@ -47,6 +47,7 @@ EOS
 %__cp -a ./. %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/
 %__mkdir_p   %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/tmp
 touch        %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/tmp/restart.txt
+echo v%{version} > %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/VERSION
 
 %__mkdir_p   %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys
 touch        %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys/%{app_name}.conf
