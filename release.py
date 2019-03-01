@@ -64,6 +64,7 @@ Usage examples:
     parser.add_argument('-d', '--debug', action='store_true', default=False)
     parser.add_argument('-f', '--force', help='overwrite existing RPMs', action='store_true', default=False)
     parser.add_argument('--pkey', help='SSH private key to use for uploading RPMs (default: %(default)s)', default=pkey)
+    parser.add_argument('-c', '--config-section', help='config section to use', default='main')
     parser.add_argument('dirs', nargs='+')
     args = parser.parse_args()
 
@@ -83,11 +84,12 @@ Usage examples:
     logger.debug("Loading config file %s", config_path)
     config.read(config_path)
     host = config.get('main', 'host')
+    update = config.getboolean(args.config_section, 'update')
 
     for release_dir in args.dirs:
         dist = os.path.basename(release_dir)
-        rpm_path = config.get('main', 'rpm_path').replace('DIST', dist)
-        srpm_path = config.get('main', 'srpm_path').replace('DIST', dist)
+        rpm_path = config.get(args.config_section, 'rpm_path').replace('DIST', dist)
+        srpm_path = config.get(args.config_section, 'srpm_path').replace('DIST', dist)
         logger.debug("rpm_path=%s srpm_path=%s dist=%s", rpm_path, srpm_path, dist)
         rpms = []
         srpms = []
@@ -101,9 +103,9 @@ Usage examples:
                 rpms.append(p)
         rpms_released = release_packages(rpms, host, rpm_path, args.pkey, args.force)
         srpms_released = release_packages(srpms, host, srpm_path, args.pkey, args.force)
-        if rpms_released:
+        if rpms_released and update:
             update_repo(host, rpm_path, args.pkey)
-        if srpms_released:
+        if srpms_released and update:
             update_repo(host, srpm_path, args.pkey)
 
 if __name__ == '__main__':

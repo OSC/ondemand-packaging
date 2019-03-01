@@ -176,3 +176,17 @@ If `./build.sh` had `-o /tmp/output` then the following command will upload the 
 ```
 
 **CAUTION**: The `--force` flag is required if you wish to overwrite existing RPMs.
+
+## Release RPMs
+
+Build release RPMs:
+
+```
+./build.sh -w /tmp/work -o /tmp/output -S $(pwd)/misc/ondemand-release
+```
+
+Release RPMs:
+
+```
+./virtualenv/bin/python ./release.py -c release /tmp/output/*
+```
