@@ -161,11 +161,10 @@ The following example will build an RPM for CentOS/RHEL 7.  The RPMs will be wri
 
 The last argument is the path to a directory holding spec file for the package you wish to build.
 
-If there are errors during build you can either check under the path for `-w` or build with `-D` flag.  If you build with `-D` flag you can access the container doing something like the following:
+If there are errors during build you can either check under the path for `-w` or build with `-A` flag.  If you build with `-A` flag you are given a shell after all builds.
 
 ```
-./build.sh -w /tmp/work -o /tmp/output -d el7 -G 'My Site Key' -D /path/to/app/directory/with/spec
-docker exec -it ondemand-packaging-$(whoami) /bin/bash
+./build.sh -w /tmp/work -o /tmp/output -d el7 -G 'My Site Key' -A /path/to/app/directory/with/spec
 ```
 
 ## Publish RPMs (OSC)

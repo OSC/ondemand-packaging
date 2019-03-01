@@ -29,7 +29,7 @@ def release_packages(packages, host, path, pkey, force):
             continue
         dest = os.path.join(path, f)
         logger.debug("SFTP %s -> oodpkg@%s:%s", p, host, dest)
-        logger.info("Release: %s", p)
+        logger.info("Release: %s to %s", p, dest)
         sftp.put(p, dest)
         uploads = True
     sftp.close()
