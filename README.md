@@ -1,6 +1,18 @@
 # OnDemand packaging
 
-This repositories branches contain RPM spec files for OnDemand's dependencies and core applications.
+#### Table of Contents
+
+1. [Requirements](#requirements)
+1. [Install](#install)
+1. [Create a new core package or dependency](#create-a-new-core-package-or-dependency)
+1. [Update package](#update-package)
+1. [Build and release Passenger and NGINX](#build-and-release-passenger-and-nginx)
+1. [Increment repo release](#increment-repo-release)
+1. [Create release repo](#create-release-repo)
+1. [Build ondemand_buildbox Docker container](#build-ondemand_buildbox-docker-container)
+1. [GPG Setup](#gpg-setup)
+1. [Build RPM](#build-rpm)
+1. [Publish RPMs (OSC)](#publish-rpms-osc)
 
 ## Requirements
 
@@ -10,7 +22,7 @@ Source files are referenced by git-annex.  Builds are handled by Docker.
 * [docker](https://www.docker.com/get-started)
 * [virtualenv](https://virtualenv.pypa.io/en/latest/)
 
-## HOWTO: checkout
+## Install
 
 Run:
 
@@ -19,32 +31,12 @@ Run:
 * `./setup_sources.sh -D` to register git-annex file URLs
 * `make`
 
-## HOWTO: test a package
-
-Before tagging a build, please test it.  Using tito's --test flag, you can
-generate test (S)RPMs by first committing your changes locally, then it will
-use the SHA in the RPM version.
-
-### With mock
-
-Configuration for mock is supplied in mock/ and can be used to build any of
-the packages locally and quickly.
-
-```sh
-tito build --rpm --test --builder custom.MockSignBuilder --output $(mktemp -d) --arg mock_config_dir=mock/ --dist=.el7 --arg mock=el7-scl
-```
-
-The last argument is the name of the mock config in mock/, which includes SCL
-and non-SCL variants.  If SCL is not needed for the build then use `el7-nonscl`.
-
-**Notice:** tito works only on committed changes! If you are changing the `.spec` files, make sure you commit those changes before running `tito build` command.
-
-## HOWTO: create a new core package or dependency
+## Create a new core package or dependency
 
 For apps there is a bootstrap process that automates much of the initial setup.
 
-1. Run: `./mk_app_spec.sh <repo name> <app name> <version>`
-  * Example: `./mk_app_spec osc-systemstatus systemstatus 1.0.0`
+1. Run: `./templates/mk_app_spec.sh <repo name> <app name> <version>`
+  * Example: `./templates/mk_app_spec osc-systemstatus systemstatus 1.0.0`
 2. Update description and summary and adjust build and install dependencies
 
 Manually adding spec file:
@@ -60,7 +52,7 @@ Manually adding spec file:
   * `git annex add example-1.0.0.tar.gz`
 4. Submit pull request to `master` branch
 
-## HOWTO: Update package
+## Update package
 
 1. Update spec file with new version
 2. Change to package directory
@@ -71,32 +63,11 @@ Manually adding spec file:
 5. Remove old source
   * `git annex drop example-1.0.0.tar.gz`
   * `git rm example-1.0.0.tar.gz`
-6. Commit changes
-7. Test build [HOWTO: test a package](#howto-test-a-package)
-8. Release Package [HOWTO: release package](#howto-release-package)
+6. Build [Build RPM](#build-rpm)
+7. Commit changes
+8. Release Package [Publish RPMs (OSC)](#publish-rpms-osc)
 
-## HOWTO: release package
-
-1. Tag package after changing to package directory:
-  * `tito tag --keep-version`
-2. Push new tag and commit to origin
-  * `git push --tags origin master`
-3. Go back to root of this repo:
-  * `cd ../..`
-3. Release package
-  * `./release.sh <spec directory(s)>`
-  * Example: `./release.sh web/ondemand-bc_osc_abaqus`
-  * Example wildcard: `./release.sh web/ondemand-*`
-  * Manual:
-    * `RSYNC_USERNAME=oodpkg tito release --all-starting-with=web-scl`
-    * The value for `--all-starting-with` varies based on parent directory of package directory
-      * `compute` - Use `compute`
-      * `web-nonscl` - Use `web-nonscl`
-      * `web` - Use `web-scl`
-      * `misc/ondemand-release` - Use `release`
-      * `web/mod_auth_openidc` - Use `web-httpd24`
-
-## HOWTO: Build and release Passenger and NGINX
+## Build and release Passenger and NGINX
 
 1. Ensure `passenger-release.ini` has the correct value for `tag`.
 2. Run the build script:
@@ -111,61 +82,17 @@ The script for passenger performs the following steps:
 * SFTP upload signed RPMs and SRPMs to repo server
 * Update repo metadata
 
-## How does this repo work?
-
-This repo contains a directory per source package and some tito configuration
-and state (under .tito/).  Each source package directory contains a spec
-file and patches under version control plus references to the source files
-(i.e. tarballs).
-
-These references are managed using git-annex, a git extension for tracking
-large binary blobs outside of the git repo itself.  This means we can
-reference source files directly on rubygems.org etc, or perhaps set up a kind
-of lookaside cache in the future.  For now, we use the [special web remote](http://git-annex.branchable.com/tips/using_the_web_as_a_special_remote/)
-with URLs to all of our source files available on the web.
-
-tito's git-annex support will automatically (lazily) fetch files and cache
-them in your local git checkout as and when you build packages.
-
-tito works in two key stages: tagging and releasing.  For every RPM build, a
-tag needs to be created with tito (i.e. `tito tag --keep-version`) and this
-git tag is pushed to the central repository.  tito helps by creating a
-%changelog entry and tags in standard formats etc.
-
-When a tag is present in the central repository for a version, tito lets you
-build a SRPM and submit to koji, which builds the binary package (whereupon it
-gets pulled into our yum repositories).  This tagging strategy means we can
-rebuild a package from any point in the repository's history, and since the
-git-annex metadata is part of the tagged commit, even the binary content is
-effectively under source control.
-
-This repository is branched for major releases.
-
-## Support GPG signing
-
-Two files must be setup.  The local GPG keyring must have both private and public keys used by OnDemand.  Once the GPG keyring has key imported setup `~/.rpmmacros`
-
-```
-cat > ~/.rpmmacros <<EOF
-%_signature gpg
-%_gpg_path $HOME/.gnupg
-%_gpg_name OnDemand Release Signing Key
-%_gpg /usr/bin/gpg
-EOF
-```
-
-Next the private key passphrase needs to be added to `.gpgpass` under this repo.
-
-## HOWTO: Increment repo release
+## Increment repo release
 
 This step will be done after a release branch is created. For example, after `1.3` branch is created this workflow would be performed to stage master for future `1.4` work.
 
 1. Ensure on the `master` branch
 2. Run `bump-release.py`, example going from `1.3` to `1.4`
   * `./bump-release.py -p 1.3 -n 1.4`
-3. Commit each package separately and run release process
+3. Build RPMs for each updated package using one build command - [Build RPM](#build-rpm)
+4. Release Packages [Publish RPMs (OSC)](#publish-rpms-osc)
 
-## HOWTO: Create release repo
+## Create release repo
 
 A release repo would be created after when it's time to release OnDemand 1.3, for example.
 
@@ -176,11 +103,11 @@ A release repo would be created after when it's time to release OnDemand 1.3, fo
   * NOTE: Run with `--force` if existing RPMs need to be overwritten, which should be rare
   * NOTE: Run with `--clean` if RPMs need to be removed from release repo
 4. In `master` branch bump OnDemand release specific packages
-  * See [HOWTO: Increment repo release](#howto-increment-repo-release)
+  * See [Increment repo release](#increment-repo-release)
 
 Any changes that need to be made to package versions after a release repo is created will be done by repeating steps #3 and #4 from above.
 
-## HOWTO: Bootstrap latest release
+## Bootstrap latest release
 
 This only has to be done once
 
@@ -234,11 +161,10 @@ The following example will build an RPM for CentOS/RHEL 7.  The RPMs will be wri
 
 The last argument is the path to a directory holding spec file for the package you wish to build.
 
-If there are errors during build you can either check under the path for `-w` or build with `-D` flag.  If you build with `-D` flag you can access the container doing something like the following:
+If there are errors during build you can either check under the path for `-w` or build with `-A` flag.  If you build with `-A` flag you are given a shell after all builds.
 
 ```
-./build.sh -w /tmp/work -o /tmp/output -d el7 -G 'My Site Key' -D /path/to/app/directory/with/spec
-docker exec -it ondemand-packaging-$(whoami) /bin/bash
+./build.sh -w /tmp/work -o /tmp/output -d el7 -G 'My Site Key' -A /path/to/app/directory/with/spec
 ```
 
 ## Publish RPMs (OSC)
@@ -250,3 +176,17 @@ If `./build.sh` had `-o /tmp/output` then the following command will upload the 
 ```
 
 **CAUTION**: The `--force` flag is required if you wish to overwrite existing RPMs.
+
+## Release RPMs
+
+Build release RPMs:
+
+```
+./build.sh -w /tmp/work -o /tmp/output -S $(pwd)/misc/ondemand-release
+```
+
+Release RPMs:
+
+```
+./virtualenv/bin/python ./release.py -c release /tmp/output/*
+```

@@ -3,9 +3,15 @@
 %global repo_name pseudofun
 %global app_name pseudofun
 
+# Work around issue with EL6 builds
+# https://stackoverflow.com/a/48801417
+%if 0%{?rhel} < 7
+%define __strip /opt/rh/devtoolset-6/root/usr/bin/strip
+%endif
+
 Name:     ondemand-%{app_name}
 Version:  0.2.1
-Release:  3%{?dist}
+Release:  4%{?dist}
 Summary:  Pseudogene Functional Network
 
 Group:    System Environment/Daemons
@@ -47,6 +53,7 @@ EOS
 %__cp -a ./. %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/
 %__mkdir_p   %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/tmp
 touch        %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/tmp/restart.txt
+echo v%{version} > %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/VERSION
 
 %__mkdir_p   %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys
 touch        %{buildroot}%{_sharedstatedir}/ondemand-nginx/config/apps/sys/%{app_name}.conf

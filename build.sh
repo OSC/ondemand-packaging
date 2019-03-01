@@ -10,6 +10,8 @@ DISTRIBUTIONS="el6 el7"
 GPG_NAME='OnDemand Release Signing Key'
 SHOW_TASKS=false
 TASK=run
+CLEAN_OUTPUT=true
+ATTACH=false
 CLEAN_DOCKER=true
 CONTAINER="ondemand-packaging-$(whoami)"
 PACKAGES=()
@@ -43,6 +45,8 @@ function usage()
     echo "  -S         Skip GPG signing"
     echo "  -T         Show all tasks"
     echo "  -t TASK    Task to run, Default: $TASK"
+    echo "  -C         Do not clean up output directory"
+    echo "  -A         Attach after build"
     echo "  -D         Do not clean up docker image"
     echo "  -v         Show debug information"
     echo "  -h         Show usage"
@@ -75,7 +79,7 @@ function parse_options()
 	local OPTIND=1
 	local ORIG_ARGV
 	local opt
-    while getopts "w:o:j:d:G:STt:Dvh" opt; do
+    while getopts "w:o:j:d:G:STt:CADvh" opt; do
         case "$opt" in
         w)
         	WORK_DIR="$OPTARG"
@@ -100,6 +104,12 @@ function parse_options()
         	;;
         t)
             TASK="$OPTARG"
+            ;;
+        C)
+            CLEAN_OUTPUT=false
+            ;;
+        A)
+            ATTACH=true
             ;;
         D)
             CLEAN_DOCKER=false
@@ -165,6 +175,13 @@ else
     RAKE_FLAGS='-q'
 fi
 
+if $CLEAN_OUTPUT && [ $PACKAGES != 'attach' ]; then
+    if [ -d $OUTPUT_DIR ]; then
+        echo_blue "Cleaning output directory: ${OUTPUT_DIR}"
+        rm -rf ${OUTPUT_DIR}/*
+    fi
+fi
+
 if [ ! -d $WORK_DIR ]; then
     echo_blue "Creating work directory: ${WORK_DIR}"
     mkdir -p $WORK_DIR
@@ -181,12 +198,12 @@ for p in "${PACKAGES[@]}"; do
 
     GIT_ANNEX=false
     if which git-annex 2>/dev/null 1>/dev/null ; then
-        for f in `git-annex find --include='*' ${p}`; do
+        for f in `git-annex find --include='*' ${p} 2>/dev/null`; do
             GIT_ANNEX=true
             break
         done
     fi
-    if $GIT_ANNEX ; then
+    if $GIT_ANNEX; then
         echo_blue "Unlocking git-annex sources at ${p}"
         git-annex get $p 1>/dev/null
         git-annex unlock $p 1>/dev/null
@@ -219,16 +236,23 @@ for p in "${PACKAGES[@]}"; do
         echo_green "Container started with ID ${CONTAINER_ID}"
     fi
 
+    if [ "$p" == 'attach' ]; then
+        DISTRIBUTIONS=''
+        ATTACH=true
+    fi
+
+    if [ "$TASK" == 'build:passenger_nginx' ]; then
+        if $DEBUG; then
+            debug_flag='-d'
+        else
+            debug_flag=''
+        fi
+        echo_blue "Build STARTED: passenger-nginx distro=${DISTRIBUTIONS}"
+        ${DIR}/build/passenger-nginx.py -w $WORK_DIR -o $OUTPUT_DIR -D $DISTRIBUTIONS $debug_flag
+    fi
+
     for distro in $DISTRIBUTIONS ; do
         echo_blue "Build STARTED: package=${p} distro=${distro} task=${TASK}"
-        if [ "$TASK" == 'build:passenger_nginx' ]; then
-            if $DEBUG; then
-                debug_flag='-d'
-            else
-                debug_flag=''
-            fi
-            ${DIR}/build/passenger-nginx.py -w $WORK_DIR -o $OUTPUT_DIR -D $distro $debug_flag
-        fi
         docker exec \
         $TTY_ARGS \
         -e "DISTRO=${distro}" \
@@ -253,6 +277,22 @@ for p in "${PACKAGES[@]}"; do
     if $GIT_ANNEX; then
         echo_blue "Locking git-annex sources at ${p}"
         git-annex lock --force $p 1>/dev/null
+    fi
+    if $ATTACH ; then
+        docker exec \
+        $TTY_ARGS \
+        -e "DISTRO=${distro}" \
+        -e "PACKAGE=${p}" \
+        -e "GPG_SIGN=${GPG_SIGN}" \
+        -e "GPG_NAME=${GPG_NAME}" \
+        -e "OOD_UID=`/usr/bin/id -u`" \
+        -e "OOD_GID=`/usr/bin/id -g`" \
+        -e "DEBUG=${DEBUG}" \
+        -e "LC_CTYPE=en_US.UTF-8" \
+        $CONTAINER \
+        /ondemand-packaging/build/inituidgid.sh \
+        /ondemand-packaging/build/setuser ood \
+        /bin/bash
     fi
     if $CLEAN_DOCKER ; then
         kill_container $CONTAINER

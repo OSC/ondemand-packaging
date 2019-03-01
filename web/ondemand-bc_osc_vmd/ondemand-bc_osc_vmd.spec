@@ -5,7 +5,7 @@
 
 Name:     ondemand-%{app_name}
 Version:  0.1.0
-Release:  1%{?dist}
+Release:  2%{?dist}
 Summary:  Batch Connect - OSC VMD
 
 Group:    System Environment/Daemons
@@ -33,6 +33,7 @@ A Batch Connect app designed for OSC OnDemand that launches VMD within an Owens 
 %install
 %__mkdir_p %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}
 %__cp -a ./. %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/
+echo v%{version} > %{buildroot}%{_localstatedir}/www/ood/apps/sys/%{app_name}/VERSION
 
 
 %files

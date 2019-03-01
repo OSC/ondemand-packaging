@@ -33,9 +33,10 @@ def get_passenger(repo, tag, root):
         return False
     return True
 
-def build_packages(passenger, cache, output, work, dist, debug):
+def build_packages(passenger, cache, output, work, dists, debug):
     rpms = []
     srpms = []
+    dist = ' '.join(dists)
     build_path = os.path.join(passenger, 'packaging/rpm', 'build')
     cmd = [
         build_path, '-p', passenger,
@@ -56,18 +57,19 @@ def build_packages(passenger, cache, output, work, dist, debug):
     if rc != 0:
         logger.error("Failed to build packages, rc=%s work=%s output=%s", rc, work, output)
         return False, False
-    rpm_dir = os.path.join(output, dist)
-    if not os.path.isdir(rpm_dir):
-        logger.error("RPM Directory %s not found", rpm_dir)
-        return False, False
-    for f in os.listdir(rpm_dir):
-        path = os.path.join(rpm_dir, f)
-        if path.endswith('src.rpm'):
-            logger.info("Found SRPM: %s", path)
-            srpms.append(path)
-        elif path.endswith('.rpm'):
-            logger.info("Found RPM: %s", path)
-            rpms.append(path)
+    for d in dists:
+        rpm_dir = os.path.join(output, d)
+        if not os.path.isdir(rpm_dir):
+            logger.error("RPM Directory %s not found", rpm_dir)
+            return False, False
+        for f in os.listdir(rpm_dir):
+            path = os.path.join(rpm_dir, f)
+            if path.endswith('src.rpm'):
+                logger.info("Found SRPM: %s", path)
+                srpms.append(path)
+            elif path.endswith('.rpm'):
+                logger.info("Found RPM: %s", path)
+                rpms.append(path)
     return rpms, srpms
 
 def main():
@@ -82,7 +84,7 @@ Usage examples:
     parser.add_argument('-d', '--debug', action='store_true', default=False)
     parser.add_argument('-w', '--work', required=True)
     parser.add_argument('-o', '--output', required=True)
-    parser.add_argument('-D', '--dist', required=True)
+    parser.add_argument('-D', '--dist', nargs='+', required=True)
     args = parser.parse_args()
 
     if args.debug:

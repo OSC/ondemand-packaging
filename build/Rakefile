@@ -2,6 +2,8 @@ require_relative 'build_lib'
 
 DISTRO = ENV['DISTRO']
 PACKAGE = ENV['PACKAGE']
+WORK_DIR = "/work/#{DISTRO}"
+OUTPUT_DIR = "/output/#{DISTRO}"
 MOCK_CONFIG = {
   'el6' => 'epel-6-x86_64',
   'el7' => 'epel-7-x86_64',
@@ -62,29 +64,31 @@ namespace :build do
   task :rpm => :srpm do |task|
     puts "== #{task.name} ==".blue
     srpm = get_srpm()
-    sh "rm -rf /work/#{DISTRO}/*"
-    sh "mkdir -p /work/#{DISTRO}"
+    puts "\tCleaning #{WORK_DIR}".blue
+    sh "rm -rf #{WORK_DIR}/*"
+    sh "mkdir -p #{WORK_DIR}"
     puts "\tRPM from #{srpm} for #{PACKAGE} #{DISTRO}".blue
     sh "/usr/bin/mock --verbose -r #{MOCK_CONFIG[DISTRO]} " +
       "--enable-network " +
-      "--resultdir /work/#{DISTRO} " +
+      "--resultdir #{WORK_DIR} " +
       "rebuild #{srpm} #{cmd_suffix}"
   end
 
   desc "Build Finish"
   task :finish => :rpm do |task|
     puts "== #{task.name} ==".blue
-    puts "\tCleaning /output/#{DISTRO}".blue
-    sh "rm -rf /output/#{DISTRO}/*"
-    sh "mkdir -p /output/#{DISTRO}"
-    puts "\tcopy /work/#{DISTRO}/*.rpm /output/#{DISTRO}/".blue
-    sh "cp /work/#{DISTRO}/*.rpm /output/#{DISTRO}/"
+    if ! File.directory?(OUTPUT_DIR)
+      puts "\tCreating #{OUTPUT_DIR}".blue
+      sh "mkdir -p #{OUTPUT_DIR}"
+    end
+    puts "\tcopy #{WORK_DIR}/*.rpm #{OUTPUT_DIR}/".blue
+    sh "cp #{WORK_DIR}/*.rpm #{OUTPUT_DIR}/"
   end
 
   desc 'Sign RPMs'
   task :gpgsign do |task|
     puts "== #{task.name} ==".blue
-    get_rpms("/output/#{DISTRO}").each do |rpm|
+    get_rpms(OUTPUT_DIR).each do |rpm|
       puts "\tGPG signing #{rpm}".blue
       sh "/ondemand-packaging/rpm-sign.exp /ondemand-packaging/.gpgpass #{rpm} #{cmd_suffix}"
     end

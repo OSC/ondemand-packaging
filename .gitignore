@@ -1,10 +1,7 @@
 *~
 *.swp
 *.swo
-.tito/custom/*.pyc
-.tito/custom/__pycache__
 node_modules
 .gpgpass
 ondemand.sec
-mock/site-defaults.cfg
 virtualenv
