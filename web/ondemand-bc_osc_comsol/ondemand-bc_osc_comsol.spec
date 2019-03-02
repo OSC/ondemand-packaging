@@ -5,7 +5,7 @@
 
 Name:     ondemand-%{app_name}
 Version:  0.5.2
-Release:  1%{?dist}
+Release:  2%{?dist}
 Summary:  Batch Connect - OSC COMSOL Multiphysics
 
 Group:    System Environment/Daemons
