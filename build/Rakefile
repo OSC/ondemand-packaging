@@ -52,7 +52,22 @@ namespace :build do
     puts "== #{task.name} ==".blue
     sh 'find /package -type f -exec cp {} /home/ood/rpmbuild/SOURCES/ \;'
     spec = get_spec('/home/ood/rpmbuild/SOURCES')
-    if Dir['/home/ood/rpmbuild/SOURCES/*.tar.gz'].empty? && Dir['/home/ood/rpmbuild/SOURCES/*.zip'].empty?
+    spec_files = `spectool --list-files #{spec}`
+    sources = []
+    spec_files.each_line do |line|
+      l = line.split(' ')
+      s = l[1]
+      source = File.basename(s)
+      sources << source
+    end
+    get_sources = false
+    sources.each do |source|
+      f = File.join('/home/ood/rpmbuild/SOURCES', source)
+      if ! File.exists?(f)
+        get_sources = true
+      end
+    end
+    if get_sources
         puts "\tDownloading sources defined in #{spec}".blue
         sh "spectool -g -R -S #{spec} #{cmd_suffix}"
     end
