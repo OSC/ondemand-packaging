@@ -4,7 +4,7 @@
 %global app_name bc_osc_jupyter_pitzer
 
 Name:     ondemand-%{app_name}
-Version:  0.10.0
+Version:  0.11.0
 Release:  2%{?dist}
 Summary:  Batch Connect - OSC Jupyter Notebook (Pitzer)
 
