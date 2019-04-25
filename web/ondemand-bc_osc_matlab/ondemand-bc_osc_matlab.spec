@@ -4,8 +4,8 @@
 %global app_name bc_osc_matlab
 
 Name:     ondemand-%{app_name}
-Version:  0.5.1
-Release:  2%{?dist}
+Version:  0.6.0
+Release:  1%{?dist}
 Summary:  SUMMARY
 
 Group:    System Environment/Daemons
