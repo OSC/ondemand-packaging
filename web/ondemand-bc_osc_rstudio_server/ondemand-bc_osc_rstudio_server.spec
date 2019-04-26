@@ -4,8 +4,8 @@
 %global app_name bc_osc_rstudio_server
 
 Name:     ondemand-%{app_name}
-Version:  0.6.2
-Release:  2%{?dist}
+Version:  0.7.0
+Release:  1%{?dist}
 Summary:  SUMMARY
 
 Group:    System Environment/Daemons
