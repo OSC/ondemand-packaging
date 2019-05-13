@@ -8,6 +8,11 @@ MOCK_CONFIG = {
   'el6' => 'epel-6-x86_64',
   'el7' => 'epel-7-x86_64',
 }
+if PACKAGE =~ /mod_auth_openidc/
+  MOCK_ARGS = "--define 'scl httpd24'"
+else
+  MOCK_ARGS = nil
+end
 if ENV['DEBUG'] == 'true'
   cmd_suffix = ''
 else
@@ -83,10 +88,17 @@ namespace :build do
     sh "rm -rf #{WORK_DIR}/*"
     sh "mkdir -p #{WORK_DIR}"
     puts "\tRPM from #{srpm} for #{PACKAGE} #{DISTRO}".blue
-    sh "/usr/bin/mock --verbose -r #{MOCK_CONFIG[DISTRO]} " +
-      "--enable-network " +
-      "--resultdir #{WORK_DIR} " +
-      "rebuild #{srpm} #{cmd_suffix}"
+    cmd = [
+      "/usr/bin/mock --verbose -r #{MOCK_CONFIG[DISTRO]}",
+      '--enable-network',
+      '--resultdir', WORK_DIR,
+    ]
+    if MOCK_ARGS
+      puts "\tUsing extra mock args: #{MOCK_ARGS}".blue
+      cmd << MOCK_ARGS
+    end
+    cmd << "rebuild #{srpm} #{cmd_suffix}"
+    sh cmd.join(' ')
   end
 
   desc "Build Finish"
