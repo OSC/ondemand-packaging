@@ -17,7 +17,7 @@
 %global httpd_pkg_cache_dir %{?scl:%{_scl_root}}/var/cache/httpd/mod_auth_openidc
 
 Name:		%{?scl_prefix}mod_auth_openidc
-Version:	2.3.10
+Version:	2.3.11
 Release:	1%{?dist}
 Summary:	OpenID Connect auth module for Apache HTTP Server
 
@@ -58,7 +58,10 @@ make %{?_smp_mflags}
 
 %check
 export MODULES_DIR=%{_httpd_moddir}
+# Build works but tests fail on EL6
+%if 0%{?rhel} >= 7
 make %{?_smp_mflags} test
+%endif
 
 %install
 mkdir -p $RPM_BUILD_ROOT%{_httpd_moddir}

@@ -13,13 +13,13 @@ cjose:
     - cjose-debuginfo
     - cjose-devel
   versions:
-    - 0.5.1-1
+    - 0.6.1-1
 httpd24-mod_auth_openidc:
   packages:
     - httpd24-mod_auth_openidc
     - httpd24-mod_auth_openidc-debuginfo
   versions:
-    - 2.3.10-1
+    - 2.3.11-1
 ondemand-nginx:
   packages:
     - ondemand-nginx
