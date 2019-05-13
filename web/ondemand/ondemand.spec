@@ -123,7 +123,7 @@ EOF
 %__cat >> %{buildroot}%{_sysconfdir}/cron.d/ood << EOF
 #!/bin/bash
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
-0 */2 * * * root [ -f /opt/ood/nginx_stage/sbin/update_nginx_stage ] && /opt/ood/nginx_stage/sbin/update_nginx_stage --quiet
+0 */2 * * * root [ -f /opt/ood/nginx_stage/sbin/nginx_stage ] && /opt/ood/nginx_stage/sbin/nginx_stage nginx_clean 2>&1 | logger -t nginx_clean
 EOF
 
 %if %{with systemd}
