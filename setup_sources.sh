@@ -72,6 +72,8 @@ if $VERBOSE; then
     set -x
 fi
 
+DOCKER_ARGS="${DOCKER_ARGS} ${DIRS[@]}"
+
 if $DOCKER; then
     docker run -it \
     -v $(pwd):/ondemand-packaging \
