@@ -9,8 +9,8 @@
 %global apache httpd24
 
 Name:      ondemand-runtime
-Version:   1.5
-Release:   5%{?dist}
+Version:   1.6
+Release:   1%{?dist}
 Summary:   Package that handles %{scl} Software Collection.
 License:   MIT
 
