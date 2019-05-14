@@ -27,6 +27,12 @@ Source0:   https://github.com/OSC/%{package_name}/archive/v%{package_version}.ta
 %bcond_with systemd
 %endif
 
+# Work around issue with EL6 builds
+# https://stackoverflow.com/a/48801417
+%if 0%{?rhel} < 7
+%define __strip /opt/rh/devtoolset-6/root/usr/bin/strip
+%endif
+
 # Disable automatic dependencies as it causes issues with bundled gems and
 # node.js packages used in the apps
 AutoReqProv:     no
