@@ -1,8 +1,8 @@
 %{!?ncpus: %define ncpus 12}
 %global package_name ondemand
 %global major 1
-%global minor 5
-%global patch 5
+%global minor 6
+%global patch 0
 %global ondemand_version %{major}.%{minor}
 %global package_version %{major}.%{minor}.%{patch}
 %global package_release 1
