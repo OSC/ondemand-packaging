@@ -101,7 +101,7 @@ namespace :build do
   end
 
   desc 'Sign RPMs'
-  task :gpgsign do |task|
+  task :gpgsign => :bootstrap do |task|
     puts "== #{task.name} ==".blue
     get_rpms(OUTPUT_DIR).each do |rpm|
       puts "\tGPG signing #{rpm}".blue
