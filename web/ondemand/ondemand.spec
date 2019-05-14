@@ -31,20 +31,20 @@ Source0:   https://github.com/OSC/%{package_name}/archive/v%{package_version}.ta
 # node.js packages used in the apps
 AutoReqProv:     no
 
-BuildRequires:   ondemand-runtime = 1.5
-BuildRequires:   ondemand-scldevel = 1.5
+BuildRequires:   ondemand-runtime = %{ondemand_version}
+BuildRequires:   ondemand-scldevel = %{ondemand_version}
 BuildRequires:   sqlite-devel, curl, make
-BuildRequires:   ondemand-ruby = 1.5
-BuildRequires:   ondemand-nodejs = 1.5
-BuildRequires:   ondemand-git = 1.5
+BuildRequires:   ondemand-ruby = %{ondemand_version}
+BuildRequires:   ondemand-nodejs = %{ondemand_version}
+BuildRequires:   ondemand-git = %{ondemand_version}
 Requires:        sudo, lsof, sqlite-devel, cronie, wget, curl, make
-Requires:        ondemand-apache = 1.5
+Requires:        ondemand-apache = %{ondemand_version}
 Requires:        ondemand-nginx = 1.14.0
 Requires:        ondemand-passenger = 5.3.7
-Requires:        ondemand-ruby = 1.5
-Requires:        ondemand-nodejs = 1.5
-Requires:        ondemand-git = 1.5
-Requires:        ondemand-runtime = 1.5
+Requires:        ondemand-ruby = %{ondemand_version}
+Requires:        ondemand-nodejs = %{ondemand_version}
+Requires:        ondemand-git = %{ondemand_version}
+Requires:        ondemand-runtime = %{ondemand_version}
 
 %if %{with systemd}
 BuildRequires: systemd
