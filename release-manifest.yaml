@@ -45,9 +45,9 @@ ondemand-runtime:
     - ondemand-runtime
     - ondemand-scldevel
   versions:
-    - 1.5-5
+    - 1.6-1
 ondemand:
-  - 1.5.5-1
+  - 1.6.0-1
 
 # compute
 ondemand-compute:

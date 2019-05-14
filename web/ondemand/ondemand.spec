@@ -1,8 +1,8 @@
 %{!?ncpus: %define ncpus 12}
 %global package_name ondemand
 %global major 1
-%global minor 5
-%global patch 5
+%global minor 6
+%global patch 0
 %global ondemand_version %{major}.%{minor}
 %global package_version %{major}.%{minor}.%{patch}
 %global package_release 1
@@ -25,6 +25,12 @@ Source0:   https://github.com/OSC/%{package_name}/archive/v%{package_version}.ta
 %bcond_without systemd
 %else
 %bcond_with systemd
+%endif
+
+# Work around issue with EL6 builds
+# https://stackoverflow.com/a/48801417
+%if 0%{?rhel} < 7
+%define __strip /opt/rh/devtoolset-6/root/usr/bin/strip
 %endif
 
 # Disable automatic dependencies as it causes issues with bundled gems and
