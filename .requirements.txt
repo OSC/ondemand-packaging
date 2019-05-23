@@ -1,1 +1,4 @@
 paramiko==2.1.6
+sh
+requests
+pathlib2; python_version < '3.0'
