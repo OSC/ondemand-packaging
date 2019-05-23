@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
 from glob import glob
-from pathlib import Path
 from sh import Command, rsync, perl, grep
 import argparse
 import os
 import requests
 import sys
+
+try:
+  from pathlib import Path
+except ImportError:
+  from pathlib2 import Path
 
 
 class BuildWatcher(object):
