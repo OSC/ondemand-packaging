@@ -190,3 +190,17 @@ Release RPMs:
 ```
 ./virtualenv/bin/python ./release.py -c release /tmp/output/*
 ```
+
+## Compute RPMs
+
+Build RPMs for compute:
+
+```
+./build.sh -w /tmp/work -o /tmp/output -S $(pwd)/compute/ondemand-compute
+```
+
+Release RPMs:
+
+```
+./virtualenv/bin/python ./release.py -c compute /tmp/output/*
+```
