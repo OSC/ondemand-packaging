@@ -4,8 +4,8 @@
 %global app_name bc_osc_abaqus
 
 Name:     ondemand-%{app_name}
-Version:  0.5.1
-Release:  2%{?dist}
+Version:  0.5.2
+Release:  1%{?dist}
 Summary:  Batch Connect - OSC Abaqus/CAE
 
 Group:    System Environment/Daemons
