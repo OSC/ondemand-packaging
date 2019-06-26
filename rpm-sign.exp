@@ -12,6 +12,7 @@ set pass [read $fp]
 #    expect eof
 #}
 set file [lindex $argv 1]
+set timeout -1
 spawn rpmsign --addsign --quiet $file
 expect -exact "Enter pass phrase: "
 send -- "$pass\r"
