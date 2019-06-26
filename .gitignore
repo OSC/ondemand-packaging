@@ -5,3 +5,5 @@ node_modules
 .gpgpass
 ondemand.sec
 virtualenv
+stage/*
+!stage/.keep

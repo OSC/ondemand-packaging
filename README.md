@@ -153,10 +153,10 @@ Substitute `Name-Real` and `Name-Email` with site specific values.  The value of
 
 Builds are performed using Docker.
 
-The following example will build an RPM for CentOS/RHEL 7.  The RPMs will be written to /tmp/output/el7 and signed by GPG key named 'My Site Key'.  The files `.gpgpass` and `ondemand.sec` must exist at the root of this repo if you wish to perform GPG signing.
+The following example will build an RPM for CentOS/RHEL 7.  The RPMs will be written to /tmp/output/el7 and signed by GPG key named 'My Site Key'.  The files `.gpgpass` and `ondemand.sec` must exist at the root of this repo if you wish to perform GPG signing. The value for `-g` must point to path to GPG public key.
 
 ```
-./build.sh -w /tmp/work -o /tmp/output -d el7 -G 'My Site Key' /path/to/app/directory/with/spec
+./build.sh -w /tmp/work -o /tmp/output -d el7 -G 'My Site Key' -g /path/to/GPG-pubkey /path/to/app/directory/with/spec
 ```
 
 The last argument is the path to a directory holding spec file for the package you wish to build.
@@ -164,7 +164,7 @@ The last argument is the path to a directory holding spec file for the package y
 If there are errors during build you can either check under the path for `-w` or build with `-A` flag.  If you build with `-A` flag you are given a shell after all builds.
 
 ```
-./build.sh -w /tmp/work -o /tmp/output -d el7 -G 'My Site Key' -A /path/to/app/directory/with/spec
+./build.sh -w /tmp/work -o /tmp/output -d el7 -G 'My Site Key' -g /path/to/GPG-pubkey -A /path/to/app/directory/with/spec
 ```
 
 ## Publish RPMs (OSC)

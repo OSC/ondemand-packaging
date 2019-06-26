@@ -50,6 +50,9 @@ namespace :build do
     sh "echo '%_gpg_name #{ENV['GPG_NAME']}' >> ~/.rpmmacros"
     sh 'rm -rf ~/.gnupg'
     sh "gpg --import /ondemand-packaging/ondemand.sec #{cmd_suffix}"
+    if ENV['GPG_PUBKEY'] && ! ENV['GPG_PUBKEY'].empty?
+      sh "rpm --import /ondemand-packaging/stage/#{ENV['GPG_PUBKEY']} #{cmd_suffix}"
+    end
   end
 
   desc "Build SRPM"

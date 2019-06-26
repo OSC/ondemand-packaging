@@ -8,6 +8,7 @@ OUTPUT_DIR=
 CONCURRENCY=1
 DISTRIBUTIONS="el6 el7"
 GPG_NAME='OnDemand Release Signing Key'
+GPG_PUBKEY_PATH=''
 SHOW_TASKS=false
 TASK=run
 CLEAN_OUTPUT=true
@@ -42,6 +43,7 @@ function usage()
     echo "             Default: $DISTRIBUTIONS"
     echo "  -G NAME    GPG key name"
     echo "             Default: $GPG_NAME"
+    echo "  -g         GPG public key path"
     echo "  -S         Skip GPG signing"
     echo "  -T         Show all tasks"
     echo "  -t TASK    Task to run, Default: $TASK"
@@ -79,7 +81,7 @@ function parse_options()
 	local OPTIND=1
 	local ORIG_ARGV
 	local opt
-    while getopts "w:o:j:d:G:STt:CADvh" opt; do
+    while getopts "w:o:j:d:G:g:STt:CADvh" opt; do
         case "$opt" in
         w)
         	WORK_DIR="$OPTARG"
@@ -95,6 +97,9 @@ function parse_options()
         	;;
         G)
             GPG_NAME="$OPTARG"
+            ;;
+        g)
+            GPG_PUBKEY_PATH="$OPTARG"
             ;;
         S)
             GPG_SIGN=false
@@ -191,11 +196,19 @@ if [ ! -d $OUTPUT_DIR ]; then
     mkdir -p $OUTPUT_DIR
 fi
 
-for p in "${PACKAGES[@]}"; do
-    if $DEBUG; then
-        set -x
-    fi
+if $DEBUG; then
+    set -x
+fi
 
+if [ "x${GPG_PUBKEY_PATH}" != "x" ]; then
+    echo_blue "Staging ${GPG_PUBKEY_PATH}"
+    cp -f $GPG_PUBKEY_PATH ${DIR}/stage/
+    export GPG_PUBKEY=$(basename $GPG_PUBKEY_PATH)
+else
+    export GPG_PUBKEY=''
+fi
+
+for p in "${PACKAGES[@]}"; do
     GIT_ANNEX=false
     if which git-annex 2>/dev/null 1>/dev/null ; then
         for f in `git-annex find --include='*' ${p} 2>/dev/null`; do
@@ -259,6 +272,7 @@ for p in "${PACKAGES[@]}"; do
         -e "PACKAGE=${p}" \
         -e "GPG_SIGN=${GPG_SIGN}" \
         -e "GPG_NAME=${GPG_NAME}" \
+        -e "GPG_PUBKEY=${GPG_PUBKEY}" \
         -e "OOD_UID=`/usr/bin/id -u`" \
         -e "OOD_GID=`/usr/bin/id -g`" \
         -e "DEBUG=${DEBUG}" \
