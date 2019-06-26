@@ -38,6 +38,7 @@ sudo -u ood -H cat >> /home/ood/.rpmmacros <<EOF
 %_gpg_path ~/.gnupg
 %_gpg /usr/bin/gpg
 EOF
+rpm --import /build/RPM-GPG-KEY-ondemand
 
 run cp /build/epel-6-x86_64.cfg /etc/mock/epel-6-x86_64.cfg
 run cp /build/epel-7-x86_64.cfg /etc/mock/epel-7-x86_64.cfg
