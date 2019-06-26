@@ -131,6 +131,29 @@ namespace :build do
       Rake::Task['build:gpgsign'].invoke
     end
   end
+
+  desc 'Sanity tests'
+  task :sanity do |task|
+    failure = false
+    puts "== #{task.name} ==".blue
+    if ENV['GPG_SIGN'] == 'true'
+      get_rpms(OUTPUT_DIR).each do |rpm|
+        puts "\tTest GPG signing #{rpm}".blue
+        output = `rpm -K #{rpm} 2>&1`
+        exit_code = $?.exitstatus
+        puts output if ENV['DEBUG'] == 'true'
+        if exit_code != 0
+          puts "\tGPG check failure: exit code #{exit_code}".red
+          failure = true
+        end
+        if output !~ /pgp/
+          puts "\tRPM not GPG signed".red
+          failure = true
+        end
+      end
+    end
+    exit 1 if failure
+  end
 end
 
 task :run do
@@ -139,4 +162,5 @@ task :run do
   if ENV['GPG_SIGN'] == 'true'
     Rake::Task['build:gpgsign'].invoke
   end
+  Rake::Task['build:sanity'].invoke
 end
