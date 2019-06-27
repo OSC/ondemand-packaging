@@ -17,6 +17,7 @@ CLEAN_DOCKER=true
 CONTAINER="ondemand-packaging-$(whoami)"
 PACKAGES=()
 GPG_SIGN=true
+ret=0
 if [ ! -f ${DIR}/.gpgpass ]; then
     echo '!!! GPG SIGNING DISABLED : .gpgpass not found !!!'
     GPG_SIGN=false
@@ -283,6 +284,7 @@ for p in "${PACKAGES[@]}"; do
         rake ${RAKE_FLAGS} -f /ondemand-packaging/build/Rakefile ${TASK}
         if [ $? -ne 0 ]; then
             echo_red "Build FAILED: package=${p} distro=${distro}"
+            ret=1
         else
             echo_green "Build SUCCESS: package=${p} distro=${distro}"
             echo_green "Check ${OUTPUT_DIR}/${distro} for RPMs"
@@ -313,4 +315,4 @@ for p in "${PACKAGES[@]}"; do
     fi
 done
 
-exit 0
+exit $ret
