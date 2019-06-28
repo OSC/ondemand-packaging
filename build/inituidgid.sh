@@ -4,15 +4,6 @@
 set -e
 set -o pipefail
 
-if awk -F: '{ print $3 }' < /etc/passwd | grep -q "^${OOD_UID}$"; then
-	echo "ERROR: you can only run this script with a user whose UID does not already exist in the Docker container. Current UID: $OOD_UID"
-	exit 1
-fi
-if awk -F: '{ print $3 }' < /etc/group | grep -q "^${OOD_GID}$"; then
-	echo "ERROR: you can only run this script with a user whose GID does not already exist in the Docker container. Current GID: $OOD_GID"
-	exit 1
-fi
-
 chown -R "$OOD_UID:$OOD_GID" /home/ood
 groupmod -o -g "$OOD_GID" ood
 usermod -o -u "$OOD_UID" -g "$OOD_GID" ood 2>/dev/null 1>/dev/null
