@@ -51,6 +51,7 @@ function usage()
     echo "  -C         Do not clean up output directory"
     echo "  -A         Attach after build"
     echo "  -D         Do not clean up docker image"
+    echo "  -u         Use unique container name"
     echo "  -v         Show debug information"
     echo "  -h         Show usage"
 }
@@ -119,6 +120,9 @@ function parse_options()
             ;;
         D)
             CLEAN_DOCKER=false
+            ;;
+        u)
+            CONTAINER="${CONTAINER}-$(uuidgen)"
             ;;
         v)
             DEBUG=true
