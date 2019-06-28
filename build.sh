@@ -83,7 +83,7 @@ function parse_options()
 	local OPTIND=1
 	local ORIG_ARGV
 	local opt
-    while getopts "w:o:j:d:G:g:STt:CADvh" opt; do
+    while getopts "w:o:j:d:G:g:STt:CADuvh" opt; do
         case "$opt" in
         w)
         	WORK_DIR="$OPTARG"
