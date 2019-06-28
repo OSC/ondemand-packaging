@@ -58,7 +58,7 @@ namespace :build do
   desc "Build SRPM"
   task :srpm => :bootstrap do |task|
     puts "== #{task.name} ==".blue
-    sh 'find /package -type f -exec cp {} /home/ood/rpmbuild/SOURCES/ \;'
+    sh 'find /package -maxdepth 1 -type f -exec cp {} /home/ood/rpmbuild/SOURCES/ \;'
     spec = get_spec('/home/ood/rpmbuild/SOURCES')
     spec_files = `spectool --list-files #{spec}`
     sources = []
