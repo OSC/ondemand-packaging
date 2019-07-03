@@ -38,7 +38,7 @@ def release_packages(packages, host, path, pkey, force):
 
 def update_repo(host, path, pkey):
     _pkey = paramiko.RSAKey.from_private_key_file(pkey)
-    cmd = "cd %s ; createrepo_c ." % path
+    cmd = "cd %s ; createrepo_c --update ." % path
     logger.info("Updating repo metadata at %s:%s", host, path)
     logger.debug("Executing via SSH oodpkg@%s '%s'", host, cmd)
     ssh = paramiko.SSHClient()
