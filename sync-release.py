@@ -92,7 +92,7 @@ Usage examples:
                     logger.info("mkdir -p %s", d)
                     os.makedirs(d, 0755)
 
-    if args.release == 'latest':
+    if args.release in ['latest','ci']:
         logger.info("Latest release does not require sync, exiting")
         sys.exit(0)
 
