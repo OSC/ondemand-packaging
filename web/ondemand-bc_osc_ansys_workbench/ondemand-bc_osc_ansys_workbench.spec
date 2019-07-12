@@ -4,7 +4,7 @@
 %global app_name bc_osc_ansys_workbench
 
 Name:     ondemand-%{app_name}
-Version:  0.8.1
+Version:  0.8.2
 Release:  2%{?dist}
 Summary:  Batch Connect - OSC ANSYS Workbench
 

@@ -4,7 +4,7 @@
 %global app_name bc_osc_comsol
 
 Name:     ondemand-%{app_name}
-Version:  0.5.2
+Version:  0.5.3
 Release:  2%{?dist}
 Summary:  Batch Connect - OSC COMSOL Multiphysics
 

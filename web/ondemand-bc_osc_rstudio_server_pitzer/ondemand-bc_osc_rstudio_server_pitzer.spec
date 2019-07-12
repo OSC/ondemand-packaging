@@ -4,7 +4,7 @@
 %global app_name bc_osc_rstudio_server_pitzer
 
 Name:     ondemand-%{app_name}
-Version:  0.0.1
+Version:  0.0.2
 Release:  1%{?dist}
 Summary:  SUMMARY
 

@@ -4,7 +4,7 @@
 %global app_name bc_osc_paraview
 
 Name:     ondemand-%{app_name}
-Version:  0.3.0
+Version:  0.3.1
 Release:  2%{?dist}
 Summary:  SUMMARY
 

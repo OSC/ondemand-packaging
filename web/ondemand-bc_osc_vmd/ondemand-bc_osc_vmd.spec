@@ -4,7 +4,7 @@
 %global app_name bc_osc_vmd
 
 Name:     ondemand-%{app_name}
-Version:  0.1.0
+Version:  0.1.1
 Release:  2%{?dist}
 Summary:  Batch Connect - OSC VMD
 
