@@ -19,6 +19,12 @@ else
   cmd_suffix = '2>/dev/null 1>/dev/null'
 end
 
+if ENV['VERSION'] && ! ENV['VERSION'].empty?
+  VERSION_DEFINE = "--define 'package_version #{ENV['VERSION']}'"
+else
+  VERSION_DEFINE = ''
+end
+
 def get_spec(dir)
   files = Dir["#{dir}/*.spec"]
   files[0]
@@ -60,7 +66,7 @@ namespace :build do
     puts "== #{task.name} ==".blue
     sh 'find /package -maxdepth 1 -type f -exec cp {} /home/ood/rpmbuild/SOURCES/ \;'
     spec = get_spec('/home/ood/rpmbuild/SOURCES')
-    spec_files = `spectool --list-files #{spec}`
+    spec_files = `spectool #{VERSION_DEFINE} --list-files #{spec}`
     sources = []
     spec_files.each_line do |line|
       l = line.split(' ')
@@ -77,10 +83,10 @@ namespace :build do
     end
     if get_sources
         puts "\tDownloading sources defined in #{spec}".blue
-        sh "spectool -g -R -S #{spec} #{cmd_suffix}"
+        sh "spectool #{VERSION_DEFINE} -g -R -S #{spec} #{cmd_suffix}"
     end
     puts "\tBuild SRPM for #{spec}".blue
-    sh "rpmbuild -bs #{spec} #{cmd_suffix}"
+    sh "rpmbuild #{VERSION_DEFINE} -bs #{spec} #{cmd_suffix}"
   end
 
   desc "Build RPM"
@@ -93,6 +99,7 @@ namespace :build do
     puts "\tRPM from #{srpm} for #{PACKAGE} #{DISTRO}".blue
     cmd = [
       "/usr/bin/mock --verbose -r #{MOCK_CONFIG[DISTRO]}",
+      VERSION_DEFINE,
       '--enable-network',
       '--resultdir', WORK_DIR,
     ]

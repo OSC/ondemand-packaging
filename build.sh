@@ -17,6 +17,7 @@ CLEAN_DOCKER=true
 CONTAINER="ondemand-packaging-$(whoami)"
 PACKAGES=()
 GPG_SIGN=true
+VERSION=''
 ret=0
 if [ ! -f ${DIR}/.gpgpass ]; then
     echo '!!! GPG SIGNING DISABLED : .gpgpass not found !!!'
@@ -52,6 +53,7 @@ function usage()
     echo "  -A         Attach after build"
     echo "  -D         Do not clean up docker image"
     echo "  -u         Use unique container name"
+    echo "  -V         Build version of package"
     echo "  -v         Show debug information"
     echo "  -h         Show usage"
 }
@@ -83,7 +85,7 @@ function parse_options()
 	local OPTIND=1
 	local ORIG_ARGV
 	local opt
-    while getopts "w:o:j:d:G:g:STt:CADuvh" opt; do
+    while getopts "w:o:j:d:G:g:STt:CADuV:vh" opt; do
         case "$opt" in
         w)
         	WORK_DIR="$OPTARG"
@@ -123,6 +125,9 @@ function parse_options()
             ;;
         u)
             CONTAINER="${CONTAINER}-$(uuidgen)"
+            ;;
+        V)
+            VERSION="$OPTARG"
             ;;
         v)
             DEBUG=true
@@ -278,6 +283,7 @@ for p in "${PACKAGES[@]}"; do
         -e "GPG_SIGN=${GPG_SIGN}" \
         -e "GPG_NAME=${GPG_NAME}" \
         -e "GPG_PUBKEY=${GPG_PUBKEY}" \
+        -e "VERSION=${VERSION}" \
         -e "OOD_UID=`/usr/bin/id -u`" \
         -e "OOD_GID=`/usr/bin/id -g`" \
         -e "DEBUG=${DEBUG}" \
@@ -305,6 +311,7 @@ for p in "${PACKAGES[@]}"; do
         -e "PACKAGE=${p}" \
         -e "GPG_SIGN=${GPG_SIGN}" \
         -e "GPG_NAME=${GPG_NAME}" \
+        -e "VERSION=${VERSION}" \
         -e "OOD_UID=`/usr/bin/id -u`" \
         -e "OOD_GID=`/usr/bin/id -g`" \
         -e "DEBUG=${DEBUG}" \
