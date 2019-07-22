@@ -19,10 +19,23 @@ else
   cmd_suffix = '2>/dev/null 1>/dev/null'
 end
 
-if ENV['VERSION'] && ! ENV['VERSION'].empty?
-  VERSION_DEFINE = "--define 'package_version #{ENV['VERSION']}'"
+if ENV['GIT_TAG'] && ! ENV['GIT_TAG'].empty?
+  git_tag = ENV['GIT_TAG'].split('-')
+  git_tag_version = git_tag[0]
+  if git_tag_version.start_with?('v')
+    git_tag_version = git_tag_version[1..-1]
+  end
+  GIT_TAG_DEFINE = "--define 'git_tag #{ENV['GIT_TAG']}'"
+  VERSION_DEFINE = "--define 'package_version #{git_tag_version}'"
+  if git_tag.size >= 2
+    RELEASE_DEFINE = "--define 'package_release #{git_tag[1]}'"
+  else
+    RELEASE_DEFINE = ''
+  end
 else
+  GIT_TAG_DEFINE = ''
   VERSION_DEFINE = ''
+  RELEASE_DEFINE = ''
 end
 
 def get_spec(dir)
@@ -66,7 +79,7 @@ namespace :build do
     puts "== #{task.name} ==".blue
     sh 'find /package -maxdepth 1 -type f -exec cp {} /home/ood/rpmbuild/SOURCES/ \;'
     spec = get_spec('/home/ood/rpmbuild/SOURCES')
-    spec_files = `spectool #{VERSION_DEFINE} --list-files #{spec}`
+    spec_files = `spectool #{GIT_TAG_DEFINE} #{VERSION_DEFINE} #{RELEASE_DEFINE} --list-files #{spec}`
     sources = []
     spec_files.each_line do |line|
       l = line.split(' ')
@@ -83,10 +96,10 @@ namespace :build do
     end
     if get_sources
         puts "\tDownloading sources defined in #{spec}".blue
-        sh "spectool #{VERSION_DEFINE} -g -R -S #{spec} #{cmd_suffix}"
+        sh "spectool #{GIT_TAG_DEFINE} #{VERSION_DEFINE} #{RELEASE_DEFINE} -g -R -S #{spec} #{cmd_suffix}"
     end
     puts "\tBuild SRPM for #{spec}".blue
-    sh "rpmbuild #{VERSION_DEFINE} -bs #{spec} #{cmd_suffix}"
+    sh "rpmbuild #{GIT_TAG_DEFINE} #{VERSION_DEFINE} #{RELEASE_DEFINE} -bs #{spec} #{cmd_suffix}"
   end
 
   desc "Build RPM"
@@ -99,7 +112,7 @@ namespace :build do
     puts "\tRPM from #{srpm} for #{PACKAGE} #{DISTRO}".blue
     cmd = [
       "/usr/bin/mock --verbose -r #{MOCK_CONFIG[DISTRO]}",
-      VERSION_DEFINE,
+      GIT_TAG_DEFINE, VERSION_DEFINE, RELEASE_DEFINE,
       '--enable-network',
       '--resultdir', WORK_DIR,
     ]
