@@ -1,1 +1,1 @@
-BUILDBOX_IMAGE='ohiosupercomputer/ondemand_buildbox:0.3.0'
+BUILDBOX_IMAGE='ohiosupercomputer/ondemand_buildbox:0.4.0'
