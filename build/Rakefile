@@ -114,6 +114,7 @@ namespace :build do
       "/usr/bin/mock --verbose -r #{MOCK_CONFIG[DISTRO]}",
       GIT_TAG_DEFINE, VERSION_DEFINE, RELEASE_DEFINE,
       '--enable-network',
+      '--no-clean', '--no-cleanup-after',
       '--resultdir', WORK_DIR,
     ]
     if MOCK_ARGS

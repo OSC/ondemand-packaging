@@ -25,7 +25,7 @@ header "Installing dependencies"
 run yum update -y
 run yum install -y epel-release centos-release-scl
 run yum install -y rubygem-rake sudo git git-annex which expect \
-    rpm-build rpmdevtools mock rpm-sign scl-utils-build docker
+    rpm-build rpmdevtools mock rpm-sign scl-utils-build
 
 header "Miscellaneous"
 run cp /build/sudoers.conf /etc/sudoers.d/ood
@@ -40,8 +40,11 @@ sudo -u ood -H cat >> /home/ood/.rpmmacros <<EOF
 EOF
 rpm --import /build/RPM-GPG-KEY-ondemand
 
-run cp /build/epel-6-x86_64.cfg /etc/mock/epel-6-x86_64.cfg
-run cp /build/epel-7-x86_64.cfg /etc/mock/epel-7-x86_64.cfg
+run cp -a /build/epel-6-x86_64.cfg /etc/mock/epel-6-x86_64.cfg
+run cp -a /build/epel-7-x86_64.cfg /etc/mock/epel-7-x86_64.cfg
+if [ -f /build/mock-cache.tar.gz ]; then
+    run tar xf /build/mock-cache.tar.gz -C /
+fi
 
 run sudo -u ood -H git config --global user.email "packages@osc.edu"
 run sudo -u ood -H git config --global user.name "OnDemand Packaging"

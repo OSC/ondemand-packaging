@@ -219,6 +219,10 @@ else
 fi
 
 for p in "${PACKAGES[@]}"; do
+    if [ ! -d $p -a $p != 'attach' ]; then
+        echo_red "Package ${p} is not a directory"
+        continue
+    fi
     GIT_ANNEX=false
     if which git-annex 2>/dev/null 1>/dev/null ; then
         for f in `git-annex find --include='*' ${p} 2>/dev/null`; do
