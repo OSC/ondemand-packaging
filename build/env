@@ -1,1 +1,1 @@
-BUILDBOX_IMAGE='ohiosupercomputer/ondemand_buildbox:0.4.0'
+../docker-image/env

@@ -42,8 +42,10 @@ rpm --import /build/RPM-GPG-KEY-ondemand
 
 run cp -a /build/epel-6-x86_64.cfg /etc/mock/epel-6-x86_64.cfg
 run cp -a /build/epel-7-x86_64.cfg /etc/mock/epel-7-x86_64.cfg
-if [ -f /build/mock-cache.tar.gz ]; then
-    run tar xf /build/mock-cache.tar.gz -C /
+source /build/env
+run curl -o /build/$MOCK_CACHE https://yum.osc.edu/ondemand/build/$MOCK_CACHE
+if [ -f /build/$MOCK_CACHE ]; then
+    run tar xf /build/$MOCK_CACHE -C /
 fi
 
 run sudo -u ood -H git config --global user.email "packages@osc.edu"
