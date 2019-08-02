@@ -94,4 +94,4 @@ tar czf /build/$MOCK_CACHE /var/cache/mock
 
 docker kill $CONTAINER_ID
 
-scp -i $PKEY ./$MOCK_CACHE $REPO/$MOCK_CACHE
+scp -i $PKEY ./$MOCK_CACHE $REPO/$MOCK_CACHE && rm -f $MOCK_CACHE

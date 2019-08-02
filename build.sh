@@ -177,6 +177,10 @@ function parse_options()
 }
 
 parse_options "$@"
+if [ $? -ne 0 ]; then
+    echo "Error parsing options"
+    exit 1
+fi
 
 if tty -s; then
 	TTY_ARGS="-t -i"
