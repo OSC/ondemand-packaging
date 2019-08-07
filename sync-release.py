@@ -86,6 +86,14 @@ Usage examples:
     # Prep release directories
     for t in ['compute', 'web']:
         for rel in ['el6', 'el7']:
+            rel_d = os.path.join(release_dir, t, rel)
+            if not os.path.isdir(rel_d):
+                logger.info("mkdir -p %s", rel_d)
+                os.makedirs(rel_d, 0755)
+            rel_l = "%sServer" % rel_d
+            if not os.path.islink(rel_l):
+                logger.info("ln -s %s %s", rel, rel_l)
+                os.symlink(rel, rel_l)
             for arch in ['SRPMS', 'x86_64']:
                 d = os.path.join(release_dir, t, rel, arch)
                 if not os.path.isdir(d):
