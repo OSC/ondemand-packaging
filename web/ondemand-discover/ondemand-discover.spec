@@ -4,7 +4,7 @@
 %global app_name discover
 
 Name:     ondemand-%{app_name}
-Version:  0.2.0
+Version:  0.3.0
 Release:  1%{?dist}
 Summary:  Open ID Connect Discovery page for Open OnDemand
 
