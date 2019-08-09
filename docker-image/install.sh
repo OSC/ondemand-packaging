@@ -26,7 +26,7 @@ run yum update -y
 run yum install -y epel-release centos-release-scl
 run yum install -y rubygem-rake sudo git git-annex which expect \
     rpm-build rpmdevtools mock rpm-sign scl-utils-build \
-    selinux-policy
+    selinux-policy bsdtar
 
 header "Miscellaneous"
 run cp /build/sudoers.conf /etc/sudoers.d/ood
@@ -46,7 +46,13 @@ run cp -a /build/epel-7-x86_64.cfg /etc/mock/epel-7-x86_64.cfg
 source /build/env
 run curl -f -o /build/$MOCK_CACHE https://yum.osc.edu/ondemand/build/$MOCK_CACHE || echo "Download failed!"
 if [ -f /build/$MOCK_CACHE ]; then
-    run tar xf /build/$MOCK_CACHE -C /
+    grep ' / ' /proc/mounts | grep -q overlay
+    if [ $? -eq 0 ]; then
+        tar=bsdtar
+    else
+        tar=tar
+    fi
+    run $tar xf /build/$MOCK_CACHE -C /
 fi
 
 run sudo -u ood -H git config --global user.email "packages@osc.edu"

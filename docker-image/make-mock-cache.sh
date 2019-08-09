@@ -78,19 +78,19 @@ docker exec \
 -t -i \
 -e "LC_CTYPE=en_US.UTF-8" \
 $CONTAINER_ID \
-mock -r epel-7-x86_64 --init
+mock -r epel-7-x86_64 --no-cleanup-after --init
 
 docker exec \
 -t -i \
 -e "LC_CTYPE=en_US.UTF-8" \
 $CONTAINER_ID \
-mock -r epel-6-x86_64 --init
+mock -r epel-6-x86_64 --no-cleanup-after --init
 
 docker exec \
 -t -i \
 -e "LC_CTYPE=en_US.UTF-8" \
 $CONTAINER_ID \
-tar czf /build/$MOCK_CACHE /var/cache/mock
+tar czf /build/$MOCK_CACHE /var/lib/mock
 
 docker kill $CONTAINER_ID
 
