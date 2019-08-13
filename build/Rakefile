@@ -110,7 +110,7 @@ namespace :build do
     sh "rm -rf #{WORK_DIR}/*"
     sh "mkdir -p #{WORK_DIR}"
     puts "\tFix mock".blue
-    sh "sudo mock -r #{MOCK_CONFIG[DISTRO]} --no-clean --no-cleanup-after --chroot 'rpm --rebuilddb'"
+    sh "sudo mock -r #{MOCK_CONFIG[DISTRO]} --no-clean --no-cleanup-after --chroot 'rpm --rebuilddb' #{cmd_suffix}"
     puts "\tRPM from #{srpm} for #{PACKAGE} #{DISTRO}".blue
     cmd = [
       "/usr/bin/mock --verbose -r #{MOCK_CONFIG[DISTRO]}",
