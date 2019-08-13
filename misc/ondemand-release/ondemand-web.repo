@@ -1,13 +1,13 @@
 [ondemand-web]
 name=Open OnDemand Web Repo
-baseurl=https://yum.osc.edu/ondemand/1.6/web/$DIST/$basearch/
+baseurl=https://yum.osc.edu/ondemand/1.6/web/el$releasever/$basearch/
 enabled=1
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ondemand
 
 [ondemand-web-source]
 name=Open OnDemand Web Repo
-baseurl=https://yum.osc.edu/ondemand/1.6/web/$DIST/SRPMS/
+baseurl=https://yum.osc.edu/ondemand/1.6/web/el$releasever/SRPMS/
 enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ondemand

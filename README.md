@@ -186,7 +186,7 @@ If `./build.sh` had `-o /tmp/output` then the following command will upload the 
 Build release RPMs:
 
 ```
-./build.sh -w /tmp/work -o /tmp/output -S $(pwd)/misc/ondemand-release
+./build.sh -w /tmp/work -o /tmp/output -d el7 -S $(pwd)/misc/ondemand-release
 ```
 
 Release RPMs:
