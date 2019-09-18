@@ -39,26 +39,25 @@ install -Dpm0644 %{SOURCE0} %{buildroot}%{_sysconfdir}/yum.repos.d/ondemand-web.
 install -Dpm0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/yum.repos.d/ondemand-compute.repo
 install -Dpm0644 %{SOURCE2} %{buildroot}%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand
 install -Dpm0644 %{SOURCE2} %{buildroot}%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand-compute
-%if %{?centos} == 7
 mkdir -p %{buildroot}%{_docdir}/%{name}
 install -Dpm0644 %{SOURCE3} %{buildroot}%{_docdir}/%{name}/ondemand-centos-scl.repo
-%endif
 
 %clean
 exit 0
 
 %post
-if [ -f %{_docdir}/%{name}/ondemand-centos-scl.repo ]; then
-    ln -snf %{_docdir}/%{name}/ondemand-centos-scl.repo %{_sysconfdir}/yum.repos.d/ondemand-centos-scl.repo
+if [ -f /etc/os-release ]; then
+    source /etc/os-release
+    if [ "$ID" = "centos" -a "$VERSION_ID" = "7" ]; then
+        ln -snf %{_docdir}/%{name}/ondemand-centos-scl.repo %{_sysconfdir}/yum.repos.d/ondemand-centos-scl.repo
+    fi
 fi
 
 %files
 %config %{_sysconfdir}/yum.repos.d/ondemand-web.repo
 %{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand
-%if %{?rhel} == 7
 %{_docdir}/%{name}/ondemand-centos-scl.repo
 %ghost %{_sysconfdir}/yum.repos.d/ondemand-centos-scl.repo
-%endif
 
 %files -n ondemand-release-compute-latest
 %config %{_sysconfdir}/yum.repos.d/ondemand-compute.repo
