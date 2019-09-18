@@ -123,7 +123,7 @@ rm mock-cache.tar.gz
 docker build -t ohiosupercomputer/ondemand_buildbox:0.0.1 .
 # update build/env
 ./make-mock-cache.sh
-docker build -t ohiosupercomputer/ondemand_buildbox:0.0.1 .
+docker build --no-cache -t ohiosupercomputer/ondemand_buildbox:0.0.1 .
 docker push ohiosupercomputer/ondemand_buildbox:0.0.1
 ```
 
