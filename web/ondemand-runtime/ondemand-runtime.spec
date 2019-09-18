@@ -5,12 +5,11 @@
 
 %global ruby rh-ruby24
 %global nodejs rh-nodejs6
-%global git rh-git29
 %global apache httpd24
 
 Name:      ondemand-runtime
 Version:   1.6
-Release:   1%{?dist}
+Release:   2%{?dist}
 Summary:   Package that handles %{scl} Software Collection.
 License:   MIT
 
@@ -18,7 +17,6 @@ BuildRequires:  scl-utils-build
 Requires:       scl-utils
 Requires:       %{ruby}-runtime
 Requires:       %{nodejs}-runtime
-Requires:       %{git}-runtime
 Requires:       %{apache}-runtime
 
 %description
@@ -57,13 +55,6 @@ Requires: %{nodejs}
 %description -n ondemand-nodejs
 Meta package for pulling in SCL nodejs %{nodejs}
 
-%package -n ondemand-git
-Summary: Meta package for pulling in SCL git %{git}
-Requires: %{git}
-
-%description -n ondemand-git
-Meta package for pulling in SCL git %{git}
-
 %package -n ondemand-apache
 Summary: Meta package for pulling in SCL apache %{apache}
 Requires: %{apache}
@@ -82,7 +73,7 @@ Meta package for pulling in SCL apache %{apache}
 mkdir -p %{buildroot}/opt/rh
 ln -s ../ood/ondemand %{buildroot}/opt/rh/%{scl}
 cat >> %{buildroot}%{_scl_scripts}/enable << EOF
-. scl_source enable %{apache} %{ruby} %{nodejs} %{git}
+. scl_source enable %{apache} %{ruby} %{nodejs}
 export PATH="%{_bindir}:%{_sbindir}\${PATH:+:\${PATH}}"
 export LD_LIBRARY_PATH="%{_libdir}\${LD_LIBRARY_PATH:+:\${LD_LIBRARY_PATH}}"
 export MANPATH="%{_mandir}:\${MANPATH:-}"
@@ -98,8 +89,6 @@ cat >> %{buildroot}%{_root_sysconfdir}/rpm/macros.%{scl_name_base}-scldevel << E
 %%scl_%{scl_name_base}_prefix_ruby %{ruby}-
 %%scl_%{scl_name_base}_nodejs %{nodejs}
 %%scl_%{scl_name_base}_prefix_nodejs %{nodejs}-
-%%scl_%{scl_name_base}_git %{git}
-%%scl_%{scl_name_base}_prefix_git %{git}-
 %%scl_%{scl_name_base}_apache %{apache}
 %%scl_%{scl_name_base}_prefix_apache %{apache}-
 EOF
@@ -117,8 +106,6 @@ EOF
 %files -n ondemand-ruby
 
 %files -n ondemand-nodejs
-
-%files -n ondemand-git
 
 %files -n ondemand-apache
 

@@ -1,6 +1,6 @@
 Name:       ondemand-release-web
 Version:    1.6
-Release:    1
+Release:    2
 Summary:    Open OnDemand web repository files
 
 Group:      Applications/System
@@ -10,6 +10,7 @@ BuildArch:  noarch
 Source0:    ondemand-web.repo
 Source1:    ondemand-compute.repo
 Source2:    RPM-GPG-KEY-ondemand
+Source3:    ondemand-centos-scl.repo
 
 %description
 Open OnDemand web repository contains open source and other distributable software for
@@ -36,14 +37,26 @@ install -Dpm0644 %{SOURCE0} %{buildroot}%{_sysconfdir}/yum.repos.d/ondemand-web.
 install -Dpm0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/yum.repos.d/ondemand-compute.repo
 install -Dpm0644 %{SOURCE2} %{buildroot}%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand
 install -Dpm0644 %{SOURCE2} %{buildroot}%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand-compute
-
+%if %{?centos} == 7
+mkdir -p %{buildroot}%{_docdir}/%{name}
+install -Dpm0644 %{SOURCE3} %{buildroot}%{_docdir}/%{name}/ondemand-centos-scl.repo
+%endif
 
 %clean
 exit 0
 
+%post
+if [ -f %{_docdir}/%{name}/ondemand-centos-scl.repo ]; then
+    ln -snf %{_docdir}/%{name}/ondemand-centos-scl.repo %{_sysconfdir}/yum.repos.d/ondemand-centos-scl.repo
+fi
+
 %files
 %config %{_sysconfdir}/yum.repos.d/ondemand-web.repo
 %{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand
+%if %{?rhel} == 7
+%config %{_docdir}/%{name}/ondemand-centos-scl.repo
+%ghost %{_sysconfdir}/yum.repos.d/ondemand-centos-scl.repo
+%endif
 
 %files -n ondemand-release-compute
 %config %{_sysconfdir}/yum.repos.d/ondemand-compute.repo
