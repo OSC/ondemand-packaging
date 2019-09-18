@@ -39,13 +39,12 @@ ondemand-runtime:
   packages:
     - ondemand-apache
     - ondemand-build
-    - ondemand-git
     - ondemand-nodejs
     - ondemand-ruby
     - ondemand-runtime
     - ondemand-scldevel
   versions:
-    - 1.6-1
+    - 1.6-2
 ondemand:
   - 1.6.7-1
 
