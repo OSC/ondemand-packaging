@@ -56,7 +56,7 @@ fi
 %files
 %config %{_sysconfdir}/yum.repos.d/ondemand-web.repo
 %{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand
-%{_docdir}/%{name}/ondemand-centos-scl.repo
+%config %{_docdir}/%{name}/ondemand-centos-scl.repo
 %ghost %{_sysconfdir}/yum.repos.d/ondemand-centos-scl.repo
 
 %files -n ondemand-release-compute-latest
