@@ -41,7 +41,7 @@ def update_repo(host, path, pkey, gpgpass):
     with open(gpgpass, 'r') as f:
         gpg_passphrase = f.read().strip()
     createrepo_cmd = "cd %s ; createrepo_c --update ." % path
-    gpg_cmd = "cd %s ; gpg --detach-sign --passphrase %s --batch --no-tty --armor repodata/repomd.xml" % (path, gpg_passphrase)
+    gpg_cmd = "cd %s ; gpg --detach-sign --passphrase %s --batch --yes --no-tty --armor repodata/repomd.xml" % (path, gpg_passphrase)
     logger.info("Updating repo metadata at %s:%s", host, path)
     logger.debug("Executing via SSH oodpkg@%s '%s'", host, createrepo_cmd)
     ssh = paramiko.SSHClient()
