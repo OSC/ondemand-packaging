@@ -119,12 +119,13 @@ This only has to be done once
 
 ```
 cd docker-image
-rm mock-cache.tar.gz
-docker build -t ohiosupercomputer/ondemand_buildbox:0.0.1 .
 # update build/env
+source ./env
+rm mock-cache.tar.gz
+docker build -t $BUILDBOX_IMAGE .
 ./make-mock-cache.sh
-docker build --no-cache -t ohiosupercomputer/ondemand_buildbox:0.0.1 .
-docker push ohiosupercomputer/ondemand_buildbox:0.0.1
+docker build --no-cache -t $BUILDBOX_IMAGE .
+docker push $BUILDBOX_IMAGE
 ```
 
 ## GPG Setup
