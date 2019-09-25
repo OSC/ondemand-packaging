@@ -1,6 +1,6 @@
 Name:       ondemand-release-web
 Version:    1.6
-Release:    2
+Release:    3
 Summary:    Open OnDemand web repository files
 
 Group:      Applications/System

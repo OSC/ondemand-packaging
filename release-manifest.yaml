@@ -4,7 +4,7 @@ ondemand-release:
     - ondemand-release-compute
     - ondemand-release-web
   versions:
-    - 1.6-2
+    - 1.6-3
 
 # web
 cjose:

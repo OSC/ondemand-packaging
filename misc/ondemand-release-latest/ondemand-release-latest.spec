@@ -1,6 +1,6 @@
 Name:       ondemand-release-web-latest
 Version:    1
-Release:    3
+Release:    4
 Summary:    Open OnDemand web repository files
 
 Group:      Applications/System
