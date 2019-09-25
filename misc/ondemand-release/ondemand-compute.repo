@@ -3,6 +3,7 @@ name=Open OnDemand Compute Repo
 baseurl=https://yum.osc.edu/ondemand/1.6/compute/el$releasever/$basearch/
 enabled=1
 gpgcheck=1
+repo_gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ondemand-compute
 
 [ondemand-compute-source]
@@ -10,4 +11,5 @@ name=Open OnDemand Compute Repo - source
 baseurl=https://yum.osc.edu/ondemand/1.6/compute/el$releasever/SRPMS/
 enabled=0
 gpgcheck=1
+repo_gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ondemand-compute

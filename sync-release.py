@@ -30,6 +30,7 @@ def get_rpm_info(rpm_file):
     return info
 
 def main():
+    gpgpass = '/systems/osc_certs/gpg/ondemand/.gpgpass'
     usage_examples = """
 Usage examples:
 
@@ -44,6 +45,7 @@ Usage examples:
     parser.add_argument('-b', '--repo-base', help="Repo base directory (default: %(default)s)", default='/var/www/repos/public/ondemand')
     parser.add_argument('-m', '--manifest', help="Release manifest path (default: %(default)s)", default=os.path.join(os.path.dirname(__file__), 'release-manifest.yaml'))
     parser.add_argument('-r', '--release', help="Release version", required=True)
+    parser.add_argument('-g','--gpgpass', help='GPG passphrase file (default: %(default)s)', default=gpgpass)
     args = parser.parse_args()
 
     if args.debug:
@@ -60,6 +62,9 @@ Usage examples:
     if user != 'oodpkg':
         logger.error("Only run this script as oodpkg, not %s", user)
         sys.exit(1)
+
+    with open(args.gpgpass, 'r') as f:
+        gpgpass = f.read().strip()
 
     latest_dir = os.path.join(args.repo_base, 'latest')
     release_dir = os.path.join(args.repo_base, args.release)
@@ -169,6 +174,13 @@ Usage examples:
         if os.path.basename(root) in ['SRPMS', 'x86_64']:
             logger.info("createrepo_c %s", root)
             process = subprocess.Popen(['createrepo_c', root], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            out, err = process.communicate()
+            exit_code = process.returncode
+            if exit_code != 0:
+                logger.error("Error: %s", err)
+            repomd = os.path.join(root, 'repodata', 'repomd.xml')
+            cmd = ['gpg','--detach-sign','--passphrase',gpgpass,'--batch','--yes','--no-tty','--armor',repomd]
+            process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             out, err = process.communicate()
             exit_code = process.returncode
             if exit_code != 0:
