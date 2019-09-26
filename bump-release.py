@@ -24,11 +24,14 @@ def reset_version_release(spec_file, previous_version, new_version):
                 logger.info("Modify %s version: old='%s' new='%s'", spec_file, line.strip(), new_version.strip())
                 f.write(new_version)
             elif line.startswith('Release:'):
-                m = re.search(r'^Release:(\s+)([\d]+)%{\?dist}$', line)
+                m = re.search(r'^Release:(\s+)([\d]+)', line)
                 if not m:
                     f.write(line)
                     continue
-                new_release = "Release:%s1%%{?dist}\n" % m.group(1)
+                if 'dist' in line:
+                    new_release = "Release:%s1%%{?dist}\n" % m.group(1)
+                else:
+                    new_release = "Release:%s1\n" % m.group(1)
                 logger.info("Modify %s release: old='%s' new='%s'", spec_file, line.strip(), new_release.strip())
                 f.write(new_release)
             else:
