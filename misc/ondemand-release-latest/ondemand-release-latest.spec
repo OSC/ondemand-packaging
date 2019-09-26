@@ -1,6 +1,6 @@
 Name:       ondemand-release-web-latest
 Version:    1
-Release:    5
+Release:    6
 Summary:    Open OnDemand web repository files
 
 Group:      Applications/System
@@ -10,7 +10,6 @@ BuildArch:  noarch
 Source0:    ondemand-web.repo
 Source1:    ondemand-compute.repo
 Source2:    RPM-GPG-KEY-ondemand
-Source3:    ondemand-centos-scl.repo
 Obsoletes:  ondemand-release-web
 
 %description
@@ -40,24 +39,18 @@ install -Dpm0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/yum.repos.d/ondemand-comp
 install -Dpm0644 %{SOURCE2} %{buildroot}%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand
 install -Dpm0644 %{SOURCE2} %{buildroot}%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand-compute
 mkdir -p %{buildroot}%{_docdir}/%{name}
-install -Dpm0644 %{SOURCE3} %{buildroot}%{_docdir}/%{name}/ondemand-centos-scl.repo
 
 %clean
 exit 0
 
 %post
-if [ -f /etc/os-release ]; then
-    source /etc/os-release
-    if [ "$ID" = "centos" -a "$VERSION_ID" = "7" ]; then
-        ln -snf %{_docdir}/%{name}/ondemand-centos-scl.repo %{_sysconfdir}/yum.repos.d/ondemand-centos-scl.repo
-    fi
+if [ -L %{_sysconfdir}/yum.repos.d/ondemand-centos-scl.repo ]; then
+    unlink %{_sysconfdir}/yum.repos.d/ondemand-centos-scl.repo
 fi
 
 %files
 %config %{_sysconfdir}/yum.repos.d/ondemand-web.repo
 %{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand
-%config %{_docdir}/%{name}/ondemand-centos-scl.repo
-%ghost %{_sysconfdir}/yum.repos.d/ondemand-centos-scl.repo
 
 %files -n ondemand-release-compute-latest
 %config %{_sysconfdir}/yum.repos.d/ondemand-compute.repo
