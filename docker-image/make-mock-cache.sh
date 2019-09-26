@@ -78,6 +78,12 @@ docker exec \
 -t -i \
 -e "LC_CTYPE=en_US.UTF-8" \
 $CONTAINER_ID \
+mock -r epel-8-x86_64 --no-cleanup-after --init
+
+docker exec \
+-t -i \
+-e "LC_CTYPE=en_US.UTF-8" \
+$CONTAINER_ID \
 mock -r epel-7-x86_64 --no-cleanup-after --init
 
 docker exec \

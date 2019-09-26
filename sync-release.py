@@ -90,7 +90,7 @@ Usage examples:
 
     # Prep release directories
     for t in ['compute', 'web']:
-        for rel in ['el7']:
+        for rel in ['el7', 'el8']:
             rel_d = os.path.join(release_dir, t, rel)
             if not os.path.isdir(rel_d):
                 logger.info("mkdir -p %s", rel_d)

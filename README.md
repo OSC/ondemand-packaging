@@ -121,7 +121,7 @@ This only has to be done once
 cd docker-image
 # update build/env
 source ./env
-rm mock-cache.tar.gz
+rm mock-cache*
 docker build -t $BUILDBOX_IMAGE .
 ./make-mock-cache.sh
 docker build --no-cache -t $BUILDBOX_IMAGE .

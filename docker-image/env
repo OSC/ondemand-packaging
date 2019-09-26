@@ -1,2 +1,2 @@
-BUILDBOX_IMAGE='ohiosupercomputer/ondemand_buildbox:0.7.2'
+BUILDBOX_IMAGE='ohiosupercomputer/ondemand_buildbox:1.0.0'
 MOCK_CACHE=$(echo "mock-cache-${BUILDBOX_IMAGE}.tar.gz" | sed 's#/#_#g' | sed 's#:#_#g')

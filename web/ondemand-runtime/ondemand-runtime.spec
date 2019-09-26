@@ -3,9 +3,15 @@
 %global _scl_prefix /opt/ood
 %scl_package %scl
 
+%if 0%{?rhel} >= 8
+%global ruby ruby
+%global nodejs nodejs
+%global apache httpd
+%else
 %global ruby rh-ruby25
 %global nodejs rh-nodejs10
 %global apache httpd24
+%endif
 
 Name:      ondemand-runtime
 Version:   1.7
@@ -15,9 +21,11 @@ License:   MIT
 
 BuildRequires:  scl-utils-build
 Requires:       scl-utils
+%if 0%{?rhel} <= 7
 Requires:       %{ruby}-runtime
 Requires:       %{nodejs}-runtime
 Requires:       %{apache}-runtime
+%endif
 
 %description
 Package shipping essential scripts to work with %{scl} Software Collection.
@@ -38,29 +46,51 @@ packages depending on %{scl} Software Collection.
 
 %package -n ondemand-ruby
 Summary: Meta package for pulling in SCL Ruby %{ruby}
+%if 0%{?rhel} >= 8
+Requires: %{ruby} >= 2.5, %{ruby} < 2.6
+Requires: rubygem-rake
+Requires: rubygem-bundler
+Requires: ruby-devel
+Requires: rubygems
+Requires: rubygems-devel
+%else
 Requires: %{ruby}
 Requires: %{ruby}-rubygem-rake
 Requires: %{ruby}-rubygem-bundler
 Requires: %{ruby}-ruby-devel
 Requires: %{ruby}-rubygems
 Requires: %{ruby}-rubygems-devel
+%endif
 
 %description -n ondemand-ruby
 Meta package for pulling in SCL Ruby %{ruby}
 
 %package -n ondemand-nodejs
 Summary: Meta package for pulling in SCL nodejs %{nodejs}
+%if 0%{?rhel} >= 8
+Requires: %{nodejs} >= 10, %{nodejs} < 11
+Requires: npm
+%else
 Requires: %{nodejs}
+Requires: %{nodejs}-npm
+%endif
 
 %description -n ondemand-nodejs
 Meta package for pulling in SCL nodejs %{nodejs}
 
 %package -n ondemand-apache
 Summary: Meta package for pulling in SCL apache %{apache}
+%if 0%{?rhel} >= 8
+Requires: %{apache} >= 2.4, %{apache} < 2.5
+Requires: httpd-devel
+Requires: mod_ssl
+Requires: mod_ldap
+%else
 Requires: %{apache}
 Requires: %{apache}-httpd-devel
 Requires: %{apache}-mod_ssl
 Requires: %{apache}-mod_ldap
+%endif
 
 %description -n ondemand-apache
 Meta package for pulling in SCL apache %{apache}
