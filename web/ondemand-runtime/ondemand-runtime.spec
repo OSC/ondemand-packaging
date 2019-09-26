@@ -3,8 +3,8 @@
 %global _scl_prefix /opt/ood
 %scl_package %scl
 
-%global ruby rh-ruby24
-%global nodejs rh-nodejs6
+%global ruby rh-ruby25
+%global nodejs rh-nodejs10
 %global apache httpd24
 
 Name:      ondemand-runtime
