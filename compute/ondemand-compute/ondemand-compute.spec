@@ -1,5 +1,5 @@
 Name:       ondemand-compute
-Version:    1.6
+Version:    1.7
 Release:    1%{?dist}
 Summary:    Open OnDemand Compute meta package
 
