@@ -6,7 +6,7 @@ source ${DIR}/build/env
 WORK_DIR=
 OUTPUT_DIR=
 CONCURRENCY=1
-DISTRIBUTIONS="el6 el7"
+DISTRIBUTIONS="el7"
 GPG_NAME='OnDemand Release Signing Key'
 GPG_PUBKEY_PATH=''
 SHOW_TASKS=false

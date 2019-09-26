@@ -41,7 +41,6 @@ sudo -u ood -H cat >> /home/ood/.rpmmacros <<EOF
 EOF
 rpm --import /build/RPM-GPG-KEY-ondemand
 
-run cp -a /build/epel-6-x86_64.cfg /etc/mock/epel-6-x86_64.cfg
 run cp -a /build/epel-7-x86_64.cfg /etc/mock/epel-7-x86_64.cfg
 source /build/env
 run curl -f -o /build/$MOCK_CACHE https://yum.osc.edu/ondemand/build/$MOCK_CACHE || echo "Download failed!"

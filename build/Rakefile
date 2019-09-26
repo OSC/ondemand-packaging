@@ -5,7 +5,6 @@ PACKAGE = ENV['PACKAGE']
 WORK_DIR = "/work/#{DISTRO}"
 OUTPUT_DIR = "/output/#{DISTRO}"
 MOCK_CONFIG = {
-  'el6' => 'epel-6-x86_64',
   'el7' => 'epel-7-x86_64',
 }
 if PACKAGE =~ /mod_auth_openidc/
