@@ -4,7 +4,7 @@ def dist_configs(dist, k1, k2 = nil)
   configs = {
     'el7' => {
       'MOCK_CONFIG' => 'epel-7-x86_64',
-      'MOCK_FIX'    => 'rpm --rebuilddb',
+      #'MOCK_FIX'    => 'rpm --rebuilddb',
       'PACKAGE'     => {
         'mod_auth_openidc' => "--define 'scl httpd24'",
       },
@@ -14,7 +14,7 @@ def dist_configs(dist, k1, k2 = nil)
       # Debugging
       #'MOCK_FIX' => 'ls -la /var/lib/rpm/* ; rpm -qa | sort ; mv /var/lib/rpm /var/lib/rpm.bak ; rpm --rebuilddb ; /usr/lib/rpm/rpmdb_dump /var/lib/rpm.bak/Packages | /usr/lib/rpm/rpmdb_load /var/lib/rpm/Packages ; rpm -qa | sort',
       # Hack to work around issues with rpmdb and overlayfs
-      'MOCK_FIX'    => 'mv /var/lib/rpm /var/lib/rpm.bak ; rpm --rebuilddb ; /usr/lib/rpm/rpmdb_dump /var/lib/rpm.bak/Packages | /usr/lib/rpm/rpmdb_load /var/lib/rpm/Packages',
+      #'MOCK_FIX'    => 'mv /var/lib/rpm /var/lib/rpm.bak ; rpm --rebuilddb ; /usr/lib/rpm/rpmdb_dump /var/lib/rpm.bak/Packages | /usr/lib/rpm/rpmdb_load /var/lib/rpm/Packages',
       'PACKAGE'     => {},
     },
   }
