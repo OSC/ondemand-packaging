@@ -103,7 +103,9 @@ Meta package for pulling in SCL apache %{apache}
 mkdir -p %{buildroot}/opt/rh
 ln -s ../ood/ondemand %{buildroot}/opt/rh/%{scl}
 cat >> %{buildroot}%{_scl_scripts}/enable << EOF
+%if 0%{?rhel} <= 7
 . scl_source enable %{apache} %{ruby} %{nodejs}
+%endif
 export PATH="%{_bindir}:%{_sbindir}\${PATH:+:\${PATH}}"
 export LD_LIBRARY_PATH="%{_libdir}\${LD_LIBRARY_PATH:+:\${LD_LIBRARY_PATH}}"
 export MANPATH="%{_mandir}:\${MANPATH:-}"
@@ -115,12 +117,14 @@ cat >> %{buildroot}%{_root_sysconfdir}/rpm/macros.%{scl_name_base}-scldevel << E
 %%scl_%{scl_name_base} %{scl}
 %%scl_prefix_%{scl_name_base} %{scl_prefix}
 %%_scl_prefix_%{scl_name_base} %{_scl_prefix}
+%if 0%{?rhel} <= 7
 %%scl_%{scl_name_base}_ruby %{ruby}
 %%scl_%{scl_name_base}_prefix_ruby %{ruby}-
 %%scl_%{scl_name_base}_nodejs %{nodejs}
 %%scl_%{scl_name_base}_prefix_nodejs %{nodejs}-
 %%scl_%{scl_name_base}_apache %{apache}
 %%scl_%{scl_name_base}_prefix_apache %{apache}-
+%endif
 EOF
 
 %files -f filelist
