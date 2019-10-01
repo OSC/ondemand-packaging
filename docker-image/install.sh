@@ -43,8 +43,14 @@ sudo -u ood -H cat >> /home/ood/.rpmmacros <<EOF
 EOF
 rpm --import /build/RPM-GPG-KEY-ondemand
 
+run sudo -u ood -H git config --global user.email "packages@osc.edu"
+run sudo -u ood -H git config --global user.name "OnDemand Packaging"
+
 run cp -a /build/epel-7-x86_64.cfg /etc/mock/epel-7-x86_64.cfg
 run cp -a /build/epel-8-x86_64.cfg /etc/mock/epel-8-x86_64.cfg
+run cp -a /build/ondemand-el7-x86_64.cfg /etc/mock/ondemand-el7-x86_64.cfg
+run cp -a /build/ondemand-el8-x86_64.cfg /etc/mock/ondemand-el8-x86_64.cfg
+
 source /build/env
 run curl -f -o /build/$MOCK_CACHE https://yum.osc.edu/ondemand/build/$MOCK_CACHE || echo "Download failed!"
 if [ -f /build/$MOCK_CACHE ]; then
@@ -56,9 +62,6 @@ if [ -f /build/$MOCK_CACHE ]; then
     fi
     run $tar xf /build/$MOCK_CACHE -C /
 fi
-
-run sudo -u ood -H git config --global user.email "packages@osc.edu"
-run sudo -u ood -H git config --global user.name "OnDemand Packaging"
 
 header "Cleaning up"
 run yum clean all
