@@ -127,7 +127,7 @@ Usage examples:
         if name not in manifest:
             logger.warning("%s not in manifest", name)
             continue
-        version = rpm_info['ver'].replace('.el7', '').replace('.el6', '')
+        version = rpm_info['ver'].replace('.el7', '').replace('.el8', '')
         if version not in manifest[name]:
             logger.debug("Skipping %s-%s, not in manifest", name, version)
             continue
@@ -162,7 +162,7 @@ Usage examples:
             f = os.path.join(root, filename)
             rpm_info = get_rpm_info(f)
             name = rpm_info['name']
-            version = rpm_info['ver'].replace('.el7', '').replace('.el6', '')
+            version = rpm_info['ver'].replace('.el7', '').replace('.el8', '')
             if name not in manifest or version not in manifest.get(name, []):
                 logger.error("RPM %s-%s should not be in release repo", name, version)
                 if args.clean:
