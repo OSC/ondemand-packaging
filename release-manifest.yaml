@@ -4,7 +4,7 @@ ondemand-release:
     - ondemand-release-compute
     - ondemand-release-web
   versions:
-    - 1.6-4
+    - 1.7-1
 
 # web
 cjose:
@@ -44,7 +44,7 @@ ondemand-runtime:
     - ondemand-runtime
     - ondemand-scldevel
   versions:
-    - 1.6-2
+    - 1.7-1
 ondemand:
   - 1.6.7-1
 
