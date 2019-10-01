@@ -4,13 +4,13 @@
 %define passenger_version 6.0.4
 %define nginx_version 1.17.3
 
-%global  nginx_user          %{?scl_prefix_ondemand}nginx
+%global  nginx_user          %{?scl_prefix}nginx
 %global  nginx_group         %{nginx_user}
-%global  nginx_home          %{_root_localstatedir}/lib/%{?scl_prefix_ondemand}nginx
+%global  nginx_home          %{_root_localstatedir}/lib/%{?scl_prefix}nginx
 %global  nginx_home_tmp      %{nginx_home}/tmp
 %global  nginx_confdir       %{_sysconfdir}/nginx
 %global  nginx_datadir       %{_datadir}/nginx
-%global  nginx_logdir        %{_root_localstatedir}/log/%{?scl_prefix_ondemand}nginx
+%global  nginx_logdir        %{_root_localstatedir}/log/%{?scl_prefix}nginx
 %global  nginx_webroot       %{nginx_datadir}/html
 
 %global bundled_boost_version 1.54.0
@@ -81,7 +81,7 @@ and allows Passenger Standalone to use a different Nginx core version.
 %package doc
 Summary: Phusion Passenger documentation
 Requires: %{name} = %{version}-%{release}
-Provides:  %{?scl_prefix_ondemand}rubygem-passenger-doc = %{version}-%{release}
+Provides:  %{?scl_prefix}rubygem-passenger-doc = %{version}-%{release}
 BuildArch: noarch
 License: CC-BY-SA and MIT and (MIT or GPL+)
 
@@ -156,11 +156,11 @@ pushd nginx-%{nginx_version}
     --http-uwsgi-temp-path=%{nginx_home_tmp}/uwsgi \
     --http-scgi-temp-path=%{nginx_home_tmp}/scgi \
 %if 0%{?rhel} >= 7 || 0%{?fedora} >= 16
-    --pid-path=/run/%{?scl_prefix_ondemand}nginx.pid \
-    --lock-path=/run/lock/subsys/%{?scl_prefix_ondemand}nginx \
+    --pid-path=/run/%{?scl_prefix}nginx.pid \
+    --lock-path=/run/lock/subsys/%{?scl_prefix}nginx \
 %else
-    --pid-path=%{_root_localstatedir}/run/%{?scl_prefix_ondemand}nginx.pid \
-    --lock-path=%{_root_localstatedir}/lock/subsys/%{?scl_prefix_ondemand}nginx \
+    --pid-path=%{_root_localstatedir}/run/%{?scl_prefix}nginx.pid \
+    --lock-path=%{_root_localstatedir}/lock/subsys/%{?scl_prefix}nginx \
 %endif
     --user=%{nginx_user} \
     --group=%{nginx_group} \
