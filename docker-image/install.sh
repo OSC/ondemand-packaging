@@ -51,6 +51,11 @@ run cp -a /build/epel-8-x86_64.cfg /etc/mock/epel-8-x86_64.cfg
 run cp -a /build/ondemand-el7-x86_64.cfg /etc/mock/ondemand-el7-x86_64.cfg
 run cp -a /build/ondemand-el8-x86_64.cfg /etc/mock/ondemand-el8-x86_64.cfg
 
+# Hack to work around issue with logs filling up during EL8 builds
+# Issue resolved but left just in case
+#rm -f /var/log/lastlog
+#ln -s /dev/null /var/log/lastlog
+
 source /build/env
 run curl -f -o /build/$MOCK_CACHE https://yum.osc.edu/ondemand/build/$MOCK_CACHE || echo "Download failed!"
 if [ -f /build/$MOCK_CACHE ]; then
