@@ -49,7 +49,7 @@ ondemand:
 
 # compute
 ondemand-compute:
-  - 1.6-1
+  - 1.7-1
 python-websockify:
   - 0.8.0-1
 turbovnc:
