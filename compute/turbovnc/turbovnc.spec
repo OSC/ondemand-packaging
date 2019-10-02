@@ -47,7 +47,7 @@
 
 Summary:   A highly-optimized version of VNC that can be used with performance-critical applications
 Name:      turbovnc
-Version:   2.1.1
+Version:   2.1.90
 Release:   1%{?dist}
 Vendor:    The VirtualGL Project
 URL:       http://www.TurboVNC.org
@@ -245,7 +245,6 @@ fi
 %endif
 %if "%{server}" == "1"
  %{bindir}/Xvnc
- %{bindir}/tvncconfig
  %{bindir}/vncserver
  %{bindir}/vncpasswd
  %{bindir}/vncconnect
