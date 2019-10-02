@@ -60,7 +60,7 @@ make %{?_smp_mflags}
 export MODULES_DIR=%{_httpd_moddir}
 # Build works but tests fail on EL6
 %if 0%{?rhel} >= 7
-make %{?_smp_mflags} test
+make test
 %endif
 
 %install
