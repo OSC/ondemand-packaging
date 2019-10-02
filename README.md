@@ -6,7 +6,6 @@
 1. [Install](#install)
 1. [Create a new core package or dependency](#create-a-new-core-package-or-dependency)
 1. [Update package](#update-package)
-1. [Build and release Passenger and NGINX](#build-and-release-passenger-and-nginx)
 1. [Increment repo release](#increment-repo-release)
 1. [Create release repo](#create-release-repo)
 1. [Build ondemand_buildbox Docker container](#build-ondemand_buildbox-docker-container)
@@ -66,21 +65,6 @@ Manually adding spec file:
 6. Build [Build RPM](#build-rpm)
 7. Commit changes
 8. Release Package [Publish RPMs (OSC)](#publish-rpms-osc)
-
-## Build and release Passenger and NGINX
-
-1. Ensure `passenger-release.ini` has the correct value for `tag`.
-2. Run the build script:
-  * `./build.sh -w /tmp/work -o /tmp/output -t build:passenger_nginx $(pwd)/build/passenger-nginx.py`
-3. Publish RPMs (OSC)
-  * `./release.py /tmp/output/*`
-
-The script for passenger performs the following steps:
-* Clone passenger git repo using specified git `tag` value
-* Build passenger and nginx RPMs
-* GPG Sign RPMs and SRPMs
-* SFTP upload signed RPMs and SRPMs to repo server
-* Update repo metadata
 
 ## Increment repo release
 
