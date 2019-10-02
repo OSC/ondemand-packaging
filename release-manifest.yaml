@@ -23,10 +23,9 @@ httpd24-mod_auth_openidc:
 ondemand-nginx:
   packages:
     - ondemand-nginx
-    - ondemand-nginx-filesystem
     - ondemand-nginx-debuginfo
   versions:
-    - 1.14.0-2.p5.3.7
+    - 1.17.3-1.p6.0.4
 ondemand-passenger:
   packages:
     - ondemand-passenger
@@ -34,7 +33,7 @@ ondemand-passenger:
     - ondemand-passenger-devel
     - ondemand-passenger-doc
   versions:
-    - 5.3.7-2
+    - 6.0.4-1
 ondemand-runtime:
   packages:
     - ondemand-apache
