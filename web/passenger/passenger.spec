@@ -56,17 +56,6 @@ adds powerful enterprise-grade features that are useful in production,
 and makes administration much easier and less complex. It supports Ruby,
 Python, Node.js and Meteor.
 
-%package -n %{?scl_ondemand_prefix_apache}%{apache_module_package_name}
-Summary: Apache Module for Phusion Passenger
-Group: System Environment/Daemons
-BuildRequires:  ondemand-apache
-Requires: %{?scl_ondemand_prefix_apache}httpd-mmn = %{_httpd_mmn}
-Requires: %{name}%{?_isa} = %{version}-%{release}
-License: Boost and BSD and BSD with advertising and MIT and zlib
-
-%description -n %{?scl_ondemand_prefix_apache}%{apache_module_package_name}
-This package contains the pluggable Apache server module for Phusion Passenger®.
-
 %package devel
 Summary: Phusion Passenger development files
 Requires: %{name} = %{version}-%{release}
@@ -261,6 +250,9 @@ popd
 
 # Fix Python scripts with shebang which are not executable
 %{__chmod} +x %{buildroot}%{_datadir}/passenger/helper-scripts/wsgi-loader.py
+
+# Don't need Apache module
+%{__rm} -f %{buildroot}%{_httpd_moddir}/mod_passenger.so
 EOF
 
 %files
@@ -278,9 +270,6 @@ EOF
 %{_datadir}/passenger/*.p12
 %{passenger_ruby_libdir}/*
 %{ruby_vendorarchdir}/passenger_native_support.so
-
-%files -n %{?scl_ondemand_prefix_apache}%{apache_module_package_name}
-%{_httpd_moddir}/mod_passenger.so
 
 %files doc
 %{_docdir}/passenger/*
