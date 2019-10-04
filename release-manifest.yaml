@@ -43,7 +43,7 @@ ondemand-runtime:
     - ondemand-runtime
     - ondemand-scldevel
   versions:
-    - 1.7-1
+    - 1.7-2
 ondemand:
   - 1.6.7-1
 

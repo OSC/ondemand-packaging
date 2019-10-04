@@ -5,17 +5,19 @@
 
 %if 0%{?rhel} >= 8
 %global ruby ruby
+%global python python2
 %global nodejs nodejs
 %global apache httpd
 %else
 %global ruby rh-ruby25
+%global python python
 %global nodejs rh-nodejs10
 %global apache httpd24
 %endif
 
 Name:      ondemand-runtime
 Version:   1.7
-Release:   1%{?dist}
+Release:   2%{?dist}
 Summary:   Package that handles %{scl} Software Collection.
 License:   MIT
 
@@ -65,6 +67,13 @@ Requires: %{ruby}-rubygems-devel
 %description -n ondemand-ruby
 Meta package for pulling in SCL Ruby %{ruby}
 
+%package -n ondemand-python
+Summary: Meta package for pulling in Python needed by OnDemand
+Requires: %{python}
+
+%description -n ondemand-python
+Meta package for pulling in Python needed by OnDemand
+
 %package -n ondemand-nodejs
 Summary: Meta package for pulling in SCL nodejs %{nodejs}
 %if 0%{?rhel} >= 8
@@ -106,6 +115,7 @@ cat >> %{buildroot}%{_scl_scripts}/enable << EOF
 %if 0%{?rhel} <= 7
 . scl_source enable %{apache} %{ruby} %{nodejs}
 %endif
+export PYTHON=%{python}
 export PATH="%{_bindir}:%{_sbindir}\${PATH:+:\${PATH}}"
 export LD_LIBRARY_PATH="%{_libdir}\${LD_LIBRARY_PATH:+:\${LD_LIBRARY_PATH}}"
 export MANPATH="%{_mandir}:\${MANPATH:-}"
@@ -138,6 +148,8 @@ EOF
 %{_root_sysconfdir}/rpm/macros.%{scl_name_base}-scldevel
 
 %files -n ondemand-ruby
+
+%files -n ondemand-python
 
 %files -n ondemand-nodejs
 
