@@ -5,10 +5,10 @@
 %define bindir /opt/TurboVNC/bin
 
 # Path under which configuration files should be installed
-%define sysconfdir %{_sysconfdir}
+%define sysconfdir /opt/TurboVNC/etc
 
 # Path under which docs should be installed
-%define docdir %{_defaultdocdir}/%{name}-%{version}
+%define docdir /opt/TurboVNC/share/doc/TurboVNC
 
 # Path under which man pages should be installed
 %define mandir /opt/TurboVNC/man
@@ -176,8 +176,8 @@ fi
 %endif
 
 %if "%{native}" == "1"
-mkdir -p %{buildroot}/usr/share/applications
-cat > %{buildroot}/usr/share/applications/tvncviewer.desktop << EOF
+mkdir -p %{buildroot}/%{prefix}/share/applications
+cat > %{buildroot}/%{prefix}/share/applications/tvncviewer.desktop << EOF
 [Desktop Entry]
 Name=TurboVNC Viewer
 Comment=TurboVNC client application
@@ -254,7 +254,7 @@ fi
 %if "%{native}" == "1"
  %{bindir}/checkshmpixmaps
  %{bindir}/vncviewer
- %config(noreplace) /usr/share/applications/tvncviewer.desktop
+ %config(noreplace) %{prefix}/share/applications/tvncviewer.desktop
  %{mandir}/man1/vncviewer.1*
  %if "%{java}" == "1"
   %{javadir}/libturbojpeg.so
