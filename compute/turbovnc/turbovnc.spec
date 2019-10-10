@@ -47,7 +47,7 @@
 
 Summary:   A highly-optimized version of VNC that can be used with performance-critical applications
 Name:      turbovnc
-Version:   2.1.90
+Version:   2.2.3
 Release:   1%{?dist}
 Vendor:    The VirtualGL Project
 URL:       http://www.TurboVNC.org
@@ -64,6 +64,7 @@ BuildRequires: cmake
 BuildRequires: libX11-devel
 BuildRequires: libXext-devel
 BuildRequires: pam-devel
+BuildRequires: openssl-devel
 
 %description
 Virtual Network Computing (VNC) is a remote display system that allows you to

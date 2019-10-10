@@ -57,4 +57,4 @@ turbovnc:
     - turbovnc
     - turbovnc-debuginfo
   versions:
-    - 2.1.90-1
+    - 2.2.3-1
