@@ -19,6 +19,14 @@
 # Whether or not to include the native infrastructure for the Java viewer
 %define native 1
 
+# Work around "No build ID note found" error caused by some versions of RPM
+# trying in vain to extract debug info from libturbojpeg.so
+%if "%{java}" == "1"
+%if "%{native}" == "1"
+%undefine _missing_build_ids_terminate_build
+%endif
+%endif
+
 # Whether or not to include the server
 %define server 1
 
@@ -42,6 +50,7 @@
 #   java_key_alias = value of CMake JAVA_KEY_ALIAS variable
 #   java_key_pass = value of CMake JAVA_KEY_PASS variable
 #   java_tsa_url = value of CMake JAVA_TSA_URL variable
+#   java_tsa_alg = value of CMake JAVA_TSA_ALG variable
 # The CMake variables in question are documented in java/CMakeLists.txt in the
 # TurboVNC source.
 
@@ -54,8 +63,7 @@ URL:       http://www.TurboVNC.org
 Source0: http://prdownloads.sourceforge.net/turbovnc/turbovnc-%{version}.tar.gz
 License:   GPL
 Group:     User Interface/Desktops
-Requires:  bash >= 2.0
-Prereq:    /sbin/chkconfig %{_sysconfdir}/init.d
+Requires:  bash >= 2.0 /sbin/chkconfig %{_sysconfdir}/init.d
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 BuildRequires: /usr/bin/perl
 BuildRequires: libjpeg-turbo
@@ -103,6 +111,9 @@ solution for remotely displaying 3D applications with interactive performance.
 %if %{?java_tsa_url:1}%{!?java_tsa_url:0}
   JAVA_TSA_URL_ARG="-DJAVA_TSA_URL=%{java_tsa_url}"
 %endif
+%if %{?java_tsa_alg:1}%{!?java_tsa_alg:0}
+  JAVA_TSA_ALG_ARG="-DJAVA_TSA_ALG=%{java_tsa_alg}"
+%endif
 %if "%{jnijars}" == "1"
   JNIJARS_ARGS="-DTVNC_INCLUDEJNIJARS=1 -DTJPEG_JNIJARPATH=%{jnijardir}"
 %endif
@@ -114,10 +125,12 @@ cmake -G"Unix Makefiles" -DCMAKE_BUILD_TYPE=RelWithDebInfo \
   -DCMAKE_VERBOSE_MAKEFILE=FALSE \
   $JAVA_KEYSTORE_ARG $JAVA_KEYSTORE_PASS_ARG $JAVA_KEYSTORE_TYPE_ARG \
   $JAVA_KEY_ALIAS_ARG $JAVA_KEY_PASS_ARG $JAVA_TSA_URL_ARG \
+  $JAVA_TSA_ALG_ARG \
   -DTVNC_BUILDJAVA=%{java} -DTVNC_BUILDNATIVE=%{native} \
   -DTVNC_BUILDSERVER=%{server} \
   $JNIJARS_ARGS .
-make
+export NUMCPUS=`grep -c '^processor' /proc/cpuinfo`
+make -j$NUMCPUS --load-average=$NUMCPUS
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -160,13 +173,6 @@ if [ ! "$TVNC_DOCDIR" = "%{docdir}" ]; then
 	safedirmove $RPM_BUILD_ROOT/$TVNC_DOCDIR $RPM_BUILD_ROOT/%{docdir} $RPM_BUILD_ROOT/__tmpdoc
 fi
 
-%if "%{server}" == "1"
-TVNC_SYSCONFDIR=/opt/TurboVNC/etc
-if [ ! "$TVNC_SYSCONFDIR" = "%{sysconfdir}" ]; then
-	safedirmove $RPM_BUILD_ROOT/$TVNC_SYSCONFDIR $RPM_BUILD_ROOT/%{sysconfdir} $RPM_BUILD_ROOT/__tmpconf
-fi
-%endif
-
 %endif
 
 %if "%{native}" == "1"
@@ -187,31 +193,42 @@ rm -rf %{buildroot}
 
 %if "%{server}" == "1"
 %post
+%if "%{sysconfdir}" == "%{_sysconfdir}"
 if [ "$1" = 1 ]; then
   if [ -f /etc/redhat-release ]; then /sbin/chkconfig --add tvncserver; fi
 fi
+%endif
 
 %preun
+%if "%{sysconfdir}" == "%{_sysconfdir}"
 if [ "$1" = 0 ]; then
-  if [ -x /etc/init.d/tvncserver ]; then
-    /etc/init.d/tvncserver stop >/dev/null 2>&1
+  if [ -x %{_sysconfdir}/init.d/tvncserver ]; then
+    %{_sysconfdir}/init.d/tvncserver stop >/dev/null 2>&1
   fi
-  if [ -f /etc/redhat-release -a -f /etc/init.d/tvncserver ]; then
+  if [ -f /etc/redhat-release -a -f %{_sysconfdir}/init.d/tvncserver ]; then
     /sbin/chkconfig --del tvncserver
   fi
 fi
+%endif
 
 %postun
+%if "%{sysconfdir}" == "%{_sysconfdir}"
 if [ "$1" -ge "1" ]; then
-  if [ -x /etc/init.d/tvncserver ]; then
-    /etc/init.d/tvncserver condrestart >/dev/null 2>&1
+  if [ -x %{_sysconfdir}/init.d/tvncserver ]; then
+    %{_sysconfdir}/init.d/tvncserver condrestart >/dev/null 2>&1
   fi
 fi
+%endif
 %endif
 
 %files
 %defattr(-,root,root)
 %if "%{server}" == "1"
+ %if "%{sysconfdir}" != "%{_sysconfdir}"
+  %dir %{sysconfdir}
+  %dir %{sysconfdir}/init.d
+  %dir %{sysconfdir}/sysconfig
+ %endif
  %attr(0755,root,root) %config %{sysconfdir}/init.d/tvncserver
  %config(noreplace) %{sysconfdir}/sysconfig/tvncservers
  %config(noreplace) %{sysconfdir}/turbovncserver.conf
@@ -252,8 +269,7 @@ fi
 %endif
 %if "%{java}" == "1"
  %if "%{server}" == "1"
-  %{javadir}/index.vnc
-  %{javadir}/VncViewer.jnlp
+  %config(noreplace) %{javadir}/VncViewer.jnlp
   %{javadir}/favicon.ico
   %if "%{jnijars}" == "1"
    %{javadir}/ljtlinux32.jar
@@ -264,7 +280,7 @@ fi
   %endif
  %endif
  %{javadir}/VncViewer.jar
- %{javadir}/README.txt
+ %{javadir}/README.md
 %endif
 %if "%{server}" == "1"
  %{mandir}/man1/Xvnc.1*
@@ -275,6 +291,3 @@ fi
 %endif
 
 %changelog
-* Tue Sep 12 2017 Trey Dockendorf <tdockendorf@osc.edu> 2.1.1-1
-- new package built with tito
-
