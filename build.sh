@@ -6,7 +6,7 @@ source ${DIR}/build/env
 WORK_DIR=
 OUTPUT_DIR=
 CONCURRENCY=1
-DISTRIBUTIONS="el7"
+DISTRIBUTIONS="el7 el8"
 GPG_NAME='OnDemand Release Signing Key'
 GPG_PUBKEY_PATH=''
 SHOW_TASKS=false
@@ -270,16 +270,6 @@ for p in "${PACKAGES[@]}"; do
     if [ "$p" == 'attach' ]; then
         DISTRIBUTIONS=''
         ATTACH=true
-    fi
-
-    if [ "$TASK" == 'build:passenger_nginx' ]; then
-        if $DEBUG; then
-            debug_flag='-d'
-        else
-            debug_flag=''
-        fi
-        echo_blue "Build STARTED: passenger-nginx distro=${DISTRIBUTIONS}"
-        ${DIR}/build/passenger-nginx.py -w $WORK_DIR -o $OUTPUT_DIR -D $DISTRIBUTIONS $debug_flag
     fi
 
     for distro in $DISTRIBUTIONS ; do

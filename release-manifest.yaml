@@ -4,7 +4,7 @@ ondemand-release:
     - ondemand-release-compute
     - ondemand-release-web
   versions:
-    - 1.6-4
+    - 1.7-1
 
 # web
 cjose:
@@ -19,14 +19,13 @@ httpd24-mod_auth_openidc:
     - httpd24-mod_auth_openidc
     - httpd24-mod_auth_openidc-debuginfo
   versions:
-    - 2.3.11-1
+    - 2.4.0-1
 ondemand-nginx:
   packages:
     - ondemand-nginx
-    - ondemand-nginx-filesystem
     - ondemand-nginx-debuginfo
   versions:
-    - 1.14.0-2.p5.3.7
+    - 1.17.3-1.p6.0.4
 ondemand-passenger:
   packages:
     - ondemand-passenger
@@ -34,7 +33,7 @@ ondemand-passenger:
     - ondemand-passenger-devel
     - ondemand-passenger-doc
   versions:
-    - 5.3.7-2
+    - 6.0.4-1
 ondemand-runtime:
   packages:
     - ondemand-apache
@@ -44,13 +43,13 @@ ondemand-runtime:
     - ondemand-runtime
     - ondemand-scldevel
   versions:
-    - 1.6-2
+    - 1.7-2
 ondemand:
   - 1.6.7-1
 
 # compute
 ondemand-compute:
-  - 1.6-1
+  - 1.7-1
 python-websockify:
   - 0.8.0-1
 turbovnc:
@@ -58,4 +57,4 @@ turbovnc:
     - turbovnc
     - turbovnc-debuginfo
   versions:
-    - 2.1.1-1
+    - 2.2.3-1

@@ -1,17 +1,60 @@
 require_relative 'build_lib'
 
+def dist_configs(dist, k1, k2 = nil)
+  configs = {
+    'el7' => {
+      'MOCK_CONFIG' => {
+        'ondemand-runtime' => 'epel-7-x86_64',
+        'default' => 'ondemand-el7-x86_64',
+      },
+      'MOCK_FIX'    => 'rpm --rebuilddb',
+      #'MOCK_CMD'    => '--scrub yum-cache',
+      'PACKAGE'     => {
+        'mod_auth_openidc' => "--define 'scl httpd24'",
+      },
+      'MOCK_PACKAGES' => {
+        'default' => [],
+      },
+    },
+    'el8' => {
+      'MOCK_CONFIG' => {
+        'ondemand-runtime' => 'epel-8-x86_64',
+        'default' => 'ondemand-el8-x86_64',
+      },
+      # Debugging
+      #'MOCK_FIX' => 'ls -la /var/lib/rpm/* ; rpm -qa | sort ; mv /var/lib/rpm /var/lib/rpm.bak ; rpm --rebuilddb ; /usr/lib/rpm/rpmdb_dump /var/lib/rpm.bak/Packages | /usr/lib/rpm/rpmdb_load /var/lib/rpm/Packages ; rpm -qa | sort',
+      # Hack to work around issues with rpmdb and overlayfs
+      #'MOCK_FIX'    => 'mv /var/lib/rpm /var/lib/rpm.bak ; rpm --rebuilddb ; /usr/lib/rpm/rpmdb_dump /var/lib/rpm.bak/Packages | /usr/lib/rpm/rpmdb_load /var/lib/rpm/Packages',
+      'PACKAGE'     => {
+      },
+      'MOCK_PACKAGES' => {
+      },
+    },
+  }
+  # Use dig once using newer Ruby
+  # return configs.dig(*args)
+  config = configs[dist][k1]
+  if k2
+    config = configs[dist][k1].fetch(k2, nil)
+    if config.nil?
+      config = configs[dist][k1]['default']
+    end
+  end
+  config
+end
+
+
+
 DISTRO = ENV['DISTRO']
 PACKAGE = ENV['PACKAGE']
+PACKAGE_NAME = File.basename(PACKAGE)
 WORK_DIR = "/work/#{DISTRO}"
 OUTPUT_DIR = "/output/#{DISTRO}"
-MOCK_CONFIG = {
-  'el7' => 'epel-7-x86_64',
-}
-if PACKAGE =~ /mod_auth_openidc/
-  MOCK_ARGS = "--define 'scl httpd24'"
-else
-  MOCK_ARGS = nil
-end
+MOCK_CONFIG = dist_configs(DISTRO, 'MOCK_CONFIG', PACKAGE_NAME)
+MOCK_FIX = dist_configs(DISTRO, 'MOCK_FIX')
+MOCK_CMD = dist_configs(DISTRO, 'MOCK_CMD')
+MOCK_ARGS = dist_configs(DISTRO, 'PACKAGE', PACKAGE_NAME)
+MOCK_PACKAGES = dist_configs(DISTRO, 'MOCK_PACKAGES', PACKAGE_NAME)
 if ENV['DEBUG'] == 'true'
   cmd_suffix = ''
 else
@@ -108,11 +151,23 @@ namespace :build do
     puts "\tCleaning #{WORK_DIR}".blue
     sh "rm -rf #{WORK_DIR}/*"
     sh "mkdir -p #{WORK_DIR}"
-    puts "\tFix mock".blue
-    sh "sudo mock -r #{MOCK_CONFIG[DISTRO]} --no-clean --no-cleanup-after --chroot 'rpm --rebuilddb' #{cmd_suffix}"
+    if MOCK_FIX
+      puts "\tFix mock".blue
+      sh "sudo mock -r #{MOCK_CONFIG} --no-clean --no-cleanup-after --chroot '#{MOCK_FIX}' #{cmd_suffix}"
+    end
+    if MOCK_CMD
+      puts "\tMOCK CMD: #{MOCK_CMD}".blue
+      sh "mock -r #{MOCK_CONFIG} --no-clean --no-cleanup-after #{MOCK_CMD} #{cmd_suffix}"
+    end
+    if MOCK_PACKAGES
+      MOCK_PACKAGES.each do |package|
+        puts "\tInstall #{package} into mock environment".blue
+        sh "sudo mock -r #{MOCK_CONFIG} --no-clean --no-cleanup-after --install '#{package}' #{cmd_suffix}"
+      end
+    end
     puts "\tRPM from #{srpm} for #{PACKAGE} #{DISTRO}".blue
     cmd = [
-      "/usr/bin/mock --verbose -r #{MOCK_CONFIG[DISTRO]}",
+      "/usr/bin/mock --verbose -r #{MOCK_CONFIG}",
       GIT_TAG_DEFINE, VERSION_DEFINE, RELEASE_DEFINE,
       '--enable-network',
       '--no-clean', '--no-cleanup-after',

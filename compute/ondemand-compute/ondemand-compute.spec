@@ -8,8 +8,12 @@ License:    Apache 2.0
 URL:        https://osc.github.io/ood-documentation/
 BuildArch:  noarch
 
-Requires:   turbovnc >= 2.1.1
+Requires:   turbovnc >= 2.2.3
 Requires:   python-websockify >= 0.8.0
+Requires:   /bin/bash
+Requires:   /usr/bin/shuf
+Requires:   /usr/bin/pgrep
+Requires:   /usr/bin/nc
 
 %description
 Open OnDemand Compute meta package
