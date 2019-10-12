@@ -24,7 +24,7 @@
 
 Name:       %{?scl_prefix}passenger
 Version:    %{passenger_version}
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    Phusion Passenger application server
 URL:        https://www.phusionpassenger.com
 Group:      System Environment/Daemons
@@ -81,7 +81,7 @@ This package contains documentation files for Phusion Passenger®.
 Summary: A high performance web server and reverse proxy server
 URL:        http://nginx.org/
 Version: %{nginx_version}
-Release: 1.p%{passenger_version}%{?dist}
+Release: 2.p%{passenger_version}%{?dist}
 Obsoletes: %{?scl_prefix}nginx-filesystem
 BuildRequires: libxslt-devel
 BuildRequires: gd-devel
@@ -254,6 +254,22 @@ popd
 # Don't need Apache module
 %{__rm} -f %{buildroot}%{_httpd_moddir}/mod_passenger.so
 EOF
+
+%pre -n %{?scl_prefix}nginx
+
+getent group %{nginx_group} > /dev/null || groupadd -r %{nginx_group}
+getent passwd %{nginx_user} > /dev/null || \
+    useradd -r -d %{nginx_home} -g %{nginx_group} \
+    -s /sbin/nologin -c "Nginx web server" %{nginx_user}
+exit 0
+
+%post -n %{?scl_prefix}nginx
+if [ $1 -eq 2 ]; then
+    # Make sure these directories are not world readable.
+    chmod o-rwx %{nginx_home}
+    chmod o-rwx %{nginx_home_tmp}
+    chmod o-rwx %{nginx_logdir}
+fi
 
 %files
 %{_bindir}/passenger*
