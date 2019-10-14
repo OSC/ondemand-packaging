@@ -1,0 +1,137 @@
+This patch disables a test which caused failed assertion in tcl 8.6.3.
+According to sqlite upstream[1], this should be fixed in tcl 8.6.5.
+
+[1] http://mailinglists.sqlite.org/cgi-bin/mailman/private/sqlite-users/2015-May/059518.html
+
+diff -up sqlite-src-3130000/test/shell1.test.orig sqlite-src-3130000/test/shell1.test
+--- sqlite-src-3140100/test/shell1.test.orig	2016-08-12 02:17:02.000000000 +0200
++++ sqlite-src-3140100/test/shell1.test	2016-08-15 15:00:59.869664051 +0200
+@@ -855,67 +855,67 @@ do_test shell1-4.6 {
+ 
+ # Test using arbitrary byte data with the shell via standard input/output.
+ #
+-do_test shell1-5.0 {
+-  #
+-  # NOTE: Skip NUL byte because it appears to be incompatible with command
+-  #       shell argument parsing.
+-  #
+-  for {set i 1} {$i < 256} {incr i} {
+-    #
+-    # NOTE: Due to how the Tcl [exec] command works (i.e. where it treats
+-    #       command channels opened for it as textual ones), the carriage
+-    #       return character (and on Windows, the end-of-file character)
+-    #       cannot be used here.
+-    #
+-    if {$i==0x0D || ($tcl_platform(platform)=="windows" && $i==0x1A)} {
+-      continue
+-    }
+-    if {$i>=0xE0 && $tcl_platform(os)=="OpenBSD"}  continue
+-    if {$i>=0xE0 && $i<=0xEF && $tcl_platform(os)=="Linux"}  continue
+-    set hex [format %02X $i]
+-    set char [subst \\x$hex]; set oldChar $char
+-    set escapes [list]
+-    if {$tcl_platform(platform)=="windows"} {
+-      #
+-      # NOTE: On Windows, we need to escape all the whitespace characters,
+-      #       the alarm (\a) character, and those with special meaning to
+-      #       the SQLite shell itself.
+-      #
+-      set escapes [list \
+-          \a \\a \b \\b \t \\t \n \\n \v \\v \f \\f \r \\r \
+-          " " "\" \"" \" \\\" ' \"'\" \\ \\\\]
+-    } else {
+-      #
+-      # NOTE: On Unix, we need to escape most of the whitespace characters
+-      #       and those with special meaning to the SQLite shell itself.
+-      #       The alarm (\a), backspace (\b), and carriage-return (\r)
+-      #       characters do not appear to require escaping on Unix.  For
+-      #       the alarm and backspace characters, this is probably due to
+-      #       differences in the command shell.  For the carriage-return,
+-      #       it is probably due to differences in how Tcl handles command
+-      #       channel end-of-line translations.
+-      #
+-      set escapes [list \
+-          \t \\t \n \\n \v \\v \f \\f \
+-          " " "\" \"" \" \\\" ' \"'\" \\ \\\\]
+-    }
+-    set char [string map $escapes $char]
+-    set x [catchcmdex test.db ".print $char\n"]
+-    set code [lindex $x 0]
+-    set res [lindex $x 1]
+-    if {$code ne "0"} {
+-      error "failed with error: $res"
+-    }
+-    if {$res ne "$oldChar\n"} {
+-      if {[llength $res] > 0} {
+-        set got [format %02X [scan $res %c]]
+-      } else {
+-        set got <empty>
+-      }
+-      error "failed with byte $hex mismatch, got $got"
+-    }
+-  }
+-} {}
++#do_test shell1-5.0 {
++#  #
++#  # NOTE: Skip NUL byte because it appears to be incompatible with command
++#  #       shell argument parsing.
++#  #
++#  for {set i 1} {$i < 256} {incr i} {
++#    #
++#    # NOTE: Due to how the Tcl [exec] command works (i.e. where it treats
++#    #       command channels opened for it as textual ones), the carriage
++#    #       return character (and on Windows, the end-of-file character)
++#    #       cannot be used here.
++#    #
++#    if {$i==0x0D || ($tcl_platform(platform)=="windows" && $i==0x1A)} {
++#      continue
++#    }
++#    if {$i>=0xE0 && $tcl_platform(os)=="OpenBSD"}  continue
++#    if {$i>=0xE0 && $i<=0xEF && $tcl_platform(os)=="Linux"}  continue
++#    set hex [format %02X $i]
++#    set char [subst \\x$hex]; set oldChar $char
++#    set escapes [list]
++#    if {$tcl_platform(platform)=="windows"} {
++#      #
++#      # NOTE: On Windows, we need to escape all the whitespace characters,
++#      #       the alarm (\a) character, and those with special meaning to
++#      #       the SQLite shell itself.
++#      #
++#      set escapes [list \
++#          \a \\a \b \\b \t \\t \n \\n \v \\v \f \\f \r \\r \
++#          " " "\" \"" \" \\\" ' \"'\" \\ \\\\]
++#    } else {
++#      #
++#      # NOTE: On Unix, we need to escape most of the whitespace characters
++#      #       and those with special meaning to the SQLite shell itself.
++#      #       The alarm (\a), backspace (\b), and carriage-return (\r)
++#      #       characters do not appear to require escaping on Unix.  For
++#      #       the alarm and backspace characters, this is probably due to
++#      #       differences in the command shell.  For the carriage-return,
++#      #       it is probably due to differences in how Tcl handles command
++#      #       channel end-of-line translations.
++#      #
++#      set escapes [list \
++#          \t \\t \n \\n \v \\v \f \\f \
++#          " " "\" \"" \" \\\" ' \"'\" \\ \\\\]
++#    }
++#    set char [string map $escapes $char]
++#    set x [catchcmdex test.db ".print $char\n"]
++#    set code [lindex $x 0]
++#    set res [lindex $x 1]
++#    if {$code ne "0"} {
++#      error "failed with error: $res"
++#    }
++#    if {$res ne "$oldChar\n"} {
++#      if {[llength $res] > 0} {
++#        set got [format %02X [scan $res %c]]
++#      } else {
++#        set got <empty>
++#      }
++#      error "failed with byte $hex mismatch, got $got"
++#    }
++#  }
++#} {}
+ 
+ # These test cases do not work on MinGW
+ if 0 {
