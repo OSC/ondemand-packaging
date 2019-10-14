@@ -34,6 +34,8 @@ Patch6: sqlite-3.8.10.1-tcl-regress-tests.patch
 Patch7: sqlite-3.16-datetest-2.2c.patch
 # Modify sync2.test to pass with DIRSYNC turned off
 Patch8: sqlite-3.18.0-sync2-dirsync.patch
+# Use old Tcl
+Patch9: sqlite-3.26.0-tcl.patch
 
 BuildRequires: ncurses-devel readline-devel glibc-devel
 BuildRequires: autoconf
@@ -139,6 +141,7 @@ This package contains the analysis program for %{name}.
 %patch7 -p1
 %endif
 %patch8 -p1
+%patch9 -p1
 
 # Remove backup-file
 rm -f %{name}-doc-%{docver}/sqlite.css~ || :
@@ -204,6 +207,11 @@ rm test/csv01.test
 %ifarch s390x ppc64
 rm test/fts3conf.test
 %endif
+
+# Remove tests that don't work with Tcl 8.5.x
+rm -f test/fts3corrupt4.test
+rm -f test/zipfile.test
+rm -f test/zipfile2.test
 
 make test
 %endif # with check
