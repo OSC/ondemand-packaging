@@ -1,3 +1,7 @@
+%define scl ondemand
+%define pkg_name sqlite
+%scl_package sqlite
+
 # bcond default logic is nicely backwards...
 %bcond_without tcl
 %bcond_with static
@@ -8,7 +12,7 @@
 %define rpmver 3.26.0
 
 Summary: Library that implements an embeddable SQL database engine
-Name: sqlite
+Name: %{?scl_prefix}sqlite
 Version: %{rpmver}
 Release: 3%{?dist}
 License: Public Domain
@@ -45,8 +49,11 @@ BuildRequires: tcl-devel
 %{!?tcl_version: %global tcl_version 8.6}
 %{!?tcl_sitearch: %global tcl_sitearch %{_libdir}/tcl%{tcl_version}}
 %endif
+%{?scl:BuildRequires:  ondemand-scldevel}
+%{?scl:BuildRequires:  ondemand-build}
 
 Requires: %{name}-libs = %{version}-%{release}
+%{?scl:Requires: %scl_runtime}
 
 # Ensure updates from pre-split work on multi-lib systems
 Obsoletes: %{name} < 3.11.0-1
@@ -131,7 +138,7 @@ This package contains the analysis program for %{name}.
 %endif
 
 %prep
-%setup -q -a1 -n %{name}-src-%{realver}
+%setup -q -a1 -n %{pkg_name}-src-%{realver}
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
@@ -144,7 +151,7 @@ This package contains the analysis program for %{name}.
 %patch9 -p1
 
 # Remove backup-file
-rm -f %{name}-doc-%{docver}/sqlite.css~ || :
+rm -f %{pkg_name}-doc-%{docver}/sqlite.css~ || :
 
 autoconf # Rerun with new autoconf to add support for aarm64
 
