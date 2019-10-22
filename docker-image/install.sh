@@ -24,11 +24,9 @@ run useradd --create-home --gid ood --password 'ood' ood
 header "Installing dependencies"
 run yum update -y
 run yum install -y epel-release centos-release-scl
-run yum install -y rubygem-rake sudo git git-annex which expect \
+run yum install -y mock rubygem-rake sudo git git-annex which expect \
     rpm-build rpmdevtools rpm-sign scl-utils-build \
     selinux-policy bsdtar
-# Temporary to get access to CentOS8 and EPEL8 configs
-run yum install -y --enablerepo epel-testing mock
 
 header "Miscellaneous"
 run cp /build/sudoers.conf /etc/sudoers.d/ood
