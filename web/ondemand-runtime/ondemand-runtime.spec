@@ -137,6 +137,7 @@ cat >> %{buildroot}%{_root_sysconfdir}/rpm/macros.%{scl_name_base}-scldevel << E
 %%scl_%{scl_name_base}_prefix_nodejs %{nodejs}-
 %%scl_%{scl_name_base}_apache %{apache}
 %%scl_%{scl_name_base}_prefix_apache %{apache}-
+%%scl_%{scl_name_base}_gem_home %{_datadir}/gems/%{ruby_version}
 %endif
 EOF
 
