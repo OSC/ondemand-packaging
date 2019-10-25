@@ -14,10 +14,11 @@
 %global nodejs rh-nodejs10
 %global apache httpd24
 %endif
+%global ruby_version 2.5
 
 Name:      ondemand-runtime
 Version:   1.7
-Release:   2%{?dist}
+Release:   3%{?dist}
 Summary:   Package that handles %{scl} Software Collection.
 License:   MIT
 
@@ -121,6 +122,8 @@ export LD_LIBRARY_PATH="%{_libdir}\${LD_LIBRARY_PATH:+:\${LD_LIBRARY_PATH}}"
 export MANPATH="%{_mandir}:\${MANPATH:-}"
 export PKG_CONFIG_PATH="%{_libdir}/pkgconfig\${PKG_CONFIG_PATH:+:\${PKG_CONFIG_PATH}}"
 export RUBYLIB="%{_datadir}/ruby/vendor_ruby:%{_libdir}/ruby/vendor_ruby\${RUBYLIB:+:\${RUBYLIB}}"
+export GEM_HOME="%{_datadir}/gems/%{ruby_version}"
+export GEM_PATH="\${GEM_HOME}:\${GEM_PATH}"
 EOF
 
 cat >> %{buildroot}%{_root_sysconfdir}/rpm/macros.%{scl_name_base}-scldevel << EOF
