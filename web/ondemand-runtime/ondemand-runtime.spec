@@ -126,6 +126,9 @@ export GEM_HOME="%{_datadir}/gems/%{ruby_version}"
 for dir in \${GEM_HOME}/apps/* ; do
     export GEM_PATH="\${dir}:\${GEM_PATH}"
 done
+for dir in \${GEM_HOME}/ondemand/* ; do
+    export GEM_PATH="\${dir}:\${GEM_PATH}"
+done
 export GEM_PATH="\${GEM_HOME}:\${GEM_PATH}"
 EOF
 
