@@ -18,7 +18,7 @@
 
 Name:      ondemand-runtime
 Version:   1.7
-Release:   4%{?dist}
+Release:   5%{?dist}
 Summary:   Package that handles %{scl} Software Collection.
 License:   MIT
 
@@ -36,6 +36,11 @@ Package shipping essential scripts to work with %{scl} Software Collection.
 %package -n ondemand-build
 Summary: Package shipping basic build configuration
 Requires: scl-utils-build
+Requires: sqlite-devel
+Requires: curl
+Requires: make
+Requires: zlib-devel
+Requires: libxslt-devel
 
 %description -n ondemand-build
 Package shipping essential configuration macros to build %{scl} Software Collection.
