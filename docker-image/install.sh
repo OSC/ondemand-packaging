@@ -63,6 +63,7 @@ if [ -f /build/$MOCK_CACHE ]; then
     else
         tar=tar
     fi
+    run rm -rf /var/lib/mock/*
     run $tar xf /build/$MOCK_CACHE -C /
 fi
 
