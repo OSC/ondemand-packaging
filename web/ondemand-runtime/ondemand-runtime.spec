@@ -18,7 +18,7 @@
 
 Name:      ondemand-runtime
 Version:   1.7
-Release:   3%{?dist}
+Release:   4%{?dist}
 Summary:   Package that handles %{scl} Software Collection.
 License:   MIT
 
@@ -123,6 +123,12 @@ export MANPATH="%{_mandir}:\${MANPATH:-}"
 export PKG_CONFIG_PATH="%{_libdir}/pkgconfig\${PKG_CONFIG_PATH:+:\${PKG_CONFIG_PATH}}"
 export RUBYLIB="%{_datadir}/ruby/vendor_ruby:%{_libdir}/ruby/vendor_ruby\${RUBYLIB:+:\${RUBYLIB}}"
 export GEM_HOME="%{_datadir}/gems/%{ruby_version}"
+for dir in \${GEM_HOME}/apps/* ; do
+    export GEM_PATH="\${dir}:\${GEM_PATH}"
+done
+for dir in \${GEM_HOME}/ondemand/* ; do
+    export GEM_PATH="\${dir}:\${GEM_PATH}"
+done
 export GEM_PATH="\${GEM_HOME}:\${GEM_PATH}"
 EOF
 
