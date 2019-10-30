@@ -84,7 +84,19 @@ docker exec \
 -t -i \
 -e "LC_CTYPE=en_US.UTF-8" \
 $CONTAINER_ID \
+mock -r ondemand-el8-x86_64 --no-cleanup-after --install ondemand-gems
+
+docker exec \
+-t -i \
+-e "LC_CTYPE=en_US.UTF-8" \
+$CONTAINER_ID \
 mock -r ondemand-el7-x86_64 --no-cleanup-after --init
+
+docker exec \
+-t -i \
+-e "LC_CTYPE=en_US.UTF-8" \
+$CONTAINER_ID \
+mock -r ondemand-el7-x86_64 --no-cleanup-after --install ondemand-gems
 
 docker exec \
 -t -i \
