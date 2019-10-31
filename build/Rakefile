@@ -47,6 +47,8 @@ end
 
 DISTRO = ENV['DISTRO']
 PACKAGE = ENV['PACKAGE']
+BUILDBOX_IMAGE = ENV['BUILDBOX_IMAGE']
+BUILDBOX_IMAGE_DEFINE = "--define 'build_image #{BUILDBOX_IMAGE}'"
 PACKAGE_NAME = File.basename(PACKAGE)
 WORK_DIR = "/work/#{DISTRO}"
 OUTPUT_DIR = "/output/#{DISTRO}"
@@ -141,7 +143,7 @@ namespace :build do
         sh "spectool #{GIT_TAG_DEFINE} #{VERSION_DEFINE} #{RELEASE_DEFINE} -g -R -S #{spec} #{cmd_suffix}"
     end
     puts "\tBuild SRPM for #{spec}".blue
-    sh "rpmbuild #{GIT_TAG_DEFINE} #{VERSION_DEFINE} #{RELEASE_DEFINE} -bs #{spec} #{cmd_suffix}"
+    sh "rpmbuild #{GIT_TAG_DEFINE} #{VERSION_DEFINE} #{RELEASE_DEFINE} #{BUILDBOX_IMAGE_DEFINE} -bs #{spec} #{cmd_suffix}"
   end
 
   desc "Build RPM"
@@ -169,6 +171,7 @@ namespace :build do
     cmd = [
       "/usr/bin/mock --verbose -r #{MOCK_CONFIG}",
       GIT_TAG_DEFINE, VERSION_DEFINE, RELEASE_DEFINE,
+      BUILDBOX_IMAGE_DEFINE,
       '--enable-network',
       '--no-clean', '--no-cleanup-after',
       '--resultdir', WORK_DIR,

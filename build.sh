@@ -282,6 +282,7 @@ for p in "${PACKAGES[@]}"; do
         -e "GPG_NAME=${GPG_NAME}" \
         -e "GPG_PUBKEY=${GPG_PUBKEY}" \
         -e "GIT_TAG=${GIT_TAG}" \
+        -e "BUILDBOX_IMAGE=${BUILDBOX_IMAGE}" \
         -e "OOD_UID=`/usr/bin/id -u`" \
         -e "OOD_GID=`/usr/bin/id -g`" \
         -e "DEBUG=${DEBUG}" \
