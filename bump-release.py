@@ -65,13 +65,13 @@ Usage examples:
     repo_dir = os.path.dirname(__file__)
 
     specs_to_modify = [
-        'compute/ondemand-compute/ondemand-compute.spec',
-        'misc/ondemand-release/ondemand-release.spec',
-        'web/ondemand-runtime/ondemand-runtime.spec',
+        'packages/ondemand-compute/ondemand-compute.spec',
+        'packages/ondemand-release/ondemand-release.spec',
+        'packages/ondemand-runtime/ondemand-runtime.spec',
     ]
     files_to_modify = [
-        'misc/ondemand-release/ondemand-compute.repo',
-        'misc/ondemand-release/ondemand-web.repo',
+        'packages/ondemand-release/ondemand-compute.repo',
+        'packages/ondemand-release/ondemand-web.repo',
     ]
     for spec in specs_to_modify:
         reset_version_release(spec, args.previous_release, args.new_release)
