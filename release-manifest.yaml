@@ -51,11 +51,10 @@ ondemand:
   packages:
     - ondemand
     - ondemand-gems
+    - ondemand-gems-{full}
     - ondemand-selinux
   versions:
     - '{full}-1'
-ondemand-gems-{full}:
-  - '{full}-1'
 
 # compute
 ondemand-compute:
