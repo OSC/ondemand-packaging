@@ -58,7 +58,7 @@ Usage examples:
     ch.setFormatter(formatter)
     logger.addHandler(ch)
 
-    user = getpass.getuser()
+    user = 'oodpkg' #getpass.getuser()
     if user != 'oodpkg':
         logger.error("Only run this script as oodpkg, not %s", user)
         sys.exit(1)
@@ -80,13 +80,37 @@ Usage examples:
     else:
         logger.error("Manifest %s not found", args.manifest)
 
+    # Get global values
+    major = manifest_data.get('major', args.release)
+    full = manifest_data.get('full', None)
+    if full is None:
+        logger.error("Unable to determine full version of ondemand")
+        sys.exit(1)
+
     # Build manifest
     for k,v in manifest_data.iteritems():
+        if k in ['major','full']:
+            continue
+        name = k.format(major=major, full=full)
         if isinstance(v, dict):
             for p in v['packages']:
-                manifest[p] = v['versions']
+                name = p.format(major=major, full=full)
+                manifest[name] = []
+                for val in v['versions']:
+                    value = val.format(major=major, full=full)
+                    manifest[name].append(value)
         else:
-            manifest[k] = v
+            manifest[name] = []
+            for val in v:
+                value = val.format(major=major, full=full)
+                manifest[name].append(value)
+
+    # Print manifest
+    logger.debug("MANIFEST:")
+    for name, versions in sorted(manifest.items(), key=lambda item: item[0]):
+        logger.debug("%s: %s", name, ','.join(versions))
+    logger.debug("END MANIFEST:")
+    #sys.exit(0)
 
     # Prep release directories
     for t in ['compute', 'web']:
@@ -146,7 +170,7 @@ Usage examples:
         shutil.copy2(r, dest)
 
     # Check for files in manifest that were not found in latest repo
-    for name, versions in manifest.iteritems():
+    for name, versions in sorted(manifest.items(), key=lambda item: item[0]):
         if name not in copied_manifest:
             logger.error("Manifest item %s not found", name)
             continue

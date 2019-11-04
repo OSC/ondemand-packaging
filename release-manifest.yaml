@@ -1,10 +1,13 @@
+major: '1.7'
+full: '1.7.2'
+
 # release
 ondemand-release:
   packages:
     - ondemand-release-compute
     - ondemand-release-web
   versions:
-    - 1.7-1
+    - '{major}-1'
 
 # web
 cjose:
@@ -43,13 +46,20 @@ ondemand-runtime:
     - ondemand-runtime
     - ondemand-scldevel
   versions:
-    - 1.7-5
+    - '{major}-5'
 ondemand:
-  - 1.6.7-1
+  packages:
+    - ondemand
+    - ondemand-gems
+    - ondemand-selinux
+  versions:
+    - '{full}-1'
+ondemand-gems-{full}:
+  - '{full}-1'
 
 # compute
 ondemand-compute:
-  - 1.7-1
+  - '{major}-1'
 python-websockify:
   - 0.8.0-1
 turbovnc:
