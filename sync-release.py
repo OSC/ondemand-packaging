@@ -58,7 +58,7 @@ Usage examples:
     ch.setFormatter(formatter)
     logger.addHandler(ch)
 
-    user = 'oodpkg' #getpass.getuser()
+    user = getpass.getuser()
     if user != 'oodpkg':
         logger.error("Only run this script as oodpkg, not %s", user)
         sys.exit(1)
