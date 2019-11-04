@@ -42,6 +42,7 @@ ondemand-runtime:
     - ondemand-apache
     - ondemand-build
     - ondemand-nodejs
+    - ondemand-python
     - ondemand-ruby
     - ondemand-runtime
     - ondemand-scldevel
