@@ -46,7 +46,11 @@ ondemand-runtime:
   versions:
     - 1.6-2
 ondemand:
-  - 1.6.20-1
+  packages:
+    - ondemand
+    - ondemand-selinux
+  version:
+    - 1.6.20-1
 
 # compute
 ondemand-compute:
