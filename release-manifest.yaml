@@ -49,7 +49,7 @@ ondemand:
   packages:
     - ondemand
     - ondemand-selinux
-  version:
+  versions:
     - 1.6.20-1
 
 # compute
