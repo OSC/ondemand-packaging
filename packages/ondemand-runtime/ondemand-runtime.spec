@@ -15,10 +15,13 @@
 %global apache httpd24
 %endif
 %global ruby_version 2.5
+%global ondemand_gem_home %{_datadir}/gems/%{ruby_version}
+%global ondemand_apps_gem_home %{ondemand_gem_home}/apps
+%global ondemand_core_gem_home %{ondemand_gem_home}/ondemand
 
 Name:      ondemand-runtime
 Version:   1.7
-Release:   5%{?dist}
+Release:   6%{?dist}
 Summary:   Package that handles %{scl} Software Collection.
 License:   MIT
 
@@ -117,6 +120,8 @@ Meta package for pulling in SCL apache %{apache}
 %scl_install
 mkdir -p %{buildroot}/opt/rh
 ln -s ../ood/ondemand %{buildroot}/opt/rh/%{scl}
+mkdir -p %{buildroot}%{ondemand_apps_gem_home}
+mkdir -p %{buildroot}%{ondemand_core_gem_home}
 cat >> %{buildroot}%{_scl_scripts}/enable << EOF
 %if 0%{?rhel} <= 7
 . scl_source enable %{apache} %{ruby} %{nodejs}
@@ -127,11 +132,11 @@ export LD_LIBRARY_PATH="%{_libdir}\${LD_LIBRARY_PATH:+:\${LD_LIBRARY_PATH}}"
 export MANPATH="%{_mandir}:\${MANPATH:-}"
 export PKG_CONFIG_PATH="%{_libdir}/pkgconfig\${PKG_CONFIG_PATH:+:\${PKG_CONFIG_PATH}}"
 export RUBYLIB="%{_datadir}/ruby/vendor_ruby:%{_libdir}/ruby/vendor_ruby\${RUBYLIB:+:\${RUBYLIB}}"
-export GEM_HOME="%{_datadir}/gems/%{ruby_version}"
-for dir in \${GEM_HOME}/apps/* ; do
+export GEM_HOME="%{ondemand_gem_home}"
+for dir in %{ondemand_apps_gem_home}/* ; do
     export GEM_PATH="\${dir}:\${GEM_PATH}"
 done
-for dir in \${GEM_HOME}/ondemand/* ; do
+for dir in %{ondemand_core_gem_home}/* ; do
     export GEM_PATH="\${dir}:\${GEM_PATH}"
 done
 export GEM_PATH="\${GEM_HOME}:\${GEM_PATH}"
@@ -149,7 +154,9 @@ cat >> %{buildroot}%{_root_sysconfdir}/rpm/macros.%{scl_name_base}-scldevel << E
 %%scl_%{scl_name_base}_apache %{apache}
 %%scl_%{scl_name_base}_prefix_apache %{apache}-
 %endif
-%%scl_%{scl_name_base}_gem_home %{_datadir}/gems/%{ruby_version}
+%%scl_%{scl_name_base}_gem_home %{ondemand_gem_home}
+%%scl_%{scl_name_base}_core_gem_home %{ondemand_core_gem_home}
+%%scl_%{scl_name_base}_apps_gem_home %{ondemand_apps_gem_home}
 EOF
 
 %files -f filelist
@@ -163,6 +170,9 @@ EOF
 %{_root_sysconfdir}/rpm/macros.%{scl_name_base}-scldevel
 
 %files -n ondemand-ruby
+%{ondemand_gem_home}
+%{ondemand_apps_gem_home}
+%{ondemand_core_gem_home}
 
 %files -n ondemand-python
 
