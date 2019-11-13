@@ -1,4 +1,7 @@
 # Edited by rpmlb
+%define scl ondemand
+%global _scl_prefix %{_scl_prefix_ondemand}
+%global gem_dir %{scl_ondemand_gem_home}
 %{?scl:%scl_package rubygem-%{gem_name}}
 %{!?scl:%global pkg_name %{name}}
 
@@ -33,22 +36,19 @@ Source1: %{gem_name}-%{version}-specs.tgz
 # Source203: rspec-expectations-3.7.0.gem
 # Source204: rspec-mocks-3.7.0.gem
 # Source205: rspec-support-3.7.0.gem
-Requires: %{?scl_prefix}ruby(release)
-Requires: %{?scl_prefix}ruby(rubygems)
-BuildRequires: %{?scl_prefix}ruby(release)
-BuildRequires: %{?scl_prefix}rubygems-devel
-BuildRequires: %{?scl_prefix}ruby
+Requires: %{?scl_ondemand_prefix_ruby}ruby(release)
+Requires: %{?scl_ondemand_prefix_ruby}ruby(rubygems)
+BuildRequires: %{?scl_prefix}scldevel
+BuildRequires: %{?scl_ondemand_prefix_ruby}ruby(release)
+BuildRequires: %{?scl_ondemand_prefix_ruby}rubygems-devel
+BuildRequires: %{?scl_ondemand_prefix_ruby}ruby
 %if 0%{?enable_tests} > 0
-BuildRequires: %{?scl_prefix}ruby-devel
-BuildRequires: %{?scl_prefix}rake
+BuildRequires: %{?scl_ondemand_prefix_ruby}ruby-devel
+BuildRequires: %{?scl_ondemand_prefix_ruby}rake
 BuildRequires: git
 BuildRequires: %{?scl:%{_root_bindir}}%{!?scl:%{_bindir}}/ps
 %endif
 # https://github.com/bundler/bundler/issues/3647
-Provides: bundled(rubygem-fileutils) = %{fileutils_version}
-Provides: bundled(rubygem-molinillo) = %{molinillo_version}
-Provides: bundled(rubygem-net-http-persisntent) = %{net_http_persistent_version}
-Provides: bundled(rubygem-thor) = %{thor_version}
 BuildArch: noarch
 Provides: %{?scl_prefix}rubygem(%{gem_name}) = %{version}
 
@@ -75,14 +75,14 @@ set -ex
 %build
 
 %install
+mkdir -p %{buildroot}%{_bindir}
+mv .%{gem_dir}/bin/* \
+        %{buildroot}%{_bindir}/
+rmdir .%{gem_dir}/bin
+
 mkdir -p %{buildroot}%{gem_dir}
 cp -a .%{gem_dir}/* \
         %{buildroot}%{gem_dir}/
-
-
-mkdir -p %{buildroot}%{_bindir}
-cp -a .%{_bindir}/* \
-        %{buildroot}%{_bindir}/
 
 find %{buildroot}%{gem_instdir}/exe -type f | xargs chmod a+x
 
