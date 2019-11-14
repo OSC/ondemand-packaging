@@ -56,6 +56,12 @@ ondemand:
     - ondemand-selinux
   versions:
     - '{full}-1'
+ondemand-rubygem-bundler:
+  packages:
+    - ondemand-rubygem-bundler
+    - ondemand-rubygem-bundler-doc
+  versions:
+    - '1.17.3-1'
 
 # compute
 ondemand-compute:

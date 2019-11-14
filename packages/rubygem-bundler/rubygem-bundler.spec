@@ -13,12 +13,12 @@
 # Ideally it should be checked against FileUtils::VERSION.
 # https://github.com/ruby/fileutils/pull/12
 %global fileutils_version 0.7.2
-%global molinillo_version 0.6.4
+%global molinillo_version 0.6.6
 %global net_http_persistent_version 2.9.4
 %global thor_version 0.20.0
 
 Name: %{?scl_prefix}rubygem-%{gem_name}
-Version: 1.16.1
+Version: 1.17.3
 Release: 1%{?dist}
 Summary: Library and utilities to manage a Ruby application's gem dependencies
 Group: Development/Languages
@@ -26,7 +26,7 @@ License: MIT
 URL: http://bundler.io
 Source0: https://rubygems.org/gems/%{gem_name}-%{version}.gem
 # git clone https://github.com/bundler/bundler.git && cd bundler
-# git checkout v1.16.1 && tar czvf bundler-1.16.1-specs.tgz spec/
+# git checkout v1.17.3 && tar czvf bundler-1.17.3-specs.tgz spec/
 Source1: %{gem_name}-%{version}-specs.tgz
 # Sources for rspec to test internally.
 # Comment out Source when testing on local. Don't import those.
