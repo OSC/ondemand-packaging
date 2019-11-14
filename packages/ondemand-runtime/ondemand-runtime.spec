@@ -21,7 +21,7 @@
 
 Name:      ondemand-runtime
 Version:   1.7
-Release:   6%{?dist}
+Release:   7%{?dist}
 Summary:   Package that handles %{scl} Software Collection.
 License:   MIT
 
@@ -60,14 +60,14 @@ Summary: Meta package for pulling in SCL Ruby %{ruby}
 %if 0%{?rhel} >= 8
 Requires: %{ruby} >= 2.5, %{ruby} < 2.6
 Requires: rubygem-rake
-Requires: rubygem-bundler
+Requires: ondemand-rubygem-bundler >= 1.17.0
 Requires: ruby-devel
 Requires: rubygems
 Requires: rubygems-devel
 %else
 Requires: %{ruby}
 Requires: %{ruby}-rubygem-rake
-Requires: %{ruby}-rubygem-bundler
+Requires: ondemand-rubygem-bundler >= 1.17.0
 Requires: %{ruby}-ruby-devel
 Requires: %{ruby}-rubygems
 Requires: %{ruby}-rubygems-devel
