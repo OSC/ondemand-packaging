@@ -27,10 +27,10 @@ def dist_configs(dist, k1, k2 = nil)
       # Hack to work around issues with rpmdb and overlayfs
       #'MOCK_FIX'    => 'mv /var/lib/rpm /var/lib/rpm.bak ; rpm --rebuilddb ; /usr/lib/rpm/rpmdb_dump /var/lib/rpm.bak/Packages | /usr/lib/rpm/rpmdb_load /var/lib/rpm/Packages',
       'PACKAGE'     => {
-        'rubygem-bundler' => ['ondemand-scldevel'],
-        'default' => [],
       },
       'MOCK_PACKAGES' => {
+        'rubygem-bundler' => ['ondemand-scldevel'],
+        'default' => [],
       },
     },
   }
