@@ -22,7 +22,7 @@ httpd24-mod_auth_openidc:
     - httpd24-mod_auth_openidc
     - httpd24-mod_auth_openidc-debuginfo
   versions:
-    - 2.4.0-1
+    - 2.4.1-1
 ondemand-nginx:
   packages:
     - ondemand-nginx
