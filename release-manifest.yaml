@@ -47,7 +47,7 @@ ondemand-runtime:
   versions:
     - 1.5-5
 ondemand:
-  - 1.5.5-1
+  - 1.5.7-1
 
 # compute
 ondemand-compute:
