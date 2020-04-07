@@ -193,3 +193,15 @@ Release RPMs:
 ```
 ./virtualenv/bin/python ./release.py -c compute /tmp/output/*
 ```
+
+## Build Dex
+
+Dex can be built on just EL7 and used on other operating systems because of how Go binaries are built.
+
+Build the RPM and make a copy of build before release
+
+```
+./build.sh -w /tmp/work -o /tmp/output -d el7 $(pwd)/packages/ondemand-dex
+cp -r /tmp/output/el7 /tmp/output/el8
+./virtualenv/bin/python ./release.py /tmp/output/*
+```
