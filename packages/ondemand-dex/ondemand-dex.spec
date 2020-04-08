@@ -40,6 +40,8 @@ export PATH=$PATH:./go/go/bin
 %__install -p -m 755 -D bin/dex %{buildroot}%{_exec_prefix}/local/bin/%{name}
 %__install -p -m 600 -D examples/config-dev.yaml %{buildroot}%{confdir}/config.yaml
 touch %{buildroot}%{confdir}/dex.db
+%__mkdir_p %{buildroot}%{_datadir}/%{name}
+%__cp -R web %{buildroot}%{_datadir}/%{name}/web
 %__mkdir_p %{buildroot}%{_unitdir}
 %__cat >> %{buildroot}%{_unitdir}/%{name}.service << EOF
 [Unit]
@@ -48,6 +50,7 @@ After=network-online.target multi-user.target
 Wants=network-online.target
 
 [Service]
+WorkingDirectory=%{_datadir}/%{name}
 ExecStart=%{_exec_prefix}/local/bin/%{name} serve %{confdir}/config.yaml
 User=%{name}
 Group=%{name}
@@ -74,4 +77,6 @@ getent passwd %{name} > /dev/null || useradd -r -d /var/lib/%{name} -g %{name} -
 %dir %attr(0700,%{name},%{name}) %{confdir}
 %config(noreplace,missingok) %attr(0600,%{name},%{name}) %{confdir}/config.yaml
 %ghost %{confdir}/dex.db
+%dir %{_datadir}/%{name}
+%{_datadir}/%{name}/*
 %{_unitdir}/%{name}.service
