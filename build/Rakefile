@@ -13,6 +13,7 @@ def dist_configs(dist, k1, k2 = nil)
         'mod_auth_openidc' => "--define 'scl httpd24'",
       },
       'MOCK_PACKAGES' => {
+        'ondemand-dex' => ['ondemand-scldevel'],
         'rubygem-bundler' => ['ondemand-scldevel'],
         'default' => [],
       },
@@ -29,6 +30,7 @@ def dist_configs(dist, k1, k2 = nil)
       'PACKAGE'     => {
       },
       'MOCK_PACKAGES' => {
+        'ondemand-dex' => ['ondemand-scldevel'],
         'rubygem-bundler' => ['ondemand-scldevel'],
         'default' => [],
       },
