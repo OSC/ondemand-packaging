@@ -8,7 +8,7 @@
 
 Name:       ondemand-%{appname}
 Version:    2.23.0
-Release:    1
+Release:    1%{?dist}
 Summary:    A federated OpenID Connect provider
 
 Group:      System Environment/Daemons
@@ -17,9 +17,11 @@ URL:        https://github.com/dexidp/dex
 Source0:    https://github.com/dexidp/dex/archive/v%{version}.tar.gz
 Source1:    https://dl.google.com/go/go%{go_version}.linux-amd64.tar.gz
 
+BuildRequires:  ondemand-scldevel
 BuildRequires:  systemd
 BuildRequires:  git
 Requires:       systemd
+Requires:       %{?scl_ondemand_prefix_apache}mod_auth_openidc
 
 %description
 A federated OpenID Connect provider packaged for Open OnDemand
