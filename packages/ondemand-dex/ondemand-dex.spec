@@ -28,15 +28,23 @@ A federated OpenID Connect provider packaged for Open OnDemand
 
 %prep
 %setup -q -n %{appname}-%{version}
-%__mkdir ./go
-%__tar -C ./go -xzf %{SOURCE1}
+%__tar -C %{_buildrootdir} -xzf %{SOURCE1}
+export PATH=$PATH:%{_buildrootdir}/go/bin
+GOPATH=$(go env GOPATH)
+%__mkdir_p $GOPATH/src/github.com/dexidp/dex
+%__cp -R ./* $GOPATH/src/github.com/dexidp/dex/
 
 %build
-export PATH=$PATH:./go/go/bin
-%__make
+export PATH=$PATH:%{_buildrootdir}/go/bin
+GOPATH=$(go env GOPATH)
+cd $GOPATH/src/github.com/dexidp/dex/
+%__make bin/dex
 
 
 %install
+export PATH=$PATH:%{_buildrootdir}/go/bin
+GOPATH=$(go env GOPATH)
+cd $GOPATH/src/github.com/dexidp/dex/
 %__install -p -m 755 -D bin/dex %{buildroot}%{_exec_prefix}/local/bin/%{name}
 %__install -p -m 600 -D examples/config-dev.yaml %{buildroot}%{confdir}/config.yaml
 touch %{buildroot}%{confdir}/dex.db
@@ -58,6 +66,9 @@ Group=%{name}
 [Install]
 WantedBy=multi-user.target
 EOF
+
+%clean
+%__rm -rf %{_buildrootdir}/go
 
 %pre
 getent group %{name} > /dev/null || groupadd -r %{name}
