@@ -69,16 +69,17 @@ end
 if ENV['GIT_TAG'] && ! ENV['GIT_TAG'].empty?
   git_tag = ENV['GIT_TAG'].split('-')
   git_prerelease_tag = ENV['GIT_TAG'].split('_')
-  if git_prerelease_tag.start_with?('v')
-    git_prerelease_tag = git_prerelease_tag[1..-1]
-  end
   git_tag_version = git_tag[0]
   if git_tag_version.start_with?('v')
     git_tag_version = git_tag_version[1..-1]
   end
   GIT_TAG_DEFINE = "--define 'git_tag #{ENV['GIT_TAG']}'"
   if git_prerelease_tag.size >= 2
-    VERSION_DEFINE = "--define 'package_version #{git_prerelease_tag[0]}'"
+    git_prerelease_verison = git_prerelease_tag[0]
+    if git_prerelease_verison.start_with?('v')
+      git_prerelease_verison = git_prerelease_verison[1..-1]
+    end
+    VERSION_DEFINE = "--define 'package_version #{git_prerelease_verison}'"
     if git_tag.size >= 2
       prerelease = git_prerelease_tag[1].gsub('-','.')
       RELEASE_DEFINE = "--define 'package_release 0.#{prerelease}'"
