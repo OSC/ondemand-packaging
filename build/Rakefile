@@ -69,6 +69,9 @@ end
 if ENV['GIT_TAG'] && ! ENV['GIT_TAG'].empty?
   git_tag = ENV['GIT_TAG'].split('-')
   git_prerelease_tag = ENV['GIT_TAG'].split('_')
+  if git_prerelease_tag.start_with?('v')
+    git_prerelease_tag = git_prerelease_tag[1..-1]
+  end
   git_tag_version = git_tag[0]
   if git_tag_version.start_with?('v')
     git_tag_version = git_tag_version[1..-1]
