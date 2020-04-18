@@ -24,7 +24,7 @@
 
 Name:       %{?scl_prefix}passenger
 Version:    %{passenger_version}
-Release:    2%{?dist}
+Release:    3%{?dist}
 Summary:    Phusion Passenger application server
 URL:        https://www.phusionpassenger.com
 Group:      System Environment/Daemons
@@ -81,7 +81,7 @@ This package contains documentation files for Phusion Passenger®.
 Summary: A high performance web server and reverse proxy server
 URL:        http://nginx.org/
 Version: %{nginx_version}
-Release: 2.p%{passenger_version}%{?dist}
+Release: 3.p%{passenger_version}%{?dist}
 Obsoletes: %{?scl_prefix}nginx-filesystem
 BuildRequires: libxslt-devel
 BuildRequires: gd-devel
@@ -253,6 +253,16 @@ popd
 
 # Don't need Apache module
 %{__rm} -f %{buildroot}%{_httpd_moddir}/mod_passenger.so
+
+# Add passenger-status wrapper
+%{__mkdir_p} %{buildroot}%{_root_prefix}/local/sbin
+%{__cat} > %{buildroot}%{_root_prefix}/local/sbin/ondemand-passenger-status <<'EOS'
+#!/bin/bash
+
+. scl_source enable ondemand
+
+%{_sbindir}/passenger-status "$@"
+EOS
 EOF
 
 %pre -n %{?scl_prefix}nginx
@@ -286,6 +296,7 @@ fi
 %{_datadir}/passenger/*.p12
 %{passenger_ruby_libdir}/*
 %{ruby_vendorarchdir}/passenger_native_support.so
+%{_root_prefix}/local/sbin/ondemand-passenger-status
 
 %files doc
 %{_docdir}/passenger/*
