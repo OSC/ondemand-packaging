@@ -55,7 +55,7 @@ ondemand:
     - ondemand-gems-{full}
     - ondemand-selinux
   versions:
-    - '{full}-1'
+    - '{full}-2'
 ondemand-rubygem-bundler:
   packages:
     - ondemand-rubygem-bundler
