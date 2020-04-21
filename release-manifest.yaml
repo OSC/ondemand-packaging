@@ -47,7 +47,7 @@ ondemand-runtime:
     - ondemand-runtime
     - ondemand-scldevel
   versions:
-    - '{major}-7'
+    - '{major}-8'
 ondemand:
   packages:
     - ondemand
