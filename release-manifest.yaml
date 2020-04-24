@@ -1,5 +1,5 @@
 major: '1.7'
-full: '1.7.10'
+full: '1.7.11'
 
 # release
 ondemand-release:
@@ -55,7 +55,8 @@ ondemand:
     - ondemand-gems-{full}
     - ondemand-selinux
   versions:
-    - '{full}-2'
+    - '1.7.10-2'
+    - '{full}-1'
 ondemand-rubygem-bundler:
   packages:
     - ondemand-rubygem-bundler
