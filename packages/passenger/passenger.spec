@@ -24,14 +24,13 @@
 
 Name:       %{?scl_prefix}passenger
 Version:    %{passenger_version}
-Release:    4%{?dist}
+Release:    5%{?dist}
 Summary:    Phusion Passenger application server
 URL:        https://www.phusionpassenger.com
 Group:      System Environment/Daemons
 License:    Boost and BSD and BSD with advertising and MIT and zlib
 Source0:    https://github.com/phusion/passenger/releases/download/release-%{passenger_version}/passenger-%{passenger_version}.tar.gz
 Source1:    http://nginx.org/download/nginx-%{nginx_version}.tar.gz
-Source2:    nginx.logrotate
 
 %{?scl:Requires:%scl_runtime}
 %{?scl:BuildRequires:%scl_runtime}
@@ -81,7 +80,7 @@ This package contains documentation files for Phusion Passenger®.
 Summary: A high performance web server and reverse proxy server
 URL:        http://nginx.org/
 Version: %{nginx_version}
-Release: 4.p%{passenger_version}%{?dist}
+Release: 5.p%{passenger_version}%{?dist}
 Obsoletes: %{?scl_prefix}nginx-filesystem
 BuildRequires: libxslt-devel
 BuildRequires: gd-devel
@@ -227,8 +226,22 @@ find %{buildroot} -type f -name perllocal.pod -exec rm -f '{}' \;
 find %{buildroot} -type f -empty -exec rm -f '{}' \;
 find %{buildroot} -type f -iname '*.so' -exec chmod 0755 '{}' \;
 
-install -p -D -m 0644 %{SOURCE2} \
-    %{buildroot}%{_root_sysconfdir}/logrotate.d/ondemand-nginx
+%{__mkdir_p} %{buildroot}%{_root_sysconfdir}/logrotate.d
+cat > %{buildroot}%{_root_sysconfdir}/logrotate.d/%{?scl_prefix}nginx <<'EOS'
+%{nginx_logdir}/*log {
+    create 0644 %{nginx_user} %{nginx_group}
+    daily
+    rotate 10
+    missingok
+    notifempty
+    compress
+    sharedscripts
+    postrotate
+        /bin/kill -USR1 `cat %{_root_localstatedir}/run/%{?scl_prefix}nginx.pid 2>/dev/null` 2>/dev/null || true
+    endscript
+}
+EOS
+
 
 install -p -d -m 0755 %{buildroot}%{nginx_confdir}/conf.d
 install -p -d -m 0755 %{buildroot}%{nginx_confdir}/default.d
@@ -315,7 +328,7 @@ fi
 %dir %{nginx_confdir}/conf.d
 %dir %{nginx_confdir}/default.d
 %{_sbindir}/nginx
-%config(noreplace) %{_root_sysconfdir}/logrotate.d/ondemand-nginx
+%config(noreplace) %{_root_sysconfdir}/logrotate.d/%{?scl_prefix}nginx
 %attr(700,%{nginx_user},%{nginx_group}) %dir %{nginx_home}
 %attr(700,%{nginx_user},%{nginx_group}) %dir %{nginx_home_tmp}
 %attr(700,%{nginx_user},%{nginx_group}) %dir %{nginx_logdir}
