@@ -1,5 +1,5 @@
 Name:       ondemand-release-web
-Version:    1.7
+Version:    1.8
 Release:    1
 Summary:    Open OnDemand web repository files
 

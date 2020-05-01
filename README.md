@@ -171,7 +171,7 @@ If `./build.sh` had `-o /tmp/output` then the following command will upload the 
 Build release RPMs:
 
 ```
-./build.sh -w /tmp/work -o /tmp/output -d el7 -S $(pwd)/misc/ondemand-release
+./build.sh -w /tmp/work -o /tmp/output -d el7 -S $(pwd)/packages/ondemand-release
 ```
 
 Release RPMs:
@@ -185,7 +185,7 @@ Release RPMs:
 Build RPMs for compute:
 
 ```
-./build.sh -w /tmp/work -o /tmp/output -S $(pwd)/compute/ondemand-compute
+./build.sh -w /tmp/work -o /tmp/output $(pwd)/packages/ondemand-compute
 ```
 
 Release RPMs:
