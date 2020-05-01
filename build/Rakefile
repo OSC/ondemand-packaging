@@ -140,6 +140,7 @@ namespace :build do
   task :srpm => :bootstrap do |task|
     puts "== #{task.name} ==".blue
     sh 'find /package -maxdepth 1 -type f -exec cp {} /home/ood/rpmbuild/SOURCES/ \;'
+    sh 'find /package -maxdepth 1 -mindepth 1 -type d -exec cp -r {} /home/ood/rpmbuild/SOURCES/ \;'
     spec = get_spec('/home/ood/rpmbuild/SOURCES')
     spec_files = `spectool #{GIT_TAG_DEFINE} #{VERSION_DEFINE} #{RELEASE_DEFINE} --list-files #{spec}`
     sources = []
