@@ -1,4 +1,4 @@
-%define go_version 1.13.9
+%define go_version 1.14.2
 
 %define debug_package %{nil}
 %define __strip /bin/true
