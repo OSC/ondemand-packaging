@@ -64,7 +64,7 @@ ondemand-rubygem-bundler:
   versions:
     - '1.17.3-1'
 ondemand-dex:
-  - 2.23.0-1
+  - 2.23.0-2
 
 # compute
 ondemand-compute:
