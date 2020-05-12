@@ -24,7 +24,7 @@
 
 Name:       %{?scl_prefix}passenger
 Version:    %{passenger_version}
-Release:    5%{?dist}
+Release:    6%{?dist}
 Summary:    Phusion Passenger application server
 URL:        https://www.phusionpassenger.com
 Group:      System Environment/Daemons
@@ -80,7 +80,7 @@ This package contains documentation files for Phusion Passenger®.
 Summary: A high performance web server and reverse proxy server
 URL:        http://nginx.org/
 Version: %{nginx_version}
-Release: 5.p%{passenger_version}%{?dist}
+Release: 6.p%{passenger_version}%{?dist}
 Obsoletes: %{?scl_prefix}nginx-filesystem
 BuildRequires: libxslt-devel
 BuildRequires: gd-devel
@@ -268,8 +268,8 @@ popd
 %{__rm} -f %{buildroot}%{_httpd_moddir}/mod_passenger.so
 
 # Add passenger-status wrapper
-%{__mkdir_p} %{buildroot}%{_root_prefix}/local/sbin
-%{__cat} > %{buildroot}%{_root_prefix}/local/sbin/ondemand-passenger-status <<'EOS'
+%{__mkdir_p} %{buildroot}%{_root_sbindir}
+%{__cat} > %{buildroot}%{_root_sbindir}/ondemand-passenger-status <<'EOS'
 #!/bin/bash
 
 . scl_source enable ondemand
@@ -277,7 +277,7 @@ popd
 %{_sbindir}/passenger-status "$@"
 EOS
 EOF
-%{__chmod} 0755 %{buildroot}%{_root_prefix}/local/sbin/ondemand-passenger-status
+%{__chmod} 0755 %{buildroot}%{_root_sbindir}/ondemand-passenger-status
 
 %pre -n %{?scl_prefix}nginx
 
@@ -310,7 +310,7 @@ fi
 %{_datadir}/passenger/*.p12
 %{passenger_ruby_libdir}/*
 %{ruby_vendorarchdir}/passenger_native_support.so
-%{_root_prefix}/local/sbin/ondemand-passenger-status
+%{_root_sbindir}/ondemand-passenger-status
 
 %files doc
 %{_docdir}/passenger/*
