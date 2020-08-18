@@ -1,5 +1,5 @@
 major: '1.8'
-full: '1.8.1'
+full: '1.8.12'
 
 # release
 ondemand-release:
@@ -47,7 +47,7 @@ ondemand-runtime:
     - ondemand-runtime
     - ondemand-scldevel
   versions:
-    - '{major}-8'
+    - '{major}-1'
 ondemand:
   packages:
     - ondemand
@@ -55,7 +55,6 @@ ondemand:
     - ondemand-gems-{full}
     - ondemand-selinux
   versions:
-    - '1.7.10-2'
     - '{full}-1'
 ondemand-rubygem-bundler:
   packages:
@@ -64,7 +63,7 @@ ondemand-rubygem-bundler:
   versions:
     - '1.17.3-1'
 ondemand-dex:
-  - 2.24.0-3
+  - 2.24.0-8
 
 # compute
 ondemand-compute:
