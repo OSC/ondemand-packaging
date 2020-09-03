@@ -1,5 +1,5 @@
 major: '1.7'
-full: '1.7.16'
+full: '1.7.18'
 
 # release
 ondemand-release:
@@ -57,6 +57,7 @@ ondemand:
   versions:
     - '1.7.10-2'
     - '1.7.14-1'
+    - '1.7.16-1'
     - '{full}-1'
 ondemand-rubygem-bundler:
   packages:
