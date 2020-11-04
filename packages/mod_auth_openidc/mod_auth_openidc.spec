@@ -1,5 +1,11 @@
 %{?scl:%scl_package mod_auth_openidc}
-%{!?scl:%global pkg_name %{name}}
+%{!?scl:%global pkg_name mod_auth_openidc}
+
+%bcond_with globus
+
+%if 0%{?with_globus:1}
+%define pkg_suffix -globus
+%endif
 
 %{!?_httpd_mmn: %{expand: %%global _httpd_mmn %%(cat %{_includedir}/httpd/.mmn || echo 0-0)}}
 %{!?_httpd_moddir: %{expand: %%global _httpd_moddir %%{_libdir}/httpd/modules}}
@@ -16,7 +22,7 @@
 
 %global httpd_pkg_cache_dir %{?scl:%{_scl_root}}/var/cache/httpd/mod_auth_openidc
 
-Name:		%{?scl_prefix}mod_auth_openidc
+Name:		%{?scl_prefix}%{pkg_name}%{?pkg_suffix}
 Version:	2.4.4.1
 Release:	1%{?dist}
 Summary:	OpenID Connect auth module for Apache HTTP Server
@@ -36,6 +42,15 @@ BuildRequires:	autoconf
 BuildRequires:	automake
 %{?_with_hiresdis:%{?scl_prefix}BuildRequires: %{?scl_prefix}hiresdis-devel}
 Requires:	%{?scl_prefix}httpd-mmn = %{_httpd_mmn}
+%if 0%{?with_globus:1}
+Conflicts: %{?scl_prefix}mod_auth_openidc
+%else
+Conflicts: %{?scl_prefix}mod_auth_openidc%{?pkg_suffix}
+%endif
+
+# Patches to support Globus claims
+Patch0: 0001-Add-support-for-extensions-in-the-access_token.patch
+Patch1: 0002-Support-passing-identity_set_details-2.3.2j.patch
 
 %description
 This module enables an Apache 2.x web server to operate as
@@ -43,6 +58,10 @@ an OpenID Connect Relying Party and/or OAuth 2.0 Resource Server.
 
 %prep
 %setup -n %{pkg_name}-%{version} -q
+%if 0%{?with_globus:1}
+%patch0 -p1
+%patch1 -p1
+%endif
 
 %build
 # workaround rpm-buildroot-usage

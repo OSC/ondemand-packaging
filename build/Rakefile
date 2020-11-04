@@ -9,14 +9,15 @@ def dist_configs(dist, k1, k2 = nil)
       },
       'MOCK_FIX'    => 'rpm --rebuilddb',
       #'MOCK_CMD'    => '--scrub yum-cache',
-      'PACKAGE'     => {
-        'mod_auth_openidc' => "--define 'scl httpd24'",
-      },
+      'PACKAGE'     => {},
       'MOCK_PACKAGES' => {
         'ondemand-dex' => ['ondemand-scldevel'],
         'rubygem-bundler' => ['ondemand-scldevel'],
         'default' => [],
       },
+      'BUILDS' => {
+        'mod_auth_openidc' => ["--define 'scl httpd24'", "--define 'scl httpd24' --with=globus"]
+      }
     },
     'el8' => {
       'MOCK_CONFIG' => {
@@ -34,6 +35,9 @@ def dist_configs(dist, k1, k2 = nil)
         'rubygem-bundler' => ['ondemand-scldevel'],
         'default' => [],
       },
+      'BUILDS' => {
+        'mod_auth_openidc' => ["", "--with=globus"]
+      }
     },
   }
   # Use dig once using newer Ruby
