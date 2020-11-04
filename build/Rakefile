@@ -62,6 +62,7 @@ MOCK_FIX = dist_configs(DISTRO, 'MOCK_FIX')
 MOCK_CMD = dist_configs(DISTRO, 'MOCK_CMD')
 MOCK_ARGS = dist_configs(DISTRO, 'PACKAGE', PACKAGE_NAME)
 MOCK_PACKAGES = dist_configs(DISTRO, 'MOCK_PACKAGES', PACKAGE_NAME)
+MOCK_BUILDS = dist_configs(DISTRO, 'BUILDS', PACKAGE_NAME)
 if ENV['DEBUG'] == 'true'
   cmd_suffix = ''
 else
@@ -201,8 +202,17 @@ namespace :build do
       puts "\tUsing extra mock args: #{MOCK_ARGS}".blue
       cmd << MOCK_ARGS
     end
-    cmd << "rebuild #{srpm} #{cmd_suffix}"
-    sh cmd.join(' ')
+    if MOCK_BUILDS
+      MOCK_BUILDS.each do |build_args|
+        new_cmd = cmd.clone.map(&:clone)
+        new_cmd << build_args
+        new_cmd << "rebuild #{srpm} #{cmd_suffix}"
+        sh new_cmd.join(' ')
+      end
+    else
+      cmd << "rebuild #{srpm} #{cmd_suffix}"
+      sh cmd.join(' ')
+    end
   end
 
   desc "Build Finish"

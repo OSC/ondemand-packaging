@@ -1,0 +1,76 @@
+From 1c7b16b6836ac3610c7fb4fc2766ced93fecfb6d Mon Sep 17 00:00:00 2001
+From: Joseph Bester <bester@globus.org>
+Date: Wed, 10 Jun 2020 14:16:27 +0000
+Subject: [PATCH 2/2] Support passing identity_set_details (2.3.2j)
+
+This makes a small change to support passing a claim that has a
+value that is a list of json objects. This allows us to get the
+identity_set_detail as a json string which our application can
+parse.
+
+-    Pass list of objects through as claims.
+---
+ src/util.c | 19 +++++++++++++++----
+ 1 file changed, 15 insertions(+), 4 deletions(-)
+
+diff --git a/src/util.c b/src/util.c
+index 128266e..86fcf92 100644
+--- a/src/util.c
++++ b/src/util.c
+@@ -1873,6 +1873,7 @@ void oidc_util_set_app_infos(request_rec *r, const json_t *j_attrs,
+ 			/* string to hold the concatenated array string values */
+ 			char *s_concat = apr_pstrdup(r->pool, "");
+ 			size_t i = 0;
++			int all_objects = 1;
+ 
+ 			/* loop over the array */
+ 			for (i = 0; i < json_array_size(j_value); i++) {
+@@ -1882,7 +1883,7 @@ void oidc_util_set_app_infos(request_rec *r, const json_t *j_attrs,
+ 
+ 				/* check if it is a string */
+ 				if (json_is_string(elem)) {
+-
++					all_objects = 0;
+ 					/* concatenate the string to the s_concat value using the configured separator char */
+ 					// TODO: escape the delimiter in the values (maybe reuse/extract url-formatted code from oidc_session_identity_encode)
+ 					if (apr_strnatcmp(s_concat, "") != 0) {
+@@ -1894,6 +1895,7 @@ void oidc_util_set_app_infos(request_rec *r, const json_t *j_attrs,
+ 					}
+ 
+ 				} else if (json_is_boolean(elem)) {
++					all_objects = 0;
+ 
+ 					if (apr_strnatcmp(s_concat, "") != 0) {
+ 						s_concat = apr_psprintf(r->pool, "%s%s%s", s_concat,
+@@ -1905,6 +1907,9 @@ void oidc_util_set_app_infos(request_rec *r, const json_t *j_attrs,
+ 					}
+ 
+ 				} else {
++					if (!json_is_object(elem)) {
++						all_objects = 0;
++                                        }
+ 
+ 					/* don't know how to handle a non-string array element */
+ 					oidc_warn(r,
+@@ -1913,9 +1918,15 @@ void oidc_util_set_app_infos(request_rec *r, const json_t *j_attrs,
+ 				}
+ 			}
+ 
+-			/* set the concatenated string */
+-			oidc_util_set_app_info(r, s_key, s_concat, claim_prefix, as_header,
+-					as_env_var);
++			if (*s_concat == 0 && all_objects) {
++				oidc_util_set_app_info(r, s_key,
++						oidc_util_encode_json_object(r, j_value, 0), claim_prefix,
++						as_header, as_env_var);
++                        } else {
++				/* set the concatenated string */
++				oidc_util_set_app_info(r, s_key, s_concat, claim_prefix, as_header,
++						as_env_var);
++			}
+ 
+ 		} else {
+ 
+-- 
+2.23.0
+

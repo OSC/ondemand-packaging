@@ -1,0 +1,246 @@
+From d9643a043ca2f16db53cd09f8c654d020db86149 Mon Sep 17 00:00:00 2001
+From: Joseph Bester <bester@globus.org>
+Date: Wed, 12 Jul 2017 09:33:13 -0400
+Subject: [PATCH 1/2] Add support for extensions in the access_token
+
+- OIDCTokenExtensions: a list of json elements to parse from
+  the access token response and include in the session state.
+- export extensions to the app environment as OIDC_extensions
+---
+ src/config.c           |  9 +++++++++
+ src/mod_auth_openidc.c | 23 +++++++++++++++++++----
+ src/mod_auth_openidc.h |  4 +++-
+ src/proto.c            | 33 +++++++++++++++++++++++++++------
+ 4 files changed, 58 insertions(+), 11 deletions(-)
+
+diff --git a/src/config.c b/src/config.c
+index aaa247f..1b40b3b 100644
+--- a/src/config.c
++++ b/src/config.c
+@@ -1335,6 +1335,7 @@ void *oidc_create_server_config(apr_pool_t *pool, server_rec *svr) {
+ 	c->info_hook_data = NULL;
+ 	c->black_listed_claims = NULL;
+ 	c->white_listed_claims = NULL;
++	c->extensions = NULL;
+ 
+ 	c->provider.issuer_specific_redirect_uri =
+ 			OIDC_DEFAULT_PROVIDER_ISSUER_SPECIFIC_REDIRECT_URI;
+@@ -1818,6 +1819,9 @@ void *oidc_merge_server_config(apr_pool_t *pool, void *BASE, void *ADD) {
+ 			add->redirect_urls_allowed != NULL ?
+ 					add->redirect_urls_allowed : base->redirect_urls_allowed;
+ 
++	c->extensions =
++			add->extensions != NULL ?
++					add->extensions : base->extensions;
+ 	return c;
+ }
+ 
+@@ -3197,6 +3201,11 @@ const command_rec oidc_config_cmds[] = {
+ 				(void*)APR_OFFSETOF(oidc_cfg, provider.auth_request_method),
+ 				RSRC_CONF,
+ 				"HTTP method used to send the authentication request to the provider (GET or POST)."),
++		AP_INIT_TAKE1("OIDCTokenExtensions",
++				oidc_set_string_slot,
++				(void*)APR_OFFSETOF(oidc_cfg, extensions),
++				RSRC_CONF,
++				"List of extension elements to parse out of the token response."),
+ 		AP_INIT_ITERATE(OIDCInfoHook,
+ 				oidc_set_info_hook_data,
+ 				(void *)APR_OFFSETOF(oidc_cfg, info_hook_data),
+diff --git a/src/mod_auth_openidc.c b/src/mod_auth_openidc.c
+index 1095309..969b1ea 100644
+--- a/src/mod_auth_openidc.c
++++ b/src/mod_auth_openidc.c
+@@ -1234,11 +1234,12 @@ static apr_byte_t oidc_refresh_access_token(request_rec *r, oidc_cfg *c,
+ 	char *s_token_type = NULL;
+ 	char *s_access_token = NULL;
+ 	char *s_refresh_token = NULL;
++	char *s_extensions = NULL;
+ 
+ 	/* refresh the tokens by calling the token endpoint */
+ 	if (oidc_proto_refresh_request(r, c, provider, refresh_token, &s_id_token,
+-			&s_access_token, &s_token_type, &expires_in, &s_refresh_token)
+-			== FALSE) {
++			&s_access_token, &s_token_type, &expires_in,
++			&s_refresh_token, &s_extensions) == FALSE) {
+ 		oidc_error(r, "access_token could not be refreshed");
+ 		return FALSE;
+ 	}
+@@ -1457,6 +1458,15 @@ static apr_byte_t oidc_session_pass_tokens(request_rec *r, oidc_cfg *cfg,
+ 				access_token_expires,
+ 				OIDC_DEFAULT_HEADER_PREFIX, pass_headers, pass_envvars);
+ 	}
++	if (cfg->extensions != NULL) {
++		const char *extensions = NULL;
++		/* get the serialized extensions from the session */
++		oidc_session_get(r, session, OIDC_PROTO_EXTENSIONS, &extensions);
++		/* pass it to the app in a header or environment variable */
++		oidc_util_set_app_info(r, "extensions", extensions,
++				OIDC_DEFAULT_HEADER_PREFIX,
++				pass_headers, pass_envvars);
++	}
+ 
+ 	/*
+ 	 * reset the session inactivity timer
+@@ -1847,7 +1857,7 @@ static apr_byte_t oidc_save_in_session(request_rec *r, oidc_cfg *c,
+ 		const char *remoteUser, const char *id_token, oidc_jwt_t *id_token_jwt,
+ 		const char *claims, const char *access_token, const int expires_in,
+ 		const char *refresh_token, const char *session_state, const char *state,
+-		const char *original_url, const char *userinfo_jwt) {
++		const char *original_url, const char *userinfo_jwt, const char *extensions) {
+ 
+ 	/* store the user in the session */
+ 	session->remote_user = remoteUser;
+@@ -1891,6 +1901,10 @@ static apr_byte_t oidc_save_in_session(request_rec *r, oidc_cfg *c,
+ 	/* store claims resolved from userinfo endpoint */
+ 	oidc_store_userinfo_claims(r, c, session, provider, claims, userinfo_jwt);
+ 
++	if (extensions != NULL) {
++		oidc_session_set(r, session, OIDC_PROTO_EXTENSIONS, extensions);
++	}
++
+ 	/* see if we have an access_token */
+ 	if (access_token != NULL) {
+ 		/* store the access_token in the session context */
+@@ -2142,7 +2156,8 @@ static int oidc_handle_authorization_response(request_rec *r, oidc_cfg *c,
+ 				apr_table_get(params, OIDC_PROTO_REFRESH_TOKEN),
+ 				apr_table_get(params, OIDC_PROTO_SESSION_STATE),
+ 				apr_table_get(params, OIDC_PROTO_STATE), original_url,
+-				userinfo_jwt) == FALSE)
++				userinfo_jwt,
++				apr_table_get(params, OIDC_PROTO_EXTENSIONS)) == FALSE)
+ 			return HTTP_INTERNAL_SERVER_ERROR;
+ 
+ 	} else {
+diff --git a/src/mod_auth_openidc.h b/src/mod_auth_openidc.h
+index dd6eb59..a7684ec 100644
+--- a/src/mod_auth_openidc.h
++++ b/src/mod_auth_openidc.h
+@@ -416,6 +416,7 @@ typedef struct oidc_cfg {
+ 	char *outgoing_proxy;
+ 
+ 	char *crypto_passphrase;
++	char *extensions;
+ 
+ 	int provider_metadata_refresh_interval;
+ 
+@@ -490,6 +491,7 @@ apr_byte_t oidc_oauth_get_bearer_token(request_rec *r, const char **access_token
+ #define OIDC_PROTO_SESSION_STATE         "session_state"
+ #define OIDC_PROTO_ACTIVE                "active"
+ #define OIDC_PROTO_LOGOUT_TOKEN          "logout_token"
++#define OIDC_PROTO_EXTENSIONS            "extensions"
+ 
+ #define OIDC_PROTO_RESPONSE_TYPE_CODE               "code"
+ #define OIDC_PROTO_RESPONSE_TYPE_IDTOKEN            "id_token"
+@@ -641,7 +643,7 @@ char *oidc_proto_peek_jwt_header(request_rec *r, const char *jwt, char **alg);
+ int oidc_proto_authorization_request(request_rec *r, struct oidc_provider_t *provider, const char *login_hint, const char *redirect_uri, const char *state, oidc_proto_state_t *proto_state, const char *id_token_hint, const char *code_challenge, const char *auth_request_params, const char *path_scope);
+ apr_byte_t oidc_proto_is_post_authorization_response(request_rec *r, oidc_cfg *cfg);
+ apr_byte_t oidc_proto_is_redirect_authorization_response(request_rec *r, oidc_cfg *cfg);
+-apr_byte_t oidc_proto_refresh_request(request_rec *r, oidc_cfg *cfg, oidc_provider_t *provider, const char *rtoken, char **id_token, char **access_token, char **token_type, int *expires_in, char **refresh_token);
++apr_byte_t oidc_proto_refresh_request(request_rec *r, oidc_cfg *cfg, oidc_provider_t *provider, const char *rtoken, char **id_token, char **access_token, char **token_type, int *expires_in, char **refresh_token, char **extensions);
+ apr_byte_t oidc_proto_resolve_userinfo(request_rec *r, oidc_cfg *cfg, oidc_provider_t *provider, const char *id_token_sub, const char *access_token, char **response, char **userinfo_jwt);
+ apr_byte_t oidc_proto_account_based_discovery(request_rec *r, oidc_cfg *cfg, const char *acct, char **issuer);
+ apr_byte_t oidc_proto_url_based_discovery(request_rec *r, oidc_cfg *cfg, const char *url, char **issuer);
+diff --git a/src/proto.c b/src/proto.c
+index aff60f4..ca3f3d2 100644
+--- a/src/proto.c
++++ b/src/proto.c
+@@ -1974,7 +1974,7 @@ apr_byte_t oidc_proto_token_endpoint_auth(request_rec *r, oidc_cfg *cfg,
+ static apr_byte_t oidc_proto_token_endpoint_request(request_rec *r,
+ 		oidc_cfg *cfg, oidc_provider_t *provider, apr_table_t *params,
+ 		char **id_token, char **access_token, char **token_type,
+-		int *expires_in, char **refresh_token) {
++		int *expires_in, char **refresh_token, char **extensions) {
+ 
+ 	char *response = NULL;
+ 	char *basic_auth = NULL;
+@@ -2041,6 +2041,23 @@ static apr_byte_t oidc_proto_token_endpoint_request(request_rec *r,
+ 			refresh_token,
+ 			NULL);
+ 
++	if (cfg->extensions != NULL) {
++		const char *data = cfg->extensions;
++		char *name = NULL;
++		json_t *extension_value = NULL;
++		json_t *extension_blob = json_object();
++		char *tmp_extension = NULL;
++
++		while (*data && (name = ap_getword_white(r->pool, &data))) {
++			extension_value = json_object_get(result, name);
++			json_object_set(extension_blob, name, extension_value);
++		}
++		tmp_extension = json_dumps(extension_blob, 0);
++		*extensions = apr_pstrdup(r->pool, tmp_extension);
++		free(tmp_extension);
++		json_decref(extension_blob);
++	}
++
+ 	json_decref(result);
+ 
+ 	return TRUE;
+@@ -2052,7 +2069,7 @@ static apr_byte_t oidc_proto_token_endpoint_request(request_rec *r,
+ static apr_byte_t oidc_proto_resolve_code(request_rec *r, oidc_cfg *cfg,
+ 		oidc_provider_t *provider, const char *code, const char *code_verifier,
+ 		char **id_token, char **access_token, char **token_type,
+-		int *expires_in, char **refresh_token, const char *state) {
++		int *expires_in, char **refresh_token, char **extensions, const char *state) {
+ 
+ 	oidc_debug(r, "enter");
+ 
+@@ -2072,7 +2089,7 @@ static apr_byte_t oidc_proto_resolve_code(request_rec *r, oidc_cfg *cfg,
+ 		apr_table_setn(params, OIDC_PROTO_STATE, state);
+ 
+ 	return oidc_proto_token_endpoint_request(r, cfg, provider, params, id_token,
+-			access_token, token_type, expires_in, refresh_token);
++			access_token, token_type, expires_in, refresh_token, extensions);
+ }
+ 
+ /*
+@@ -2081,7 +2098,7 @@ static apr_byte_t oidc_proto_resolve_code(request_rec *r, oidc_cfg *cfg,
+ apr_byte_t oidc_proto_refresh_request(request_rec *r, oidc_cfg *cfg,
+ 		oidc_provider_t *provider, const char *rtoken, char **id_token,
+ 		char **access_token, char **token_type, int *expires_in,
+-		char **refresh_token) {
++		char **refresh_token, char **extensions) {
+ 
+ 	oidc_debug(r, "enter");
+ 
+@@ -2093,7 +2110,7 @@ apr_byte_t oidc_proto_refresh_request(request_rec *r, oidc_cfg *cfg,
+ 	apr_table_setn(params, OIDC_PROTO_SCOPE, provider->scope);
+ 
+ 	return oidc_proto_token_endpoint_request(r, cfg, provider, params, id_token,
+-			access_token, token_type, expires_in, refresh_token);
++			access_token, token_type, expires_in, refresh_token, extensions);
+ }
+ 
+ static apr_byte_t oidc_user_info_response_validate(request_rec *r,
+@@ -2904,6 +2921,7 @@ static apr_byte_t oidc_proto_resolve_code_and_validate_response(request_rec *r,
+ 	int expires_in = -1;
+ 	char *refresh_token = NULL;
+ 	char *code_verifier = NULL;
++	char *extensions = NULL;
+ 
+ 	if (provider->pkce != NULL)
+ 		provider->pkce->verifier(r,
+@@ -2914,7 +2932,7 @@ static apr_byte_t oidc_proto_resolve_code_and_validate_response(request_rec *r,
+ 	if (oidc_proto_resolve_code(r, c, provider,
+ 			apr_table_get(params, OIDC_PROTO_CODE), code_verifier, &id_token,
+ 			&access_token, &token_type, &expires_in, &refresh_token,
+-			state) == FALSE) {
++			&extensions, state) == FALSE) {
+ 		oidc_error(r, "failed to resolve the code");
+ 		return FALSE;
+ 	}
+@@ -2939,6 +2957,9 @@ static apr_byte_t oidc_proto_resolve_code_and_validate_response(request_rec *r,
+ 		if (expires_in != -1)
+ 			apr_table_setn(params, OIDC_PROTO_EXPIRES_IN,
+ 					apr_psprintf(r->pool, "%d", expires_in));
++		if (extensions != NULL) {
++			apr_table_set(params, "extensions", extensions);
++		}
+ 	}
+ 
+ 	/* refresh token should not have been set before */
+-- 
+2.23.0
+
