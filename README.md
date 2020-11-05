@@ -99,6 +99,14 @@ This only has to be done once
 ./sync-release.py --release latest
 ```
 
+## Bootstrap build release
+
+This only has to be done once
+
+```
+./sync-release.py --release build/1.8
+```
+
 ## Build ondemand_buildbox Docker container
 
 ```
