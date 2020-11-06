@@ -116,6 +116,7 @@ source ./env
 rm mock-cache*
 docker build -t $BUILDBOX_IMAGE .
 ./make-mock-cache.sh
+rm mock-cache*
 docker build --no-cache -t $BUILDBOX_IMAGE .
 docker push $BUILDBOX_IMAGE
 ```
