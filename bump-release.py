@@ -72,6 +72,7 @@ Usage examples:
     files_to_modify = [
         'packages/ondemand-release/ondemand-compute.repo',
         'packages/ondemand-release/ondemand-web.repo',
+        'packages/passenger/passenger.spec',
     ]
     for spec in specs_to_modify:
         reset_version_release(spec, args.previous_release, args.new_release)

@@ -4,6 +4,12 @@
 %define passenger_version 6.0.4
 %define nginx_version 1.17.3
 
+%define runtime_version 1.8
+%define runtime_major_version %(echo %{runtime_version} | cut -d. -f1)
+%define runtime_minor_version %(echo %{runtime_version} | cut -d. -f2)
+%define next_runtime_major_version %(echo $((%{runtime_major_version}+1))).0
+%define next_runtime_minor_version %{runtime_major_version}.%(echo $((%{runtime_minor_version}+1)))
+
 %global  nginx_user          %{?scl_prefix}nginx
 %global  nginx_group         %{nginx_user}
 %global  nginx_home          %{_root_localstatedir}/lib/%{?scl_prefix}nginx
@@ -24,7 +30,7 @@
 
 Name:       %{?scl_prefix}passenger
 Version:    %{passenger_version}
-Release:    6%{?dist}
+Release:    7%{?dist}
 Summary:    Phusion Passenger application server
 URL:        https://www.phusionpassenger.com
 Group:      System Environment/Daemons
@@ -34,17 +40,16 @@ Source1:    http://nginx.org/download/nginx-%{nginx_version}.tar.gz
 
 %{?scl:Requires:%scl_runtime}
 %{?scl:BuildRequires:%scl_runtime}
-%{?scl_ondemand_prefix_apache:BuildRequires: %{?scl_ondemand_prefix_apache}build}
-BuildRequires:  ondemand-scldevel
-BuildRequires:  ondemand-build
-BuildRequires:  ondemand-ruby
-BuildRequires:  ondemand-apache
+BuildRequires:  ondemand-scldevel >= %{runtime_version}, ondemand-ruby < %{next_runtime_major_version}, ondemand-ruby < %{next_runtime_minor_version}
+BuildRequires:  ondemand-build >= %{runtime_version}, ondemand-ruby < %{next_runtime_major_version}, ondemand-ruby < %{next_runtime_minor_version}
+BuildRequires:  ondemand-ruby >= %{runtime_version}, ondemand-ruby < %{next_runtime_major_version}, ondemand-ruby < %{next_runtime_minor_version}
+BuildRequires:  ondemand-apache >= %{runtime_version}, ondemand-apache < %{next_runtime_major_version}, ondemand-apache < %{next_runtime_minor_version}
 BuildRequires:  libcurl-devel
 BuildRequires:  zlib-devel
 BuildRequires:  openssl-devel
 BuildRequires:  pcre-devel
-Requires: ondemand-runtime
-Requires: ondemand-ruby
+Requires: ondemand-runtime >= %{runtime_version}, ondemand-ruby < %{next_runtime_major_version}, ondemand-ruby < %{next_runtime_minor_version}
+Requires: ondemand-ruby >= %{runtime_version}, ondemand-ruby < %{next_runtime_major_version}, ondemand-ruby < %{next_runtime_minor_version}
 Provides: %{name} = %{version}-%{release}
 Provides: bundled(boost)  = %{bundled_boost_version}
 
@@ -80,7 +85,7 @@ This package contains documentation files for Phusion Passenger®.
 Summary: A high performance web server and reverse proxy server
 URL:        http://nginx.org/
 Version: %{nginx_version}
-Release: 6.p%{passenger_version}%{?dist}
+Release: 7.p%{passenger_version}%{?dist}
 Obsoletes: %{?scl_prefix}nginx-filesystem
 BuildRequires: libxslt-devel
 BuildRequires: gd-devel

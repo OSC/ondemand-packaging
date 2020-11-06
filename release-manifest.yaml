@@ -34,7 +34,7 @@ ondemand-nginx:
     - ondemand-nginx
     - ondemand-nginx-debuginfo
   versions:
-    - 1.17.3-6.p6.0.4
+    - 1.17.3-7.p6.0.4
 ondemand-passenger:
   packages:
     - ondemand-passenger
@@ -42,7 +42,7 @@ ondemand-passenger:
     - ondemand-passenger-devel
     - ondemand-passenger-doc
   versions:
-    - 6.0.4-6
+    - 6.0.4-7
 ondemand-runtime:
   packages:
     - ondemand-apache
