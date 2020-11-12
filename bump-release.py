@@ -69,19 +69,23 @@ Usage examples:
         'packages/ondemand-release/ondemand-release.spec',
         'packages/ondemand-runtime/ondemand-runtime.spec',
     ]
-    files_to_modify = [
-        'packages/ondemand-release/ondemand-compute.repo',
-        'packages/ondemand-release/ondemand-web.repo',
-        'packages/passenger/passenger.spec',
-    ]
+    files_to_modify = {
+        'packages/ondemand-release/ondemand-compute.repo': '/REPLACE/',
+        'packages/ondemand-release/ondemand-web.repo': '/REPLACE/',
+        'docker-image/ondemand-el7-x86_64.cfg': '/REPLACE/',
+        'docker-image/ondemand-el8-x86_64.cfg': '/REPLACE/',
+        'packages/passenger/passenger.spec': 'runtime_version REPLACE'
+    }
     for spec in specs_to_modify:
         reset_version_release(spec, args.previous_release, args.new_release)
-    for _file in files_to_modify:
+    for _file, replace in files_to_modify.items():
         with open(_file, 'r+') as f:
             lines = f.read()
             f.seek(0)
             logger.info("Modify %s replace %s with %s", _file, args.previous_release, args.new_release)
-            new_lines = lines.replace(args.previous_release, args.new_release)
+            replace_str = replace.replace('REPLACE', args.previous_release)
+            new_str = replace.replace('REPLACE', args.new_release)
+            new_lines = lines.replace(replace_str, new_str)
             f.write(new_lines)
             f.truncate()
 

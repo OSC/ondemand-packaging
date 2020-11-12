@@ -48,6 +48,8 @@ run cp -a /build/epel-7-x86_64.cfg /etc/mock/epel-7-x86_64.cfg
 run cp -a /build/epel-8-x86_64.cfg /etc/mock/epel-8-x86_64.cfg
 run cp -a /build/ondemand-el7-x86_64.cfg /etc/mock/ondemand-el7-x86_64.cfg
 run cp -a /build/ondemand-el8-x86_64.cfg /etc/mock/ondemand-el8-x86_64.cfg
+run sed -i.bak '/yum_install_command/d' /etc/mock/templates/epel-7.tpl
+run sed -i.bak '/includepkgs=devtoolset/d' /etc/mock/templates/epel-7.tpl
 
 # Hack to work around issue with logs filling up during EL8 builds
 # Issue resolved but left just in case

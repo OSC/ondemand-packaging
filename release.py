@@ -76,8 +76,19 @@ Usage examples:
     parser.add_argument('--pkey', help='SSH private key to use for uploading RPMs (default: %(default)s)', default=pkey)
     parser.add_argument('-g','--gpgpass', help='GPG passphrase file (default: %(default)s)', default=gpgpass)
     parser.add_argument('-c', '--config-section', help='config section to use', default='main')
+    parser.add_argument('-r', '--release', help='Build repo release to use', default=None)
     parser.add_argument('dirs', nargs='+')
     args = parser.parse_args()
+
+    if args.config_section == 'build' and args.release is None:
+        print("ERROR: config-section build requires -r/--release flag")
+        sys.exit(1)
+
+    if args.release is not None:
+        release_bits = args.release.replace('v', '').split('.')
+        build_release = "%s.%s" % (release_bits[0], release_bits[1])
+    else:
+        build_release = ''
 
     if args.debug:
         log_level = logging.DEBUG
@@ -99,8 +110,8 @@ Usage examples:
 
     for release_dir in args.dirs:
         dist = os.path.basename(release_dir)
-        rpm_path = config.get(args.config_section, 'rpm_path').replace('DIST', dist)
-        srpm_path = config.get(args.config_section, 'srpm_path').replace('DIST', dist)
+        rpm_path = config.get(args.config_section, 'rpm_path').replace('DIST', dist).replace('RELEASE', build_release)
+        srpm_path = config.get(args.config_section, 'srpm_path').replace('DIST', dist).replace('RELEASE', build_release)
         logger.debug("rpm_path=%s srpm_path=%s dist=%s", rpm_path, srpm_path, dist)
         rpms = []
         srpms = []
