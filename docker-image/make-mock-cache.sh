@@ -65,6 +65,7 @@ parse_options "$@"
 if $VERBOSE; then
     set -x
 fi
+set -e
 
 CONTAINER_ID=$(docker run \
 --detach --rm \

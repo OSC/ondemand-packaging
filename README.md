@@ -99,6 +99,14 @@ This only has to be done once
 ./sync-release.py --release latest
 ```
 
+## Bootstrap build release
+
+This only has to be done once
+
+```
+./sync-release.py --release build/1.8
+```
+
 ## Build ondemand_buildbox Docker container
 
 ```
@@ -108,6 +116,7 @@ source ./env
 rm mock-cache*
 docker build -t $BUILDBOX_IMAGE .
 ./make-mock-cache.sh
+rm mock-cache*
 docker build --no-cache -t $BUILDBOX_IMAGE .
 docker push $BUILDBOX_IMAGE
 ```
