@@ -71,7 +71,7 @@ ondemand-rubygem-bundler:
 ondemand-dex:
   - 2.24.0-8
 ondemand_exporter:
-  - 0.7.0-1
+  - 0.8.0-1
 
 # compute
 ondemand-compute:
