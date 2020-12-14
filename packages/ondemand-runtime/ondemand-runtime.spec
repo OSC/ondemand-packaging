@@ -20,7 +20,7 @@
 %global ondemand_core_gem_home %{ondemand_gem_home}/ondemand
 
 Name:      ondemand-runtime
-Version:   1.8
+Version:   2.0
 Release:   1%{?dist}
 Summary:   Package that handles %{scl} Software Collection.
 License:   MIT
