@@ -4,8 +4,8 @@ Release:        1%{?dist}
 Summary:        WSGI based adapter for the Websockets protocol
 
 License:        LGPLv3
-URL:            https://github.com/kanaka/websockify
-Source0:        https://github.com/kanaka/websockify/archive/v%{version}.tar.gz#/websockify-%{version}.tar.gz
+URL:            https://github.com/novnc/websockify
+Source0:        https://github.com/novnc/websockify/archive/v%{version}.tar.gz#/websockify-%{version}.tar.gz
 BuildArch:      noarch
 BuildRequires:  python2-devel
 BuildRequires:  python2-rpm-macros

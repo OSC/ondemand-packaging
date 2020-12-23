@@ -8,7 +8,7 @@ License:    Apache 2.0
 URL:        https://osc.github.io/ood-documentation/
 BuildArch:  noarch
 
-Requires:   turbovnc >= 2.2.3
+Requires:   turbovnc >= 2.2.5
 Requires:   python-websockify >= 0.8.0
 Requires:   /bin/bash
 Requires:   /usr/bin/shuf
