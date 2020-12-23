@@ -69,7 +69,7 @@ ondemand-rubygem-bundler:
   versions:
     - '1.17.3-1'
 ondemand-dex:
-  - 2.24.0-8
+  - 2.27.0-1
 ondemand_exporter:
   - 0.8.0-1
 
