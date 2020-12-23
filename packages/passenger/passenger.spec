@@ -3,8 +3,9 @@
 %scl_package passenger
 %define passenger_version 6.0.4
 %define nginx_version 1.17.3
+%define release_version 8
 
-%define runtime_version 1.8
+%define runtime_version 2.0
 %define runtime_major_version %(echo %{runtime_version} | cut -d. -f1)
 %define runtime_minor_version %(echo %{runtime_version} | cut -d. -f2)
 %define next_runtime_major_version %(echo $((%{runtime_major_version}+1))).0
@@ -30,7 +31,7 @@
 
 Name:       %{?scl_prefix}passenger
 Version:    %{passenger_version}
-Release:    7%{?dist}
+Release:    %{release_version}%{?dist}
 Summary:    Phusion Passenger application server
 URL:        https://www.phusionpassenger.com
 Group:      System Environment/Daemons
@@ -85,7 +86,7 @@ This package contains documentation files for Phusion Passenger®.
 Summary: A high performance web server and reverse proxy server
 URL:        http://nginx.org/
 Version: %{nginx_version}
-Release: 7.p%{passenger_version}%{?dist}
+Release: %{release_version}.p%{passenger_version}%{?dist}
 Obsoletes: %{?scl_prefix}nginx-filesystem
 BuildRequires: libxslt-devel
 BuildRequires: gd-devel
