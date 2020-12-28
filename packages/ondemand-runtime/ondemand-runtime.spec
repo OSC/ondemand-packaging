@@ -9,12 +9,12 @@
 %global nodejs nodejs
 %global apache httpd
 %else
-%global ruby rh-ruby25
+%global ruby rh-ruby27
 %global python python
-%global nodejs rh-nodejs10
+%global nodejs rh-nodejs12
 %global apache httpd24
 %endif
-%global ruby_version 2.5
+%global ruby_version 2.7
 %global ondemand_gem_home %{_datadir}/gems/%{ruby_version}
 %global ondemand_apps_gem_home %{ondemand_gem_home}/apps
 %global ondemand_core_gem_home %{ondemand_gem_home}/ondemand
@@ -58,20 +58,21 @@ packages depending on %{scl} Software Collection.
 %package -n ondemand-ruby
 Summary: Meta package for pulling in SCL Ruby %{ruby}
 %if 0%{?rhel} >= 8
-Requires: %{ruby} >= 2.5, %{ruby} < 2.6
+Requires: %{ruby} >= 2.7, %{ruby} < 2.8
 Requires: rubygem-rake
-Requires: ondemand-rubygem-bundler >= 1.17.0
+Requires: rubygem-bundler >= 2.1
 Requires: ruby-devel
 Requires: rubygems
 Requires: rubygems-devel
 %else
 Requires: %{ruby}
 Requires: %{ruby}-rubygem-rake
-Requires: ondemand-rubygem-bundler >= 1.17.0
+Requires: %{ruby}-rubygem-bundler >= 2.1
 Requires: %{ruby}-ruby-devel
 Requires: %{ruby}-rubygems
 Requires: %{ruby}-rubygems-devel
 %endif
+Obsoletes: ondemand-rubygem-bundler
 
 %description -n ondemand-ruby
 Meta package for pulling in SCL Ruby %{ruby}
@@ -86,7 +87,7 @@ Meta package for pulling in Python needed by OnDemand
 %package -n ondemand-nodejs
 Summary: Meta package for pulling in SCL nodejs %{nodejs}
 %if 0%{?rhel} >= 8
-Requires: %{nodejs}
+Requires: %{nodejs} >= 1:12.0, %{nodejs} < 1:14.0
 Requires: npm
 %else
 Requires: %{nodejs}
