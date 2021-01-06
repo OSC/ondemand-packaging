@@ -101,11 +101,11 @@ This package contains most of the static HTML files that comprise the
 www.sqlite.org website, including all of the SQL Syntax and the 
 C/C++ interface specs and other miscellaneous documentation.
 
-%package -n lemon
+%package -n %{?scl_prefix}lemon
 Summary: A parser generator
 Group: Development/Tools
 
-%description -n lemon
+%description -n %{?scl_prefix}lemon
 Lemon is an LALR(1) parser generator for C or C++. It does the same
 job as bison and yacc. But lemon is not another bison or yacc
 clone. It uses a different grammar syntax which is designed to reduce
@@ -245,7 +245,7 @@ make test
 %files doc
 %doc %{pkg_name}-doc-%{docver}/*
 
-%files -n lemon
+%files -n %{?scl_prefix}lemon
 %{_bindir}/lemon
 %{_datadir}/lemon
 
