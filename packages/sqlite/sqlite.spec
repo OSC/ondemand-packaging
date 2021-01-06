@@ -243,7 +243,7 @@ make test
 %endif
 
 %files doc
-%doc %{name}-doc-%{docver}/*
+%doc %{pkg_name}-doc-%{docver}/*
 
 %files -n lemon
 %{_bindir}/lemon
