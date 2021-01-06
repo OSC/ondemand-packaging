@@ -39,7 +39,6 @@ Package shipping essential scripts to work with %{scl} Software Collection.
 %package -n ondemand-build
 Summary: Package shipping basic build configuration
 Requires: scl-utils-build
-Requires: sqlite-devel
 Requires: curl
 Requires: make
 Requires: zlib-devel
@@ -64,6 +63,7 @@ Requires: rubygem-bundler >= 2.1
 Requires: ruby-devel
 Requires: rubygems
 Requires: rubygems-devel
+Requires: sqlite-devel
 %else
 Requires: %{ruby}
 Requires: %{ruby}-rubygem-rake
@@ -71,6 +71,7 @@ Requires: %{ruby}-rubygem-bundler >= 2.1
 Requires: %{ruby}-ruby-devel
 Requires: %{ruby}-rubygems
 Requires: %{ruby}-rubygems-devel
+Requires: ondemand-sqlite-devel
 %endif
 Obsoletes: ondemand-rubygem-bundler
 
