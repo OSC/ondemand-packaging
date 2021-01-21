@@ -144,12 +144,14 @@ namespace :build do
     puts "== #{task.name} ==".blue
     puts "\tClean build environment".blue
     sh "rm -rf /home/ood/rpmbuild/*/*"
-    puts "\tBootstrap GPG".blue
-    sh "echo '%_gpg_name #{ENV['GPG_NAME']}' >> ~/.rpmmacros"
-    sh 'rm -rf ~/.gnupg'
-    sh "gpg --import /ondemand-packaging/ondemand.sec #{cmd_suffix}"
-    if ENV['GPG_PUBKEY'] && ! ENV['GPG_PUBKEY'].empty?
-      sh "rpm --import /ondemand-packaging/stage/#{ENV['GPG_PUBKEY']} #{cmd_suffix}"
+    if ENV['GPG_SIGN'] == 'true'
+      puts "\tBootstrap GPG".blue
+      sh "echo '%_gpg_name #{ENV['GPG_NAME']}' >> ~/.rpmmacros"
+      sh 'rm -rf ~/.gnupg'
+      sh "gpg --import /ondemand-packaging/ondemand.sec #{cmd_suffix}"
+      if ENV['GPG_PUBKEY'] && ! ENV['GPG_PUBKEY'].empty?
+        sh "rpm --import /ondemand-packaging/stage/#{ENV['GPG_PUBKEY']} #{cmd_suffix}"
+      end
     end
   end
 
