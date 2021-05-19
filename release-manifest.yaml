@@ -62,12 +62,17 @@ ondemand:
     - ondemand-selinux
   versions:
     - '{full}-1'
-ondemand-rubygem-bundler:
+ondemand-sqlite:
   packages:
-    - ondemand-rubygem-bundler
-    - ondemand-rubygem-bundler-doc
+    - ondemand-sqlite
+    - ondemand-sqlite-devel
+    - ondemand-sqlite-doc
+    - ondemand-sqlite-libs
+    - ondemand-sqlite-tcl
+    - ondemand-sqlite-analyzer
+    - ondemand-sqlite-debuginfo
   versions:
-    - '1.17.3-1'
+    - '3.26.0-3'
 ondemand-dex:
   - 2.27.0-2
 ondemand_exporter:
