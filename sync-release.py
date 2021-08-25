@@ -129,7 +129,7 @@ Usage examples:
                     logger.info("mkdir -p %s", d)
                     os.makedirs(d, 0755)
 
-    if args.release in ['latest','ci'] or args.release.startswith('build'):
+    if args.release in ['latest','ci','nightly'] or args.release.startswith('build'):
         logger.info("Latest release does not require sync, exiting")
         sys.exit(0)
 
