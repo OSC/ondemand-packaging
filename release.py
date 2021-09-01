@@ -55,7 +55,7 @@ def update_repo(host, path, pkey, gpgpass):
     createrepo_err = createrepo_stderr.read()
     logger.debug("SSH CMD STDOUT:\n%s", createrepo_out)
     logger.debug("SSH CMD STDERR:\n%s", createrepo_err)
-    logger.debug("Executing via SSH oodpkg@%s '%s'", host, gpg_cmd)
+    logger.debug("Executing via SSH oodpkg@%s '%s'", host, gpg_cmd.replace(gpg_passphrase, 'OMIT'))
     gpg_stdin, gpg_stdout, gpg_stderr = ssh.exec_command(gpg_cmd)
     gpg_out = gpg_stdout.read()
     gpg_err = gpg_stderr.read()
