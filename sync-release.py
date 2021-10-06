@@ -63,9 +63,6 @@ Usage examples:
         logger.error("Only run this script as oodpkg, not %s", user)
         sys.exit(1)
 
-    with open(args.gpgpass, 'r') as f:
-        gpgpass = f.read().strip()
-
     latest_dir = os.path.join(args.repo_base, 'latest')
     release_dir = os.path.join(args.repo_base, args.release)
     rpms = []
@@ -203,7 +200,7 @@ Usage examples:
             if exit_code != 0:
                 logger.error("Error: %s", err)
             repomd = os.path.join(root, 'repodata', 'repomd.xml')
-            cmd = ['gpg','--detach-sign','--passphrase',gpgpass,'--batch','--yes','--no-tty','--armor',repomd]
+            cmd = ['gpg','--detach-sign','--passphrase-file',args.gpgpass,'--batch','--yes','--no-tty','--armor',repomd]
             process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             out, err = process.communicate()
             exit_code = process.returncode
