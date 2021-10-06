@@ -41,10 +41,8 @@ def release_packages(packages, host, path, pkey, force):
 
 def update_repo(host, path, pkey, gpgpass):
     _pkey = paramiko.RSAKey.from_private_key_file(pkey)
-    with open(gpgpass, 'r') as f:
-        gpg_passphrase = f.read().strip()
     createrepo_cmd = "cd %s ; createrepo_c --update ." % path
-    gpg_cmd = "cd %s ; gpg --detach-sign --passphrase %s --batch --yes --no-tty --armor repodata/repomd.xml" % (path, gpg_passphrase)
+    gpg_cmd = "cd %s ; gpg --detach-sign --passphrase-file %s --batch --yes --no-tty --armor repodata/repomd.xml" % (path, gpgpass)
     logger.info("Updating repo metadata at %s:%s", host, path)
     logger.debug("Executing via SSH oodpkg@%s '%s'", host, createrepo_cmd)
     ssh = paramiko.SSHClient()
@@ -55,7 +53,7 @@ def update_repo(host, path, pkey, gpgpass):
     createrepo_err = createrepo_stderr.read()
     logger.debug("SSH CMD STDOUT:\n%s", createrepo_out)
     logger.debug("SSH CMD STDERR:\n%s", createrepo_err)
-    logger.debug("Executing via SSH oodpkg@%s '%s'", host, gpg_cmd.replace(gpg_passphrase, 'OMIT'))
+    logger.debug("Executing via SSH oodpkg@%s '%s'", host, gpg_cmd)
     gpg_stdin, gpg_stdout, gpg_stderr = ssh.exec_command(gpg_cmd)
     gpg_out = gpg_stdout.read()
     gpg_err = gpg_stderr.read()
