@@ -37,6 +37,7 @@ Group:      System Environment/Daemons
 License:    Boost and BSD and BSD with advertising and MIT and zlib
 Source0:    https://github.com/phusion/passenger/releases/download/release-%{passenger_version}/passenger-%{passenger_version}.tar.gz
 Source1:    http://nginx.org/download/nginx-%{nginx_version}.tar.gz
+Patch0:     http://nginx.org/download/patch.2021.resolver.txt/patch.2021.resolver.txt
 
 %{?scl:Requires:%scl_runtime}
 %{?scl:BuildRequires:%scl_runtime}
@@ -85,7 +86,7 @@ This package contains documentation files for Phusion Passenger®.
 Summary: A high performance web server and reverse proxy server
 URL:        http://nginx.org/
 Version: %{nginx_version}
-Release: 7.p%{passenger_version}%{?dist}
+Release: 8.p%{passenger_version}%{?dist}
 Obsoletes: %{?scl_prefix}nginx-filesystem
 BuildRequires: libxslt-devel
 BuildRequires: gd-devel
@@ -102,6 +103,9 @@ memory usage. Includes Phusion Passenger support.
 %prep
 %setup -q -n %{pkg_name}-%{passenger_version}
 %setup -q -T -D -a 1 -n %{pkg_name}-%{passenger_version}
+pushd nginx-%{nginx_version}
+%patch0 -p0
+popd
 
 
 %build
