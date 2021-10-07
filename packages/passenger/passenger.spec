@@ -39,7 +39,7 @@ Group:      System Environment/Daemons
 License:    Boost and BSD and BSD with advertising and MIT and zlib
 Source0:    https://github.com/phusion/passenger/releases/download/release-%{passenger_version}/passenger-%{passenger_version}.tar.gz
 Source1:    http://nginx.org/download/nginx-%{nginx_version}.tar.gz
-Patch0:     http://nginx.org/download/patch.2021.resolver.txt/patch.2021.resolver.txt
+Patch0:     http://nginx.org/download/patch.2021.resolver.txt
 
 %{?scl:Requires:%scl_runtime}
 %{?scl:BuildRequires:%scl_runtime}
