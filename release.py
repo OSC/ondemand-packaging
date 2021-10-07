@@ -63,7 +63,7 @@ def update_repo(host, path, pkey, gpgpass):
 
 def main():
     pkey = os.path.expanduser('~/.ssh/id_rsa')
-    gpgpass = os.path.join(os.path.dirname(__file__), '.gpgpass')
+    gpgpass = '/systems/osc_certs/gpg/ondemand/.gpgpass'
     usage_examples = """
 Usage examples:
 
