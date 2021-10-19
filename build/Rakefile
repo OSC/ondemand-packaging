@@ -176,6 +176,10 @@ namespace :build do
         get_sources = true
       end
     end
+    if ENV['SKIP_DOWNLOAD'] == 'true'
+      puts "\tSKIP_DOWNLOAD detected, skipping download sources".blue
+      get_sources = false
+    end
     if get_sources
         puts "\tDownloading sources defined in #{spec}".blue
         sh "spectool #{GIT_TAG_DEFINE} #{VERSION_DEFINE} #{RELEASE_DEFINE} -g -R -S #{spec} #{cmd_suffix}"

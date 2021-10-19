@@ -17,6 +17,7 @@ CLEAN_DOCKER=true
 CONTAINER="ondemand-packaging-$(whoami)"
 PACKAGES=()
 GPG_SIGN=true
+SKIP_DOWNLOAD=false
 GIT_TAG=''
 ret=0
 if [ ! -f ${DIR}/.gpgpass ]; then
@@ -54,6 +55,7 @@ function usage()
     echo "  -D         Do not clean up docker image"
     echo "  -u         Use unique container name"
     echo "  -V         Git tag to build"
+    echo "  -s         Skip source download"
     echo "  -v         Show debug information"
     echo "  -h         Show usage"
 }
@@ -85,7 +87,7 @@ function parse_options()
 	local OPTIND=1
 	local ORIG_ARGV
 	local opt
-    while getopts "w:o:j:d:G:g:STt:CADuV:vh" opt; do
+    while getopts "w:o:j:d:G:g:STt:CADuV:svh" opt; do
         case "$opt" in
         w)
         	WORK_DIR="$OPTARG"
@@ -128,6 +130,9 @@ function parse_options()
             ;;
         V)
             GIT_TAG="$OPTARG"
+            ;;
+        s)
+            SKIP_DOWNLOAD=true
             ;;
         v)
             DEBUG=true
@@ -282,6 +287,7 @@ for p in "${PACKAGES[@]}"; do
         -e "GPG_NAME=${GPG_NAME}" \
         -e "GPG_PUBKEY=${GPG_PUBKEY}" \
         -e "GIT_TAG=${GIT_TAG}" \
+        -e "SKIP_DOWNLOAD=${SKIP_DOWNLOAD}" \
         -e "BUILDBOX_IMAGE=${BUILDBOX_IMAGE}" \
         -e "OOD_UID=`/usr/bin/id -u`" \
         -e "OOD_GID=`/usr/bin/id -g`" \
@@ -311,6 +317,7 @@ for p in "${PACKAGES[@]}"; do
         -e "GPG_SIGN=${GPG_SIGN}" \
         -e "GPG_NAME=${GPG_NAME}" \
         -e "GIT_TAG=${GIT_TAG}" \
+        -e "SKIP_DOWNLOAD=${SKIP_DOWNLOAD}" \
         -e "OOD_UID=`/usr/bin/id -u`" \
         -e "OOD_GID=`/usr/bin/id -g`" \
         -e "DEBUG=${DEBUG}" \
