@@ -1,3 +1,4 @@
+require 'yaml'
 require_relative 'build_lib'
 
 def dist_configs(dist, k1, k2 = nil)
@@ -52,11 +53,11 @@ def dist_configs(dist, k1, k2 = nil)
   }
   # Use dig once using newer Ruby
   # return configs.dig(*args)
-  config = configs[dist][k1]
+  config = configs.fetch(dist, {}).fetch(k1, nil)
   if k2
-    config = configs[dist][k1].fetch(k2, nil)
+    config = configs.fetch(dist, {}).fetch(k1, {}).fetch(k2, nil)
     if config.nil?
-      config = configs[dist][k1]['default']
+      config = configs.fetch(dist, {}).fetch(k1, {}).fetch('default', nil)
     end
   end
   config
@@ -66,11 +67,14 @@ end
 
 DISTRO = ENV['DISTRO']
 PACKAGE = ENV['PACKAGE']
+VERSION = ENV['GIT_TAG'].to_s.gsub(%r{^v}, '')
 BUILDBOX_IMAGE = ENV['BUILDBOX_IMAGE']
 BUILDBOX_IMAGE_DEFINE = "--define 'build_image #{BUILDBOX_IMAGE}'"
 PACKAGE_NAME = File.basename(PACKAGE)
+DEB_NAME = "#{PACKAGE_NAME}-#{VERSION}"
 WORK_DIR = "/work/#{DISTRO}"
 OUTPUT_DIR = "/output/#{DISTRO}"
+BUILD_DIR = "/package/build"
 MOCK_CONFIG = dist_configs(DISTRO, 'MOCK_CONFIG', PACKAGE_NAME)
 MOCK_FIX = dist_configs(DISTRO, 'MOCK_FIX')
 MOCK_CMD = dist_configs(DISTRO, 'MOCK_CMD')
@@ -117,6 +121,12 @@ else
   RELEASE_DEFINE = ''
 end
 
+def packaging_config(path)
+  return {} unless File.exists?(path)
+  config = YAML.load_file(path)
+  config
+end
+
 def get_spec(dir)
   files = Dir["#{dir}/*.spec"]
   files[0]
@@ -138,7 +148,7 @@ def get_rpms(dir)
   rpms
 end
 
-namespace :build do
+namespace :rpm do
   desc "Bootstrap build environment"
   task :bootstrap do |task|
     puts "== #{task.name} ==".blue
@@ -283,11 +293,65 @@ namespace :build do
   end
 end
 
-task :run do
-  Rake::Task['build:rpm'].invoke
-  Rake::Task['build:finish'].invoke
-  if ENV['GPG_SIGN'] == 'true'
-    Rake::Task['build:gpgsign'].invoke
+namespace :deb do
+  desc "Bootstrap deb builds"
+  task :bootstrap do |task|
+    puts "== #{task.name} ==".blue
+    if ! File.directory?(WORK_DIR)
+      puts "\tCreating #{WORK_DIR}".blue
+      sh "mkdir -p #{WORK_DIR}"
+    end
+    sh "cp -a #{BUILD_DIR}/* #{WORK_DIR}/"
+    Dir.chdir(WORK_DIR) do
+      sh "ln -snf #{DEB_NAME}.tar.gz #{PACKAGE_NAME}_#{VERSION}.orig.tar.gz"
+      sh "tar -xf #{DEB_NAME}.tar.gz"
+    end
+    puts "\tInstalling dependencies".blue
+    config = packaging_config(File.join(WORK_DIR, DEB_NAME, 'debian/packaging.yaml'))
+    if config['dependencies']
+      sh "sudo apt-get update"
+      sh "sudo apt install -y #{config['dependencies'].join(' ')}"
+    end
   end
-  Rake::Task['build:sanity'].invoke
+  desc "Build deb package"
+  task :build do |task|
+    puts "== #{task.name} ==".blue
+    config = packaging_config(File.join(WORK_DIR, DEB_NAME, 'debian/packaging.yaml'))
+    prepend_path = ""
+    if config['prepend_path']
+      prepend_path = "--prepend-path=#{config['prepend_path']}"
+    end
+    ENV['VERSION'] = VERSION
+    Dir.chdir(File.join(WORK_DIR, DEB_NAME)) do
+      sh "debuild --preserve-env #{prepend_path}"
+    end
+  end
+
+  desc "Build Finish"
+  task :finish => :build do |task|
+    puts "== #{task.name} ==".blue
+    if ! File.directory?(OUTPUT_DIR)
+      puts "\tCreating #{OUTPUT_DIR}".blue
+      sh "mkdir -p #{OUTPUT_DIR}"
+    end
+    puts "\tcopy #{WORK_DIR}/*.deb #{OUTPUT_DIR}/".blue
+    sh "cp #{WORK_DIR}/*.deb #{OUTPUT_DIR}/"
+  end
+end
+
+namespace :run do
+  task :rpm do
+    Rake::Task['rpm:rpm'].invoke
+    Rake::Task['rpm:finish'].invoke
+    if ENV['GPG_SIGN'] == 'true'
+      Rake::Task['rpm:gpgsign'].invoke
+    end
+    Rake::Task['rpm:sanity'].invoke
+  end
+
+  task :deb do
+    Rake::Task['deb:bootstrap'].invoke
+    Rake::Task['deb:build'].invoke
+    Rake::Task['deb:finish'].invoke
+  end
 end

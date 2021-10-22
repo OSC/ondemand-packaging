@@ -1,0 +1,8 @@
+ARG DIST=ubuntu
+ARG VERSION=20.04
+FROM $DIST:$VERSION
+MAINTAINER Trey Dockendorf <tdockendorf@osc.edu>
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update -y && apt install -y locales && apt-get clean all -y && locale-gen en_US.UTF-8
+COPY . /build
+RUN /build/install.sh
