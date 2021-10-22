@@ -13,6 +13,7 @@ SHOW_TASKS=false
 DEB=""
 TASK='run:rpm'
 CLEAN_OUTPUT=true
+CLEAN_WORK=true
 ATTACH=false
 CLEAN_DOCKER=true
 CONTAINER="ondemand-packaging-$(whoami)"
@@ -54,6 +55,7 @@ function usage()
     echo "  -T         Show all tasks"
     echo "  -t TASK    Task to run, Default: $TASK"
     echo "  -C         Do not clean up output directory"
+    echo "  -W         Do not clean up work directory"
     echo "  -A         Attach after build"
     echo "  -c         Do not clean up docker image"
     echo "  -u         Use unique container name"
@@ -90,7 +92,7 @@ function parse_options()
 	local OPTIND=1
 	local ORIG_ARGV
 	local opt
-    while getopts "w:o:D:j:d:G:g:STt:CAcuV:svh" opt; do
+    while getopts "w:o:D:j:d:G:g:STt:CWAcuV:svh" opt; do
         case "$opt" in
         w)
         	WORK_DIR="$OPTARG"
@@ -126,6 +128,9 @@ function parse_options()
             ;;
         C)
             CLEAN_OUTPUT=false
+            ;;
+        W)
+            CLEAN_WORK=false
             ;;
         A)
             ATTACH=true
@@ -211,6 +216,13 @@ if $CLEAN_OUTPUT && [ $PACKAGES != 'attach' ]; then
     if [ -d $OUTPUT_DIR ]; then
         echo_blue "Cleaning output directory: ${OUTPUT_DIR}"
         rm -rf ${OUTPUT_DIR}/*
+    fi
+fi
+
+if $CLEAN_WORK && [ $PACKAGES != 'attach' ]; then
+    if [ -d $WORK_DIR ]; then
+        echo_blue "Cleaning work directory: ${WORK_DIR}"
+        rm -rf ${WORK_DIR}/*
     fi
 fi
 
