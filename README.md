@@ -129,6 +129,7 @@ export DIST=ubuntu
 export DISTVERSION=20.04
 source ./env
 docker build --build-arg DIST=$DIST --build-arg VERSION=$DISTVERSION -f Dockerfile.deb -t $DEB_BUILDBOX_IMAGE .
+docker push $DEB_BUILDBOX_IMAGE
 ```
 
 ## GPG Setup
