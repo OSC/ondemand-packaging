@@ -121,6 +121,17 @@ docker build --no-cache -t $BUILDBOX_IMAGE .
 docker push $BUILDBOX_IMAGE
 ```
 
+## Build Debian/Ubuntu ondemand_buildbox Docker container
+
+```
+cd docker-image
+export DIST=ubuntu
+export DISTVERSION=20.04
+source ./env
+docker build --build-arg DIST=$DIST --build-arg VERSION=$DISTVERSION -f Dockerfile.deb -t $DEB_BUILDBOX_IMAGE .
+docker push $DEB_BUILDBOX_IMAGE
+```
+
 ## GPG Setup
 
 First create a GPG public and private key.  This should only be done once.  The passphrase used should be saved to `.gpgpass` file and `ondemand.sec` file saved to root of this repo.  The `ondemand.pub` will be needed by anyone wishing to install the GPG signed packages.
