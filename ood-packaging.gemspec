@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = 'Open OnDemand packaging library'
   spec.description   = 'Open OnDemand packaging library provides Rake tasks like package:rpm and pacakge:deb'
-  spec.homepage      = 'https://github.com/OSC/ood-packaging'
+  spec.homepage      = 'https://github.com/OSC/ondemand-packaging'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0").select do |f|
