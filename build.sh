@@ -330,7 +330,6 @@ for p in "${PACKAGES[@]}"; do
             ret=1
         else
             echo_green "Build SUCCESS: package=${p} distro=${distro}"
-            echo_green "Check ${OUTPUT_DIR}/${distro} for RPMs"
         fi
     done
     if $GIT_ANNEX; then
