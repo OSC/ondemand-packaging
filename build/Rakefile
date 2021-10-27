@@ -306,6 +306,9 @@ namespace :deb do
       sh "ln -snf #{DEB_NAME}.tar.gz #{PACKAGE_NAME}_#{VERSION}.orig.tar.gz"
       sh "tar -xf #{DEB_NAME}.tar.gz"
     end
+    Dir.chdir(File.join(WORK_DIR, DEB_NAME)) do
+      sh "dch -v #{VERSION} 'Release #{VERSION}'"
+    end
     puts "\tInstalling dependencies".blue
     config = packaging_config(File.join(WORK_DIR, DEB_NAME, 'debian/packaging.yaml'))
     if config['dependencies']
