@@ -260,12 +260,12 @@ Usage examples:
             logger.info("Updating repo Packages at %s", root)
             process = subprocess.Popen(dpkg_scanpackages_cmd, shell=True, cwd=base_path)
             out, err = process.communicate()
-            exit_code != 0:
+            if exit_code != 0:
                 logger.error("Error: %s", err)
                 continue
             process = subprocess.Popen(dpkg_gzip_packages_cmd, shell=True, cwd=base_path)
             out, err = process.communicate()
-            exit_code != 0:
+            if exit_code != 0:
                 logger.error("Error: %s", err)
                 continue
             md5sum_cmd = "md5sum main/binary-amd64/Packages*"
@@ -274,22 +274,22 @@ Usage examples:
             wc_cmd = "wc -c main/binary-amd64/Packages*" % dist_path
             process = subprocess.Popen(md5sum_cmd, shell=True, cwd=root)
             out, err = process.communicate()
-            exit_code != 0:
+            if exit_code != 0:
                 logger.error("Error: %s", err)
                 continue
             process = subprocess.Popen(sha1sum_cmd, shell=True, cwd=root)
             out, err = process.communicate()
-            exit_code != 0:
+            if exit_code != 0:
                 logger.error("Error: %s", err)
                 continue
             process = subprocess.Popen(sha256sum_cmd, shell=True, cwd=root)
             out, err = process.communicate()
-            exit_code != 0:
+            if exit_code != 0:
                 logger.error("Error: %s", err)
                 continue
             process = subprocess.Popen(wc_cmd, shell=True, cwd=root)
             out, err = process.communicate()
-            exit_code != 0:
+            if exit_code != 0:
                 logger.error("Error: %s", err)
                 continue
             utcnow = datetime.datetime.utcnow()
