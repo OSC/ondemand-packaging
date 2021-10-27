@@ -134,9 +134,13 @@ Usage examples:
                     os.makedirs(d, 0755)
         for rel in ['focal']:
             rel_d = os.path.join(release_dir, t, 'apt/dists', rel, 'main/binary-amd64')
+            pool_d = os.path.join(release_dir, t, 'apt/pool', rel)
             if not os.path.isdir(rel_d):
                 logger.info("mkdir -p %s", rel_d)
                 os.makedirs(rel_d, 0755)
+            if not os.path.isdir(pool_d):
+                logger.info("mkdir -p %s", pool_d)
+                os.makedirs(pool_d, 0755)
 
     if args.release in ['latest','ci','nightly'] or args.release.startswith('build'):
         logger.info("Latest release does not require sync, exiting")
@@ -150,6 +154,7 @@ Usage examples:
                 rpms.append(f)
             elif f.endswith('.deb'):
                 debs.append(f)
+    print debs
 
 
     # Determine if SRPM/RPM needs to be copie to release repo
@@ -192,7 +197,7 @@ Usage examples:
         if version not in manifest[name]:
             logger.debug("Skipping %s-%s, not in manifest", name, version)
             continue
-        dest = r.replace('/latest/', "/%s/" % args.release)
+        dest = d.replace('/latest/', "/%s/" % args.release)
         if os.path.isfile(dest) and not args.force:
             copy = False
             logger.debug("%s already exists, skipping", dest)
@@ -258,39 +263,41 @@ Usage examples:
             dpkg_scanpackages_cmd = "dpkg-scanpackages --arch amd64 pool/%s > dists/%s/main/binary-amd64/Packages" % (dist, dist)
             dpkg_gzip_packages_cmd = "cat dists/%s/main/binary-amd64/Packages | gzip -9 > dists/%s/main/binary-amd64/Packages.gz" % (dist, dist)
             logger.info("Updating repo Packages at %s", root)
-            process = subprocess.Popen(dpkg_scanpackages_cmd, shell=True, cwd=base_path)
+            process = subprocess.Popen(dpkg_scanpackages_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, cwd=base_path)
             out, err = process.communicate()
-            if exit_code != 0:
+            if process.returncode != 0:
                 logger.error("Error: %s", err)
                 continue
-            process = subprocess.Popen(dpkg_gzip_packages_cmd, shell=True, cwd=base_path)
+            if not os.path.isfile(os.path.join(base_path, 'dists', dist, 'main/binary-amd64/Packages')):
+                continue
+            process = subprocess.Popen(dpkg_gzip_packages_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, cwd=base_path)
             out, err = process.communicate()
-            if exit_code != 0:
+            if process.returncode != 0:
                 logger.error("Error: %s", err)
                 continue
-            md5sum_cmd = "md5sum main/binary-amd64/Packages*"
-            sha1sum_cmd = "sha1sum main/binary-amd64/Packages*"
-            sha256sum_cmd = "sha256sum main/binary-amd64/Packages*"
-            wc_cmd = "wc -c main/binary-amd64/Packages*" % dist_path
-            process = subprocess.Popen(md5sum_cmd, shell=True, cwd=root)
-            out, err = process.communicate()
-            if exit_code != 0:
-                logger.error("Error: %s", err)
+            md5sum_cmd = 'md5sum main/binary-amd64/Packages*'
+            sha1sum_cmd = 'sha1sum main/binary-amd64/Packages*'
+            sha256sum_cmd = 'sha256sum main/binary-amd64/Packages*'
+            wc_cmd = 'wc -c main/binary-amd64/Packages*'
+            process = subprocess.Popen(md5sum_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=root)
+            md5sum_out, md5sum_err = process.communicate()
+            if process.returncode != 0:
+                logger.error("Error: %s", md5sum_err)
                 continue
-            process = subprocess.Popen(sha1sum_cmd, shell=True, cwd=root)
-            out, err = process.communicate()
-            if exit_code != 0:
-                logger.error("Error: %s", err)
+            process = subprocess.Popen(sha1sum_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=root)
+            sha1sum_out, sha1sum_err = process.communicate()
+            if process.returncode != 0:
+                logger.error("Error: %s", sha1sum_err)
                 continue
-            process = subprocess.Popen(sha256sum_cmd, shell=True, cwd=root)
-            out, err = process.communicate()
-            if exit_code != 0:
-                logger.error("Error: %s", err)
+            process = subprocess.Popen(sha256sum_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=root)
+            sha256sum_out, sha256sum_err = process.communicate()
+            if process.returncode != 0:
+                logger.error("Error: %s", sha256sum_err)
                 continue
-            process = subprocess.Popen(wc_cmd, shell=True, cwd=root)
-            out, err = process.communicate()
-            if exit_code != 0:
-                logger.error("Error: %s", err)
+            process = subprocess.Popen(wc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=root)
+            wc_out, wc_err = process.communicate()
+            if process.returncode != 0:
+                logger.error("Error: %s", wc_err)
                 continue
             utcnow = datetime.datetime.utcnow()
             date = utcnow.strftime("%a, %d %b %Y %H:%M:%S +0000")
@@ -347,14 +354,12 @@ SHA256:
             gpg_clearsign_cmd = "cat Release | gpg --detach-sign --passphrase-file %s --batch --yes --no-tty --digest-algo SHA256 --cert-digest-algo SHA256 --armor --clearsign > InRelease" % args.gpgpass
             process = subprocess.Popen(gpg_cmd, shell=True, cwd=root)
             out, err = process.communicate()
-            exit_code = process.returncode
-            if exit_code != 0:
+            if process.returncode != 0:
                 logger.error("Error: %s", err)
                 continue
             process = subprocess.Popen(gpg_clearsign_cmd, shell=True, cwd=root)
             out, err = process.communicate()
-            exit_code = process.returncode
-            if exit_code != 0:
+            if process.returncode != 0:
                 logger.error("Error: %s", err)
                 continue
 
