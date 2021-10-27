@@ -328,7 +328,7 @@ namespace :deb do
     end
     ENV['VERSION'] = VERSION
     Dir.chdir(File.join(WORK_DIR, DEB_NAME)) do
-      sh "debuild --preserve-env #{prepend_path} #{cmd_suffix}"
+      sh "debuild --no-lintian --preserve-env #{prepend_path} #{cmd_suffix}"
     end
   end
 
