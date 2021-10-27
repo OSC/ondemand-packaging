@@ -307,13 +307,15 @@ namespace :deb do
       sh "tar -xf #{DEB_NAME}.tar.gz"
     end
     Dir.chdir(File.join(WORK_DIR, DEB_NAME)) do
-      sh "dch -v #{VERSION} 'Release #{VERSION}'"
+      sh "dch -v #{VERSION} 'Release #{VERSION}' #{cmd_suffix}"
     end
+    puts "\tUpdating packages".blue
+    sh "sudo apt-get update #{cmd_suffix}"
+    sh "sudo apt upgrade -y #{cmd_suffix}"
     puts "\tInstalling dependencies".blue
     config = packaging_config(File.join(WORK_DIR, DEB_NAME, 'debian/packaging.yaml'))
     if config['dependencies']
-      sh "sudo apt-get update"
-      sh "sudo apt install -y #{config['dependencies'].join(' ')}"
+      sh "sudo apt install -y #{config['dependencies'].join(' ')} #{cmd_suffix}"
     end
   end
   desc "Build deb package"
@@ -326,7 +328,7 @@ namespace :deb do
     end
     ENV['VERSION'] = VERSION
     Dir.chdir(File.join(WORK_DIR, DEB_NAME)) do
-      sh "debuild --preserve-env #{prepend_path}"
+      sh "debuild --preserve-env #{prepend_path} #{cmd_suffix}"
     end
   end
 
