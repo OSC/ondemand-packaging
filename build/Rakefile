@@ -307,7 +307,7 @@ namespace :deb do
       sh "tar -xf #{DEB_NAME}.tar.gz"
     end
     Dir.chdir(File.join(WORK_DIR, DEB_NAME)) do
-      sh "dch -v #{VERSION} 'Release #{VERSION}' #{cmd_suffix}"
+      sh "dch -b -v #{VERSION} 'Release #{VERSION}' #{cmd_suffix}"
     end
     puts "\tUpdating packages".blue
     sh "sudo apt-get update #{cmd_suffix}"
