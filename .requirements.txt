@@ -1,2 +1,4 @@
+PyYAML==3.10
 paramiko==2.1.6
+rpm-py-installer
 pydpkg
