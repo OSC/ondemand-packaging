@@ -77,6 +77,7 @@ AutoReqProv: no
 Requires: %{name}%{?_isa} = %{version}-%{release}
 Requires: %{name}-libs = %{version}-%{release}
 Requires: pkgconfig
+%{?scl:Requires: %scl_runtime}
 
 %description devel
 This package contains the header files and development documentation 
@@ -87,6 +88,7 @@ to install %{name}-devel.
 Summary: Shared library for the sqlite3 embeddable SQL database engine.
 Group: Development/Libraries
 AutoReqProv: no
+%{?scl:Requires: %scl_runtime}
 
 # Ensure updates from pre-split work on multi-lib systems
 Obsoletes: %{name} < 3.11.0-1
@@ -99,6 +101,8 @@ This package contains the shared library for %{name}.
 Summary: Documentation for sqlite
 Group: Documentation
 BuildArch: noarch
+AutoReqProv: no
+%{?scl:Requires: %scl_runtime}
 
 %description doc
 This package contains most of the static HTML files that comprise the
@@ -109,6 +113,7 @@ C/C++ interface specs and other miscellaneous documentation.
 Summary: A parser generator
 Group: Development/Tools
 AutoReqProv: no
+%{?scl:Requires: %scl_runtime}
 
 %description -n %{?scl_prefix}lemon
 Lemon is an LALR(1) parser generator for C or C++. It does the same
@@ -129,6 +134,7 @@ AutoReqProv: no
 Requires: %{name} = %{version}-%{release}
 Requires: %{name}-libs = %{version}-%{release}
 Requires: tcl(abi) = %{tcl_version}
+%{?scl:Requires: %scl_runtime}
 
 %description tcl
 This package contains the tcl modules for %{name}.
@@ -139,6 +145,7 @@ Group: Development/Tools
 AutoReqProv: no
 Requires: %{name} = %{version}-%{release}
 Requires: tcl(abi) = %{tcl_version}
+%{?scl:Requires: %scl_runtime}
 
 %description analyzer
 This package contains the analysis program for %{name}.
