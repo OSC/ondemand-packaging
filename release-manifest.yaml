@@ -72,7 +72,7 @@ ondemand-sqlite:
     - ondemand-sqlite-analyzer
     - ondemand-sqlite-debuginfo
   versions:
-    - '3.26.0-3'
+    - '3.26.0-4'
 ondemand-dex:
   - 2.27.0-2
 ondemand_exporter:
