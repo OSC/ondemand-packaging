@@ -14,7 +14,7 @@
 Summary: Library that implements an embeddable SQL database engine
 Name: %{?scl_prefix}sqlite
 Version: %{rpmver}
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: Public Domain
 Group: Applications/Databases
 URL: http://www.sqlite.org/
@@ -59,6 +59,8 @@ Requires: %{name}-libs = %{version}-%{release}
 Obsoletes: %{name} < 3.11.0-1
 Conflicts: %{name} < 3.11.0-1
 
+AutoReqProv: no
+
 %description
 SQLite is a C library that implements an SQL database engine. A large
 subset of SQL92 is supported. A complete database is stored in a
@@ -71,6 +73,7 @@ are named to permit each to be installed on a single host
 %package devel
 Summary: Development tools for the sqlite3 embeddable SQL database engine
 Group: Development/Libraries
+AutoReqProv: no
 Requires: %{name}%{?_isa} = %{version}-%{release}
 Requires: %{name}-libs = %{version}-%{release}
 Requires: pkgconfig
@@ -83,6 +86,7 @@ to install %{name}-devel.
 %package libs
 Summary: Shared library for the sqlite3 embeddable SQL database engine.
 Group: Development/Libraries
+AutoReqProv: no
 
 # Ensure updates from pre-split work on multi-lib systems
 Obsoletes: %{name} < 3.11.0-1
@@ -104,6 +108,7 @@ C/C++ interface specs and other miscellaneous documentation.
 %package -n %{?scl_prefix}lemon
 Summary: A parser generator
 Group: Development/Tools
+AutoReqProv: no
 
 %description -n %{?scl_prefix}lemon
 Lemon is an LALR(1) parser generator for C or C++. It does the same
@@ -120,6 +125,7 @@ embedded controllers.
 %package tcl
 Summary: Tcl module for the sqlite3 embeddable SQL database engine
 Group: Development/Languages
+AutoReqProv: no
 Requires: %{name} = %{version}-%{release}
 Requires: %{name}-libs = %{version}-%{release}
 Requires: tcl(abi) = %{tcl_version}
@@ -130,6 +136,7 @@ This package contains the tcl modules for %{name}.
 %package analyzer
 Summary: An analysis program for sqlite3 database files
 Group: Development/Tools
+AutoReqProv: no
 Requires: %{name} = %{version}-%{release}
 Requires: tcl(abi) = %{tcl_version}
 
