@@ -1,15 +1,16 @@
 #!/usr/bin/env python
 
 import argparse
+import datetime
 import getpass
 import logging
 import os
+from pydpkg import Dpkg
 import rpm
 import shutil
 import subprocess
 import sys
 import yaml
-
 
 logger = logging.getLogger()
 
@@ -27,6 +28,11 @@ def get_rpm_info(rpm_file):
         'name': hdr[rpm.RPMTAG_NAME],
         'ver': "%s-%s" % (hdr[rpm.RPMTAG_VERSION],hdr[rpm.RPMTAG_RELEASE])
     }
+    return info
+
+def get_deb_info(deb_file):
+    dp = Dpkg(deb_file)
+    info = dp.headers
     return info
 
 def main():
@@ -66,6 +72,7 @@ Usage examples:
     latest_dir = os.path.join(args.repo_base, 'latest')
     release_dir = os.path.join(args.repo_base, args.release)
     rpms = []
+    debs = []
     manifest = {}
     manifest_data = {}
     copied_manifest = {}
@@ -125,6 +132,15 @@ Usage examples:
                 if not os.path.isdir(d):
                     logger.info("mkdir -p %s", d)
                     os.makedirs(d, 0755)
+        for rel in ['focal']:
+            rel_d = os.path.join(release_dir, t, 'apt/dists', rel, 'main/binary-amd64')
+            pool_d = os.path.join(release_dir, t, 'apt/pool', rel)
+            if not os.path.isdir(rel_d):
+                logger.info("mkdir -p %s", rel_d)
+                os.makedirs(rel_d, 0755)
+            if not os.path.isdir(pool_d):
+                logger.info("mkdir -p %s", pool_d)
+                os.makedirs(pool_d, 0755)
 
     if args.release in ['latest','ci','nightly'] or args.release.startswith('build'):
         logger.info("Latest release does not require sync, exiting")
@@ -136,6 +152,9 @@ Usage examples:
             f = os.path.join(root, filename)
             if f.endswith('.rpm'):
                 rpms.append(f)
+            elif f.endswith('.deb'):
+                debs.append(f)
+    print debs
 
 
     # Determine if SRPM/RPM needs to be copie to release repo
@@ -166,6 +185,32 @@ Usage examples:
         logger.info("Copy %s -> %s", r, dest)
         shutil.copy2(r, dest)
 
+    for d in sorted(debs):
+        copy = True
+        deb_info = get_deb_info(d)
+        logger.debug("DEB info for %s: %s", d, deb_info)
+        name = deb_info['Package']
+        version = deb_info['Version']
+        if name not in manifest:
+            logger.warning("%s not in manifest", name)
+            continue
+        if version not in manifest[name]:
+            logger.debug("Skipping %s-%s, not in manifest", name, version)
+            continue
+        dest = d.replace('/latest/', "/%s/" % args.release)
+        if os.path.isfile(dest) and not args.force:
+            copy = False
+            logger.debug("%s already exists, skipping", dest)
+        if name in copied_manifest:
+            if version not in copied_manifest[name]:
+                copied_manifest[name].append(version)
+        else:
+            copied_manifest[name] = [version]
+        if not copy:
+            continue
+        logger.info("Copy %s -> %s", d, dest)
+        shutil.copy2(d, dest)
+
     # Check for files in manifest that were not found in latest repo
     for name, versions in sorted(manifest.items(), key=lambda item: item[0]):
         if name not in copied_manifest:
@@ -178,14 +223,20 @@ Usage examples:
     # Look for files in release repo that are not in manifest
     for root, dirnames, filenames in os.walk(release_dir):
         for filename in filenames:
-            if not filename.endswith('.rpm'):
-                continue
             f = os.path.join(root, filename)
-            rpm_info = get_rpm_info(f)
-            name = rpm_info['name']
-            version = rpm_info['ver'].replace('.el7', '').replace('.el8', '')
-            if name not in manifest or version not in manifest.get(name, []):
-                logger.error("RPM %s-%s should not be in release repo", name, version)
+            found = False
+            if filename.endswith('.rpm'):
+                found = True
+                rpm_info = get_rpm_info(f)
+                name = rpm_info['name']
+                version = rpm_info['ver'].replace('.el7', '').replace('.el8', '')
+            elif filename.endswith('.deb'):
+                found = True
+                deb_info = get_deb_info(f)
+                name = deb_info['Package']
+                version = deb_info['Version']
+            if found and name not in manifest or version not in manifest.get(name, []):
+                logger.error("Package %s-%s should not be in release repo", name, version)
                 if args.clean:
                     logger.debug("rm %s", f)
                     os.remove(f)
@@ -206,6 +257,111 @@ Usage examples:
             exit_code = process.returncode
             if exit_code != 0:
                 logger.error("Error: %s", err)
+        elif os.path.basename(os.path.dirname(root)) == 'dists':
+            base_path = os.path.dirname(os.path.dirname(root))
+            dist = os.path.basename(root)
+            dpkg_scanpackages_cmd = "dpkg-scanpackages --arch amd64 pool/%s > dists/%s/main/binary-amd64/Packages" % (dist, dist)
+            dpkg_gzip_packages_cmd = "cat dists/%s/main/binary-amd64/Packages | gzip -9 > dists/%s/main/binary-amd64/Packages.gz" % (dist, dist)
+            logger.info("Updating repo Packages at %s", root)
+            process = subprocess.Popen(dpkg_scanpackages_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, cwd=base_path)
+            out, err = process.communicate()
+            if process.returncode != 0:
+                logger.error("Error: %s", err)
+                continue
+            if not os.path.isfile(os.path.join(base_path, 'dists', dist, 'main/binary-amd64/Packages')):
+                continue
+            process = subprocess.Popen(dpkg_gzip_packages_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, cwd=base_path)
+            out, err = process.communicate()
+            if process.returncode != 0:
+                logger.error("Error: %s", err)
+                continue
+            md5sum_cmd = 'md5sum main/binary-amd64/Packages*'
+            sha1sum_cmd = 'sha1sum main/binary-amd64/Packages*'
+            sha256sum_cmd = 'sha256sum main/binary-amd64/Packages*'
+            wc_cmd = 'wc -c main/binary-amd64/Packages*'
+            process = subprocess.Popen(md5sum_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=root)
+            md5sum_out, md5sum_err = process.communicate()
+            if process.returncode != 0:
+                logger.error("Error: %s", md5sum_err)
+                continue
+            process = subprocess.Popen(sha1sum_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=root)
+            sha1sum_out, sha1sum_err = process.communicate()
+            if process.returncode != 0:
+                logger.error("Error: %s", sha1sum_err)
+                continue
+            process = subprocess.Popen(sha256sum_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=root)
+            sha256sum_out, sha256sum_err = process.communicate()
+            if process.returncode != 0:
+                logger.error("Error: %s", sha256sum_err)
+                continue
+            process = subprocess.Popen(wc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=root)
+            wc_out, wc_err = process.communicate()
+            if process.returncode != 0:
+                logger.error("Error: %s", wc_err)
+                continue
+            utcnow = datetime.datetime.utcnow()
+            date = utcnow.strftime("%a, %d %b %Y %H:%M:%S +0000")
+            sizes = {}
+            for line in wc_out.splitlines():
+                items = line.strip().split(' ')
+                if len(items) != 2:
+                    continue
+                sizes[items[1]] = items[0]
+            md5sums = []
+            sha1sums = []
+            sha256sums = []
+            for line in md5sum_out.splitlines():
+                items = line.strip().split()
+                if len(items) != 2:
+                    continue
+                if items[1] not in sizes:
+                    continue
+                md5sums.append(" %s %s %s" % (items[0], sizes[items[1]], items[1]))
+            for line in sha1sum_out.splitlines():
+                items = line.strip().split()
+                if len(items) != 2:
+                    continue
+                if items[1] not in sizes:
+                    continue
+                sha1sums.append(" %s %s %s" % (items[0], sizes[items[1]], items[1]))
+            for line in sha256sum_out.splitlines():
+                items = line.strip().split()
+                if len(items) != 2:
+                    continue
+                if items[1] not in sizes:
+                    continue
+                sha256sums.append(" %s %s %s" % (items[0], sizes[items[1]], items[1]))
+            release = """
+Origin: OnDemand Repository
+Label: OnDemand
+Suite: stable
+Codename: {dist}
+Version: {release}
+Architectures: amd64
+Components: main
+Description: OnDemand repository
+Date: {date}
+MD5Sum:
+{md5sums}
+SHA1:
+{sha1sums}
+SHA256:
+{sha256sums}
+""".format(dist=dist, release=args.release, date=date, md5sums="\n".join(md5sums), sha1sums="\n".join(sha1sums), sha256sums="\n".join(sha256sums))
+            with open(os.path.join(root, 'Release'), 'w') as f:
+                f.write(release)
+            gpg_cmd = "cat Release | gpg --detach-sign --passphrase-file %s --batch --yes --no-tty --digest-algo SHA256 --cert-digest-algo SHA256 --armor > Release.gpg" % args.gpgpass
+            gpg_clearsign_cmd = "cat Release | gpg --detach-sign --passphrase-file %s --batch --yes --no-tty --digest-algo SHA256 --cert-digest-algo SHA256 --armor --clearsign > InRelease" % args.gpgpass
+            process = subprocess.Popen(gpg_cmd, shell=True, cwd=root)
+            out, err = process.communicate()
+            if process.returncode != 0:
+                logger.error("Error: %s", err)
+                continue
+            process = subprocess.Popen(gpg_clearsign_cmd, shell=True, cwd=root)
+            out, err = process.communicate()
+            if process.returncode != 0:
+                logger.error("Error: %s", err)
+                continue
 
 if __name__ == '__main__':
     main()
