@@ -63,6 +63,8 @@ Requires: rubygem-bundler >= 2.1
 Requires: ruby-devel
 Requires: rubygems
 Requires: rubygems-devel
+# In some cases this RPM doesn't get pulled in
+Requires: rubygem-bigdecimal
 Requires: sqlite-devel
 %else
 Requires: %{ruby}
