@@ -54,8 +54,21 @@ if [[ "$ID_LIKE" == *rhel* ]]; then
 %_signature gpg
 %_gpg_path ~/.gnupg
 %_gpg /usr/bin/gpg
+#%_gpg_sign_cmd_extra_args --pinentry-mode loopback
 EOF
-	rpm --import /build/RPM-GPG-KEY-ondemand
+	# Modified macro from /usr/lib/rpm/macros to add pinentry-mode and passphrase-file
+	# pinentry-mode only needed on EL8
+	echo "%__gpg_sign_cmd %{__gpg} \\" >> /home/ood/.rpmmacros
+	echo "        gpg --no-verbose --no-armor --batch --pinentry-mode loopback \\" >> /home/ood/.rpmmacros
+	echo "        --passphrase-file /ondemand-packaging/.gpgpass \\" >> /home/ood/.rpmmacros
+	echo "        %{?_gpg_sign_cmd_extra_args:%{_gpg_sign_cmd_extra_args}} \\" >> /home/ood/.rpmmacros
+	echo "        %{?_gpg_digest_algo:--digest-algo %{_gpg_digest_algo}} \\" >> /home/ood/.rpmmacros
+	echo "	      --no-secmem-warning \\" >> /home/ood/.rpmmacros
+	echo "        -u \"%{_gpg_name}\" -sbo %{__signature_filename} %{__plaintext_filename}" >> /home/ood/.rpmmacros
+
+	run install -d -m 0700 -o ood -g ood /home/ood/.gnupg
+	run echo "allow-loopback-pinentry" >> /home/ood/.gnupg/gpg-agent.conf
+	run rpm --import /build/RPM-GPG-KEY-ondemand
 
 	run cp -a /build/epel-7-x86_64.cfg /etc/mock/epel-7-x86_64.cfg
 	run cp -a /build/epel-8-x86_64.cfg /etc/mock/epel-8-x86_64.cfg

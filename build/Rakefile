@@ -158,7 +158,7 @@ namespace :rpm do
       puts "\tBootstrap GPG".blue
       sh "echo '%_gpg_name #{ENV['GPG_NAME']}' >> ~/.rpmmacros"
       sh 'rm -rf ~/.gnupg'
-      sh "gpg --import /ondemand-packaging/ondemand.sec #{cmd_suffix}"
+      sh "gpg --batch --passphrase-file /ondemand-packaging/.gpgpass --import /ondemand-packaging/ondemand.sec #{cmd_suffix}"
       if ENV['GPG_PUBKEY'] && ! ENV['GPG_PUBKEY'].empty?
         sh "rpm --import /ondemand-packaging/stage/#{ENV['GPG_PUBKEY']} #{cmd_suffix}"
       end
@@ -257,7 +257,7 @@ namespace :rpm do
     puts "== #{task.name} ==".blue
     get_rpms(OUTPUT_DIR).each do |rpm|
       puts "\tGPG signing #{rpm}".blue
-      sh "/ondemand-packaging/rpm-sign.exp /ondemand-packaging/.gpgpass #{rpm} #{cmd_suffix}"
+      sh "rpmsign --addsign #{rpm} #{cmd_suffix}"
     end
   end
 
@@ -283,7 +283,7 @@ namespace :rpm do
           puts "\tGPG check failure: exit code #{exit_code}".red
           failure = true
         end
-        if output !~ /pgp/
+        if output !~ /(pgp|OK)/
           puts "\tRPM not GPG signed".red
           failure = true
         end
