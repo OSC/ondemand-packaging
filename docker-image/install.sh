@@ -22,7 +22,7 @@ source /etc/os-release
 header "Installing dependencies"
 if [[ "$ID_LIKE" == *debian* ]]; then
 	run apt-get update -y
-	run apt install -y init debhelper devscripts build-essential lintian \
+	run apt install -y init debhelper devscripts dh-make build-essential lintian equivs \
 			sudo python rake wget curl ruby
 	run ln -snf /bin/bundle2.7 /bin/bundle
 else
