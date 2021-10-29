@@ -14,7 +14,10 @@ set pass [read $fp]
 set file [lindex $argv 1]
 set timeout -1
 spawn rpmsign --addsign --quiet $file
-expect -exact "Enter pass phrase: "
+# EL7 only needs this
+#expect -exact "Enter pass phrase: "
+expect *
+expect "*phrase*"
 send -- "$pass\r"
 expect eof
 
