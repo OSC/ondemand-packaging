@@ -18,7 +18,6 @@ export LANG=en_US.UTF-8
 export LC_CTYPE=en_US.UTF-8
 
 source /etc/os-release
-cat /etc/os-release
 
 header "Installing dependencies"
 if [[ "$ID_LIKE" == *debian* ]]; then
@@ -27,11 +26,14 @@ if [[ "$ID_LIKE" == *debian* ]]; then
 			sudo python rake wget curl ruby
 	run ln -snf /bin/bundle2.7 /bin/bundle
 else
-	run yum update -y
-	run yum install -y epel-release centos-release-scl
-	run yum install -y mock rubygem-rake sudo git git-annex which expect \
+	run dnf update -y
+	run dnf install -y dnf-utils langpacks-en glibc-all-langpacks
+	run dnf config-manager --set-enabled powertools
+	run dnf install -y epel-release
+	run dnf install -y python36 mock rubygem-rake sudo git which expect \
 	    rpm-build rpmdevtools rpm-sign scl-utils-build \
 	    selinux-policy bsdtar
+	run alternatives --set python /usr/bin/python3
 fi
 
 header "Creating users"
@@ -85,6 +87,6 @@ header "Cleaning up"
 if [[ "$ID_LIKE" == *debian* ]]; then
 	run apt-get clean all -y
 else
-	run yum clean all
+	run dnf clean all
 fi
 run rm -rf /build
