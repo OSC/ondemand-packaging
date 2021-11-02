@@ -5,13 +5,11 @@
 
 %if 0%{?rhel} >= 8
 %global ruby ruby
-%global python python2
 %global nodejs nodejs
 %global apache httpd
 %else
 %global ruby rh-ruby27
-%global python python
-%global nodejs rh-nodejs12
+%global nodejs rh-nodejs14
 %global apache httpd24
 %endif
 %global ruby_version 2.7
@@ -80,17 +78,10 @@ Obsoletes: ondemand-rubygem-bundler
 %description -n ondemand-ruby
 Meta package for pulling in SCL Ruby %{ruby}
 
-%package -n ondemand-python
-Summary: Meta package for pulling in Python needed by OnDemand
-Requires: %{python}
-
-%description -n ondemand-python
-Meta package for pulling in Python needed by OnDemand
-
 %package -n ondemand-nodejs
 Summary: Meta package for pulling in SCL nodejs %{nodejs}
 %if 0%{?rhel} >= 8
-Requires: %{nodejs} >= 1:12.0, %{nodejs} < 1:14.0
+Requires: %{nodejs} >= 1:14.0, %{nodejs} < 1:16.0
 Requires: npm
 %else
 Requires: %{nodejs}
@@ -130,7 +121,6 @@ cat >> %{buildroot}%{_scl_scripts}/enable << EOF
 %if 0%{?rhel} <= 7
 . scl_source enable %{apache} %{ruby} %{nodejs}
 %endif
-export PYTHON=%{python}
 export PATH="%{_bindir}:%{_sbindir}\${PATH:+:\${PATH}}"
 export LD_LIBRARY_PATH="%{_libdir}\${LD_LIBRARY_PATH:+:\${LD_LIBRARY_PATH}}"
 export MANPATH="%{_mandir}:\${MANPATH:-}"
@@ -179,8 +169,6 @@ EOF
 %{ondemand_gem_home}
 %{ondemand_apps_gem_home}
 %{ondemand_core_gem_home}
-
-%files -n ondemand-python
 
 %files -n ondemand-nodejs
 
