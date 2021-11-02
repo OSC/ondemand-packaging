@@ -6,7 +6,7 @@
 %define release_version 1
 %define ngix_release_version 2
 
-%define runtime_version 2.0
+%define runtime_version 2.1
 %define runtime_major_version %(echo %{runtime_version} | cut -d. -f1)
 %define runtime_minor_version %(echo %{runtime_version} | cut -d. -f2)
 %define next_runtime_major_version %(echo $((%{runtime_major_version}+1))).0
