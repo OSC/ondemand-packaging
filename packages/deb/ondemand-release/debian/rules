@@ -1,0 +1,21 @@
+#!/usr/bin/make -f
+# You must remove unused comment lines for the released package.
+export DH_VERBOSE = 1
+export CODENAME = $(shell lsb_release -sc)
+export WEB_DESTDIR = $(CURDIR)/debian/ondemand-release-web
+export DEB_BUILD_OPTIONS=nocheck
+
+%:
+	dh $@
+
+override_dh_auto_configure:
+	# Do nothing
+
+override_dh_auto_build:
+	# Do nothing
+
+override_dh_auto_install:
+	mkdir -p $(WEB_DESTDIR)-focal/etc/apt/sources.list.d
+	echo "deb [arch=amd64] https://apt.osc.edu/ondemand/$(VERSION)/web/apt $(CODENAME) main" > $(WEB_DESTDIR)-focal/etc/apt/sources.list.d/ondemand-web.list
+	mkdir -p $(WEB_DESTDIR)-focal/etc/apt/trusted.gpg.d
+	install -m 644 -D $(CURDIR)/ondemand.gpg $(WEB_DESTDIR)-focal/etc/apt/trusted.gpg.d/ondemand-web.gpg
