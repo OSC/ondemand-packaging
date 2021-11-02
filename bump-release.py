@@ -72,9 +72,12 @@ Usage examples:
     files_to_modify = {
         'packages/ondemand-release/ondemand-compute.repo': '/REPLACE/',
         'packages/ondemand-release/ondemand-web.repo': '/REPLACE/',
+        'docker-image/epel-7-x86_64.cfg': '/REPLACE/',
+        'docker-image/epel-8-x86_64.cfg': '/REPLACE/',
         'docker-image/ondemand-el7-x86_64.cfg': '/REPLACE/',
         'docker-image/ondemand-el8-x86_64.cfg': '/REPLACE/',
-        'packages/passenger/passenger.spec': 'runtime_version REPLACE'
+        'packages/passenger/passenger.spec': 'runtime_version REPLACE',
+        'release-manifest.yaml': "'REPLACE",
     }
     for spec in specs_to_modify:
         reset_version_release(spec, args.previous_release, args.new_release)
