@@ -30,6 +30,7 @@ Requires:       %{ruby}-runtime
 Requires:       %{nodejs}-runtime
 Requires:       %{apache}-runtime
 %endif
+Obsoletes: ondemand-python
 
 %description
 Package shipping essential scripts to work with %{scl} Software Collection.
