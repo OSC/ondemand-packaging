@@ -4,6 +4,7 @@ export DH_VERBOSE = 1
 export CODENAME = $(shell lsb_release -sc)
 export WEB_DESTDIR = $(CURDIR)/debian/ondemand-release-web
 export DEB_BUILD_OPTIONS=nocheck
+export REPO=2.1
 
 %:
 	dh $@
@@ -15,7 +16,7 @@ override_dh_auto_build:
 	# Do nothing
 
 override_dh_auto_install:
-	mkdir -p $(WEB_DESTDIR)-focal/etc/apt/sources.list.d
-	echo "deb [arch=amd64] https://apt.osc.edu/ondemand/$(VERSION)/web/apt $(CODENAME) main" > $(WEB_DESTDIR)-focal/etc/apt/sources.list.d/ondemand-web.list
-	mkdir -p $(WEB_DESTDIR)-focal/etc/apt/trusted.gpg.d
-	install -m 644 -D $(CURDIR)/ondemand.gpg $(WEB_DESTDIR)-focal/etc/apt/trusted.gpg.d/ondemand-web.gpg
+	mkdir -p $(WEB_DESTDIR)/etc/apt/sources.list.d
+	echo "deb [arch=amd64] https://apt.osc.edu/ondemand/$(REPO)/web/apt @CODENAME@ main" > $(WEB_DESTDIR)/etc/apt/sources.list.d/ondemand-web.list
+	mkdir -p $(WEB_DESTDIR)/etc/apt/trusted.gpg.d
+	install -m 644 -D $(CURDIR)/ondemand.gpg $(WEB_DESTDIR)/etc/apt/trusted.gpg.d/ondemand-web.gpg
