@@ -79,7 +79,7 @@ ondemand-sqlite:
 ondemand-dex:
   - 2.27.0-2
 ondemand_exporter:
-  - 0.8.0-1
+  - 0.8.1-1
 
 # compute
 ondemand-compute:
