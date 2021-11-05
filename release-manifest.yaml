@@ -38,14 +38,19 @@ ondemand-nginx:
     - ondemand-nginx-debuginfo
   versions:
     - 1.20.1-1.p6.0.11
+    # deb package
+    - 1.20.1
 ondemand-passenger:
   packages:
     - ondemand-passenger
     - ondemand-passenger-debuginfo
     - ondemand-passenger-devel
+    - ondemand-passenger-dev
     - ondemand-passenger-doc
   versions:
     - 6.0.11-1
+    # deb package
+    - 6.0.11
 ondemand-runtime:
   packages:
     - ondemand-apache

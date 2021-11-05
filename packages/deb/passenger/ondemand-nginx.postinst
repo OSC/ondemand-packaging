@@ -1,0 +1,17 @@
+#!/bin/bash
+
+getent group ondemand-nginx > /dev/null || groupadd -r ondemand-nginx
+getent passwd ondemand-nginx > /dev/null || \
+    useradd -r -d /var/lib/ondemand-nginx -g ondemand-nginx \
+    -s /sbin/nologin -c "Nginx web server" ondemand-nginx
+
+if [[ "x$2" == "x" ]]; then
+	chmod 0700 /var/lib/ondemand-nginx
+	chmod 0700 /var/lib/ondemand-nginx/tmp
+	chmod 0700 /var/log/ondemand-nginx
+	chown ondemand-nginx:ondemand-nginx /var/lib/ondemand-nginx
+	chown ondemand-nginx:ondemand-nginx /var/lib/ondemand-nginx/tmp
+	chown ondemand-nginx:ondemand-nginx /var/log/ondemand-nginx
+fi
+
+exit 0
