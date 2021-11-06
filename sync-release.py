@@ -13,7 +13,12 @@ import sys
 import yaml
 
 logger = logging.getLogger()
-
+PROJ_ROOT = os.path.dirname(os.path.realpath(__file__))
+DISTS = [
+    'el7',
+    'el8',
+    'ubuntu-20.04'
+]
 
 def get_rpm_info(rpm_file):
     ts = rpm.ts()
@@ -241,127 +246,19 @@ Usage examples:
                     logger.debug("rm %s", f)
                     os.remove(f)
 
-    # Run createrepo_c on each repo directory
-    for root, dirnames, filenames in os.walk(release_dir):
-        if os.path.basename(root) in ['SRPMS', 'x86_64']:
-            logger.info("createrepo_c %s", root)
-            process = subprocess.Popen(['createrepo_c', root], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            out, err = process.communicate()
-            exit_code = process.returncode
-            if exit_code != 0:
-                logger.error("Error: %s", err)
-            repomd = os.path.join(root, 'repodata', 'repomd.xml')
-            cmd = ['gpg','--detach-sign','--passphrase-file',args.gpgpass,'--batch','--yes','--no-tty','--armor',repomd]
-            process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            out, err = process.communicate()
-            exit_code = process.returncode
-            if exit_code != 0:
-                logger.error("Error: %s", err)
-        elif os.path.basename(os.path.dirname(root)) == 'dists':
-            base_path = os.path.dirname(os.path.dirname(root))
-            dist = os.path.basename(root)
-            dpkg_scanpackages_cmd = "dpkg-scanpackages --arch amd64 pool/%s > dists/%s/main/binary-amd64/Packages" % (dist, dist)
-            dpkg_gzip_packages_cmd = "cat dists/%s/main/binary-amd64/Packages | gzip -9 > dists/%s/main/binary-amd64/Packages.gz" % (dist, dist)
-            logger.info("Updating repo Packages at %s", root)
-            process = subprocess.Popen(dpkg_scanpackages_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, cwd=base_path)
-            out, err = process.communicate()
-            if process.returncode != 0:
-                logger.error("Error: %s", err)
-                continue
-            if not os.path.isfile(os.path.join(base_path, 'dists', dist, 'main/binary-amd64/Packages')):
-                continue
-            process = subprocess.Popen(dpkg_gzip_packages_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, cwd=base_path)
-            out, err = process.communicate()
-            if process.returncode != 0:
-                logger.error("Error: %s", err)
-                continue
-            md5sum_cmd = 'md5sum main/binary-amd64/Packages*'
-            sha1sum_cmd = 'sha1sum main/binary-amd64/Packages*'
-            sha256sum_cmd = 'sha256sum main/binary-amd64/Packages*'
-            wc_cmd = 'wc -c main/binary-amd64/Packages*'
-            process = subprocess.Popen(md5sum_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=root)
-            md5sum_out, md5sum_err = process.communicate()
-            if process.returncode != 0:
-                logger.error("Error: %s", md5sum_err)
-                continue
-            process = subprocess.Popen(sha1sum_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=root)
-            sha1sum_out, sha1sum_err = process.communicate()
-            if process.returncode != 0:
-                logger.error("Error: %s", sha1sum_err)
-                continue
-            process = subprocess.Popen(sha256sum_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=root)
-            sha256sum_out, sha256sum_err = process.communicate()
-            if process.returncode != 0:
-                logger.error("Error: %s", sha256sum_err)
-                continue
-            process = subprocess.Popen(wc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=root)
-            wc_out, wc_err = process.communicate()
-            if process.returncode != 0:
-                logger.error("Error: %s", wc_err)
-                continue
-            utcnow = datetime.datetime.utcnow()
-            date = utcnow.strftime("%a, %d %b %Y %H:%M:%S +0000")
-            sizes = {}
-            for line in wc_out.splitlines():
-                items = line.strip().split(' ')
-                if len(items) != 2:
-                    continue
-                sizes[items[1]] = items[0]
-            md5sums = []
-            sha1sums = []
-            sha256sums = []
-            for line in md5sum_out.splitlines():
-                items = line.strip().split()
-                if len(items) != 2:
-                    continue
-                if items[1] not in sizes:
-                    continue
-                md5sums.append(" %s %s %s" % (items[0], sizes[items[1]], items[1]))
-            for line in sha1sum_out.splitlines():
-                items = line.strip().split()
-                if len(items) != 2:
-                    continue
-                if items[1] not in sizes:
-                    continue
-                sha1sums.append(" %s %s %s" % (items[0], sizes[items[1]], items[1]))
-            for line in sha256sum_out.splitlines():
-                items = line.strip().split()
-                if len(items) != 2:
-                    continue
-                if items[1] not in sizes:
-                    continue
-                sha256sums.append(" %s %s %s" % (items[0], sizes[items[1]], items[1]))
-            release = """
-Origin: OnDemand Repository
-Label: OnDemand
-Suite: stable
-Codename: {dist}
-Version: {release}
-Architectures: amd64
-Components: main
-Description: OnDemand repository
-Date: {date}
-MD5Sum:
-{md5sums}
-SHA1:
-{sha1sums}
-SHA256:
-{sha256sums}
-""".format(dist=dist, release=args.release, date=date, md5sums="\n".join(md5sums), sha1sums="\n".join(sha1sums), sha256sums="\n".join(sha256sums))
-            with open(os.path.join(root, 'Release'), 'w') as f:
-                f.write(release)
-            gpg_cmd = "cat Release | gpg --detach-sign --passphrase-file %s --batch --yes --no-tty --digest-algo SHA256 --cert-digest-algo SHA256 --armor > Release.gpg" % args.gpgpass
-            gpg_clearsign_cmd = "cat Release | gpg --detach-sign --passphrase-file %s --batch --yes --no-tty --digest-algo SHA256 --cert-digest-algo SHA256 --armor --clearsign > InRelease" % args.gpgpass
-            process = subprocess.Popen(gpg_cmd, shell=True, cwd=root)
-            out, err = process.communicate()
-            if process.returncode != 0:
-                logger.error("Error: %s", err)
-                continue
-            process = subprocess.Popen(gpg_clearsign_cmd, shell=True, cwd=root)
-            out, err = process.communicate()
-            if process.returncode != 0:
-                logger.error("Error: %s", err)
-                continue
+    for dist in DISTS:
+        logger.info("repo-update.sh -r %s -d %s", args.release, args.dist)
+        repo_update_cmd = [
+            os.path.join(PROJ_ROOT, 'repo-update.sh'),
+            '-r', args.release,
+            '-d', args.dist,
+        ]
+        process = subprocess.Popen(repo_update_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = process.communicate()
+        exit_code = process.returncode
+        if exit_code != 0:
+            logger.error("OUTPUT: %s", out)
+            logger.error("ERROR: %s", err)
 
 if __name__ == '__main__':
     main()
