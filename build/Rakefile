@@ -71,10 +71,21 @@ VERSION = ENV['GIT_TAG'].to_s.gsub(%r{^v}, '')
 BUILDBOX_IMAGE = ENV['BUILDBOX_IMAGE']
 BUILDBOX_IMAGE_DEFINE = "--define 'build_image #{BUILDBOX_IMAGE}'"
 PACKAGE_NAME = File.basename(PACKAGE)
+if PACKAGE_NAME =~ /deb|rpm/
+  if File.basename(File.dirname(PACKAGE)) == 'packages'
+    PACKAGE_NAME = File.basename(File.dirname(File.dirname(PACKAGE)))
+  else
+    PACKAGE_NAME = File.basename(File.dirname(PACKAGE))
+  end
+end
+SPEC_DIR = '/package'
+SPEC_DIR = '/package/rpm' if Dir.exist?('/package/rpm')
+SPEC_DIR = '/package/packaging/rpm' if Dir.exist?('/package/packaging/rpm')
+BUILD_DIR = '/package/build'
+BUILD_DIR = '/package/deb/build' if Dir.exist?('/package/deb/build')
 DEB_NAME = "#{PACKAGE_NAME}-#{VERSION}"
 WORK_DIR = "/work/#{DISTRO}"
 OUTPUT_DIR = "/output/#{DISTRO}"
-BUILD_DIR = "/package/build"
 MOCK_CONFIG = dist_configs(DISTRO, 'MOCK_CONFIG', PACKAGE_NAME)
 MOCK_FIX = dist_configs(DISTRO, 'MOCK_FIX')
 MOCK_CMD = dist_configs(DISTRO, 'MOCK_CMD')
@@ -168,8 +179,8 @@ namespace :rpm do
   desc "Build SRPM"
   task :srpm => :bootstrap do |task|
     puts "== #{task.name} ==".blue
-    sh 'find /package -maxdepth 1 -type f -exec cp {} /home/ood/rpmbuild/SOURCES/ \;'
-    sh 'find /package -maxdepth 1 -mindepth 1 -type d -exec cp -r {} /home/ood/rpmbuild/SOURCES/ \;'
+    sh "find #{SPEC_DIR} -maxdepth 1 -type f -exec cp {} /home/ood/rpmbuild/SOURCES/ \\;"
+    sh "find #{SPEC_DIR} -maxdepth 1 -mindepth 1 -type d -exec cp -r {} /home/ood/rpmbuild/SOURCES/ \\;"
     spec = get_spec('/home/ood/rpmbuild/SOURCES')
     spec_files = `spectool #{GIT_TAG_DEFINE} #{VERSION_DEFINE} #{RELEASE_DEFINE} --list-files #{spec}`
     sources = []
