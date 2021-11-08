@@ -121,6 +121,41 @@ docker build --no-cache -t $BUILDBOX_IMAGE .
 docker push $BUILDBOX_IMAGE
 ```
 
+## Build Debian/Ubuntu ondemand_buildbox Docker container
+
+```
+cd docker-image
+export DIST=ubuntu
+export DISTVERSION=20.04
+source ./env
+docker build --build-arg DIST=$DIST --build-arg VERSION=$DISTVERSION -f Dockerfile.deb -t $DEB_BUILDBOX_IMAGE .
+docker push $DEB_BUILDBOX_IMAGE
+```
+
+## Example using debmake to bootstrap deb files
+
+```
+docker run --rm -it -v $(pwd)/packages/deb/ondemand-release/build:/build ubuntu:20.04 /bin/bash
+apt-get update
+apt -y install debmake
+cd /build
+tar xf ondemand-release-1.tar.gz
+cd ondemand-release-1
+debmake -x 0
+```
+
+## Generate Deb GPG trust
+
+```
+docker run --rm -it --name ondemand-deb-gpg ubuntu:20.04 /bin/bash
+apt-get update
+apt -y install gnupg wget
+wget -qO - https://apt.osc.edu/ondemand/DEB-GPG-KEY-ondemand | apt-key add -
+
+# Back out of container
+docker cp ondemand-deb-gpg:/etc/apt/trusted.gpg packages/deb/ondemand-release/ondemand.gpg
+```
+
 ## GPG Setup
 
 First create a GPG public and private key.  This should only be done once.  The passphrase used should be saved to `.gpgpass` file and `ondemand.sec` file saved to root of this repo.  The `ondemand.pub` will be needed by anyone wishing to install the GPG signed packages.
@@ -180,7 +215,8 @@ If `./build.sh` had `-o /tmp/output` then the following command will upload the 
 Build release RPMs:
 
 ```
-./build.sh -w /tmp/work -o /tmp/output -d el7 -S $(pwd)/packages/ondemand-release
+./build.sh -w /tmp/work -o /tmp/output -d el7 -S $(pwd)/packages/ondemand-release/rpm
+./build.sh -w /tmp/work -o /tmp/output -D ubuntu-20.04 -S $(pwd)/packages/ondemand-release/deb
 ```
 
 Release RPMs:

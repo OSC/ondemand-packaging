@@ -1,0 +1,6 @@
+passenger (6.0.11-1) UNRELEASED; urgency=low
+
+  * Initial release. Closes: #nnnn
+    <nnnn is the bug number of your ITP>
+
+ -- root <>  Tue, 26 Oct 2021 15:02:14 -0400

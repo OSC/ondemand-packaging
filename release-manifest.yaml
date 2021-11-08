@@ -1,5 +1,5 @@
-major: '2.0'
-full: '2.0.18'
+major: '2.1'
+full: '2.1.0'
 
 # release
 ondemand-release:
@@ -8,6 +8,9 @@ ondemand-release:
     - ondemand-release-web
   versions:
     - '{major}-1'
+# deb package
+ondemand-release-web:
+  - '{major}.0'
 
 # web
 cjose:
@@ -34,15 +37,20 @@ ondemand-nginx:
     - ondemand-nginx
     - ondemand-nginx-debuginfo
   versions:
-    - 1.18.0-2.p6.0.7
+    - 1.20.1-1.p6.0.11
+    # deb package
+    - 1.20.1
 ondemand-passenger:
   packages:
     - ondemand-passenger
     - ondemand-passenger-debuginfo
     - ondemand-passenger-devel
+    - ondemand-passenger-dev
     - ondemand-passenger-doc
   versions:
-    - 6.0.7-1
+    - 6.0.11-1
+    # deb package
+    - 6.0.11
 ondemand-runtime:
   packages:
     - ondemand-apache
@@ -72,11 +80,11 @@ ondemand-sqlite:
     - ondemand-sqlite-analyzer
     - ondemand-sqlite-debuginfo
   versions:
-    - '3.26.0-3'
+    - '3.26.0-4'
 ondemand-dex:
   - 2.27.0-2
 ondemand_exporter:
-  - 0.8.0-1
+  - 0.9.0-1
 
 # compute
 ondemand-compute:

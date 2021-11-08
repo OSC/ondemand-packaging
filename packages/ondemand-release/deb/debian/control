@@ -1,0 +1,14 @@
+Source: ondemand-release
+Section: unknown
+Priority: optional
+Maintainer: Trey Dockendorf <tdockendorf@osc.edu>
+Build-Depends: debhelper (>=11~)
+Standards-Version: 4.1.4
+Homepage: https://github.com/OSC/ondemand-packaging
+
+Package: ondemand-release-web
+Architecture: all
+Multi-Arch: foreign
+Depends: ${shlibs:Depends},
+	${misc:Depends}
+Description: OnDemand repo release files for 2.1 web repo

@@ -10,8 +10,10 @@ DISTRIBUTIONS="el7 el8"
 GPG_NAME='OnDemand Release Signing Key'
 GPG_PUBKEY_PATH=''
 SHOW_TASKS=false
-TASK=run
+DEB=""
+TASK='run:rpm'
 CLEAN_OUTPUT=true
+CLEAN_WORK=true
 ATTACH=false
 CLEAN_DOCKER=true
 CONTAINER="ondemand-packaging-$(whoami)"
@@ -19,6 +21,7 @@ PACKAGES=()
 GPG_SIGN=true
 SKIP_DOWNLOAD=false
 GIT_TAG=''
+INIT='/usr/sbin/init'
 ret=0
 if [ ! -f ${DIR}/.gpgpass ]; then
     echo '!!! GPG SIGNING DISABLED : .gpgpass not found !!!'
@@ -40,6 +43,7 @@ function usage()
     echo "  -o DIR     Path in which to store build products"
     echo
     echo "Optional options:"
+    echo "  -D D-V     Build Debian/Ubuntu packages for DIST-DISTVERSION, eg ubuntu-20.04"
     echo "  -j NUM     Set build concurrency. Default: 1"
     echo "  -d NAMES   Build only for given distributions. This is a space-separated list"
     echo "             of distribution names."
@@ -51,8 +55,9 @@ function usage()
     echo "  -T         Show all tasks"
     echo "  -t TASK    Task to run, Default: $TASK"
     echo "  -C         Do not clean up output directory"
+    echo "  -W         Do not clean up work directory"
     echo "  -A         Attach after build"
-    echo "  -D         Do not clean up docker image"
+    echo "  -c         Do not clean up docker image"
     echo "  -u         Use unique container name"
     echo "  -V         Git tag to build"
     echo "  -s         Skip source download"
@@ -87,7 +92,7 @@ function parse_options()
 	local OPTIND=1
 	local ORIG_ARGV
 	local opt
-    while getopts "w:o:j:d:G:g:STt:CADuV:svh" opt; do
+    while getopts "w:o:D:j:d:G:g:STt:CWAcuV:svh" opt; do
         case "$opt" in
         w)
         	WORK_DIR="$OPTARG"
@@ -95,6 +100,11 @@ function parse_options()
         o)
         	OUTPUT_DIR="$OPTARG"
         	;;
+        D)
+          DEB="$OPTARG"
+          TASK='run:deb'
+          INIT='/sbin/init'
+          ;;
         j)
         	CONCURRENCY=$OPTARG
         	;;
@@ -119,10 +129,13 @@ function parse_options()
         C)
             CLEAN_OUTPUT=false
             ;;
+        W)
+            CLEAN_WORK=false
+            ;;
         A)
             ATTACH=true
             ;;
-        D)
+        c)
             CLEAN_DOCKER=false
             ;;
         u)
@@ -164,20 +177,20 @@ function parse_options()
 			echo "ERROR: please specify an output directory with -o."
 			exit 1
 		fi
-        if [ $# -gt 0 ]; then
-            PACKAGES=($@)
-        else
-            read -p "Are you use you want to release ALL packages? (y/n): "
-            if [[ $REPLY =~ ^[Nn]$ ]]; then
-                exit 0
-            fi
-            packages=()
-            for c in compute web-nonscl web; do
-                for p in ${DIR}/${c}/*; do
-                    PACKAGES+=("$p")
-                done
-            done
+    if [ $# -gt 0 ]; then
+        PACKAGES=($@)
+    else
+        read -p "Are you use you want to release ALL packages? (y/n): "
+        if [[ $REPLY =~ ^[Nn]$ ]]; then
+            exit 0
         fi
+        packages=()
+        for c in compute web-nonscl web; do
+            for p in ${DIR}/${c}/*; do
+                PACKAGES+=("$p")
+            done
+        done
+    fi
 	fi
 }
 
@@ -203,6 +216,13 @@ if $CLEAN_OUTPUT && [ $PACKAGES != 'attach' ]; then
     if [ -d $OUTPUT_DIR ]; then
         echo_blue "Cleaning output directory: ${OUTPUT_DIR}"
         rm -rf ${OUTPUT_DIR}/*
+    fi
+fi
+
+if $CLEAN_WORK && [ $PACKAGES != 'attach' ]; then
+    if [ -d $WORK_DIR ]; then
+        echo_blue "Cleaning work directory: ${WORK_DIR}"
+        rm -rf ${WORK_DIR}/*
     fi
 fi
 
@@ -256,8 +276,16 @@ for p in "${PACKAGES[@]}"; do
         START_CONTAINER=true
     fi
 
+    if [ "x$DEB" != "x" ]; then
+      export DIST=$(echo $DEB | cut -d'-' -f1)
+      export DISTVERSION=$(echo $DEB | cut -d'-' -f2)
+      export DISTRIBUTIONS=$DEB
+      source ${DIR}/build/env
+      export BUILDBOX_IMAGE=$DEB_BUILDBOX_IMAGE
+    fi
+
     if $START_CONTAINER; then
-        echo_blue "Starting container ${CONTAINER}"
+        echo_blue "Starting container ${CONTAINER} using image $BUILDBOX_IMAGE"
         CONTAINER_ID=$(docker run \
         --detach --rm \
         --name $CONTAINER \
@@ -268,7 +296,7 @@ for p in "${PACKAGES[@]}"; do
         -v "$WORK_DIR:/work" \
         -v "$OUTPUT_DIR:/output" \
         $BUILDBOX_IMAGE \
-        /usr/sbin/init)
+        $INIT)
         echo_green "Container started with ID ${CONTAINER_ID}"
     fi
 
@@ -302,7 +330,6 @@ for p in "${PACKAGES[@]}"; do
             ret=1
         else
             echo_green "Build SUCCESS: package=${p} distro=${distro}"
-            echo_green "Check ${OUTPUT_DIR}/${distro} for RPMs"
         fi
     done
     if $GIT_ANNEX; then

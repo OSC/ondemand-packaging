@@ -5,6 +5,7 @@ try:
     import ConfigParser
 except ModuleNotFoundError:
     import configparser as ConfigParser
+import datetime
 import logging
 import os
 import paramiko
@@ -16,6 +17,10 @@ import tempfile
 
 logger = logging.getLogger()
 
+deb_dist_map = {
+    'ubuntu-20.04': 'focal',
+}
+PROJ_ROOT = os.path.dirname(os.path.realpath(__file__))
 
 def release_packages(packages, host, path, pkey, force):
     uploads = False
@@ -39,31 +44,27 @@ def release_packages(packages, host, path, pkey, force):
     ssh.close()
     return uploads
 
-def update_repo(host, path, pkey, gpgpass):
+def update_repo(host, release, dist, pkey):
     _pkey = paramiko.RSAKey.from_private_key_file(pkey)
-    createrepo_cmd = "cd %s ; createrepo_c --update ." % path
-    gpg_cmd = "cd %s ; gpg --detach-sign --passphrase-file %s --batch --yes --no-tty --armor repodata/repomd.xml" % (path, gpgpass)
-    logger.info("Updating repo metadata at %s:%s", host, path)
-    logger.debug("Executing via SSH oodpkg@%s '%s'", host, createrepo_cmd)
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     ssh.connect(hostname=host, username='oodpkg', password=None, pkey=_pkey)
-    createrepo_stdin, createrepo_stdout, createrepo_stderr = ssh.exec_command(createrepo_cmd)
-    createrepo_out = createrepo_stdout.read()
-    createrepo_err = createrepo_stderr.read()
-    logger.debug("SSH CMD STDOUT:\n%s", createrepo_out)
-    logger.debug("SSH CMD STDERR:\n%s", createrepo_err)
-    logger.debug("Executing via SSH oodpkg@%s '%s'", host, gpg_cmd)
-    gpg_stdin, gpg_stdout, gpg_stderr = ssh.exec_command(gpg_cmd)
-    gpg_out = gpg_stdout.read()
-    gpg_err = gpg_stderr.read()
-    logger.debug("SSH CMD STDOUT:\n%s", gpg_out)
-    logger.debug("SSH CMD STDERR:\n%s", gpg_err)
+    sftp = ssh.open_sftp()
+    repo_update_src = os.path.join(PROJ_ROOT, 'repo-update.sh')
+    repo_update_dest = '/var/lib/oodpkg/repo-update.sh'
+    logger.info("SFTP %s -> oodpkg@%s:%s", repo_update_src, host, repo_update_dest)
+    sftp.put(repo_update_src, repo_update_dest)
+    repo_update_cmd = "/bin/bash %s -r %s -d %s" % (repo_update_dest, release, dist)
+    logger.info("Executing via SSH oodpkg@%s '%s'", host, repo_update_cmd)
+    stdin, stdout, stderr = ssh.exec_command(repo_update_cmd)
+    out = stdout.read()
+    err = stderr.read()
+    logger.debug("SSH CMD STDOUT:\n%s", out)
+    logger.debug("SSH CMD STDERR:\n%s", err)
     ssh.close()
 
 def main():
     pkey = os.path.expanduser('~/.ssh/id_rsa')
-    gpgpass = '/systems/osc_certs/gpg/ondemand/.gpgpass'
     usage_examples = """
 Usage examples:
 
@@ -75,7 +76,6 @@ Usage examples:
     parser.add_argument('-d', '--debug', action='store_true', default=False)
     parser.add_argument('-f', '--force', help='overwrite existing RPMs', action='store_true', default=False)
     parser.add_argument('--pkey', help='SSH private key to use for uploading RPMs (default: %(default)s)', default=pkey)
-    parser.add_argument('-g','--gpgpass', help='GPG passphrase file (default: %(default)s)', default=gpgpass)
     parser.add_argument('-c', '--config-section', help='config section to use', default='main')
     parser.add_argument('-r', '--release', help='Build repo release to use', default=None)
     parser.add_argument('dirs', nargs='+')
@@ -108,28 +108,48 @@ Usage examples:
     config.read(config_path)
     host = config.get('main', 'host')
     update = config.getboolean(args.config_section, 'update')
+    release = config.get(args.config_section, 'release').replace('RELEASE', build_release)
 
     for release_dir in args.dirs:
         dist = os.path.basename(release_dir)
-        rpm_path = config.get(args.config_section, 'rpm_path').replace('DIST', dist).replace('RELEASE', build_release)
-        srpm_path = config.get(args.config_section, 'srpm_path').replace('DIST', dist).replace('RELEASE', build_release)
-        logger.debug("rpm_path=%s srpm_path=%s dist=%s", rpm_path, srpm_path, dist)
-        rpms = []
-        srpms = []
-        for f in os.listdir(release_dir):
-            p = os.path.join(release_dir, f)
-            if p.endswith('.src.rpm'):
-                logger.debug("Found SRPM: %s", p)
-                srpms.append(p)
-            elif p.endswith('.rpm'):
-                logger.debug("Found RPM: %s", p)
-                rpms.append(p)
-        rpms_released = release_packages(rpms, host, rpm_path, args.pkey, args.force)
-        srpms_released = release_packages(srpms, host, srpm_path, args.pkey, args.force)
-        if rpms_released and update:
-            update_repo(host, rpm_path, args.pkey, args.gpgpass)
-        if srpms_released and update:
-            update_repo(host, srpm_path, args.pkey, args.gpgpass)
+        deb = False
+        if dist in deb_dist_map:
+            deb = deb_dist_map[dist]
+        if deb:
+            deb_basepath = config.get(args.config_section, 'deb_path').replace('DIST', deb).replace('RELEASE', build_release)
+            if args.config_section == 'release':
+                pool_path = deb_basepath
+            else:
+                pool_path = os.path.join(deb_basepath, 'pool', deb)
+            debs = []
+            for f in os.listdir(release_dir):
+                p = os.path.join(release_dir, f)
+                if p.endswith('.deb'):
+                    logger.debug("Found deb: %s", p)
+                    debs.append(p)
+            debs_released = release_packages(debs, host, pool_path, args.pkey, args.force)
+            if debs_released and update:
+                update_repo(host, release, deb, args.pkey)
+        else:
+            rpm_path = config.get(args.config_section, 'rpm_path').replace('DIST', dist).replace('RELEASE', build_release)
+            srpm_path = config.get(args.config_section, 'srpm_path').replace('DIST', dist).replace('RELEASE', build_release)
+            logger.debug("rpm_path=%s srpm_path=%s dist=%s", rpm_path, srpm_path, dist)
+            rpms = []
+            srpms = []
+            for f in os.listdir(release_dir):
+                p = os.path.join(release_dir, f)
+                if p.endswith('.src.rpm'):
+                    logger.debug("Found SRPM: %s", p)
+                    srpms.append(p)
+                elif p.endswith('.rpm'):
+                    logger.debug("Found RPM: %s", p)
+                    rpms.append(p)
+            rpms_released = release_packages(rpms, host, rpm_path, args.pkey, args.force)
+            srpms_released = release_packages(srpms, host, srpm_path, args.pkey, args.force)
+            if rpms_released and update:
+                update_repo(host, release, dist, args.pkey)
+            if srpms_released and update:
+                update_repo(host, release, dist, args.pkey)
 
 if __name__ == '__main__':
     main()

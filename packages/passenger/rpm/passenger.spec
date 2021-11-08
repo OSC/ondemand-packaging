@@ -1,12 +1,12 @@
 %define scl ondemand
 %define pkg_name passenger
 %scl_package passenger
-%define passenger_version 6.0.7
-%define nginx_version 1.18.0
+%define passenger_version 6.0.11
+%define nginx_version 1.20.1
 %define release_version 1
-%define ngix_release_version 2
+%define ngix_release_version 1
 
-%define runtime_version 2.0
+%define runtime_version 2.1
 %define runtime_major_version %(echo %{runtime_version} | cut -d. -f1)
 %define runtime_minor_version %(echo %{runtime_version} | cut -d. -f2)
 %define next_runtime_major_version %(echo $((%{runtime_major_version}+1))).0
@@ -39,7 +39,6 @@ Group:      System Environment/Daemons
 License:    Boost and BSD and BSD with advertising and MIT and zlib
 Source0:    https://github.com/phusion/passenger/releases/download/release-%{passenger_version}/passenger-%{passenger_version}.tar.gz
 Source1:    http://nginx.org/download/nginx-%{nginx_version}.tar.gz
-Patch0:     http://nginx.org/download/patch.2021.resolver.txt
 
 %{?scl:Requires:%scl_runtime}
 %{?scl:BuildRequires:%scl_runtime}
@@ -105,10 +104,6 @@ memory usage. Includes Phusion Passenger support.
 %prep
 %setup -q -n %{pkg_name}-%{passenger_version}
 %setup -q -T -D -a 1 -n %{pkg_name}-%{passenger_version}
-pushd nginx-%{nginx_version}
-%patch0 -p0
-popd
-
 
 %build
 scl enable ondemand - << \EOF
