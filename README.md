@@ -215,7 +215,8 @@ If `./build.sh` had `-o /tmp/output` then the following command will upload the 
 Build release RPMs:
 
 ```
-./build.sh -w /tmp/work -o /tmp/output -d el7 -S $(pwd)/packages/ondemand-release
+./build.sh -w /tmp/work -o /tmp/output -d el7 -S $(pwd)/packages/ondemand-release/rpm
+./build.sh -w /tmp/work -o /tmp/output -D ubuntu-20.04 -S $(pwd)/packages/ondemand-release/deb
 ```
 
 Release RPMs:
