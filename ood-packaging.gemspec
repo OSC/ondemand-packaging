@@ -19,9 +19,12 @@ Gem::Specification.new do |spec|
     f.match(%r{^lib/})
   end
   spec.bindir        = 'bin'
-  spec.executables   = []
+  spec.executables   = ['ood_packaging']
   spec.require_paths = ['lib']
   spec.required_ruby_version = '>= 2.2.0'
 
   spec.add_runtime_dependency 'rake', '~> 13.0.1'
+  spec.add_development_dependency 'rspec'
+  spec.add_development_dependency 'rubocop'
+  spec.add_development_dependency 'rubocop-rspec'
 end

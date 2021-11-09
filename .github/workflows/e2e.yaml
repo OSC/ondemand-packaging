@@ -1,0 +1,32 @@
+name: Buildbox tests
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  buildbox-build-tests:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ["ubuntu-latest"]
+        ruby: ["2.7.1"]
+        bundler: ["2.1.4"]
+        dist:
+          - el7
+          - el8
+          - ubuntu-20.04
+    runs-on: ${{ matrix.os }}
+    name: Unit tests
+    steps:
+      - name: Checkout ${{ github.sha	}}
+        uses: actions/checkout@v2
+      - name: Setup Ruby ${{ matrix.ruby }} using Bundler ${{ matrix.bundler }}
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler: ${{ matrix.bundler }}
+          bundler-cache: true
+      - name: Build the build box
+        run: bundle exec rake ood_packaging:buildbox:build[${{ matrix.dist }}]

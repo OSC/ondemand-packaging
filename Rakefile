@@ -1,7 +1,16 @@
-require "bundler/gem_tasks"
+require 'ood_packaging/tasks'
+require 'bundler/gem_tasks'
+require 'rspec/core/rake_task'
+require 'rubocop/rake_task'
 
-task :default => :build
+RSpec::Core::RakeTask.new(:spec)
+RuboCop::RakeTask.new(:rubocop) do |t, args|
+  t.patterns = [
+    'bin/*',
+    'lib/**/*.rb',
+    'spec/**/*.rb',
+  ]
+  t.requires << 'rubocop-rspec'
+end
 
-TASK_DIR = "#{__dir__}/lib/tasks"
-
-require "#{TASK_DIR}/packaging"
+task :default => [:spec, :rubocop]

@@ -1,3 +1,6 @@
+AllCops:
+  NewCops: enable
+
 # style
 Style/MultilineBlockChain:
   Enabled: false
@@ -14,3 +17,27 @@ Style/SymbolArray:
 Layout/HashAlignment:
   EnforcedColonStyle: table
   EnforcedHashRocketStyle: table
+
+# metrics
+Metrics/ModuleLength:
+  Enabled: false
+Metrics/BlockLength:
+  Enabled: false
+Metrics/MethodLength:
+  Enabled: false
+Metrics/ClassLength:
+  Enabled: false
+Metrics/CyclomaticComplexity:
+  Enabled: false
+Metrics/AbcSize:
+  Enabled: false
+
+# rspec
+RSpec/MultipleMemoizedHelpers:
+  Max: 10
+RSpec/MultipleExpectations:
+  Enabled: false
+RSpec/ExampleLength:
+  Enabled: false
+RSpec/MessageSpies:
+  EnforcedStyle: receive

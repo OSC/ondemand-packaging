@@ -7,9 +7,8 @@ ondemand.sec
 virtualenv
 stage/*
 !stage/.keep
-docker-image/mock-cache.tar.gz
 .venv/
 packages/*/deb/build
 !packages/*/deb/build/.keep
 pkg/
-build/
+*.gem
