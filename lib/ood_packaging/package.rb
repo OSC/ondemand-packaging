@@ -165,8 +165,7 @@ class OodPackaging::Package
       'SKIP_DOWNLOAD' => @config[:skip_download],
       'OOD_UID'       => Process.uid,
       'OOD_GID'       => Process.gid,
-      'DEBUG'         => debug,
-      'LC_CTYPE'      => 'en_US.UTF-8'
+      'DEBUG'         => debug
     }
     env['GPG_PUBKEY'] = '/gpg.pub' if @config[:gpg_pubkey]
     env

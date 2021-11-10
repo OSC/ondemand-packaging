@@ -152,7 +152,7 @@ class OodPackaging::Build
     sh 'rm -rf /home/ood/rpmbuild/*/*'
     if gpg_sign?
       puts "\tBootstrap GPG".blue
-      sh "echo '%_gpg_name #{ENV['GPG_NAME']}' >> ~/.rpmmacros"
+      sh "sed -i 's|@GPG_NAME@|#{ENV['GPG_NAME']}|g' ~/.rpmmacros"
       sh 'rm -f ~/.gnupg/*.gpg*'
       sh "gpg --batch --passphrase-file #{gpg_passphrase} --import #{gpg_private_key}#{cmd_suffix}"
       sh "sudo rpm --import #{ENV['GPG_PUBKEY']}#{cmd_suffix}" if ENV['GPG_PUBKEY']
@@ -246,7 +246,11 @@ class OodPackaging::Build
     puts '== GPG sign RPMs =='.blue
     rpms.each do |rpm|
       puts "\tGPG signing #{rpm}".blue
-      sh "rpmsign --addsign #{rpm}#{cmd_suffix}"
+      cmd = []
+      # Work around differences in RHEL
+      cmd.concat ['cat /dev/null | setsid'] unless build_box.dnf?
+      cmd.concat ['rpmsign', '--addsign', rpm]
+      sh "#{cmd.join(' ')}#{cmd_suffix}"
     end
   end
 

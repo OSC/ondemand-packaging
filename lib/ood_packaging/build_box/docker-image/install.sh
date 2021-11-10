@@ -21,7 +21,7 @@ header "Creating users"
 run groupadd ood
 run useradd --create-home --gid ood --password 'ood' ood
 
-header "Miscellaneous"
+header "Add sudo"
 cat > /etc/sudoers.d/ood <<EOF
 Defaults:ood !requiretty, !authenticate
 %ood ALL=NOPASSWD:ALL
@@ -30,14 +30,17 @@ run chmod 440 /etc/sudoers.d/ood
 
 if [[ "$DIST" == el* ]]; then
 	header "Setup RPM env"
-	sudo -u ood -H cat >> /home/ood/.rpmmacros <<EOF
+	sudo -u ood -H cat > /home/ood/.rpmmacros <<EOF
 %_topdir /work/$DIST
 %_signature gpg
 %_gpg_path ~/.gnupg
 %_gpg /usr/bin/gpg
+%_gpg_name @GPG_NAME@
 EOF
 	# Modified macro from /usr/lib/rpm/macros to add pinentry-mode and passphrase-file
 	# pinentry-mode only needed on EL8
+  echo "%__gpg_check_password_cmd       %{__gpg} \\" >> /home/ood/.rpmmacros
+  echo "        gpg --batch --no-verbose --passphrase-file /ondemand-packaging/.gpgpass -u \"%{_gpg_name}\" -so -" >> /home/ood/.rpmmacros
 	echo "%__gpg_sign_cmd %{__gpg} \\" >> /home/ood/.rpmmacros
 	echo "        gpg --no-verbose --no-armor --batch \\" >> /home/ood/.rpmmacros
   if [[ "$DIST" != "el7" ]]; then
@@ -51,7 +54,7 @@ EOF
 
   if [[ "$DIST" != "el7" ]]; then
   	run install -d -m 0700 -o ood -g ood /home/ood/.gnupg
-	  run echo "allow-loopback-pinentry" >> /home/ood/.gnupg/gpg-agent.conf
+	  echo "allow-loopback-pinentry" >> /home/ood/.gnupg/gpg-agent.conf
   fi  
 fi
 

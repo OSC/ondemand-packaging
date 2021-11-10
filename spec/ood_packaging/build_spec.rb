@@ -23,7 +23,6 @@ describe OodPackaging::Build do
     allow(build).to receive(:package_name).and_return('ondemand')
     allow(build).to receive(:spec_file).and_return(spec_file)
     allow(build).to receive(:work_dir).and_return(work_dir)
-    allow(build.build_box).to receive(:dnf?).and_return(true)
   end
 
   after do
@@ -49,7 +48,7 @@ describe OodPackaging::Build do
     it 'bootstraps RPM build environment' do
       allow(build).to receive(:gpg_sign?).and_return(true)
       expect(build).to receive(:sh).with('rm -rf /home/ood/rpmbuild/*/*')
-      expect(build).to receive(:sh).with("echo '%_gpg_name GPG' >> ~/.rpmmacros")
+      expect(build).to receive(:sh).with("sed -i 's|@GPG_NAME@|GPG|g' ~/.rpmmacros")
       expect(build).to receive(:sh).with('rm -f ~/.gnupg/*.gpg*')
       expected_gpg_cmd = [
         'gpg', '--batch', '--passphrase-file /ondemand-packaging/.gpgpass',
@@ -96,7 +95,6 @@ describe OodPackaging::Build do
   describe 'install_dependencies!' do
     context 'when installing on EL8' do
       it 'installs RPM dependencies using DNF' do
-        allow(build.build_box).to receive(:dnf?).and_return(true)
         expected_cmd = [
           'sudo', 'dnf', 'builddep', '-y',
           "--define 'git_tag v0.0.1-2'",
@@ -113,7 +111,6 @@ describe OodPackaging::Build do
       let(:dist) { 'el7' }
 
       it 'installs RPM dependencies using YUM' do
-        allow(build.build_box).to receive(:dnf?).and_return(false)
         expected_cmd = [
           'sudo', 'yum-builddep', '-y',
           "--define 'git_tag v0.0.1-2'",
@@ -169,6 +166,20 @@ describe OodPackaging::Build do
       expect(build).to receive(:sh).with('rpmsign --addsign /output/ondemand.rpm 2>/dev/null 1>/dev/null')
       expect(build).to receive(:sh).with('rpmsign --addsign /output/ondemand-selinux.rpm 2>/dev/null 1>/dev/null')
       build.gpg_sign!
+    end
+
+    context 'when building for EL7' do
+      let(:dist) { 'el7' }
+
+      it 'signs RPMs' do
+        expect(build).to receive(:sh).with(
+          'cat /dev/null | setsid rpmsign --addsign /output/ondemand.rpm 2>/dev/null 1>/dev/null'
+        )
+        expect(build).to receive(:sh).with(
+          'cat /dev/null | setsid rpmsign --addsign /output/ondemand-selinux.rpm 2>/dev/null 1>/dev/null'
+        )
+        build.gpg_sign!
+      end
     end
   end
 end

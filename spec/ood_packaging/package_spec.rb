@@ -53,7 +53,7 @@ describe OodPackaging::Package do
         '-e', "'DIST=el8'", '-e', "'PACKAGE=#{config[:package]}'",
         '-e', "'GPG_SIGN=false'", '-e', "'GPG_NAME=OnDemand Release Signing Key'",
         '-e', "'VERSION=0.0.1'", '-e', "'OOD_UID=1000'", '-e', "'OOD_GID=1000'",
-        '-e', "'DEBUG=false'", '-e', "'LC_CTYPE=en_US.UTF-8'",
+        '-e', "'DEBUG=false'",
         'uuid', '/ondemand-packaging/inituidgid.sh', '/ondemand-packaging/setuser.rb',
         'rake', '-q', '-f', '/ondemand-packaging/Rakefile', 'ood_packaging:package:build'
       ]
