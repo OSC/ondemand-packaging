@@ -122,7 +122,7 @@ class OodPackaging::Package
   else
     puts "Build SUCCESS: package=#{@package} dist=#{@build_box.dist}".green
   ensure
-    container_exec!(exec_attach) if attach
+    container_exec!(exec_attach, ['-i', '-t']) if attach
     container_kill! if container_running?
   end
 
@@ -150,8 +150,9 @@ class OodPackaging::Package
     sh cmd.join(' '), verbose: debug
   end
 
-  def container_exec!(exec_cmd)
-    cmd = [container_runtime, 'exec', '-i', '-t']
+  def container_exec!(exec_cmd, extra_args = [])
+    cmd = [container_runtime, 'exec']
+    cmd.concat extra_args
     container_env.each_pair do |k, v|
       cmd.concat ['-e', "'#{k}=#{v}'"] unless v.nil?
     end
