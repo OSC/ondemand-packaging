@@ -17,7 +17,7 @@ namespace :ood_packaging do
     end
 
     desc 'Save buildbox image'
-    task :push, [:dist, :path] do |_task, args|
+    task :save, [:dist, :path] do |_task, args|
       @build_box = OodPackaging::BuildBox.new(args)
       @build_box.save!(path)
     end
