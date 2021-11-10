@@ -6,18 +6,15 @@ on:
   pull_request:
 
 jobs:
-  buildbox-build-tests:
+  buildbox:
     strategy:
       fail-fast: false
       matrix:
-        os: ["ubuntu-latest"]
-        ruby: ["2.7.1"]
-        bundler: ["2.1.4"]
         dist:
           - el7
           - el8
           - ubuntu-20.04
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     name: Unit tests
     steps:
       - name: Checkout ${{ github.sha	}}
@@ -25,8 +22,61 @@ jobs:
       - name: Setup Ruby ${{ matrix.ruby }} using Bundler ${{ matrix.bundler }}
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: ${{ matrix.ruby }}
-          bundler: ${{ matrix.bundler }}
+          ruby-version: '2.7.1'
+          bundler: '2.1.4'
           bundler-cache: true
       - name: Build the build box
         run: bundle exec rake ood_packaging:buildbox:build[${{ matrix.dist }}]
+      - name: Export Docker image
+        run: bundle exec rake ood_packaging:buildbox:save[${{ matrix.dist }},/tmp/ood_packaging-${{ matrix.dist }}.tar.gz]
+      - name: Upload Docker image
+        uses: actions/upload-artifact@v2
+        with:
+          name: image-${{ matrix.dist }}
+          path: /tmp/ood_packaging-${{ matrix.dist }}.tar.gz
+  package:
+    needs: [buildbox]
+    strategy:
+      fail-fast: false
+      matrix:
+        dist:
+          - el7
+          - el8
+          - ubuntu-20.04
+        package:
+          - packages/ondemand-release|2.1
+          - packages/ondemand-release-latest|1
+          - packages/ondemand-runtime|2.1
+          - packages/passenger|6.0.11
+        exclude:
+          - dist: ubuntu-20.04
+            package: packages/ondemand-runtime|2.1
+    runs-on: ubuntu-latest
+    name: Unit tests
+    steps:
+      - name: Checkout ${{ github.sha	}}
+        uses: actions/checkout@v2
+      - name: Setup Ruby ${{ matrix.ruby }} using Bundler ${{ matrix.bundler }}
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '2.7.1'
+          bundler: '2.1.4'
+          bundler-cache: true
+      - name: Download image
+        uses: actions/download-artifact@v2
+        with:
+          name: image-${{ matrix.dist }}
+          path: /tmp
+      - name: Load image
+        run: docker load --input /tmp/ood_packaging-${{ matrix.dist }}.tar.gz
+      - name: Create tar
+        if: "startsWith(matrix.dist, 'el') != true"
+        run: |
+          package=$(echo "${{ matrix.package }}" | cut -d'|' -f1)
+          version=$(echo "${{ matrix.package }}" | cut -d'|' -f2)
+          [ -f ${package}/deb/Makefile ] && make -f ${package}/deb/Makefile tar VERSION=$version
+      - name: Build package
+        run: |
+          package=$(echo "${{ matrix.package }}" | cut -d'|' -f1)
+          version=$(echo "${{ matrix.package }}" | cut -d'|' -f2)
+          ./bin/ood_packaging -w tmp/work -o tmp/output -d ${{ matrix.dist }} -V $version --debug $(pwd)/${package}

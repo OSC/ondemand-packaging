@@ -11,6 +11,7 @@ stage/*
 packages/*/deb/build
 !packages/*/deb/build/.keep
 pkg/
+tmp/
 *.gem
 lib/ood_packaging/build_box/docker-image/Dockerfile
 lib/ood_packaging/build_box/docker-image/inituidgid.sh

@@ -18,7 +18,7 @@ describe OodPackaging::BuildBox do
     end
   end
 
-  describe 'build_cmd' do
+  describe 'build!' do
     before do
       allow(build_box).to receive(:build_gem)
     end
@@ -64,10 +64,19 @@ describe OodPackaging::BuildBox do
     end
   end
 
-  describe 'push' do
+  describe 'push!' do
     it 'executeses push image command' do
       expect(build_box).to receive(:sh).with("docker push ohiosupercomputer/ood-buildbox-el8:#{OodPackaging::VERSION}")
       build_box.push!
+    end
+  end
+
+  describe 'save!' do
+    it 'executeses push image command' do
+      expect(build_box).to receive(:sh).with(
+        "docker save ohiosupercomputer/ood-buildbox-el8:#{OodPackaging::VERSION} | gzip > /tmp/image.tar.gz"
+      )
+      build_box.save!('/tmp/image.tar.gz')
     end
   end
 end
