@@ -1,4 +1,4 @@
-name: Buildbox tests
+name: E2E tests
 
 on:
   push:
