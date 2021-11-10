@@ -141,7 +141,7 @@ class OodPackaging::Build
   end
 
   def env_dump!
-    ENV.each_pair do |k, v|
+    ENV.sort.to_h.each_pair do |k, v|
       puts "#{k}=#{v}"
     end
   end
