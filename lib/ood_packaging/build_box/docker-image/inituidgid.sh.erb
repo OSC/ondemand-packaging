@@ -1,0 +1,21 @@
+#!/bin/bash
+# Changes the '<%= ctr_user %>' user's UID and GID to the values specified
+# in $OOD_UID and $OOD_GID.
+set -e
+set -o pipefail
+if [[ "$DEBUG" == "true" ]]; then
+  set -x
+fi
+
+chown -R "$OOD_UID:$OOD_GID" <%= ctr_home %>
+groupmod -o -g "$OOD_GID" <%= ctr_user %>
+usermod -o -u "$OOD_UID" -g "$OOD_GID" <%= ctr_user %> 2>/dev/null 1>/dev/null
+
+set +e
+SCL_SOURCE="$(command -v scl_source)"
+[[ "${SCL_SOURCE}" ]] && source "${SCL_SOURCE}" enable "<%= scl_ruby %>" &> /dev/null
+set -e
+
+if [[ $# -gt 0 ]]; then
+	exec "$@"
+fi

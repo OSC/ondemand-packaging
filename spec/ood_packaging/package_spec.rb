@@ -54,7 +54,7 @@ describe OodPackaging::Package do
         '-e', "'GPG_SIGN=false'", '-e', "'GPG_NAME=OnDemand Release Signing Key'",
         '-e', "'VERSION=0.0.1'", '-e', "'OOD_UID=1000'", '-e', "'OOD_GID=1000'",
         '-e', "'DEBUG=false'",
-        'uuid', '/ondemand-packaging/inituidgid.sh', '/ondemand-packaging/setuser.rb',
+        'uuid', '/ondemand-packaging/inituidgid.sh', '/ondemand-packaging/setuser.rb', 'ood',
         'rake', '-q', '-f', '/ondemand-packaging/Rakefile', 'ood_packaging:package:build'
       ]
       expect(package).to receive(:sh).with(expected_command.join(' '), verbose: false)

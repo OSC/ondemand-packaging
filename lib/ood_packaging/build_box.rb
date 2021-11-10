@@ -91,12 +91,13 @@ class OodPackaging::BuildBox
     file
   end
 
-  def install_script
+  def scripts
+    template_file('build_box/docker-image/inituidgid.sh.erb')
     template_file('build_box/docker-image/install.sh.erb')
   end
 
   def build!
-    install_script
+    scripts
     cmd = [container_runtime, 'build']
     cmd.concat ['--tag', image_tag]
     cmd.concat [ENV['OOD_PACKAGING_BUILD_BOX_ARGS']] if ENV['OOD_PACKAGING_BUILD_BOX_ARGS']

@@ -38,6 +38,14 @@ module OodPackaging::Utils
     dest
   end
 
+  def ruby_version
+    '2.7'
+  end
+
+  def scl_ruby
+    "rh-ruby#{ruby_version.tr('.', '')}"
+  end
+
   def ctr_scripts_dir
     '/ondemand-packaging'
   end
@@ -55,6 +63,14 @@ module OodPackaging::Utils
   end
 
   def ctr_home
-    "/home/#{ctr_user}"
+    File.join('/home', ctr_user)
+  end
+
+  def ctr_rpmmacros
+    File.join(ctr_home, '.rpmmacros')
+  end
+
+  def ctr_gpg_dir
+    File.join(ctr_home, '.gnupg')
   end
 end

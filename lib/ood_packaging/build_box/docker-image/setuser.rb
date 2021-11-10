@@ -3,13 +3,14 @@
 
 require 'etc'
 
-user = Etc.getpwnam('ood')
+username = ARGV[0]
+user = Etc.getpwnam(username)
 
-Process.initgroups('ood', user.gid)
+Process.initgroups(username, user.gid)
 Process::Sys.setgid(user.gid)
 Process::Sys.setuid(user.uid)
 
 ENV['USER'] = user.name
 ENV['HOME'] = user.dir
 
-exec(ARGV.join(' '))
+exec(ARGV.drop(1).join(' '))

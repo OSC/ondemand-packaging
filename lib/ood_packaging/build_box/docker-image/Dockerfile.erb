@@ -5,7 +5,7 @@ ENV LC_CTYPE=en_US.UTF-8
 <% if dist == 'el7' -%>
 RUN yum update -y && yum clean all && rm -rf /var/cache/yum/*
 RUN yum install -y yum-utils epel-release centos-release-scl && yum clean all && rm -rf /var/cache/yum/*
-RUN yum install -y rh-ruby27-ruby sudo which wget \
+RUN yum install -y <%= scl_ruby %>-ruby sudo which wget \
     rpm-build rpmdevtools rpm-sign scl-utils-build && \
     yum clean all && rm -rf /var/cache/yum/*
 RUN yum install -y <%= ondemand_repo_url %> && \
@@ -16,7 +16,7 @@ RUN yum install -y <%= ondemand_repo_url %> && \
 RUN dnf update -y && dnf clean all && rm -rf /var/cache/dnf/*
 RUN dnf install -y dnf-utils epel-release langpacks-en glibc-all-langpacks && dnf clean all && rm -rf /var/cache/dnf/*
 RUN dnf config-manager --set-enabled powertools && dnf clean all && rm -rf /var/cache/dnf/*
-RUN dnf module enable -y ruby:2.7 && dnf clean all && rm -rf /var/cache/dnf/*
+RUN dnf module enable -y ruby:<%= ruby_version %> && dnf clean all && rm -rf /var/cache/dnf/*
 RUN dnf install -y ruby sudo which wget \
     rpm-build rpmdevtools rpm-sign scl-utils-build && \
     dnf clean all && rm -rf /var/cache/dnf/*

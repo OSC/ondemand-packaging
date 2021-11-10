@@ -149,11 +149,11 @@ class OodPackaging::Build
   def bootstrap_rpm!
     puts '== Bootstrap RPM =='.blue
     puts "\tClean build environment".blue
-    sh 'rm -rf /home/ood/rpmbuild/*/*'
+    sh "rm -rf #{work_dir}/*"
     if gpg_sign?
       puts "\tBootstrap GPG".blue
-      sh "sed -i 's|@GPG_NAME@|#{ENV['GPG_NAME']}|g' ~/.rpmmacros"
-      sh 'rm -f ~/.gnupg/*.gpg*'
+      sh "sed -i 's|@GPG_NAME@|#{ENV['GPG_NAME']}|g' #{ctr_rpmmacros}"
+      sh "rm -f #{ctr_gpg_dir}/*.gpg*"
       sh "gpg --batch --passphrase-file #{gpg_passphrase} --import #{gpg_private_key}#{cmd_suffix}"
       sh "sudo rpm --import #{ENV['GPG_PUBKEY']}#{cmd_suffix}" if ENV['GPG_PUBKEY']
     end

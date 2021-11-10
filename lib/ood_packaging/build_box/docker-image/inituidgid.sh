@@ -1,5 +1,5 @@
 #!/bin/bash
-# Changes the 'app' user's UID and GID to the values specified
+# Changes the 'ood' user's UID and GID to the values specified
 # in $OOD_UID and $OOD_GID.
 set -e
 set -o pipefail

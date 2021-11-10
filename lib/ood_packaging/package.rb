@@ -70,14 +70,18 @@ class OodPackaging::Package
   end
 
   def exec_launchers
-    ['/ondemand-packaging/inituidgid.sh', '/ondemand-packaging/setuser.rb']
+    [
+      File.join(ctr_scripts_dir, 'inituidgid.sh'),
+      File.join(ctr_scripts_dir, 'setuser.rb'),
+      ctr_user
+    ]
   end
 
   def exec_rake
     cmd = exec_launchers
     cmd.concat ['rake']
     cmd.concat ['-q'] unless debug
-    cmd.concat ['-f', '/ondemand-packaging/Rakefile', 'ood_packaging:package:build']
+    cmd.concat ['-f', File.join(ctr_scripts_dir, 'Rakefile'), 'ood_packaging:package:build']
     cmd
   end
 

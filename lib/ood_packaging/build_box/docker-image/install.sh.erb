@@ -16,48 +16,48 @@ function run()
 export HOME=/root
 
 header "Creating users"
-run groupadd ood
-run useradd --create-home --gid ood --password 'ood' ood
+run groupadd <%= ctr_user %>
+run useradd --home-dir <%= ctr_home %> --create-home --gid <%= ctr_user %> --password '<%= ctr_user %>' <%= ctr_user %>
 
 header "Add sudo"
 cat > /etc/sudoers.d/ood <<EOF
-Defaults:ood !requiretty, !authenticate
-%ood ALL=NOPASSWD:ALL
+Defaults:<%= ctr_user %> !requiretty, !authenticate
+%<%= ctr_user %> ALL=NOPASSWD:ALL
 EOF
 run chmod 440 /etc/sudoers.d/ood
 
 <% if rpm? -%>
 header "Setup RPM env"
-sudo -u ood -H cat > /home/ood/.rpmmacros <<EOF
+sudo -u <%= ctr_user %> -H cat > <%= ctr_rpmmacros %> <<EOF
 %_topdir /work/<%= dist %>
 %_signature gpg
-%_gpg_path ~/.gnupg
+%_gpg_path <%= ctr_gpg_dir %>
 %_gpg /usr/bin/gpg
 %_gpg_name @GPG_NAME@
-EOF
 # Modified macro from /usr/lib/rpm/macros to add pinentry-mode and passphrase-file
 # pinentry-mode only needed on EL8
-echo "%__gpg_check_password_cmd       %{__gpg} \\" >> /home/ood/.rpmmacros
-echo "        gpg --batch --no-verbose --passphrase-file <%= gpg_passphrase %> -u \"%{_gpg_name}\" -so -" >> /home/ood/.rpmmacros
-echo "%__gpg_sign_cmd %{__gpg} \\" >> /home/ood/.rpmmacros
-echo "        gpg --no-verbose --no-armor --batch \\" >> /home/ood/.rpmmacros
+%__gpg_check_password_cmd       %{__gpg} \\
+        gpg --batch --no-verbose --passphrase-file <%= gpg_passphrase %> -u "%{_gpg_name}" -so -
+%__gpg_sign_cmd %{__gpg} \\
+        gpg --no-verbose --no-armor --batch \\
 <%- if dnf? -%>
-	echo "        --pinentry-mode loopback \\" >> /home/ood/.rpmmacros
+        --pinentry-mode loopback \\
 <%- end -%>
-echo "        --passphrase-file <%= gpg_passphrase %> \\" >> /home/ood/.rpmmacros
-echo "        %{?_gpg_sign_cmd_extra_args:%{_gpg_sign_cmd_extra_args}} \\" >> /home/ood/.rpmmacros
-echo "        %{?_gpg_digest_algo:--digest-algo %{_gpg_digest_algo}} \\" >> /home/ood/.rpmmacros
-echo "	      --no-secmem-warning \\" >> /home/ood/.rpmmacros
-echo "        -u \"%{_gpg_name}\" -sbo %{__signature_filename} %{__plaintext_filename}" >> /home/ood/.rpmmacros
+        --passphrase-file <%= gpg_passphrase %> \\
+        %{?_gpg_sign_cmd_extra_args:%{_gpg_sign_cmd_extra_args}} \\
+        %{?_gpg_digest_algo:--digest-algo %{_gpg_digest_algo}} \\
+	      --no-secmem-warning \\
+        -u \"%{_gpg_name}\" -sbo %{__signature_filename} %{__plaintext_filename}
+EOF
 <% end -%>
 <%- if dnf? -%>
-run install -d -m 0700 -o ood -g ood /home/ood/.gnupg
-echo "allow-loopback-pinentry" >> /home/ood/.gnupg/gpg-agent.conf
+run install -d -m 0700 -o ood -g ood <%= ctr_gpg_dir %>
+echo "allow-loopback-pinentry" >> <%= ctr_gpg_dir %>/gpg-agent.conf
 <%- end -%>
 
 header "Install ood_packaging gem"
 <%- if rpm? && !dnf? -%>
-run scl enable rh-ruby27 -- gem install --no-doc /build/*.gem
+run scl enable <%= scl_ruby %> -- gem install --no-doc /build/*.gem
 <%- else -%>
 run gem install --no-doc /build/*.gem
 <%- end -%>
