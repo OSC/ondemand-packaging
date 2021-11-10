@@ -9,7 +9,7 @@ module OodPackaging::Utils
   end
 
   def podman_runtime?
-    @podman_runtime ||= ENV['CONTAINER_RT'] == 'podman'
+    @podman_runtime ||= ENV['CONTAINER_RT'] == 'podman' || ENV['container'] == 'podman'
   end
 
   def docker_runtime?
@@ -24,7 +24,7 @@ module OodPackaging::Utils
     if podman_runtime?
       # SELinux doesn't like it if you're mounting from $HOME
       [
-        '--security-opt', 'label=disable', '--userns=keep-id'
+        '--security-opt', 'label=disable'
       ]
     else
       ['--privileged']

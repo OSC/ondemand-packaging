@@ -157,6 +157,11 @@ class OodPackaging::Build
       sh "gpg --batch --passphrase-file #{gpg_passphrase} --import #{gpg_private_key}#{cmd_suffix}"
       sh "sudo rpm --import #{ENV['GPG_PUBKEY']}#{cmd_suffix}" if ENV['GPG_PUBKEY']
     end
+    if podman_runtime?
+      puts "\tBootstrap /root".blue
+      sh "cp -r #{ctr_rpmmacros} #{ctr_gpg_dir} /root/"
+      sh "sed -i 's|/home/ood|/root|g' /root/.rpmmacros"
+    end
     puts "\tBootstrap work dir".blue
     sh "rpmdev-setuptree#{cmd_suffix}"
     puts "\tCopy sources".blue

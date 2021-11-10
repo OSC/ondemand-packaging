@@ -85,7 +85,8 @@ class OodPackaging::Package
 
   def exec_rake
     cmd = []
-    cmd.concat exec_launchers
+    cmd.concat exec_launchers if docker_runtime?
+    cmd.concat ['scl', 'enable', scl_ruby, '--'] if podman_runtime? && build_box.scl?
     cmd.concat ['rake']
     cmd.concat ['-q'] unless debug
     cmd.concat ['-f', File.join(ctr_scripts_dir, 'Rakefile'), 'ood_packaging:package:build']
@@ -94,7 +95,7 @@ class OodPackaging::Package
 
   def exec_attach
     cmd = []
-    cmd.concat exec_launchers
+    cmd.concat exec_launchers if docker_runtime?
     cmd.concat ['/bin/bash']
     cmd
   end
