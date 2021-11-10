@@ -23,9 +23,11 @@ module OodPackaging::Utils
   def rt_specific_flags
     if podman_runtime?
       # SELinux doesn't like it if you're mounting from $HOME
-      ['--security-opt', 'label=disable', '--userns=keep-id']
+      [
+        '--security-opt', 'label=disable', '--userns=keep-id'
+      ]
     else
-      []
+      ['--privileged']
     end
   end
 

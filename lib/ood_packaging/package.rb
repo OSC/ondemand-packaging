@@ -84,7 +84,8 @@ class OodPackaging::Package
   end
 
   def exec_rake
-    cmd = exec_launchers
+    cmd = []
+    cmd.concat exec_launchers
     cmd.concat ['rake']
     cmd.concat ['-q'] unless debug
     cmd.concat ['-f', File.join(ctr_scripts_dir, 'Rakefile'), 'ood_packaging:package:build']
@@ -92,7 +93,8 @@ class OodPackaging::Package
   end
 
   def exec_attach
-    cmd = exec_launchers
+    cmd = []
+    cmd.concat exec_launchers
     cmd.concat ['/bin/bash']
     cmd
   end
@@ -131,7 +133,6 @@ class OodPackaging::Package
   def container_start!
     cmd = [container_runtime, 'run', '--detach', '--rm']
     cmd.concat ['--name', container_name]
-    cmd.concat ['--privileged', '--cap-add=SYS_ADMIN']
     cmd.concat rt_specific_flags
     cmd.concat ['-v', "#{@package}:/package:ro"]
     cmd.concat ['-v', "#{@config[:gpg_pubkey]}:/gpg.pub:ro"] if @config[:gpg_pubkey]
@@ -141,7 +142,8 @@ class OodPackaging::Package
       cmd.concat ['-v', "#{gpg_files.private_key}:#{gpg_private_key}:ro"]
       cmd.concat ['-v', "#{gpg_files.passphrase}:#{gpg_passphrase}:ro"]
     end
-    cmd.concat [@build_box.image_tag, container_init]
+    cmd.concat [@build_box.image_tag]
+    cmd.concat [container_init]
     cmd.concat ['1>/dev/null'] unless debug
     puts "Starting container #{container_name} using image #{@build_box.image_tag}".blue
     sh cmd.join(' '), verbose: debug

@@ -34,6 +34,12 @@ class OodPackaging::BuildBox
     true
   end
 
+  def scl?
+    return true if dist == 'el7'
+
+    false
+  end
+
   def package_manager
     return 'apt' if deb?
     return 'dnf' if dnf?
