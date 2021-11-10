@@ -22,9 +22,7 @@ class OodPackaging::Package
     @build_box = OodPackaging::BuildBox.new(config)
     @package = config[:package]
     @version = config[:version]
-    @work_dir = config[:work_dir]
     @clean_work_dir = config[:clean_work_dir].nil? ? true : config[:clean_work_dir]
-    @output_dir = config[:output_dir]
     @clean_output_dir = config[:clean_output_dir].nil? ? true : config[:clean_output_dir]
     @gpg_name = @config[:gpg_name].nil? ? 'OnDemand Release Signing Key' : @config[:gpg_name]
     raise ArgumentError, 'Package is required' if @package.nil?
@@ -43,6 +41,14 @@ class OodPackaging::Package
 
   def attach
     @config[:attach].nil? ? false : @config[:attach]
+  end
+
+  def work_dir
+    @work_dir ||= File.expand_path(@config[:work_dir])
+  end
+
+  def output_dir
+    @output_dir ||= File.expand_path(@config[:output_dir])
   end
 
   def gpg_files
@@ -92,13 +98,13 @@ class OodPackaging::Package
   end
 
   def clean!
-    sh "rm -rf #{@work_dir}", verbose: debug if @clean_work_dir
-    sh "rm -rf #{@output_dir}", verbose: debug if @clean_output_dir
+    sh "rm -rf #{work_dir}", verbose: debug if @clean_work_dir
+    sh "rm -rf #{output_dir}", verbose: debug if @clean_output_dir
   end
 
   def bootstrap!
-    sh "mkdir -p #{@work_dir}", verbose: debug
-    sh "mkdir -p #{@output_dir}", verbose: debug
+    sh "mkdir -p #{work_dir}", verbose: debug
+    sh "mkdir -p #{output_dir}", verbose: debug
   end
 
   def run!
@@ -129,8 +135,8 @@ class OodPackaging::Package
     cmd.concat rt_specific_flags
     cmd.concat ['-v', "#{@package}:/package:ro"]
     cmd.concat ['-v', "#{@config[:gpg_pubkey]}:/gpg.pub:ro"] if @config[:gpg_pubkey]
-    cmd.concat ['-v', "#{@work_dir}:/work"]
-    cmd.concat ['-v', "#{@output_dir}:/output"]
+    cmd.concat ['-v', "#{work_dir}:/work"]
+    cmd.concat ['-v', "#{output_dir}:/output"]
     if gpg_sign
       cmd.concat ['-v', "#{gpg_files.private_key}:#{gpg_private_key}:ro"]
       cmd.concat ['-v', "#{gpg_files.passphrase}:#{gpg_passphrase}:ro"]
