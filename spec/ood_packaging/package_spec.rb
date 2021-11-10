@@ -36,7 +36,7 @@ describe OodPackaging::Package do
     it 'runs container' do
       expected_command = [
         'docker', 'run', '--detach', '--rm',
-        '--name', 'uuid', '--privileged',
+        '--name', 'uuid', '--privileged', '--tty',
         '-v', "#{config[:package]}:/package:ro",
         '-v', "#{config[:work_dir]}:/work", '-v', "#{config[:output_dir]}:/output",
         'image-tag', '/sbin/init', '1>/dev/null'
