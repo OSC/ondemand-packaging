@@ -15,7 +15,7 @@ jobs:
           - el8
           - ubuntu-20.04
     runs-on: ubuntu-latest
-    name: Unit tests
+    name: Buildbox tests
     steps:
       - name: Checkout ${{ github.sha	}}
         uses: actions/checkout@v2
@@ -52,7 +52,7 @@ jobs:
           - dist: ubuntu-20.04
             package: packages/ondemand-runtime|2.1
     runs-on: ubuntu-latest
-    name: Unit tests
+    name: Package tests
     steps:
       - name: Checkout ${{ github.sha	}}
         uses: actions/checkout@v2
