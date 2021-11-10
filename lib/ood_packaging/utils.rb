@@ -27,7 +27,7 @@ module OodPackaging::Utils
         '--security-opt', 'label=disable'
       ]
     else
-      ['--privileged']
+      ['--privileged', '--tty']
     end
   end
 
