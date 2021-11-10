@@ -40,4 +40,4 @@ RUN wget -O /tmp/ondemand-release-web.deb <%= ondemand_repo_url %> && \
     apt clean all -y
 <% end -%>
 COPY . /build
-RUN /build/install.sh <%= dist %>
+RUN /bin/bash /build/install.sh

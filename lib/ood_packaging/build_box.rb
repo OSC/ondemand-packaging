@@ -86,10 +86,17 @@ class OodPackaging::BuildBox
   end
 
   def dockerfile
-    template_file('build_box/docker-image/Dockerfile.erb')
+    file = template_file('build_box/docker-image/Dockerfile.erb')
+    puts "DEBUG dockerfile=#{file}"
+    file
+  end
+
+  def install_script
+    template_file('build_box/docker-image/install.sh.erb')
   end
 
   def build!
+    install_script
     cmd = [container_runtime, 'build']
     cmd.concat ['--tag', image_tag]
     cmd.concat [ENV['OOD_PACKAGING_BUILD_BOX_ARGS']] if ENV['OOD_PACKAGING_BUILD_BOX_ARGS']

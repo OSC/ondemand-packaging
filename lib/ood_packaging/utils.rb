@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'erb'
-require 'tempfile'
 
 # Shared utility functions
 module OodPackaging::Utils
@@ -32,23 +31,30 @@ module OodPackaging::Utils
 
   def template_file(filename)
     cwd = File.expand_path(__dir__).to_s
-    content = File.read(File.join(cwd, filename))
-    content = ERB.new(content, nil, '-').result(binding)
+    src = File.join(cwd, filename)
+    dest = File.join(cwd, filename.gsub('.erb', ''))
+    content = ERB.new(File.read(src), nil, '-').result(binding)
+    File.open(dest, 'w') { |f| f.write(content) }
+    dest
+  end
 
-    begin
-      t = Tempfile.new('ood_packaging')
-      t.write(content)
-      t.path
-    ensure
-      t.close
-    end
+  def ctr_scripts_dir
+    '/ondemand-packaging'
   end
 
   def gpg_private_key
-    '/ondemand-packaging/ondemand.sec'
+    File.join(ctr_scripts_dir, 'ondemand.sec')
   end
 
   def gpg_passphrase
-    '/ondemand-packaging/.gpgpass'
+    File.join(ctr_scripts_dir, '.gpgpass')
+  end
+
+  def ctr_user
+    'ood'
+  end
+
+  def ctr_home
+    "/home/#{ctr_user}"
   end
 end
