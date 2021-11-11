@@ -153,7 +153,6 @@ class OodPackaging::Build
     if gpg_sign?
       puts "\tBootstrap GPG".blue
       sh "sed -i 's|@GPG_NAME@|#{ENV['GPG_NAME']}|g' #{ctr_rpmmacros}"
-      sh "rm -f #{ctr_gpg_dir}/*.gpg*"
       sh "gpg --batch --passphrase-file #{gpg_passphrase} --import #{gpg_private_key}#{cmd_suffix}"
       sh "sudo rpm --import #{ENV['GPG_PUBKEY']}#{cmd_suffix}" if ENV['GPG_PUBKEY']
     end
@@ -219,7 +218,7 @@ class OodPackaging::Build
   def rpmbuild!
     puts "== RPM build spec=#{spec_file} ==".blue
     cmd = ['rpmbuild', '-ba']
-    cmd.concat ['-vv'] if debug?
+    cmd.concat rpm_defines
     cmd.concat [spec_file]
     sh "#{cmd.join(' ')}#{cmd_suffix}"
   end

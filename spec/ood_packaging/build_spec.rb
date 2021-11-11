@@ -49,7 +49,6 @@ describe OodPackaging::Build do
       allow(build).to receive(:gpg_sign?).and_return(true)
       expect(build).to receive(:sh).with("rm -rf #{work_dir}/*")
       expect(build).to receive(:sh).with("sed -i 's|@GPG_NAME@|GPG|g' /home/ood/.rpmmacros")
-      expect(build).to receive(:sh).with('rm -f /home/ood/.gnupg/*.gpg*')
       expected_gpg_cmd = [
         'gpg', '--batch', '--passphrase-file /ondemand-packaging/.gpgpass',
         '--import /ondemand-packaging/ondemand.sec', '2>/dev/null 1>/dev/null'
@@ -141,7 +140,13 @@ describe OodPackaging::Build do
 
   describe 'rpmbuild!' do
     it 'executes rpmbuild command' do
-      expected_cmd = ['rpmbuild', '-ba', spec_file, '2>/dev/null 1>/dev/null']
+      expected_cmd = [
+        'rpmbuild', '-ba',
+        '--define', "'git_tag v0.0.1-2'",
+        '--define', "'package_version 0.0.1'",
+        '--define', "'package_release 2'",
+        spec_file, '2>/dev/null 1>/dev/null'
+      ]
       expect(build).to receive(:sh).with(expected_cmd.join(' '))
       build.rpmbuild!
     end
