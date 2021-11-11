@@ -62,7 +62,7 @@ describe OodPackaging::Package do
     it 'execs container with Rake' do
       expected_command = [
         'docker', 'exec',
-        '-e', "'DIST=el8'", '-e', "'PACKAGE=#{config[:package]}'",
+        '-e', "'DIST=el8'", '-e', "'PACKAGE=package'",
         '-e', "'GPG_SIGN=false'", '-e', "'GPG_NAME=OnDemand Release Signing Key'",
         '-e', "'VERSION=0.0.1'", '-e', "'OOD_UID=1000'", '-e', "'OOD_GID=1000'",
         '-e', "'DEBUG=false'",

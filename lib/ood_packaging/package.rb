@@ -193,7 +193,7 @@ class OodPackaging::Package
   def container_env
     env = {
       'DIST'          => build_box.dist,
-      'PACKAGE'       => package,
+      'PACKAGE'       => package_name,
       'GPG_SIGN'      => gpg_sign,
       'GPG_NAME'      => gpg_name,
       'VERSION'       => version,
