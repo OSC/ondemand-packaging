@@ -15,6 +15,18 @@ function run()
 
 export HOME=/root
 
+<% if rpm? -%>
+header "Add OnDemand build repo"
+cat > /etc/yum.repos.d/ondemand-web.repo <<EOF
+[ondemand-web]
+name=Open OnDemand Web Repo
+baseurl=https://yum.osc.edu/ondemand/build/<%= ondemand_repo_version %>/web/el\$releasever/\$basearch/
+enabled=1
+gpgcheck=0
+EOF
+run rpm --import /build/RPM-GPG-KEY-ondemand
+<% end -%>
+
 header "Creating users"
 run groupadd <%= ctr_user %>
 run useradd --home-dir <%= ctr_home %> --create-home --gid <%= ctr_user %> --password '<%= ctr_user %>' <%= ctr_user %>

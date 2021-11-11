@@ -8,10 +8,6 @@ RUN yum install -y yum-utils epel-release centos-release-scl && yum clean all &&
 RUN yum install -y <%= scl_ruby %>-ruby sudo which wget \
     rpm-build rpmdevtools rpm-sign scl-utils-build && \
     yum clean all && rm -rf /var/cache/yum/*
-RUN yum install -y <%= ondemand_repo_url %> && \
-    sed -i 's|/latest/|<%= ondemand_build_repo %>|g' /etc/yum.repos.d/ondemand-web.repo && \
-    rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-ondemand && \
-    yum clean all && rm -rf /var/cache/yum/*
 <% elsif dist =~ /^el/ -%>
 RUN dnf update -y && dnf clean all && rm -rf /var/cache/dnf/*
 RUN dnf install -y dnf-utils epel-release langpacks-en glibc-all-langpacks && dnf clean all && rm -rf /var/cache/dnf/*
@@ -19,10 +15,6 @@ RUN dnf config-manager --set-enabled powertools && dnf clean all && rm -rf /var/
 RUN dnf module enable -y ruby:<%= ruby_version %> && dnf clean all && rm -rf /var/cache/dnf/*
 RUN dnf install -y ruby sudo which wget \
     rpm-build rpmdevtools rpm-sign scl-utils-build && \
-    dnf clean all && rm -rf /var/cache/dnf/*
-RUN dnf install -y <%= ondemand_repo_url %> && \
-    sed -i 's|/latest/|<%= ondemand_build_repo %>|g' /etc/yum.repos.d/ondemand-web.repo && \
-    rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-ondemand && \
     dnf clean all && rm -rf /var/cache/dnf/*
 <% elsif dist =~ /^ubuntu|debian/ -%>
 ENV DEBIAN_FRONTEND=noninteractive
@@ -32,11 +24,6 @@ RUN apt update -y && apt install -y locales && locale-gen $LANG && \
 RUN apt update -y && apt install -y init debhelper devscripts dh-make build-essential lintian equivs \
     sudo rake wget curl ruby && \
     ln -snf /bin/bundle2.7 /bin/bundle && \
-    apt clean all -y
-RUN wget -O /tmp/ondemand-release-web.deb <%= ondemand_repo_url %> && \
-    apt update -y && apt install -y /tmp/ondemand-release-web.deb && rm -f /tmp/ondemand-release-web.deb && \
-    sed -i 's|/latest/|<%= ondemand_build_repo %>|g' /etc/apt/sources.list.d/ondemand-web.list && \
-    apt update -y && \
     apt clean all -y
 <% end -%>
 COPY . /build

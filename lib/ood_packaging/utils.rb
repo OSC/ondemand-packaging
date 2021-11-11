@@ -40,6 +40,10 @@ module OodPackaging::Utils
     dest
   end
 
+  def ondemand_repo_version
+    '2.1'
+  end
+
   def ruby_version
     '2.7'
   end

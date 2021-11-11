@@ -47,15 +47,6 @@ class OodPackaging::BuildBox
     'yum'
   end
 
-  def ondemand_repo_url
-    return 'https://yum.osc.edu/ondemand/latest/ondemand-release-web-latest-1-6.noarch.rpm' if rpm?
-    return 'https://yum.osc.edu/ondemand/latest/ondemand-release-web-latest_1_all.deb' if deb?
-  end
-
-  def ondemand_build_repo
-    '/build/2.1/'
-  end
-
   def base_image
     @base_image ||= {
       'el7'          => 'centos:7',
