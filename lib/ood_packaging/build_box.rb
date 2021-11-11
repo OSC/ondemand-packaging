@@ -83,9 +83,7 @@ class OodPackaging::BuildBox
   end
 
   def dockerfile
-    file = template_file('build_box/docker-image/Dockerfile.erb')
-    puts "DEBUG dockerfile=#{file}"
-    file
+    template_file('build_box/docker-image/Dockerfile.erb')
   end
 
   def scripts
