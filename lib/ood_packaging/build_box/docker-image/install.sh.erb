@@ -42,6 +42,10 @@ run chmod 440 /etc/sudoers.d/ood
 header "Setup RPM env"
 sudo -u <%= ctr_user %> -H cat > <%= ctr_rpmmacros %> <<EOF
 %_topdir /work/<%= dist %>
+<%- # Workaround to weird issue with debuginfo stripping -%>
+<% if dist == 'el7' -%>
+%_builddir %{_topdir}/rpmbuild/BUILD
+<% end -%>
 %_signature gpg
 %_gpg_path <%= ctr_gpg_dir %>
 %_gpg /usr/bin/gpg
