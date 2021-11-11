@@ -20,15 +20,12 @@ class OodPackaging::Package
   def initialize(config = {})
     @config = config
     @build_box = OodPackaging::BuildBox.new(config)
-    @package = config[:package]
-    @version = config[:version]
     @clean_work_dir = config[:clean_work_dir].nil? ? true : config[:clean_work_dir]
     @clean_output_dir = config[:clean_output_dir].nil? ? true : config[:clean_output_dir]
-    @gpg_name = @config[:gpg_name].nil? ? 'OnDemand Release Signing Key' : @config[:gpg_name]
-    raise ArgumentError, 'Package is required' if @package.nil?
-    raise ArgumentError, 'Version is required' if @version.nil?
-    raise ArgumentError, "Package #{@package} is not a directory" unless Dir.exist?(@package)
-    raise ArgumentError, "Package #{@package} is not an absolute path" unless (Pathname.new @package).absolute?
+    raise ArgumentError, 'Package is required' if package.nil?
+    raise ArgumentError, 'Version is required' if version.nil?
+    raise ArgumentError, "Package #{package} is not a directory" unless Dir.exist?(package)
+    raise ArgumentError, "Package #{package} is not an absolute path" unless (Pathname.new package).absolute?
   end
 
   def container_name
@@ -51,10 +48,30 @@ class OodPackaging::Package
     @output_dir ||= File.expand_path(@config[:output_dir])
   end
 
+  def package
+    @config[:package]
+  end
+
+  def version
+    @config[:version]
+  end
+
+  def package_name
+    name = File.basename(package)
+    if name =~ /deb|rpm/
+      name = if File.basename(File.dirname(package)) == 'packages'
+               File.basename(File.dirname(File.dirname(package)))
+             else
+               File.basename(File.dirname(package))
+             end
+    end
+    name
+  end
+
   def gpg_files
     [
       OpenStruct.new(private_key: File.join(proj_root, 'ondemand.sec'), passphrase: File.join(proj_root, '.gpgpass')),
-      OpenStruct.new(private_key: File.join(@package, 'ondemand.sec'), passphrase: File.join(@package, '.gpgpass')),
+      OpenStruct.new(private_key: File.join(package, 'ondemand.sec'), passphrase: File.join(package, '.gpgpass')),
       OpenStruct.new(private_key: @config[:gpg_private_key], passphrase: @config[:gpg_passphrase]),
       OpenStruct.new(private_key: ENV['OOD_PACKAGING_GPG_PRIVATE_KEY'],
                      passphrase:  ENV['OOD_PACKAGING_GPG_PASSPHRASE'])
@@ -69,6 +86,10 @@ class OodPackaging::Package
     return false if @config[:gpg_sign] == false
 
     !gpg_files.nil?
+  end
+
+  def gpg_name
+    @config[:gpg_name].nil? ? 'OnDemand Release Signing Key' : @config[:gpg_name]
   end
 
   def container_init
@@ -117,10 +138,10 @@ class OodPackaging::Package
     container_exec!(exec_rake)
   rescue RuntimeError
     # ret = 1
-    puts "Build FAILED package=#{@package} dist=#{@build_box.dist}".red
+    puts "Build FAILED package=#{package} dist=#{build_box.dist}".red
     raise
   else
-    puts "Build SUCCESS: package=#{@package} dist=#{@build_box.dist}".green
+    puts "Build SUCCESS: package=#{package} dist=#{build_box.dist}".green
   ensure
     container_exec!(exec_attach, ['-i', '-t']) if attach
     container_kill! if container_running?
@@ -135,7 +156,7 @@ class OodPackaging::Package
     cmd = [container_runtime, 'run', '--detach', '--rm']
     cmd.concat ['--name', container_name]
     cmd.concat rt_specific_flags
-    cmd.concat ['-v', "#{@package}:/package:ro"]
+    cmd.concat ['-v', "#{package}:/package:ro"]
     cmd.concat ['-v', "#{@config[:gpg_pubkey]}:/gpg.pub:ro"] if @config[:gpg_pubkey]
     cmd.concat ['-v', "#{work_dir}:/work"]
     cmd.concat ['-v', "#{output_dir}:/output"]
@@ -143,10 +164,10 @@ class OodPackaging::Package
       cmd.concat ['-v', "#{gpg_files.private_key}:#{gpg_private_key}:ro"]
       cmd.concat ['-v', "#{gpg_files.passphrase}:#{gpg_passphrase}:ro"]
     end
-    cmd.concat [@build_box.image_tag]
+    cmd.concat [build_box.image_tag]
     cmd.concat [container_init]
     cmd.concat ['1>/dev/null'] unless debug
-    puts "Starting container #{container_name} using image #{@build_box.image_tag}".blue
+    puts "Starting container #{container_name} using image #{build_box.image_tag}".blue
     sh cmd.join(' '), verbose: debug
   end
 
@@ -158,7 +179,7 @@ class OodPackaging::Package
     end
     cmd.concat [container_name]
     cmd.concat exec_cmd
-    puts "Build STARTED: package=#{@package} dist=#{@build_box.dist} exec=#{exec_cmd[-1]}".blue
+    puts "Build STARTED: package=#{package} dist=#{build_box.dist} exec=#{exec_cmd[-1]}".blue
     sh cmd.join(' '), verbose: debug
   end
 
@@ -171,11 +192,11 @@ class OodPackaging::Package
 
   def container_env
     env = {
-      'DIST'          => @build_box.dist,
-      'PACKAGE'       => @package,
+      'DIST'          => build_box.dist,
+      'PACKAGE'       => package,
       'GPG_SIGN'      => gpg_sign,
-      'GPG_NAME'      => @gpg_name,
-      'VERSION'       => @version,
+      'GPG_NAME'      => gpg_name,
+      'VERSION'       => version,
       'SKIP_DOWNLOAD' => @config[:skip_download],
       'OOD_UID'       => Process.uid,
       'OOD_GID'       => Process.gid,

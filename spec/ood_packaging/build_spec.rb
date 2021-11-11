@@ -20,7 +20,7 @@ describe OodPackaging::Build do
     FileUtils.mkdir_p(work_dir)
     FileUtils.mkdir_p(package_dir)
     allow(build).to receive(:dist).and_return('el8')
-    allow(build).to receive(:package_name).and_return('ondemand')
+    allow(build).to receive(:package).and_return('ondemand')
     allow(build).to receive(:spec_file).and_return(spec_file)
     allow(build).to receive(:work_dir).and_return(work_dir)
   end
@@ -30,18 +30,6 @@ describe OodPackaging::Build do
     ENV.delete('VERSION')
     ENV.delete('GPG_NAME')
     FileUtils.remove_entry(tmp)
-  end
-
-  describe 'package_name' do
-    it 'works with root of project' do
-      allow(build).to receive(:package).and_return('/dne/ondemand')
-      expect(build.package_name).to eq('ondemand')
-    end
-
-    it 'works with direct path' do
-      allow(build).to receive(:package).and_return('/dne/packages/ondemand/deb')
-      expect(build.package_name).to eq('ondemand')
-    end
   end
 
   describe 'bootstrap_rpm!' do

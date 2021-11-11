@@ -32,6 +32,18 @@ describe OodPackaging::Package do
     FileUtils.remove_entry(tmp)
   end
 
+  describe 'package_name' do
+    it 'works with root of project' do
+      allow(package).to receive(:package).and_return('/dne/ondemand')
+      expect(package.package_name).to eq('ondemand')
+    end
+
+    it 'works with direct path' do
+      allow(package).to receive(:package).and_return('/dne/packages/ondemand/deb')
+      expect(package.package_name).to eq('ondemand')
+    end
+  end
+
   describe 'container_start!' do
     it 'runs container' do
       expected_command = [

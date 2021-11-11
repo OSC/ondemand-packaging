@@ -108,20 +108,8 @@ class OodPackaging::Build
     end
   end
 
-  def package_name
-    name = File.basename(package)
-    if name =~ /deb|rpm/
-      name = if File.basename(File.dirname(package)) == 'packages'
-               File.basename(File.dirname(File.dirname(package)))
-             else
-               File.basename(File.dirname(package))
-             end
-    end
-    name
-  end
-
   def deb_name
-    "#{package_name}-#{version}"
+    "#{package}-#{version}"
   end
 
   def rpms
