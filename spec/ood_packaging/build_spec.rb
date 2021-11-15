@@ -42,7 +42,7 @@ describe OodPackaging::Build do
         '--import /ondemand-packaging/ondemand.sec', '2>/dev/null 1>/dev/null'
       ]
       expect(build).to receive(:sh).with(expected_gpg_cmd.join(' '))
-      expect(build).to receive(:sh).with('rpmdev-setuptree 2>/dev/null 1>/dev/null')
+      expect(build).to receive(:sh).with("mkdir -p #{work_dir}/{RPMS,SRPMS,SOURCES,SPECS,rpmbuild/BUILD}")
       expect(build).to receive(:sh).with("find /package -maxdepth 1 -type f -exec cp {} #{work_dir}/SOURCES/ \\;")
       expected_find_d = [
         'find /package', '-maxdepth 1 -mindepth 1 -type d',

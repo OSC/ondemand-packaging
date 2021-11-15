@@ -159,7 +159,7 @@ class OodPackaging::Build
       sh "sed -i 's|/home/ood|/root|g' /root/.rpmmacros"
     end
     puts "\tBootstrap work dir".blue
-    sh "rpmdev-setuptree#{cmd_suffix}"
+    sh "mkdir -p #{work_dir}/{RPMS,SRPMS,SOURCES,SPECS,rpmbuild/BUILD}"
     puts "\tCopy sources".blue
     sh "find #{spec_dir} -maxdepth 1 -type f -exec cp {} #{work_dir}/SOURCES/ \\;"
     sh "find #{spec_dir} -maxdepth 1 -mindepth 1 -type d -exec cp -r {} #{work_dir}/SOURCES/ \\;"
