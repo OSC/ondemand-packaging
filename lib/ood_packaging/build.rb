@@ -93,6 +93,10 @@ class OodPackaging::Build
                     end
   end
 
+  def deb_work_dir
+    File.join(work_dir, deb_name)
+  end
+
   def spec_file
     @spec_file ||= Dir["#{spec_dir}/*.spec"][0]
   end
@@ -184,7 +188,7 @@ class OodPackaging::Build
       sh "tar -xf #{deb_name}.tar.gz"
     end
     puts "\tBootstrap debian build files".blue
-    Dir.chdir(File.join(work_dir, deb_name)) do
+    Dir.chdir(deb_work_dir) do
       sh "dh_make -s -y --createorig -f ../#{deb_name}.tar.gz#{cmd_suffix} || true"
       sh "dch -b -v #{version} 'Release #{version}'#{cmd_suffix}"
     end
@@ -206,7 +210,7 @@ class OodPackaging::Build
         'mk-build-deps --install --remove --root-cmd sudo',
         "--tool='apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes'"
       ]
-      Dir.chdir(File.join(work_dir, deb_name)) do
+      Dir.chdir(deb_work_dir) do
         sh "#{cmd.join(' ')}#{cmd_suffix}"
       end
     end
@@ -221,9 +225,10 @@ class OodPackaging::Build
   end
 
   def debuild!
+    puts "== DEB build package=#{deb_work_dir} ==".blue
     prepend_path = ''
     prepend_path = "--prepend-path=#{config[:prepend_path]}" if config[:prepend_path]
-    Dir.chdir(File.join(work_dir, deb_name)) do
+    Dir.chdir(deb_work_dir) do
       sh "debuild --no-lintian --preserve-env #{prepend_path}#{cmd_suffix}"
     end
   end
