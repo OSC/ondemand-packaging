@@ -18,6 +18,14 @@ class OodPackaging::Build
     @build_box = OodPackaging::BuildBox.new(dist: ENV['DIST'])
   end
 
+  def config
+    @config ||= begin
+      c = packaging_config
+      c.merge!(c[build_box.dist]) if c.key?(build_box.dist)
+      c.transform_keys(&:to_sym)
+    end
+  end
+
   def package
     ENV['PACKAGE']
   end
@@ -49,6 +57,7 @@ class OodPackaging::Build
     defines = ["--define 'git_tag #{ENV['VERSION']}'"]
     defines.concat ["--define 'package_version #{rpm_version}'"]
     defines.concat ["--define 'package_release #{rpm_release}'"]
+    defines.concat ["--define 'scl #{config[:scl]}'"] if config[:scl]
     defines
   end
 
@@ -213,7 +222,7 @@ class OodPackaging::Build
 
   def debuild!
     prepend_path = ''
-    prepend_path = "--prepend-path=#{config['prepend_path']}" if packaging_config['prepend_path']
+    prepend_path = "--prepend-path=#{config[:prepend_path]}" if config[:prepend_path]
     Dir.chdir(File.join(work_dir, deb_name)) do
       sh "debuild --no-lintian --preserve-env #{prepend_path}#{cmd_suffix}"
     end

@@ -48,9 +48,15 @@ jobs:
           - packages/ondemand-release-latest|1
           - packages/ondemand-runtime|2.1
           - packages/passenger|6.0.11
+          - packages/cjose|0.6.1
+          - packages/mod_auth_openidc|2.4.5
         exclude:
           - dist: ubuntu-20.04
             package: packages/ondemand-runtime|2.1
+          - dist: ubuntu-20.04
+            package: packages/cjose|0.6.1
+          - dist: ubuntu-20.04
+            package: packages/mod_auth_openidc|2.4.5
     runs-on: ubuntu-latest
     name: Package tests
     steps:

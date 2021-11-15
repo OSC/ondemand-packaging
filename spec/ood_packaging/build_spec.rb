@@ -138,6 +138,24 @@ describe OodPackaging::Build do
       expect(build).to receive(:sh).with(expected_cmd.join(' '))
       build.rpmbuild!
     end
+
+    context 'when building for EL7' do
+      let(:dist) { 'el7' }
+
+      it 'executes rpmbuild with scl define' do
+        allow(build).to receive(:packaging_config).and_return({ 'el7' => { 'scl' => 'httpd24' } })
+        expected_cmd = [
+          'rpmbuild', '-ba',
+          '--define', "'git_tag v0.0.1-2'",
+          '--define', "'package_version 0.0.1'",
+          '--define', "'package_release 2'",
+          '--define', "'scl httpd24'",
+          spec_file, '2>/dev/null 1>/dev/null'
+        ]
+        expect(build).to receive(:sh).with(expected_cmd.join(' '))
+        build.rpmbuild!
+      end
+    end
   end
 
   describe 'debuild!' do
