@@ -36,7 +36,9 @@ class OodPackaging::Package
     @config[:debug].nil? ? false : @config[:debug]
   end
 
-  def attach
+  def attach?
+    return true if ENV['OOD_PACKAGING_ATTACH'] == 'true'
+
     @config[:attach].nil? ? false : @config[:attach]
   end
 
@@ -143,7 +145,7 @@ class OodPackaging::Package
   else
     puts "Build SUCCESS: package=#{package} dist=#{build_box.dist}".green
   ensure
-    container_exec!(exec_attach, ['-i', '-t']) if attach
+    container_exec!(exec_attach, ['-i', '-t']) if attach?
     container_kill! if container_running?
   end
 
