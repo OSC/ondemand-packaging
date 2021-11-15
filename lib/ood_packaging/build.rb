@@ -50,7 +50,7 @@ class OodPackaging::Build
     v = version.split('-', 2)
     return '1' if v.size < 2
 
-    v[1]
+    v[1].gsub('-', '.')
   end
 
   def rpm_defines
