@@ -170,10 +170,10 @@ class OodPackaging::Build
 
   def bootstrap_copy_source!
     puts "\tCopy sources".blue
-    if rpm?
+    if build_box.rpm?
       sh "find #{spec_dir} -maxdepth 1 -type f -exec cp {} #{work_dir}/SOURCES/ \\;"
       sh "find #{spec_dir} -maxdepth 1 -mindepth 1 -type d -exec cp -r {} #{work_dir}/SOURCES/ \\;"
-    elsif deb?
+    elsif build_box.deb?
       sh "cp -a #{deb_build_dir}/* #{work_dir}/"
     end
   end

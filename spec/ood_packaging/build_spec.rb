@@ -35,7 +35,6 @@ describe OodPackaging::Build do
   describe 'bootstrap_rpm!' do
     it 'bootstraps RPM build environment' do
       allow(build).to receive(:gpg_sign?).and_return(true)
-      expect(build).to receive(:sh).with("rm -rf #{work_dir}/*")
       expect(build).to receive(:sh).with("sed -i 's|@GPG_NAME@|GPG|g' /home/ood/.rpmmacros")
       expected_gpg_cmd = [
         'gpg', '--batch', '--passphrase-file /ondemand-packaging/.gpgpass',
