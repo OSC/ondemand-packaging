@@ -24,13 +24,15 @@ Metrics/ModuleLength:
 Metrics/BlockLength:
   Enabled: false
 Metrics/MethodLength:
-  Enabled: false
+  Max: 20
+  CountAsOne:
+    - 'heredoc'
 Metrics/ClassLength:
   Enabled: false
 Metrics/CyclomaticComplexity:
-  Enabled: false
+  Max: 10
 Metrics/AbcSize:
-  Enabled: false
+  Max: 30
 
 # rspec
 RSpec/MultipleMemoizedHelpers:

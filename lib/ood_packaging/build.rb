@@ -149,14 +149,7 @@ class OodPackaging::Build
 
   def bootstrap_rpm!
     puts '== Bootstrap RPM =='.blue
-    puts "\tClean build environment".blue
-    sh "rm -rf #{work_dir}/*"
-    if gpg_sign?
-      puts "\tBootstrap GPG".blue
-      sh "sed -i 's|@GPG_NAME@|#{ENV['GPG_NAME']}|g' #{ctr_rpmmacros}"
-      sh "gpg --batch --passphrase-file #{gpg_passphrase} --import #{gpg_private_key}#{cmd_suffix}"
-      sh "sudo rpm --import #{ENV['GPG_PUBKEY']}#{cmd_suffix}" if ENV['GPG_PUBKEY']
-    end
+    bootstrap_gpg! if gpg_sign?
     if podman_runtime?
       puts "\tBootstrap /root".blue
       sh "cp -r #{ctr_rpmmacros} #{ctr_gpg_dir} /root/"
@@ -164,9 +157,28 @@ class OodPackaging::Build
     end
     puts "\tBootstrap work dir".blue
     sh "mkdir -p #{work_dir}/{RPMS,SRPMS,SOURCES,SPECS,rpmbuild/BUILD}"
+    bootstrap_copy_source!
+    bootstrap_get_source!
+  end
+
+  def bootstrap_gpg!
+    puts "\tBootstrap GPG".blue
+    sh "sed -i 's|@GPG_NAME@|#{ENV['GPG_NAME']}|g' #{ctr_rpmmacros}"
+    sh "gpg --batch --passphrase-file #{gpg_passphrase} --import #{gpg_private_key}#{cmd_suffix}"
+    sh "sudo rpm --import #{ENV['GPG_PUBKEY']}#{cmd_suffix}" if ENV['GPG_PUBKEY']
+  end
+
+  def bootstrap_copy_source!
     puts "\tCopy sources".blue
-    sh "find #{spec_dir} -maxdepth 1 -type f -exec cp {} #{work_dir}/SOURCES/ \\;"
-    sh "find #{spec_dir} -maxdepth 1 -mindepth 1 -type d -exec cp -r {} #{work_dir}/SOURCES/ \\;"
+    if rpm?
+      sh "find #{spec_dir} -maxdepth 1 -type f -exec cp {} #{work_dir}/SOURCES/ \\;"
+      sh "find #{spec_dir} -maxdepth 1 -mindepth 1 -type d -exec cp -r {} #{work_dir}/SOURCES/ \\;"
+    elsif deb?
+      sh "cp -a #{deb_build_dir}/* #{work_dir}/"
+    end
+  end
+
+  def bootstrap_get_source!
     if ENV['SKIP_DOWNLOAD'] == 'true'
       puts "\tSKIP_DOWNLOAD detected, skipping download sources".blue
     else
@@ -181,8 +193,7 @@ class OodPackaging::Build
       puts "\tCreating #{work_dir}".blue
       sh "mkdir -p #{work_dir}"
     end
-    puts "\t cp #{deb_build_dir}/* #{work_dir}/".blue
-    sh "cp -a #{deb_build_dir}/* #{work_dir}/"
+    bootstrap_copy_source!
     puts "\tExtract source".blue
     Dir.chdir(work_dir) do
       sh "tar -xf #{deb_name}.tar.gz"
@@ -197,22 +208,30 @@ class OodPackaging::Build
   def install_dependencies!
     puts '== Install Dependencies =='.blue
     if build_box.rpm?
-      cmd = ['sudo']
-      cmd.concat [build_box.package_manager, 'builddep'] if build_box.dnf?
-      cmd.concat ['yum-builddep'] if build_box.package_manager == 'yum'
-      cmd.concat ['-y']
-      cmd.concat rpm_defines
-      cmd.concat ['--spec'] if build_box.dnf?
-      cmd.concat [spec_file]
-      sh "#{cmd.join(' ')}#{cmd_suffix}"
+      install_rpm_dependencies!
     elsif build_box.deb?
-      cmd = [
-        'mk-build-deps --install --remove --root-cmd sudo',
-        "--tool='apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes'"
-      ]
-      Dir.chdir(deb_work_dir) do
-        sh "#{cmd.join(' ')}#{cmd_suffix}"
-      end
+      install_deb_dependencies!
+    end
+  end
+
+  def install_rpm_dependencies!
+    cmd = ['sudo']
+    cmd.concat [build_box.package_manager, 'builddep'] if build_box.dnf?
+    cmd.concat ['yum-builddep'] if build_box.package_manager == 'yum'
+    cmd.concat ['-y']
+    cmd.concat rpm_defines
+    cmd.concat ['--spec'] if build_box.dnf?
+    cmd.concat [spec_file]
+    sh "#{cmd.join(' ')}#{cmd_suffix}"
+  end
+
+  def install_deb_dependencies!
+    cmd = [
+      'mk-build-deps --install --remove --root-cmd sudo',
+      "--tool='apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes'"
+    ]
+    Dir.chdir(deb_work_dir) do
+      sh "#{cmd.join(' ')}#{cmd_suffix}"
     end
   end
 

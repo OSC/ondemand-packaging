@@ -123,6 +123,19 @@ class OodPackaging::Package
     cmd
   end
 
+  def container_mounts
+    args = []
+    args.concat ['-v', "#{package}:/package:ro"]
+    args.concat ['-v', "#{@config[:gpg_pubkey]}:/gpg.pub:ro"] if @config[:gpg_pubkey]
+    args.concat ['-v', "#{work_dir}:/work"]
+    args.concat ['-v', "#{output_dir}:/output"]
+    if gpg_sign
+      args.concat ['-v', "#{gpg_files.private_key}:#{gpg_private_key}:ro"]
+      args.concat ['-v', "#{gpg_files.passphrase}:#{gpg_passphrase}:ro"]
+    end
+    args
+  end
+
   def clean!
     sh "rm -rf #{work_dir}", verbose: debug if @clean_work_dir
     sh "rm -rf #{output_dir}", verbose: debug if @clean_output_dir
@@ -158,14 +171,7 @@ class OodPackaging::Package
     cmd = [container_runtime, 'run', '--detach', '--rm']
     cmd.concat ['--name', container_name]
     cmd.concat rt_specific_flags
-    cmd.concat ['-v', "#{package}:/package:ro"]
-    cmd.concat ['-v', "#{@config[:gpg_pubkey]}:/gpg.pub:ro"] if @config[:gpg_pubkey]
-    cmd.concat ['-v', "#{work_dir}:/work"]
-    cmd.concat ['-v', "#{output_dir}:/output"]
-    if gpg_sign
-      cmd.concat ['-v', "#{gpg_files.private_key}:#{gpg_private_key}:ro"]
-      cmd.concat ['-v', "#{gpg_files.passphrase}:#{gpg_passphrase}:ro"]
-    end
+    cmd.concat container_mounts
     cmd.concat [build_box.image_tag]
     cmd.concat [container_init]
     cmd.concat ['1>/dev/null'] unless debug
