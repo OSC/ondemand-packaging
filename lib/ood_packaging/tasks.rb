@@ -37,11 +37,11 @@ namespace :ood_packaging do
     OodPackaging::RakeTask.new(:'ondemand-release', [:dist]) do |t, args|
       t.package = File.join(proj_root, 'packages/ondemand-release')
       t.dist = args[:dist]
-      if args[:dist] =~ /^el/
-        t.version = '2.1'
-      else
-        t.version = '2.1.0'
-      end
+      t.version = if args[:dist] =~ /^el/
+                    '2.1'
+                  else
+                    '2.1.0'
+                  end
       t.gpg_sign = false
       t.work_dir = File.join(proj_root, 'tmp/work')
       t.output_dir = File.join(proj_root, 'tmp/output')
