@@ -35,7 +35,7 @@ module OodPackaging::Utils
     cwd = File.expand_path(__dir__).to_s
     src = File.join(cwd, filename)
     dest = File.join(cwd, filename.gsub('.erb', ''))
-    content = ERB.new(File.read(src), nil, '-').result(binding)
+    content = ERB.new(File.read(src), trim_mode: '-').result(binding)
     File.open(dest, 'w') { |f| f.write(content) }
     dest
   end

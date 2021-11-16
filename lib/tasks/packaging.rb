@@ -13,7 +13,7 @@ namespace :package do
     chdir src_dir do
       unless version
         latest_commit = `git rev-list --tags --max-count=1`.strip[0..6]
-        latest_tag = `git describe --tags #{latest_commit}`.strip[1..-1]
+        latest_tag = `git describe --tags #{latest_commit}`.strip[1..]
         datetime = Time.now.strftime('%Y%m%d-%H%M')
         version = "#{latest_tag}-#{datetime}-#{latest_commit}"
       end

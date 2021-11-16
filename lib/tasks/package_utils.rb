@@ -110,7 +110,7 @@ module PackageUtils
   def template_file(filename)
     cwd = File.expand_path(__dir__).to_s
     content = File.read("#{cwd}/templates/#{filename}")
-    content = ERB.new(content, nil, '-').result(binding)
+    content = ERB.new(content, trim_mode: '-').result(binding)
 
     begin
       t = Tempfile.new('ood-docker')
@@ -186,7 +186,7 @@ module PackageUtils
   def version_define
     git_tag = version.split('-')
     git_tag_version = git_tag[0]
-    git_tag_version = git_tag_version[1..-1] if git_tag_version.start_with?('v')
+    git_tag_version = git_tag_version[1..] if git_tag_version.start_with?('v')
 
     "--define 'package_version #{git_tag_version}'"
   end
