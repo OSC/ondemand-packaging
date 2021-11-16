@@ -4,12 +4,13 @@ require 'English'
 require 'erb'
 require 'tempfile'
 
+# Package utilities
 module PackageUtils
   def version
-    @version ||= if !ENV['VERSION']
-                   tag? ? git_tag : "#{git_tag}-#{git_hash}"
-                 else
+    @version ||= if ENV['VERSION']
                    ENV['VERSION'].to_s
+                 else
+                   tag? ? git_tag : "#{git_tag}-#{git_hash}"
                  end
   end
 
@@ -76,13 +77,7 @@ module PackageUtils
   def dist_dir(args)
     dist = args[:dist].to_s
     version = args[:version].to_s
-
-    if dist == 'el'
-      "dist/#{dist}#{version}"
-    else
-      # don't know what the debian format should be
-      "dist/#{dist}#{version}"
-    end
+    "dist/#{dist}#{version}"
   end
 
   def known_images
@@ -115,7 +110,7 @@ module PackageUtils
   def template_file(filename)
     cwd = File.expand_path(__dir__).to_s
     content = File.read("#{cwd}/templates/#{filename}")
-    content = ERB.new(content, nil, '-').result(binding)
+    content = ERB.new(content, trim_mode: '-').result(binding)
 
     begin
       t = Tempfile.new('ood-docker')
@@ -191,7 +186,7 @@ module PackageUtils
   def version_define
     git_tag = version.split('-')
     git_tag_version = git_tag[0]
-    git_tag_version = git_tag_version[1..-1] if git_tag_version.start_with?('v')
+    git_tag_version = git_tag_version[1..] if git_tag_version.start_with?('v')
 
     "--define 'package_version #{git_tag_version}'"
   end

@@ -13,7 +13,7 @@ namespace :package do
     chdir src_dir do
       unless version
         latest_commit = `git rev-list --tags --max-count=1`.strip[0..6]
-        latest_tag = `git describe --tags #{latest_commit}`.strip[1..-1]
+        latest_tag = `git describe --tags #{latest_commit}`.strip[1..]
         datetime = Time.now.strftime('%Y%m%d-%H%M')
         version = "#{latest_tag}-#{datetime}-#{latest_commit}"
       end
@@ -87,7 +87,7 @@ namespace :package do
   namespace :rpm do
     desc 'Build nightly RPM'
     task :nightly, [:dist, :extra_args] do |_task, args|
-      version_major, version_minor, version_patch = git_tag.gsub(/^v/, '').split('.', 3)
+      version_major, version_minor = git_tag.gsub(/^v/, '').split('.', 3)
       date = Time.now.strftime('%Y%m%d')
       id = ENV['CI_PIPELINE_ID'] || Time.now.strftime('%H%M%S')
       ENV['VERSION'] = "#{version_major}.#{version_minor}.#{date}-#{id}.#{git_hash}.nightly"

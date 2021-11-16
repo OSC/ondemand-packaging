@@ -1,0 +1,77 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'optparse'
+begin
+  require 'ood_packaging'
+# If gem is not installed, load from location in git repo
+rescue LoadError
+  $LOAD_PATH.unshift(File.expand_path(File.join(__dir__, '../lib')))
+  require 'ood_packaging'
+end
+
+options = {}
+OptionParser.new do |opts|
+  opts.banner = 'Usage: ood_packaging [options] package'
+
+  opts.on('-w', '--work=DIR', String, 'Work directory path') do |v|
+    options[:work_dir] = v
+  end
+
+  opts.on('-o', '--output=DIR', String, 'Output directory path') do |v|
+    options[:output_dir] = v
+  end
+
+  opts.on('-d', '--dist=DIST', String, 'Distribution to build') do |v|
+    options[:dist] = v
+  end
+
+  opts.on('-V', '--version=VERSION', String, 'Version of package to build') do |v|
+    options[:version] = v
+  end
+
+  opts.on('-G', '--gpg-name', String, 'GPG key name') do |v|
+    options[:gpg_name] = v
+  end
+
+  opts.on('-g', '--gpg-pubkey', String, 'GPG public key path') do |v|
+    options[:gpg_pubkey] = v
+  end
+
+  opts.on('-S', '--skip-gpg', 'Skip GPG signing') do
+    options[:gpg_sign] = false
+  end
+
+  opts.on('--skip-clean-output', 'Skip clean up of output directory') do
+    options[:clean_output_dir] = false
+  end
+
+  opts.on('--skip-clean-work', 'Skip clean up of work directory') do
+    options[:clean_work_dir] = false
+  end
+
+  opts.on('-s', '--skip-download', 'Skip source download') do
+    options[:skip_download] = true
+  end
+
+  opts.on('-A', '--attach', 'Attach to build box after build') do
+    options[:attach] = true
+  end
+
+  opts.on('--debug', 'Show debug output') do
+    options[:debug] = true
+  end
+
+  opts.on('-h', '--help', 'Show this help message') do
+    puts opts
+    exit
+  end
+end.parse!(ARGV)
+
+if ARGV.size != 1
+  puts 'ERROR: Must provide package path'.red
+  exit 1
+end
+options[:package] = ARGV[0]
+
+OodPackaging::Package.new(options).run!
