@@ -33,6 +33,8 @@ class OodPackaging::Package
   end
 
   def debug
+    return true if ENV['OOD_PACKAGING_DEBUG'] == 'true'
+
     @config[:debug].nil? ? false : @config[:debug]
   end
 
@@ -56,6 +58,14 @@ class OodPackaging::Package
 
   def version
     @config[:version]
+  end
+
+  def tar_version
+    version.gsub(/^v/, '')
+  end
+
+  def tar?
+    @config[:tar].nil? ? build_box.deb? : @config[:tar]
   end
 
   def package_name
@@ -96,6 +106,37 @@ class OodPackaging::Package
 
   def container_init
     '/sbin/init'
+  end
+
+  def tar_path
+    if build_box.deb?
+      path = File.join(package, 'deb')
+      return path if Dir.exist?(path)
+    end
+
+    package
+  end
+
+  def rpm_tar_dest_dir
+    dir = File.join(package, 'rpm')
+    return dir if Dir.exist?(dir)
+
+    File.join(package, 'packaging/rpm')
+  end
+
+  def rpm_version
+    tar_version
+  end
+
+  def deb_tar_dest_dir
+    dir = File.join(package, 'deb')
+    return File.join(dir, 'build') if Dir.exist?(dir)
+
+    File.join(package, 'build')
+  end
+
+  def deb_version
+    tar_version.gsub('-', '.')
   end
 
   def exec_launchers
@@ -146,9 +187,31 @@ class OodPackaging::Package
     sh "mkdir -p #{output_dir}", verbose: debug
   end
 
+  def tar!
+    cmd = ['git', 'ls-files', '.', '|', tar, '-c']
+    if build_box.rpm?
+      dir = rpm_tar_dest_dir
+      version = rpm_version
+    else
+      dir = deb_tar_dest_dir.tap { |p| sh "mkdir -p #{p}" }
+      version = deb_version
+      cmd.concat ["--transform 'flags=r;s,packaging/deb,debian,'"]
+    end
+    tar_file = "#{dir}/#{package_name}-#{version}.tar.gz"
+    cmd.concat ["--transform 's,^,#{package_name}-#{version}/,'"]
+    cmd.concat ['-T', '-', '|', "gzip > #{tar_file}"]
+
+    sh "rm #{tar_file}" if File.exist?(tar_file)
+    puts "Create tar archive #{tar_file}".blue
+    Dir.chdir(tar_path) do
+      sh cmd.join(' '), verbose: debug
+    end
+  end
+
   def run!
     clean!
     bootstrap!
+    tar! if tar?
     container_start!
     container_exec!(exec_rake)
   rescue RuntimeError
@@ -204,12 +267,13 @@ class OodPackaging::Package
       'PACKAGE'       => package_name,
       'GPG_SIGN'      => gpg_sign,
       'GPG_NAME'      => gpg_name,
-      'VERSION'       => version,
       'SKIP_DOWNLOAD' => @config[:skip_download],
       'OOD_UID'       => Process.uid,
       'OOD_GID'       => Process.gid,
       'DEBUG'         => debug
     }
+    env['VERSION'] = rpm_version if build_box.rpm?
+    env['VERSION'] = deb_version if build_box.deb?
     env['GPG_PUBKEY'] = '/gpg.pub' if @config[:gpg_pubkey]
     env
   end
