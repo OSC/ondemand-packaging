@@ -96,6 +96,45 @@ describe OodPackaging::Package do
     end
   end
 
+  describe 'run!' do
+    it 'runs packaging' do
+      allow(package).to receive(:container_running?).and_return(true)
+      expect(package).to receive(:clean!)
+      expect(package).to receive(:bootstrap!)
+      expect(package).not_to receive(:tar!)
+      expect(package).to receive(:container_start!)
+      expect(package).to receive(:container_exec!)
+      expect(package).to receive(:container_kill!)
+      package.run!
+    end
+
+    it 'runs tar only' do
+      config[:tar_only] = true
+      expect(package).not_to receive(:clean!)
+      expect(package).not_to receive(:bootstrap!)
+      expect(package).to receive(:tar!)
+      expect(package).not_to receive(:container_start!)
+      expect(package).not_to receive(:container_exec!)
+      expect(package).not_to receive(:container_kill!)
+      package.run!
+    end
+
+    context 'when running for DEB' do
+      let(:dist) { 'ubuntu-20.04' }
+
+      it 'runs packaging' do
+        allow(package).to receive(:container_running?).and_return(true)
+        expect(package).to receive(:clean!)
+        expect(package).to receive(:bootstrap!)
+        expect(package).to receive(:tar!)
+        expect(package).to receive(:container_start!)
+        expect(package).to receive(:container_exec!)
+        expect(package).to receive(:container_kill!)
+        package.run!
+      end
+    end
+  end
+
   describe 'container_start!' do
     it 'runs container' do
       expected_command = [

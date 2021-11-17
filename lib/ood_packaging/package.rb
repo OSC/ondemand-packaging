@@ -19,7 +19,7 @@ class OodPackaging::Package
 
   def initialize(config = {})
     @config = config
-    @build_box = OodPackaging::BuildBox.new(config)
+    @build_box = OodPackaging::BuildBox.new(config) unless tar_only?
     @clean_work_dir = config[:clean_work_dir].nil? ? true : config[:clean_work_dir]
     @clean_output_dir = config[:clean_output_dir].nil? ? true : config[:clean_output_dir]
     raise ArgumentError, 'Package is required' if package.nil?
@@ -66,6 +66,10 @@ class OodPackaging::Package
 
   def tar?
     @config[:tar].nil? ? build_box.deb? : @config[:tar]
+  end
+
+  def tar_only?
+    @config[:tar_only].nil? ? false : @config[:tar_only]
   end
 
   def package_name
@@ -209,6 +213,10 @@ class OodPackaging::Package
   end
 
   def run!
+    if tar_only?
+      tar!
+      return
+    end
     clean!
     bootstrap!
     tar! if tar?
