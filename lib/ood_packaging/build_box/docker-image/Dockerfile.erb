@@ -13,6 +13,7 @@ RUN dnf update -y && dnf clean all && rm -rf /var/cache/dnf/*
 RUN dnf install -y dnf-utils epel-release langpacks-en glibc-all-langpacks && dnf clean all && rm -rf /var/cache/dnf/*
 RUN dnf config-manager --set-enabled powertools && dnf clean all && rm -rf /var/cache/dnf/*
 RUN dnf module enable -y ruby:<%= ruby_version %> && dnf clean all && rm -rf /var/cache/dnf/*
+RUN dnf module enable -y nodejs:<%= nodejs_version %> && dnf clean all && rm -rf /var/cache/dnf/*
 RUN dnf install -y ruby sudo which wget \
     gcc-c++ gcc make patch \
     rpm-build rpmdevtools rpm-sign scl-utils-build && \

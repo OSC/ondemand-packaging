@@ -59,6 +59,10 @@ module OodPackaging::Utils
     "rh-ruby#{ruby_version.tr('.', '')}"
   end
 
+  def nodejs_version
+    '14'
+  end
+
   def ctr_scripts_dir
     '/ondemand-packaging'
   end
