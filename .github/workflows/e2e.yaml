@@ -50,6 +50,7 @@ jobs:
           - passenger
           - cjose
           - mod_auth_openidc
+          - ondemand_exporter
         exclude:
           - dist: ubuntu-20.04
             package: ondemand-runtime
@@ -57,6 +58,8 @@ jobs:
             package: cjose
           - dist: ubuntu-20.04
             package: mod_auth_openidc
+          - dist: ubuntu-20.04
+            package: ondemand_exporter
         include:
           - dist: el7
             package: sqlite

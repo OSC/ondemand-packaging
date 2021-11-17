@@ -101,5 +101,14 @@ namespace :ood_packaging do
       t.work_dir = File.join(proj_root, 'tmp/work')
       t.output_dir = File.join(proj_root, 'tmp/output')
     end
+
+    desc 'Package ondemand_exporter'
+    OodPackaging::RakeTask.new(:ondemand_exporter, [:dist]) do |t, args|
+      t.package = File.join(proj_root, 'packages/ondemand_exporter')
+      t.dist = args[:dist]
+      t.version = '0.9.0'
+      t.work_dir = File.join(proj_root, 'tmp/work')
+      t.output_dir = File.join(proj_root, 'tmp/output')
+    end
   end
 end
