@@ -19,7 +19,8 @@ class OodPackaging::Package
 
   def initialize(config = {})
     @config = config
-    @build_box = OodPackaging::BuildBox.new(config) unless tar_only?
+    @config[:dist] = 'el8' if tar_only?
+    @build_box = OodPackaging::BuildBox.new(config)
     @clean_work_dir = config[:clean_work_dir].nil? ? true : config[:clean_work_dir]
     @clean_output_dir = config[:clean_output_dir].nil? ? true : config[:clean_output_dir]
     raise ArgumentError, 'Package is required' if package.nil?
