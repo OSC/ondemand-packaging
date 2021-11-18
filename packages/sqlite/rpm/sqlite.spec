@@ -9,12 +9,13 @@
 
 %define realver 3260000
 %define docver 3260000
-%define rpmver 3.26.0
+%define rpmver %{package_version}
+%{!?package_release: %define package_release 1}
 
 Summary: Library that implements an embeddable SQL database engine
 Name: %{?scl_prefix}sqlite
 Version: %{rpmver}
-Release: 4%{?dist}
+Release: %{package_release}%{?dist}
 License: Public Domain
 Group: Applications/Databases
 URL: http://www.sqlite.org/

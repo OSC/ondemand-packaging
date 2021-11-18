@@ -1,6 +1,8 @@
+%{!?package_release: %define package_release 1}
+
 Name:       ondemand-release-web-latest
-Version:    1
-Release:    6
+Version:    %{package_version}
+Release:    %{package_release}
 Summary:    Open OnDemand web repository files
 
 Group:      Applications/System

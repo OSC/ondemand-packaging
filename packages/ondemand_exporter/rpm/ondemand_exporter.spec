@@ -1,3 +1,5 @@
+%{!?package_release: %define package_release 1}
+
 %define debug_package %{nil}
 %define __strip /bin/true
 
@@ -8,8 +10,8 @@
 %endif
 
 Name:       ondemand_exporter
-Version:    0.9.0
-Release:    1%{?dist}
+Version:    %{package_version}
+Release:    %{package_release}%{?dist}
 Summary:    OnDemand Prometheus Exporter
 
 Group:      System Environment/Daemons

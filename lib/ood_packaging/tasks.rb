@@ -37,11 +37,7 @@ namespace :ood_packaging do
     OodPackaging::RakeTask.new(:'ondemand-release', [:dist]) do |t, args|
       t.package = File.join(proj_root, 'packages/ondemand-release')
       t.dist = args[:dist]
-      t.version = if args[:dist] =~ /^el/
-                    '2.1'
-                  else
-                    '2.1.0'
-                  end
+      t.version = OodPackaging.package_version('ondemand-release', args[:dist])
       t.gpg_sign = false
       t.work_dir = File.join(proj_root, 'tmp/work')
       t.output_dir = File.join(proj_root, 'tmp/output')
@@ -51,7 +47,7 @@ namespace :ood_packaging do
     OodPackaging::RakeTask.new(:'ondemand-release-latest', [:dist]) do |t, args|
       t.package = File.join(proj_root, 'packages/ondemand-release-latest')
       t.dist = args[:dist]
-      t.version = '1'
+      t.version = OodPackaging.package_version('ondemand-release-latest', args[:dist])
       t.gpg_sign = false
       t.work_dir = File.join(proj_root, 'tmp/work')
       t.output_dir = File.join(proj_root, 'tmp/output')
@@ -61,7 +57,7 @@ namespace :ood_packaging do
     OodPackaging::RakeTask.new(:'ondemand-runtime', [:dist]) do |t, args|
       t.package = File.join(proj_root, 'packages/ondemand-runtime')
       t.dist = args[:dist]
-      t.version = '2.1'
+      t.version = OodPackaging.package_version('ondemand-runtime', args[:dist])
       t.work_dir = File.join(proj_root, 'tmp/work')
       t.output_dir = File.join(proj_root, 'tmp/output')
     end
@@ -70,7 +66,7 @@ namespace :ood_packaging do
     OodPackaging::RakeTask.new(:passenger, [:dist]) do |t, args|
       t.package = File.join(proj_root, 'packages/passenger')
       t.dist = args[:dist]
-      t.version = '6.0.11'
+      t.version = OodPackaging.package_version('passenger', args[:dist])
       t.work_dir = File.join(proj_root, 'tmp/work')
       t.output_dir = File.join(proj_root, 'tmp/output')
     end
@@ -79,7 +75,7 @@ namespace :ood_packaging do
     OodPackaging::RakeTask.new(:cjose, [:dist]) do |t, args|
       t.package = File.join(proj_root, 'packages/cjose')
       t.dist = args[:dist]
-      t.version = '0.6.1'
+      t.version = OodPackaging.package_version('cjose', args[:dist])
       t.work_dir = File.join(proj_root, 'tmp/work')
       t.output_dir = File.join(proj_root, 'tmp/output')
     end
@@ -88,7 +84,7 @@ namespace :ood_packaging do
     OodPackaging::RakeTask.new(:mod_auth_openidc, [:dist]) do |t, args|
       t.package = File.join(proj_root, 'packages/mod_auth_openidc')
       t.dist = args[:dist]
-      t.version = '2.4.5'
+      t.version = OodPackaging.package_version('mod_auth_openidc', args[:dist])
       t.work_dir = File.join(proj_root, 'tmp/work')
       t.output_dir = File.join(proj_root, 'tmp/output')
     end
@@ -97,7 +93,7 @@ namespace :ood_packaging do
     OodPackaging::RakeTask.new(:sqlite, [:dist]) do |t, args|
       t.package = File.join(proj_root, 'packages/sqlite')
       t.dist = args[:dist]
-      t.version = '3.26.0'
+      t.version = OodPackaging.package_version('sqlite', args[:dist])
       t.work_dir = File.join(proj_root, 'tmp/work')
       t.output_dir = File.join(proj_root, 'tmp/output')
     end
@@ -106,7 +102,7 @@ namespace :ood_packaging do
     OodPackaging::RakeTask.new(:ondemand_exporter, [:dist]) do |t, args|
       t.package = File.join(proj_root, 'packages/ondemand_exporter')
       t.dist = args[:dist]
-      t.version = '0.9.0'
+      t.version = OodPackaging.package_version('ondemand_exporter', args[:dist])
       t.work_dir = File.join(proj_root, 'tmp/work')
       t.output_dir = File.join(proj_root, 'tmp/output')
     end
