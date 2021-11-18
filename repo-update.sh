@@ -114,7 +114,7 @@ LOCK_FILE="/var/lib/oodpkg/repo-update-${LOCK_NAME}.lock"
     DIST_PATH="${REPO_PATH}/dists/${DIST}"
     echo "level=\"info\" msg=\"Scan packages repo\" repo=\"${REPO_PATH}\""
     pushd ${REPO_PATH}
-    dpkg-scanpackages --arch ${ARCH} pool/${DIST} > dists/${DIST}/main/binary-${ARCH}/Packages
+    dpkg-scanpackages --multiversion --arch ${ARCH} pool/${DIST} > dists/${DIST}/main/binary-${ARCH}/Packages
     cat dists/${DIST}/main/binary-${ARCH}/Packages | gzip -9 > dists/${DIST}/main/binary-${ARCH}/Packages.gz
     echo "level=\"info\" msg=\"Update Release\" repo=\"${DIST_PATH}\""
     pushd ${DIST_PATH}
