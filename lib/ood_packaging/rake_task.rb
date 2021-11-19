@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'ood_packaging/options'
 require 'ood_packaging/package'
 require 'ood_packaging/utils'
 require 'rake'
@@ -10,10 +11,7 @@ class OodPackaging::RakeTask < ::Rake::TaskLib
   include ::Rake::DSL if defined?(::Rake::DSL)
   include OodPackaging::Utils
 
-  OPTIONS = [:package, :version, :dist, :work_dir, :clean_work_dir, :output_dir, :clean_output_dir, :tar,
-             :tar_only, :skip_download, :gpg_sign, :gpg_name, :gpg_pubkey, :gpg_private_key, :gpg_passphrase,
-             :debug, :attach].freeze
-  OPTIONS.each do |o|
+  OodPackaging::OPTIONS.each do |o|
     attr_accessor o.to_sym
   end
 
@@ -30,7 +28,7 @@ class OodPackaging::RakeTask < ::Rake::TaskLib
     task @name, *args do |_, task_args|
       task_block&.call(*[self, task_args].slice(0, task_block.arity))
       config = {}
-      OPTIONS.each do |o|
+      OodPackaging::OPTIONS.each do |o|
         v = instance_variable_get("@#{o}")
         config[o.to_sym] = v unless v.nil?
       end
