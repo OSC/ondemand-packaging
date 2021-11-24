@@ -33,78 +33,55 @@ namespace :ood_packaging do
       OodPackaging::Build.new.run!
     end
 
-    desc 'Package ondemand-release'
-    OodPackaging::RakeTask.new(:'ondemand-release', [:dist]) do |t, args|
-      t.package = File.join(proj_root, 'packages/ondemand-release')
+    OodPackaging::RakeTask.new(:internal, [:package, :dist]) do |t, args|
+      name = args[:package].split(':').last
+      t.package = File.join(proj_root, 'packages', name)
       t.dist = args[:dist]
-      t.version = OodPackaging.package_version('ondemand-release', args[:dist])
-      t.gpg_sign = false
+      t.version = OodPackaging.package_version(name, args[:dist])
       t.work_dir = File.join(proj_root, 'tmp/work')
       t.output_dir = File.join(proj_root, 'tmp/output')
+    end
+
+    desc 'Package ondemand-release'
+    task :'ondemand-release', [:dist] do |t, args|
+      ENV['OOD_PACKAGING_GPG_SIGN'] = 'false'
+      Rake::Task['ood_packaging:package:internal'].invoke(t.name, args[:dist])
     end
 
     desc 'Package ondemand-release-latest'
-    OodPackaging::RakeTask.new(:'ondemand-release-latest', [:dist]) do |t, args|
-      t.package = File.join(proj_root, 'packages/ondemand-release-latest')
-      t.dist = args[:dist]
-      t.version = OodPackaging.package_version('ondemand-release-latest', args[:dist])
-      t.gpg_sign = false
-      t.work_dir = File.join(proj_root, 'tmp/work')
-      t.output_dir = File.join(proj_root, 'tmp/output')
+    task :'ondemand-release-latest', [:dist] do |t, args|
+      ENV['OOD_PACKAGING_GPG_SIGN'] = 'false'
+      Rake::Task['ood_packaging:package:internal'].invoke(t.name, args[:dist])
     end
 
     desc 'Package ondemand-release'
-    OodPackaging::RakeTask.new(:'ondemand-runtime', [:dist]) do |t, args|
-      t.package = File.join(proj_root, 'packages/ondemand-runtime')
-      t.dist = args[:dist]
-      t.version = OodPackaging.package_version('ondemand-runtime', args[:dist])
-      t.work_dir = File.join(proj_root, 'tmp/work')
-      t.output_dir = File.join(proj_root, 'tmp/output')
+    task :'ondemand-runtime', [:dist] do |t, args|
+      Rake::Task['ood_packaging:package:internal'].invoke(t.name, args[:dist])
     end
 
     desc 'Package passenger'
-    OodPackaging::RakeTask.new(:passenger, [:dist]) do |t, args|
-      t.package = File.join(proj_root, 'packages/passenger')
-      t.dist = args[:dist]
-      t.version = OodPackaging.package_version('passenger', args[:dist])
-      t.work_dir = File.join(proj_root, 'tmp/work')
-      t.output_dir = File.join(proj_root, 'tmp/output')
+    task :passenger, [:dist] do |t, args|
+      Rake::Task['ood_packaging:package:internal'].invoke(t.name, args[:dist])
     end
 
     desc 'Package cjose'
-    OodPackaging::RakeTask.new(:cjose, [:dist]) do |t, args|
-      t.package = File.join(proj_root, 'packages/cjose')
-      t.dist = args[:dist]
-      t.version = OodPackaging.package_version('cjose', args[:dist])
-      t.work_dir = File.join(proj_root, 'tmp/work')
-      t.output_dir = File.join(proj_root, 'tmp/output')
+    task :cjose, [:dist] do |t, args|
+      Rake::Task['ood_packaging:package:internal'].invoke(t.name, args[:dist])
     end
 
     desc 'Package mod_auth_openidc'
-    OodPackaging::RakeTask.new(:mod_auth_openidc, [:dist]) do |t, args|
-      t.package = File.join(proj_root, 'packages/mod_auth_openidc')
-      t.dist = args[:dist]
-      t.version = OodPackaging.package_version('mod_auth_openidc', args[:dist])
-      t.work_dir = File.join(proj_root, 'tmp/work')
-      t.output_dir = File.join(proj_root, 'tmp/output')
+    task :mod_auth_openidc, [:dist] do |t, args|
+      Rake::Task['ood_packaging:package:internal'].invoke(t.name, args[:dist])
     end
 
     desc 'Package sqlite'
-    OodPackaging::RakeTask.new(:sqlite, [:dist]) do |t, args|
-      t.package = File.join(proj_root, 'packages/sqlite')
-      t.dist = args[:dist]
-      t.version = OodPackaging.package_version('sqlite', args[:dist])
-      t.work_dir = File.join(proj_root, 'tmp/work')
-      t.output_dir = File.join(proj_root, 'tmp/output')
+    task :sqlite, [:dist] do |t, args|
+      Rake::Task['ood_packaging:package:internal'].invoke(t.name, args[:dist])
     end
 
     desc 'Package ondemand_exporter'
-    OodPackaging::RakeTask.new(:ondemand_exporter, [:dist]) do |t, args|
-      t.package = File.join(proj_root, 'packages/ondemand_exporter')
-      t.dist = args[:dist]
-      t.version = OodPackaging.package_version('ondemand_exporter', args[:dist])
-      t.work_dir = File.join(proj_root, 'tmp/work')
-      t.output_dir = File.join(proj_root, 'tmp/output')
+    task :ondemand_exporter, [:dist] do |t, args|
+      Rake::Task['ood_packaging:package:internal'].invoke(t.name, args[:dist])
     end
   end
 end

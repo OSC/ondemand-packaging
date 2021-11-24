@@ -35,4 +35,8 @@ class OodPackaging::RakeTask < ::Rake::TaskLib
       OodPackaging::Package.new(config).run!
     end
   end
+
+  def name
+    @name.to_s
+  end
 end

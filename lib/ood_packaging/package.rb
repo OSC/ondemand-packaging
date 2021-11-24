@@ -100,6 +100,7 @@ class OodPackaging::Package
   end
 
   def gpg_sign
+    return false if ENV['OOD_PACKAGING_GPG_SIGN'].to_s == 'false'
     return false if @config[:gpg_sign] == false
 
     !gpg_files.nil?
