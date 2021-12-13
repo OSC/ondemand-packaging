@@ -2,7 +2,7 @@ DIR := $(dir $(abspath $(firstword $(MAKEFILE_LIST))))
 
 .PHONY: tar
 TAR := tar
-VERSION := 1
+VERSION := 2
 
 tar:
 	mkdir -p $(DIR)/build
