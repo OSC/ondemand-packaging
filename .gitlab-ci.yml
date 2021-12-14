@@ -4,6 +4,7 @@ before_script:
   - bundle install --path vendor/bundle
 
 stages:
+  - image
   - build
   - deploy
 
@@ -14,6 +15,30 @@ variables:
   OOD_PACKAGING_DEBUG: 'true'
   OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
   OOD_PACKAGING_GPG_PASSPHRASE: /systems/osc_certs/gpg/ondemand/.gpgpass
+
+build-image-el7:
+  stage: image
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
+    - if: $CI_COMMIT_TAG
+  script:
+    - bundle exec rake ood_packaging:buildbox:build[el7]
+
+build-image-el8:
+  stage: image
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
+    - if: $CI_COMMIT_TAG
+  script:
+    - bundle exec rake ood_packaging:buildbox:build[el8]
+
+build-image-ubuntu-20.04:
+  stage: image
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
+    - if: $CI_COMMIT_TAG
+  script:
+    - bundle exec rake ood_packaging:buildbox:build[ubuntu-20.04]
 
 build-ondemand-release-rpm:
   stage: build
