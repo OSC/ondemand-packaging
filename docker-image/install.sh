@@ -24,6 +24,9 @@ if [[ "$ID_LIKE" == *debian* ]]; then
 	run apt-get update -y
 	run apt install -y init debhelper devscripts dh-make build-essential lintian equivs \
 			sudo python rake wget curl ruby
+	run apt install -y apt-transport-https ca-certificates
+	echo "deb https://deb.nodesource.com/node_14.x ${VERSION_CODENAME} main" > /etc/apt/sources.list.d/nodesource.list
+	curl -s https://deb.nodesource.com/gpgkey/nodesource.gpg.key | gpg --dearmor > /etc/apt/trusted.gpg.d/nodesource.gpg
 	run ln -snf /bin/bundle2.7 /bin/bundle
 else
 	run dnf update -y

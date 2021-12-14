@@ -2,7 +2,7 @@ Source: ondemand-release
 Section: unknown
 Priority: optional
 Maintainer: Trey Dockendorf <tdockendorf@osc.edu>
-Build-Depends: debhelper (>=11~)
+Build-Depends: debhelper (>=11~), curl, gnupg
 Standards-Version: 4.1.4
 Homepage: https://github.com/OSC/ondemand-packaging
 
