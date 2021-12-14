@@ -1,6 +1,7 @@
 before_script:
   - docker info
   - '[ -d tmp ] || mkdir tmp'
+  - bundle install --path vendor/bundle
 
 stages:
   - build
