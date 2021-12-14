@@ -9,10 +9,21 @@ class OodPackaging::BuildBox
   include OodPackaging::Utils
   include FileUtils
 
+  BASE_IMAGES = {
+    'el7'          => 'centos:7',
+    'el8'          => 'rockylinux/rockylinux:8',
+    'ubuntu-20.04' => 'ubuntu:20.04'
+  }.freeze
+
   def initialize(config = {})
     @config = config
     raise ArgumentError, 'Must provide dist' if @config[:dist].nil?
-    raise ArgumentError, "Invalid dist selected: #{dist}" if base_image.nil?
+
+    # rubocop:disable Style/GuardClause
+    unless valid_dist?(@config[:dist])
+      raise ArgumentError, "Invalid dist selected: #{@config[:dist]}. Valid choices are #{valid_dists.join(' ')}"
+    end
+    # rubocop:enable Style/GuardClause
   end
 
   def dist
@@ -47,12 +58,16 @@ class OodPackaging::BuildBox
     'yum'
   end
 
+  def valid_dist?(value)
+    BASE_IMAGES.key?(value)
+  end
+
+  def valid_dists
+    BASE_IMAGES.keys
+  end
+
   def base_image
-    @base_image ||= {
-      'el7'          => 'centos:7',
-      'el8'          => 'rockylinux/rockylinux:8',
-      'ubuntu-20.04' => 'ubuntu:20.04'
-    }[dist]
+    @base_image ||= BASE_IMAGES[dist]
   end
 
   def build_dir
