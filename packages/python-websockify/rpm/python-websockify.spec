@@ -1,11 +1,13 @@
+%{!?package_release: %define package_release 1}
+
 Name:           python-websockify
-Version:        0.8.0
-Release:        1%{?dist}
+Version:        %{package_version}
+Release:        %{package_release}%{?dist}
 Summary:        WSGI based adapter for the Websockets protocol
 
 License:        LGPLv3
 URL:            https://github.com/novnc/websockify
-Source0:        https://github.com/novnc/websockify/archive/v%{version}.tar.gz#/websockify-%{version}.tar.gz
+Source0:        https://github.com/novnc/websockify/archive/refs/tags/v%{package_version}.tar.gz
 BuildArch:      noarch
 BuildRequires:  python2-devel
 BuildRequires:  python2-rpm-macros

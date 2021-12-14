@@ -1,3 +1,5 @@
+%{!?package_release: %define package_release 1}
+
 # Path under which TurboVNC should be installed
 %define prefix /opt/TurboVNC
 
@@ -56,8 +58,8 @@
 
 Summary:   A highly-optimized version of VNC that can be used with performance-critical applications
 Name:      turbovnc
-Version:   2.2.5
-Release:   1%{?dist}
+Version:   %{package_version}
+Release:   %{package_release}%{?dist}
 Vendor:    The VirtualGL Project
 URL:       http://www.TurboVNC.org
 Source0: http://prdownloads.sourceforge.net/turbovnc/turbovnc-%{version}.tar.gz

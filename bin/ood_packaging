@@ -30,6 +30,14 @@ OptionParser.new do |opts|
     options[:version] = v
   end
 
+  opts.on('-T', '--tar', 'Create tar archive for package') do
+    options[:tar] = true
+  end
+
+  opts.on('-t', '--tar-only', 'Only create tar archive') do
+    options[:tar_only] = true
+  end
+
   opts.on('-G', '--gpg-name', String, 'GPG key name') do |v|
     options[:gpg_name] = v
   end

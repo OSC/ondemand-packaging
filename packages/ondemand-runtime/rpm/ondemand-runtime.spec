@@ -2,6 +2,7 @@
 %global scl_name_base %scl
 %global _scl_prefix /opt/ood
 %scl_package %scl
+%{!?package_release: %define package_release 1}
 
 %if 0%{?rhel} >= 8
 %global ruby ruby
@@ -18,8 +19,8 @@
 %global ondemand_core_gem_home %{ondemand_gem_home}/ondemand
 
 Name:      ondemand-runtime
-Version:   2.1
-Release:   1%{?dist}
+Version:   %{package_version}
+Release:   %{package_release}%{?dist}
 Summary:   Package that handles %{scl} Software Collection.
 License:   MIT
 

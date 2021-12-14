@@ -1,6 +1,8 @@
+%{!?package_release: %define package_release 1}
+
 Name:		cjose
-Version:	0.6.1
-Release:	1%{?dist}
+Version:	%{package_version}
+Release:	%{package_release}%{?dist}
 Summary:	JOSE implementation for C
 
 Group:		Networking/Daemons/HTTP

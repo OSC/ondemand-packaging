@@ -44,21 +44,27 @@ jobs:
           - el8
           - ubuntu-20.04
         package:
-          - packages/ondemand-release|2.1
-          - packages/ondemand-release-latest|1
-          - packages/ondemand-runtime|2.1
-          - packages/passenger|6.0.11
-          - packages/cjose|0.6.1
-          - packages/mod_auth_openidc|2.4.5
+          - ondemand-release
+          - ondemand-release-latest
+          - ondemand-runtime
+          - passenger
+          - cjose
+          - mod_auth_openidc
+          - ondemand_exporter
         exclude:
           - dist: ubuntu-20.04
-            package: packages/ondemand-runtime|2.1
+            package: ondemand-runtime
           - dist: ubuntu-20.04
-            package: packages/cjose|0.6.1
+            package: cjose
           - dist: ubuntu-20.04
-            package: packages/mod_auth_openidc|2.4.5
+            package: mod_auth_openidc
+          - dist: ubuntu-20.04
+            package: ondemand_exporter
+        include:
+          - dist: el7
+            package: sqlite
     runs-on: ubuntu-latest
-    name: Package tests
+    name: Package test package=${{ matrix.package }} dist=${{ matrix.dist }}
     steps:
       - name: Checkout ${{ github.sha	}}
         uses: actions/checkout@v2
@@ -75,14 +81,40 @@ jobs:
           path: /tmp
       - name: Load image
         run: docker load --input /tmp/ood_packaging-${{ matrix.dist }}.tar.gz
-      - name: Create tar
-        if: "startsWith(matrix.dist, 'el') != true"
-        run: |
-          package=$(echo "${{ matrix.package }}" | cut -d'|' -f1)
-          version=$(echo "${{ matrix.package }}" | cut -d'|' -f2)
-          [ -f ${package}/deb/Makefile ] && make -f ${package}/deb/Makefile tar VERSION=$version
       - name: Build package
+        run: bundle exec rake ood_packaging:package:${{ matrix.package }}[${{ matrix.dist }}]
+        env:
+          OOD_PACKAGING_DEBUG: 'true'
+  package-ondemand:
+    needs: [buildbox]
+    strategy:
+      fail-fast: false
+      matrix:
+        dist:
+          - el7
+          - el8
+          - ubuntu-20.04
+    runs-on: ubuntu-latest
+    name: Package OnDemand dist=${{ matrix.dist }}
+    steps:
+      - name: Checkout ${{ github.sha	}}
+        uses: actions/checkout@v2
+      - name: Setup Ruby ${{ matrix.ruby }} using Bundler ${{ matrix.bundler }}
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '2.7.1'
+          bundler: '2.1.4'
+          bundler-cache: true
+      - name: Download image
+        uses: actions/download-artifact@v2
+        with:
+          name: image-${{ matrix.dist }}
+          path: /tmp
+      - name: Load image
+        run: docker load --input /tmp/ood_packaging-${{ matrix.dist }}.tar.gz
+      - name: Clone OnDemand
         run: |
-          package=$(echo "${{ matrix.package }}" | cut -d'|' -f1)
-          version=$(echo "${{ matrix.package }}" | cut -d'|' -f2)
-          ./bin/ood_packaging -w tmp/work -o tmp/output -d ${{ matrix.dist }} -V $version --debug $(pwd)/${package}
+          mkdir -p ./tmp
+          git clone https://github.com/OSC/ondemand.git ./tmp/ondemand
+      - name: Build package
+        run: ./bin/ood_packaging -w ./tmp/work -o ./tmp/output -d ${{ matrix.dist }} -V v2.1.0 -T --debug $(pwd)/tmp/ondemand

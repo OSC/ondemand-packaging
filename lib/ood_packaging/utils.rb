@@ -8,6 +8,13 @@ module OodPackaging::Utils
     File.expand_path(File.join(File.dirname(__FILE__), '../..'))
   end
 
+  def tar
+    @tar ||= begin
+      `which gtar 1>/dev/null 2>&1`
+      $CHILD_STATUS.success? ? 'gtar' : 'tar'
+    end
+  end
+
   def podman_runtime?
     @podman_runtime ||= ENV['CONTAINER_RT'] == 'podman' || ENV['container'] == 'podman'
   end
@@ -50,6 +57,10 @@ module OodPackaging::Utils
 
   def scl_ruby
     "rh-ruby#{ruby_version.tr('.', '')}"
+  end
+
+  def nodejs_version
+    '14'
   end
 
   def ctr_scripts_dir

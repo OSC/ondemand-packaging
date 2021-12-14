@@ -1,6 +1,8 @@
+%{!?package_release: %define package_release 1}
+
 Name:       ondemand-compute
-Version:    2.1
-Release:    1%{?dist}
+Version:    %{package_version}
+Release:    %{package_release}%{?dist}
 Summary:    Open OnDemand Compute meta package
 
 Group:      Applications/System
