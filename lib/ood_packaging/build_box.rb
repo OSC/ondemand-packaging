@@ -94,8 +94,12 @@ class OodPackaging::BuildBox
     @config[:builx_box_name] || ENV['OOD_PACKAGING_BUILD_BOX_NAME'] || 'ood-buildbox'
   end
 
+  def image_version
+    ENV['OOD_PACKAGING_BUILD_BOX_VERSION'] || OodPackaging::VERSION
+  end
+
   def image_tag
-    [image_registry, image_org, "#{image_name}-#{dist}:#{OodPackaging::VERSION}"].compact.join('/')
+    [image_registry, image_org, "#{image_name}-#{dist}:#{image_version}"].compact.join('/')
   end
 
   def build_gem

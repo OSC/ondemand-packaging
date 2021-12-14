@@ -1,4 +1,5 @@
 before_script:
+  - '[ "$CI_PIPELINE_SOURCE" == "external_pull_request_event" ] && export OOD_PACKAGING_BUILD_BOX_VERSION=latest'
   - docker info
   - '[ -d tmp ] || mkdir tmp'
   - bundle install --path vendor/bundle
