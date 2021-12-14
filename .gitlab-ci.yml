@@ -1,0 +1,237 @@
+before_script:
+  - docker info
+  - '[ -d tmp ] || mkdir tmp'
+
+stages:
+  - build
+  - deploy
+
+variables:
+  GIT_STRATEGY: clone
+  GIT_DEPTH: 0
+  OOD_BUILD_REPO: '2.1'
+  OOD_PACKAGING_DEBUG: 'true'
+  OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
+  OOD_PACKAGING_GPG_PASSPHRASE: /systems/osc_certs/gpg/ondemand/.gpgpass
+
+build-ondemand-release-rpm:
+  stage: build
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "external_pull_requests_event"'
+    - if: '$CI_COMMIT_TAG =~ /^ondemand-release-[0-9]/'
+  script:
+    - bundle exec rake ood_packaging:package:ondemand-release[el8]
+  artifacts:
+    paths:
+      - tmp/output
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
+
+build-ondemand-release-deb:
+  stage: build
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "external_pull_requests_event"'
+    - if: '$CI_COMMIT_TAG =~ /^ondemand-release-[0-9]/'
+  script:
+    - bundle exec rake ood_packaging:package:ondemand-release[ubuntu-20.04]
+  artifacts:
+    paths:
+      - tmp/output
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
+
+build-ondemand-release-latest-rpm:
+  stage: build
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "external_pull_requests_event"'
+    - if: '$CI_COMMIT_TAG =~ /^ondemand-release-latest-/'
+  script:
+    - bundle exec rake ood_packaging:package:ondemand-release-latest[el8]
+  artifacts:
+    paths:
+      - tmp/output
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
+
+build-ondemand-release-latest-deb:
+  stage: build
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "external_pull_requests_event"'
+    - if: '$CI_COMMIT_TAG =~ /^ondemand-release-latest-/'
+  script:
+    - bundle exec rake ood_packaging:package:ondemand-release-latest[ubuntu-20.04]
+  artifacts:
+    paths:
+      - tmp/output
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
+
+build-ondemand-runtime-el7:
+  stage: build
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "external_pull_requests_event"'
+    - if: '$CI_COMMIT_TAG =~ /^ondemand-runtime-/'
+  script:
+    - bundle exec rake ood_packaging:package:ondemand-runtime[el7]
+  artifacts:
+    paths:
+      - tmp/output
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
+
+build-ondemand-runtime-el8:
+  stage: build
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "external_pull_requests_event"'
+    - if: '$CI_COMMIT_TAG =~ /^ondemand-runtime-/'
+  script:
+    - bundle exec rake ood_packaging:package:ondemand-runtime[el8]
+  artifacts:
+    paths:
+      - tmp/output
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
+
+build-ondemand-runtime-ubuntu-20.04:
+  stage: build
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "external_pull_requests_event"'
+    - if: '$CI_COMMIT_TAG =~ /^ondemand-runtime-/'
+  script:
+    - bundle exec rake ood_packaging:package:ondemand-runtime[ubuntu-20.04]
+  artifacts:
+    paths:
+      - tmp/output
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
+
+build-passenger-el7:
+  stage: build
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "external_pull_requests_event"'
+    - if: '$CI_COMMIT_TAG =~ /^passenger-/'
+  script:
+    - bundle exec rake ood_packaging:package:passenger[el7]
+  artifacts:
+    paths:
+      - tmp/output
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
+
+build-passenger-el8:
+  stage: build
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "external_pull_requests_event"'
+    - if: '$CI_COMMIT_TAG =~ /^passenger-/'
+  script:
+    - bundle exec rake ood_packaging:package:passenger[el8]
+  artifacts:
+    paths:
+      - tmp/output
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
+
+build-passenger-ubuntu-20.04:
+  stage: build
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "external_pull_requests_event"'
+    - if: '$CI_COMMIT_TAG =~ /^passenger-/'
+  script:
+    - bundle exec rake ood_packaging:package:passenger[ubuntu-20.04]
+  artifacts:
+    paths:
+      - tmp/output
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
+
+build-sqlite-el7:
+  stage: build
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "external_pull_requests_event"'
+    - if: '$CI_COMMIT_TAG =~ /^sqlite-/'
+  script:
+    - bundle exec rake ood_packaging:package:sqlite[el7]
+  artifacts:
+    paths:
+      - tmp/output
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
+
+build-cjose-el7:
+  stage: build
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "external_pull_requests_event"'
+    - if: '$CI_COMMIT_TAG =~ /^cjose-/'
+  script:
+    - bundle exec rake ood_packaging:package:cjose[el7]
+  artifacts:
+    paths:
+      - tmp/output
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
+
+build-cjose-el8:
+  stage: build
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "external_pull_requests_event"'
+    - if: '$CI_COMMIT_TAG =~ /^cjose-/'
+  script:
+    - bundle exec rake ood_packaging:package:cjose[el8]
+  artifacts:
+    paths:
+      - tmp/output
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
+
+build-mod_auth_openidc-el7:
+  stage: build
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "external_pull_requests_event"'
+    - if: '$CI_COMMIT_TAG =~ /^mod_auth_openidc-/'
+  script:
+    - bundle exec rake ood_packaging:package:mod_auth_openidc[el7]
+  artifacts:
+    paths:
+      - tmp/output
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
+
+build-mod_auth_openidc-el8:
+  stage: build
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "external_pull_requests_event"'
+    - if: '$CI_COMMIT_TAG =~ /^mod_auth_openidc-/'
+  script:
+    - bundle exec rake ood_packaging:package:mod_auth_openidc[el8]
+  artifacts:
+    paths:
+      - tmp/output
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
+
+build-ondemand_exporter-el7:
+  stage: build
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "external_pull_requests_event"'
+    - if: '$CI_COMMIT_TAG =~ /^ondemand_exporter-/'
+  script:
+    - bundle exec rake ood_packaging:package:ondemand_exporter[el7]
+  artifacts:
+    paths:
+      - tmp/output
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
+
+build-ondemand_exporter-el8:
+  stage: build
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "external_pull_requests_event"'
+    - if: '$CI_COMMIT_TAG =~ /^ondemand_exporter-/'
+  script:
+    - bundle exec rake ood_packaging:package:ondemand_exporter[el8]
+  artifacts:
+    paths:
+      - tmp/output
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
+
+package-deploy-latest:
+  stage: deploy
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - ./tmp/ondemand-packaging/release.py --debug --pkey /systems/osc_certs/ssh/ondemand-packaging/id_rsa -c main ./tmp/output/*
+
+package-deploy-build:
+  stage: deploy
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^ondemand-runtime-/'
+    - if: '$CI_COMMIT_TAG =~ /^passenger-/'
+    - if: '$CI_COMMIT_TAG =~ /^sqlite-/'
+    - if: '$CI_COMMIT_TAG =~ /^cjose-/'
+    - if: '$CI_COMMIT_TAG =~ /^mod_auth_openidc-/'
+  script:
+    - ./tmp/ondemand-packaging/release.py --debug --pkey /systems/osc_certs/ssh/ondemand-packaging/id_rsa -c build -r $OOD_BUILD_REPO ./tmp/output/*
