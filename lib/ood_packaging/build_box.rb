@@ -15,6 +15,10 @@ class OodPackaging::BuildBox
     'ubuntu-20.04' => 'ubuntu:20.04'
   }.freeze
 
+  CODENAMES = {
+    'ubuntu-20.04' => 'focal'
+  }.freeze
+
   def initialize(config = {})
     @config = config
     raise ArgumentError, 'Must provide dist' if @config[:dist].nil?
@@ -68,6 +72,10 @@ class OodPackaging::BuildBox
 
   def base_image
     @base_image ||= BASE_IMAGES[dist]
+  end
+
+  def codename
+    @codename ||= CODENAMES[dist]
   end
 
   def build_dir
