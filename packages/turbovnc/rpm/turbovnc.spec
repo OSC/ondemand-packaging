@@ -73,6 +73,9 @@ BuildRequires: libX11-devel
 BuildRequires: libXext-devel
 BuildRequires: pam-devel
 BuildRequires: openssl-devel
+%if 0%{?rhel} >= 8
+BuildRequires: libarchive
+%endif
 
 %description
 Virtual Network Computing (VNC) is a remote display system that allows you to
