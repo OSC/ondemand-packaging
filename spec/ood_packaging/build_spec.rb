@@ -119,7 +119,7 @@ describe OodPackaging::Build do
           "--tool='apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes'",
           '2>/dev/null 1>/dev/null'
         ]
-        expect(build).to receive(:sh).with('apt update -y 2>/dev/null 1>/dev/null')
+        expect(build).to receive(:sh).with('sudo apt update -y 2>/dev/null 1>/dev/null')
         expect(build).to receive(:sh).with(expected_cmd.join(' '))
         build.install_dependencies!
       end
