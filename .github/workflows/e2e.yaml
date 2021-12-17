@@ -19,7 +19,7 @@ jobs:
     steps:
       - name: Checkout ${{ github.sha	}}
         uses: actions/checkout@v2
-      - name: Setup Ruby ${{ matrix.ruby }} using Bundler ${{ matrix.bundler }}
+      - name: Setup Ruby using Bundler
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '2.7.1'
