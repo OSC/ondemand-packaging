@@ -95,7 +95,7 @@ class OodPackaging::BuildBox
   end
 
   def image_version
-    ENV['OOD_PACKAGING_BUILD_BOX_VERSION'] || OodPackaging::VERSION
+    (ENV['OOD_PACKAGING_BUILD_BOX_VERSION'] || OodPackaging::VERSION).gsub(/^v/, '')
   end
 
   def image_tag
