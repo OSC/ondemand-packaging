@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'ood_packaging/utils'
-require 'ood_packaging/version'
 require 'rake'
 require 'rake/file_utils'
 
