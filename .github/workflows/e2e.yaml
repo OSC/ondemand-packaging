@@ -90,7 +90,11 @@ jobs:
           bundler: '2.1.4'
           bundler-cache: true
       - name: Install the gem
-        run: bundle exec rake install
+        run: |
+          bundle exec rake build
+          gem install pkg/*.gem
+      - name: Dump gems
+        run: gem list
       - name: Download image
         uses: actions/download-artifact@v2
         with:
@@ -99,7 +103,7 @@ jobs:
       - name: Load image
         run: docker load --input /tmp/ood_packaging-${{ matrix.dist }}.tar.gz
       - name: Build package
-        run: cd /tmp && rake ood_packaging:package:${{ matrix.package }}[${{ matrix.dist }}]
+        run: rake ood_packaging:package:${{ matrix.package }}[${{ matrix.dist }}]
         env:
           OOD_PACKAGING_DEBUG: 'true'
   package-ondemand:
