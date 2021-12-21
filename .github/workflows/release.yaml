@@ -36,6 +36,7 @@ jobs:
   release-gem:
     needs: [release-buildbox]
     name: Release gem
+    runs-on: ubuntu-latest
     steps:
       - name: Set version
         id: version
