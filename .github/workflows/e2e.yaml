@@ -25,10 +25,12 @@ jobs:
           ruby-version: '2.7.1'
           bundler: '2.1.4'
           bundler-cache: true
+      - name: Install the gem
+        run: bundle exec rake install
       - name: Build the build box
-        run: cd /tmp && bundle exec rake ood_packaging:buildbox:build[${{ matrix.dist }}]
+        run: cd /tmp && rake ood_packaging:buildbox:build[${{ matrix.dist }}]
       - name: Export Docker image
-        run: bundle exec rake ood_packaging:buildbox:save[${{ matrix.dist }},/tmp/ood_packaging-${{ matrix.dist }}.tar.gz]
+        run: cd /tmp && rake ood_packaging:buildbox:save[${{ matrix.dist }},/tmp/ood_packaging-${{ matrix.dist }}.tar.gz]
       - name: Upload Docker image
         uses: actions/upload-artifact@v2
         with:
@@ -83,6 +85,8 @@ jobs:
           ruby-version: '2.7.1'
           bundler: '2.1.4'
           bundler-cache: true
+      - name: Install the gem
+        run: bundle exec rake install
       - name: Download image
         uses: actions/download-artifact@v2
         with:
@@ -91,7 +95,7 @@ jobs:
       - name: Load image
         run: docker load --input /tmp/ood_packaging-${{ matrix.dist }}.tar.gz
       - name: Build package
-        run: cd /tmp && bundle exec rake ood_packaging:package:${{ matrix.package }}[${{ matrix.dist }}]
+        run: cd /tmp && rake ood_packaging:package:${{ matrix.package }}[${{ matrix.dist }}]
         env:
           OOD_PACKAGING_DEBUG: 'true'
   package-ondemand:
