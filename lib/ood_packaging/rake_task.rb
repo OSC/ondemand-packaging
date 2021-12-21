@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-require 'ood_packaging'
+require 'ood_packaging/options'
+require 'ood_packaging/package'
+require 'ood_packaging/utils'
 require 'rake'
 require 'rake/tasklib'
 
