@@ -28,9 +28,9 @@ jobs:
       - name: Install the gem
         run: bundle exec rake install
       - name: Build the build box
-        run: cd /tmp && rake ood_packaging:buildbox:build[${{ matrix.dist }}]
+        run: rake ood_packaging:buildbox:build[${{ matrix.dist }}]
       - name: Export Docker image
-        run: cd /tmp && rake ood_packaging:buildbox:save[${{ matrix.dist }},/tmp/ood_packaging-${{ matrix.dist }}.tar.gz]
+        run: rake ood_packaging:buildbox:save[${{ matrix.dist }},/tmp/ood_packaging-${{ matrix.dist }}.tar.gz]
       - name: Upload Docker image
         uses: actions/upload-artifact@v2
         with:
