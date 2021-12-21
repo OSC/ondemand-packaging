@@ -26,7 +26,9 @@ jobs:
           bundler: '2.1.4'
           bundler-cache: true
       - name: Install the gem
-        run: rake install
+        run: |
+          bundle exec rake build
+          gem install pkg/*.gem
       - name: Dump gems
         run: gem list
       - name: Build the build box
