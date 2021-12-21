@@ -18,6 +18,10 @@ module OodPackaging
     'mod_auth_openidc'        => '2.4.5',
     'sqlite'                  => '3.26.0-4',
     'ondemand_exporter'       => '0.9.0',
+    'ondemand-compute'        => {
+      '(ubuntu|debian)' => '2.1.0',
+      'default'         => '2.1'
+    },
     'python-websockify'       => '0.8.0',
     'turbovnc'                => '2.2.5'
   }.freeze

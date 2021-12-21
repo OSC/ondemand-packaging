@@ -83,5 +83,20 @@ namespace :ood_packaging do
     task :ondemand_exporter, [:dist] do |t, args|
       Rake::Task['ood_packaging:package:internal'].invoke(t.name, args[:dist])
     end
+
+    desc 'Package ondemand-compute'
+    task :'ondemand-compute', [:dist] do |t, args|
+      Rake::Task['ood_packaging:package:internal'].invoke(t.name, args[:dist])
+    end
+
+    desc 'Package python-websockify'
+    task :'python-websockify', [:dist] do |t, args|
+      Rake::Task['ood_packaging:package:internal'].invoke(t.name, args[:dist])
+    end
+
+    desc 'Package turbovnc'
+    task :turbovnc, [:dist] do |t, args|
+      Rake::Task['ood_packaging:package:internal'].invoke(t.name, args[:dist])
+    end
   end
 end

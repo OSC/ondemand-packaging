@@ -51,6 +51,9 @@ jobs:
           - cjose
           - mod_auth_openidc
           - ondemand_exporter
+          - ondemand-compute
+          - python-websockify
+          - turbovnc
         exclude:
           - dist: ubuntu-20.04
             package: ondemand-runtime
@@ -60,6 +63,12 @@ jobs:
             package: mod_auth_openidc
           - dist: ubuntu-20.04
             package: ondemand_exporter
+          - dist: ubuntu-20.04
+            package: ondemand-compute
+          - dist: ubuntu-20.04
+            package: python-websockify
+          - dist: ubuntu-20.04
+            package: turbovnc
         include:
           - dist: el7
             package: sqlite

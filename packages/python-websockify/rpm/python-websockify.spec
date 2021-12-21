@@ -1,4 +1,5 @@
 %{!?package_release: %define package_release 1}
+%define __brp_mangle_shebangs /bin/true
 
 Name:           python-websockify
 Version:        %{package_version}

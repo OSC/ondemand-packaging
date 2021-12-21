@@ -28,205 +28,166 @@ build-image:
     matrix:
       - DIST: [el7, el8, ubuntu-20.04]
 
-build-ondemand-release-rpm:
+build-ondemand-release:
   stage: build
   rules:
     - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
     - if: '$CI_COMMIT_TAG =~ /^ondemand-release-[0-9]/'
   script:
-    - bundle exec rake ood_packaging:package:ondemand-release[el8]
+    - bundle exec rake ood_packaging:package:ondemand-release[$DIST]
+  parallel:
+    matrix:
+      - DIST: [el8, ubuntu-20.04]
   artifacts:
     paths:
       - tmp/output
     name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
 
-build-ondemand-release-deb:
-  stage: build
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
-    - if: '$CI_COMMIT_TAG =~ /^ondemand-release-[0-9]/'
-  script:
-    - bundle exec rake ood_packaging:package:ondemand-release[ubuntu-20.04]
-  artifacts:
-    paths:
-      - tmp/output
-    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
-
-build-ondemand-release-latest-rpm:
+build-ondemand-release-latest:
   stage: build
   rules:
     - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
     - if: '$CI_COMMIT_TAG =~ /^ondemand-release-latest-/'
   script:
-    - bundle exec rake ood_packaging:package:ondemand-release-latest[el8]
+    - bundle exec rake ood_packaging:package:ondemand-release-latest[$DIST]
+  parallel:
+    matrix:
+      - DIST: [el8, ubuntu-20.04]
   artifacts:
     paths:
       - tmp/output
     name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
 
-build-ondemand-release-latest-deb:
-  stage: build
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
-    - if: '$CI_COMMIT_TAG =~ /^ondemand-release-latest-/'
-  script:
-    - bundle exec rake ood_packaging:package:ondemand-release-latest[ubuntu-20.04]
-  artifacts:
-    paths:
-      - tmp/output
-    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
-
-build-ondemand-runtime-el7:
+build-ondemand-runtime:
   stage: build
   rules:
     - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
     - if: '$CI_COMMIT_TAG =~ /^ondemand-runtime-/'
   script:
-    - bundle exec rake ood_packaging:package:ondemand-runtime[el7]
+    - bundle exec rake ood_packaging:package:ondemand-runtime[$DIST]
+  parallel:
+    matrix:
+      - DIST: [el7, el8]
   artifacts:
     paths:
       - tmp/output
     name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
 
-build-ondemand-runtime-el8:
-  stage: build
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
-    - if: '$CI_COMMIT_TAG =~ /^ondemand-runtime-/'
-  script:
-    - bundle exec rake ood_packaging:package:ondemand-runtime[el8]
-  artifacts:
-    paths:
-      - tmp/output
-    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
-
-build-ondemand-runtime-ubuntu-20.04:
-  stage: build
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
-    - if: '$CI_COMMIT_TAG =~ /^ondemand-runtime-/'
-  script:
-    - bundle exec rake ood_packaging:package:ondemand-runtime[ubuntu-20.04]
-  artifacts:
-    paths:
-      - tmp/output
-    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
-
-build-passenger-el7:
+build-passenger:
   stage: build
   rules:
     - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
     - if: '$CI_COMMIT_TAG =~ /^passenger-/'
   script:
-    - bundle exec rake ood_packaging:package:passenger[el7]
+    - bundle exec rake ood_packaging:package:passenger[$DIST]
+  parallel:
+    matrix:
+      - DIST: [el7, el8, ubuntu-20.04]
   artifacts:
     paths:
       - tmp/output
     name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
 
-build-passenger-el8:
-  stage: build
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
-    - if: '$CI_COMMIT_TAG =~ /^passenger-/'
-  script:
-    - bundle exec rake ood_packaging:package:passenger[el8]
-  artifacts:
-    paths:
-      - tmp/output
-    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
-
-build-passenger-ubuntu-20.04:
-  stage: build
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
-    - if: '$CI_COMMIT_TAG =~ /^passenger-/'
-  script:
-    - bundle exec rake ood_packaging:package:passenger[ubuntu-20.04]
-  artifacts:
-    paths:
-      - tmp/output
-    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
-
-build-sqlite-el7:
+build-sqlite:
   stage: build
   rules:
     - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
     - if: '$CI_COMMIT_TAG =~ /^sqlite-/'
   script:
-    - bundle exec rake ood_packaging:package:sqlite[el7]
+    - bundle exec rake ood_packaging:package:sqlite[$DIST]
+  parallel:
+    matrix:
+      - DIST: [el7]
   artifacts:
     paths:
       - tmp/output
     name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
 
-build-cjose-el7:
+build-cjose:
   stage: build
   rules:
     - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
     - if: '$CI_COMMIT_TAG =~ /^cjose-/'
   script:
-    - bundle exec rake ood_packaging:package:cjose[el7]
+    - bundle exec rake ood_packaging:package:cjose[$DIST]
+  parallel:
+    matrix:
+      - DIST: [el7, el8]
   artifacts:
     paths:
       - tmp/output
     name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
 
-build-cjose-el8:
-  stage: build
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
-    - if: '$CI_COMMIT_TAG =~ /^cjose-/'
-  script:
-    - bundle exec rake ood_packaging:package:cjose[el8]
-  artifacts:
-    paths:
-      - tmp/output
-    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
-
-build-mod_auth_openidc-el7:
+build-mod_auth_openidc:
   stage: build
   rules:
     - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
     - if: '$CI_COMMIT_TAG =~ /^mod_auth_openidc-/'
   script:
-    - bundle exec rake ood_packaging:package:mod_auth_openidc[el7]
+    - bundle exec rake ood_packaging:package:mod_auth_openidc[$DIST]
+  parallel:
+    matrix:
+      - DIST: [el7, el8]
   artifacts:
     paths:
       - tmp/output
     name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
 
-build-mod_auth_openidc-el8:
-  stage: build
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
-    - if: '$CI_COMMIT_TAG =~ /^mod_auth_openidc-/'
-  script:
-    - bundle exec rake ood_packaging:package:mod_auth_openidc[el8]
-  artifacts:
-    paths:
-      - tmp/output
-    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
-
-build-ondemand_exporter-el7:
+build-ondemand_exporter:
   stage: build
   rules:
     - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
     - if: '$CI_COMMIT_TAG =~ /^ondemand_exporter-/'
   script:
-    - bundle exec rake ood_packaging:package:ondemand_exporter[el7]
+    - bundle exec rake ood_packaging:package:ondemand_exporter[$DIST]
+  parallel:
+    matrix:
+      - DIST: [el7, el8]
   artifacts:
     paths:
       - tmp/output
     name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
 
-build-ondemand_exporter-el8:
+build-ondemand-compute:
   stage: build
   rules:
     - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
-    - if: '$CI_COMMIT_TAG =~ /^ondemand_exporter-/'
+    - if: '$CI_COMMIT_TAG =~ /^ondemand-compute-/'
   script:
-    - bundle exec rake ood_packaging:package:ondemand_exporter[el8]
+    - bundle exec rake ood_packaging:package:ondemand-compute[$DIST]
+  parallel:
+    matrix:
+      - DIST: [el7, el8]
+  artifacts:
+    paths:
+      - tmp/output
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
+
+build-python-websockify:
+  stage: build
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
+    - if: '$CI_COMMIT_TAG =~ /^python-websockify-/'
+  script:
+    - bundle exec rake ood_packaging:package:python-websockify[$DIST]
+  parallel:
+    matrix:
+      - DIST: [el7, el8]
+  artifacts:
+    paths:
+      - tmp/output
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
+
+build-turbovnc:
+  stage: build
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
+    - if: '$CI_COMMIT_TAG =~ /^turbovnc-/'
+  script:
+    - bundle exec rake ood_packaging:package:turbovnc[$DIST]
+  parallel:
+    matrix:
+      - DIST: [el7, el8]
   artifacts:
     paths:
       - tmp/output
