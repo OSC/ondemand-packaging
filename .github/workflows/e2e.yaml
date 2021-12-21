@@ -27,6 +27,8 @@ jobs:
           bundler-cache: true
       - name: Install the gem
         run: bundle exec rake install
+      - name: Dump gems
+        run: gem list
       - name: Build the build box
         run: rake ood_packaging:buildbox:build[${{ matrix.dist }}]
       - name: Export Docker image
