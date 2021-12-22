@@ -76,8 +76,8 @@ class OodPackaging::Build
                     '/package/rpm'
                   elsif Dir.exist?('/package/packaging/rpm')
                     '/package/packaging/rpm'
-                  elsif Dir.exist?('/packaging')
-                    '/packaging'
+                  elsif Dir.exist?('/package/packaging')
+                    '/package/packaging'
                   else
                     '/package'
                   end
@@ -192,10 +192,20 @@ class OodPackaging::Build
   def bootstrap_get_source!
     if ENV['SKIP_DOWNLOAD'] == 'true'
       puts "\tSKIP_DOWNLOAD detected, skipping download sources".blue
-    else
-      puts "\tDownloading sources defined in #{spec_file}".blue
-      sh "spectool #{rpm_defines.join(' ')} -g -R -S #{spec_file}#{cmd_suffix}"
+      return
     end
+    output = `spectool #{rpm_defines.join(' ')} -l -R -S #{spec_file} 2>&1 | grep 'Source0:'`.strip
+    exit_code = $CHILD_STATUS.exitstatus
+    if exit_code.zero?
+      source = File.join(work_dir, 'SOURCES', File.basename(output))
+      tar = File.join(work_dir, 'SOURCES', ENV['TAR_NAME'])
+      if !File.exist?(source) && File.exist?(tar)
+        sh "mv #{tar} #{source}"
+        return
+      end
+    end
+    puts "\tDownloading sources defined in #{spec_file}".blue
+    sh "spectool #{rpm_defines.join(' ')} -g -R -S #{spec_file}#{cmd_suffix}"
   end
 
   def bootstrap_deb!

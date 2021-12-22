@@ -126,6 +126,15 @@ class OodPackaging::Package
     package
   end
 
+  def tar_name
+    version = if build_box.rpm?
+                rpm_version
+              else
+                deb_version
+              end
+    "#{package_name}-#{version}"
+  end
+
   def rpm_tar_dest_dir
     [
       File.join(package, 'rpm'),
@@ -204,14 +213,12 @@ class OodPackaging::Package
     cmd = ['git', 'ls-files', '.', '|', tar, '-c']
     if build_box.rpm?
       dir = rpm_tar_dest_dir
-      version = rpm_version
     else
       dir = deb_tar_dest_dir.tap { |p| sh "mkdir -p #{p}" }
-      version = deb_version
       cmd.concat ["--transform 'flags=r;s,packaging/deb,debian,'"]
     end
-    tar_file = "#{dir}/#{package_name}-#{version}.tar.gz"
-    cmd.concat ["--transform 's,^,#{package_name}-#{version}/,'"]
+    tar_file = "#{dir}/#{tar_name}.tar.gz"
+    cmd.concat ["--transform 's,^,#{tar_name}/,'"]
     cmd.concat ['-T', '-', '|', "gzip > #{tar_file}"]
 
     sh "rm #{tar_file}" if File.exist?(tar_file)
@@ -283,6 +290,7 @@ class OodPackaging::Package
       'DIST'          => build_box.dist,
       'PACKAGE'       => package_name,
       'VERSION'       => version,
+      'TAR_NAME'      => "#{tar_name}.tar.gz",
       'GPG_SIGN'      => gpg_sign,
       'GPG_NAME'      => gpg_name,
       'SKIP_DOWNLOAD' => @config[:skip_download],
