@@ -158,7 +158,7 @@ describe OodPackaging::Package do
         '-e', "'OOD_UID=1000'", '-e', "'OOD_GID=1000'",
         '-e', "'DEBUG=false'", '-e', "'VERSION=0.0.1'",
         'uuid', '/ondemand-packaging/inituidgid.sh', '/ondemand-packaging/setuser.rb', 'ood',
-        'rake', '-q', '-f', '/ondemand-packaging/Rakefile', 'ood_packaging:package:build'
+        '/ondemand-packaging/rake', '-q', '-f', '/ondemand-packaging/Rakefile', 'ood_packaging:package:build'
       ]
       expect(package).to receive(:sh).with(expected_command.join(' '), verbose: false)
       package.container_exec!(package.exec_rake)
