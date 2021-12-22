@@ -21,17 +21,17 @@ class OodPackaging::BuildBox
 
   def initialize(config = {})
     @config = config
-    raise ArgumentError, 'Must provide dist' if @config[:dist].nil?
+    raise ArgumentError, 'Must provide dist' if dist.nil?
 
     # rubocop:disable Style/GuardClause
-    unless valid_dist?(@config[:dist])
-      raise ArgumentError, "Invalid dist selected: #{@config[:dist]}. Valid choices are #{valid_dists.join(' ')}"
+    unless valid_dist?(dist)
+      raise ArgumentError, "Invalid dist selected: #{dist}. Valid choices are #{valid_dists.join(' ')}"
     end
     # rubocop:enable Style/GuardClause
   end
 
   def dist
-    @dist ||= @config[:dist]
+    @dist ||= ENV['OOD_PACKAGING_DIST'] || @config[:dist]
   end
 
   def rpm?

@@ -23,10 +23,10 @@ build-image:
     - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
     - if: $CI_COMMIT_TAG
   script:
-    - bundle exec rake ood_packaging:buildbox:build[$DIST]
+    - bundle exec rake ood_packaging:buildbox:build
   parallel:
     matrix:
-      - DIST: [el7, el8, ubuntu-20.04]
+      - OOD_PACKAGING_DIST: [el7, el8, ubuntu-20.04]
 
 build-ondemand-release:
   stage: build
@@ -34,10 +34,10 @@ build-ondemand-release:
     - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
     - if: '$CI_COMMIT_TAG =~ /^ondemand-release-[0-9]/'
   script:
-    - bundle exec rake ood_packaging:package:ondemand-release[$DIST]
+    - bundle exec rake ood_packaging:package:ondemand-release
   parallel:
     matrix:
-      - DIST: [el8, ubuntu-20.04]
+      - OOD_PACKAGING_DIST: [el8, ubuntu-20.04]
   artifacts:
     paths:
       - tmp/output
@@ -49,10 +49,10 @@ build-ondemand-release-latest:
     - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
     - if: '$CI_COMMIT_TAG =~ /^ondemand-release-latest-/'
   script:
-    - bundle exec rake ood_packaging:package:ondemand-release-latest[$DIST]
+    - bundle exec rake ood_packaging:package:ondemand-release-latest
   parallel:
     matrix:
-      - DIST: [el8, ubuntu-20.04]
+      - OOD_PACKAGING_DIST: [el8, ubuntu-20.04]
   artifacts:
     paths:
       - tmp/output
@@ -64,10 +64,10 @@ build-ondemand-runtime:
     - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
     - if: '$CI_COMMIT_TAG =~ /^ondemand-runtime-/'
   script:
-    - bundle exec rake ood_packaging:package:ondemand-runtime[$DIST]
+    - bundle exec rake ood_packaging:package:ondemand-runtime
   parallel:
     matrix:
-      - DIST: [el7, el8]
+      - OOD_PACKAGING_DIST: [el7, el8]
   artifacts:
     paths:
       - tmp/output
@@ -82,7 +82,7 @@ build-passenger:
     - bundle exec rake ood_packaging:package:passenger[$DIST]
   parallel:
     matrix:
-      - DIST: [el7, el8, ubuntu-20.04]
+      - OOD_PACKAGING_DIST: [el7, el8, ubuntu-20.04]
   artifacts:
     paths:
       - tmp/output
@@ -97,7 +97,7 @@ build-sqlite:
     - bundle exec rake ood_packaging:package:sqlite[$DIST]
   parallel:
     matrix:
-      - DIST: [el7]
+      - OOD_PACKAGING_DIST: [el7]
   artifacts:
     paths:
       - tmp/output
@@ -112,7 +112,7 @@ build-cjose:
     - bundle exec rake ood_packaging:package:cjose[$DIST]
   parallel:
     matrix:
-      - DIST: [el7, el8]
+      - OOD_PACKAGING_DIST: [el7, el8]
   artifacts:
     paths:
       - tmp/output
@@ -127,7 +127,7 @@ build-mod_auth_openidc:
     - bundle exec rake ood_packaging:package:mod_auth_openidc[$DIST]
   parallel:
     matrix:
-      - DIST: [el7, el8]
+      - OOD_PACKAGING_DIST: [el7, el8]
   artifacts:
     paths:
       - tmp/output
@@ -142,7 +142,7 @@ build-ondemand_exporter:
     - bundle exec rake ood_packaging:package:ondemand_exporter[$DIST]
   parallel:
     matrix:
-      - DIST: [el7, el8]
+      - OOD_PACKAGING_DIST: [el7, el8]
   artifacts:
     paths:
       - tmp/output
@@ -157,7 +157,7 @@ build-ondemand-compute:
     - bundle exec rake ood_packaging:package:ondemand-compute[$DIST]
   parallel:
     matrix:
-      - DIST: [el7, el8]
+      - OOD_PACKAGING_DIST: [el7, el8]
   artifacts:
     paths:
       - tmp/output
@@ -172,7 +172,7 @@ build-python-websockify:
     - bundle exec rake ood_packaging:package:python-websockify[$DIST]
   parallel:
     matrix:
-      - DIST: [el7, el8]
+      - OOD_PACKAGING_DIST: [el7, el8]
   artifacts:
     paths:
       - tmp/output
@@ -184,10 +184,10 @@ build-turbovnc:
     - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
     - if: '$CI_COMMIT_TAG =~ /^turbovnc-/'
   script:
-    - bundle exec rake ood_packaging:package:turbovnc[$DIST]
+    - bundle exec rake ood_packaging:package:turbovnc
   parallel:
     matrix:
-      - DIST: [el7, el8]
+      - OOD_PACKAGING_DIST: [el7, el8]
   artifacts:
     paths:
       - tmp/output
