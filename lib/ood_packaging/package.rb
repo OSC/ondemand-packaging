@@ -127,9 +127,13 @@ class OodPackaging::Package
   end
 
   def rpm_tar_dest_dir
-    dir = File.join(package, 'rpm')
-    return dir if Dir.exist?(dir)
-
+    [
+      File.join(package, 'rpm'),
+      File.join(package, 'packaging/rpm'),
+      File.join(package, 'packaging')
+    ].each do |dir|
+      return dir if Dir.exist?(dir)
+    end
     File.join(package, 'packaging/rpm')
   end
 
