@@ -15,6 +15,13 @@ module OodPackaging::Utils
     end
   end
 
+  def sed
+    @sed ||= begin
+      `which gsed 1>/dev/null 2>&1`
+      $CHILD_STATUS.success? ? 'gsed' : 'sed'
+    end
+  end
+
   def podman_runtime?
     @podman_runtime ||= ENV['CONTAINER_RT'] == 'podman' || ENV['container'] == 'podman'
   end

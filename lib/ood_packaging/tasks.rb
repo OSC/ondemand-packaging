@@ -7,6 +7,14 @@ require 'ood_packaging/utils'
 namespace :ood_packaging do
   include OodPackaging::Utils
 
+  desc 'Set version'
+  task :version, [:version] do |_task, args|
+    version_file = File.join(proj_root, 'lib/ood_packaging/version.rb')
+    version = args[:version].gsub(/^v/, '')
+    sh "#{sed} -i -r \"s|  VERSION =.*|  VERSION = '#{version}'|g\" #{version_file}"
+    sh 'bundle install'
+  end
+
   namespace :buildbox do
     desc 'Build buildbox image'
     task :build, [:dist] do |_task, args|
