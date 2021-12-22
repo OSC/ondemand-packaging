@@ -12,7 +12,7 @@ describe OodPackaging::Package do
       package:    File.join(tmp, 'package'),
       work_dir:   File.join(tmp, 'work'),
       output_dir: File.join(tmp, 'output'),
-      version:    '0.0.1'
+      version:    'v0.0.1'
     }
   end
   let(:config) { default_config }
@@ -153,10 +153,10 @@ describe OodPackaging::Package do
     it 'execs container with Rake' do
       expected_command = [
         'docker', 'exec',
-        '-e', "'DIST=el8'", '-e', "'PACKAGE=package'",
+        '-e', "'DIST=el8'", '-e', "'PACKAGE=package'", '-e', "'VERSION=v0.0.1'",
         '-e', "'GPG_SIGN=false'", '-e', "'GPG_NAME=OnDemand Release Signing Key'",
         '-e', "'OOD_UID=1000'", '-e', "'OOD_GID=1000'",
-        '-e', "'DEBUG=false'", '-e', "'VERSION=0.0.1'",
+        '-e', "'DEBUG=false'",
         'uuid', '/ondemand-packaging/inituidgid.sh', '/ondemand-packaging/setuser.rb', 'ood',
         '/ondemand-packaging/rake', '-q', '-f', '/ondemand-packaging/Rakefile', 'ood_packaging:package:build'
       ]

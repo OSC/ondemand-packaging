@@ -275,6 +275,7 @@ class OodPackaging::Package
     env = {
       'DIST'          => build_box.dist,
       'PACKAGE'       => package_name,
+      'VERSION'       => version,
       'GPG_SIGN'      => gpg_sign,
       'GPG_NAME'      => gpg_name,
       'SKIP_DOWNLOAD' => @config[:skip_download],
@@ -282,8 +283,6 @@ class OodPackaging::Package
       'OOD_GID'       => Process.gid,
       'DEBUG'         => debug
     }
-    env['VERSION'] = rpm_version if build_box.rpm?
-    env['VERSION'] = deb_version if build_box.deb?
     env['GPG_PUBKEY'] = '/gpg.pub' if @config[:gpg_pubkey]
     env
   end
