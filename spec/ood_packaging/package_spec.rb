@@ -41,6 +41,11 @@ describe OodPackaging::Package do
       expect(package.package_name).to eq('ondemand')
     end
 
+    it 'works with packaging directory' do
+      allow(package).to receive(:package).and_return('/dne/ondemand/packaging')
+      expect(package.package_name).to eq('ondemand')
+    end
+
     it 'works with direct path' do
       allow(package).to receive(:package).and_return('/dne/packages/ondemand/deb')
       expect(package.package_name).to eq('ondemand')

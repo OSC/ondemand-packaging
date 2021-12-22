@@ -75,12 +75,15 @@ class OodPackaging::Package
 
   def package_name
     name = File.basename(package)
-    if name =~ /deb|rpm/
+    case name
+    when /deb|rpm/
       name = if File.basename(File.dirname(package)) == 'packages'
                File.basename(File.dirname(File.dirname(package)))
              else
                File.basename(File.dirname(package))
              end
+    when 'packaging'
+      name = File.basename(File.dirname(package))
     end
     name
   end
