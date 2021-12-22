@@ -4,67 +4,106 @@
 
 1. [Requirements](#requirements)
 1. [Install](#install)
-1. [Create a new core package or dependency](#create-a-new-core-package-or-dependency)
-1. [Update package](#update-package)
+1. [Usage - Rake Task](#usage---rake-task)
+1. [Usage - CLI](#usage---cli)
+1. [Create build box image](#create-build-box-image)
 1. [Increment repo release](#increment-repo-release)
 1. [Create release repo](#create-release-repo)
-1. [Build ondemand_buildbox Docker container](#build-ondemand_buildbox-docker-container)
-1. [GPG Setup](#gpg-setup)
-1. [Build RPM](#build-rpm)
-1. [Publish RPMs (OSC)](#publish-rpms-osc)
+1. [Bootstrap latest release](#bootstrap-latest-release)
+1. [Bootstrap build release](#bootstrap-build-release)
 
 ## Requirements
 
-Source files are referenced by git-annex.  Builds are handled by Docker.
-
-* [git-annex](http://git-annex.branchable.com/)
-* [docker](https://www.docker.com/get-started)
-* [virtualenv](https://virtualenv.pypa.io/en/latest/)
+Builds are handled by [Docker](https://www.docker.com/get-started) or [podman](https://podman.io/).
 
 ## Install
 
-Run:
+To use the gem's built-in Rake tasks or CLI, include this in your Gemfile:
 
-* `git clone https://github.com/OSC/ondemand-packaging`
-* `git annex init` to set up this repo for using git annex
-* `./setup_sources.sh -D` to register git-annex file URLs
-* `make`
+```
+gem 'ood_packaging'
+```
 
-## Create a new core package or dependency
+If you wish to only use the CLI tools, simply git clone this repo.
 
-For apps there is a bootstrap process that automates much of the initial setup.
+## Usage - Rake Task
 
-1. Run: `./templates/mk_app_spec.sh <repo name> <app name> <version>`
-  * Example: `./templates/mk_app_spec osc-systemstatus systemstatus 1.0.0`
-2. Update description and summary and adjust build and install dependencies
+To create a custom Rake task in another repo:
 
-Manually adding spec file:
+```ruby
+require 'ood_packaging/rake_task
 
-1. Add the spec to a subdirectory under one of the following directories
-  * compute - packages intended for compute nodes
-  * web-nonscl - packages for web host that do not require SCL
-  * web - packages for web host that do require SCL
-  * misc - anything that doesn't fit into one of the above items
-2. Download source by running:
-  * `spectool -g -S example.spec`
-3. Add the source to git annex by running:
-  * `git annex add example-1.0.0.tar.gz`
-4. Submit pull request to `master` branch
+desc 'My OnDemand packaging Rake task'
+OodPackaging::RakeTask.new(:package, [:dist]) do |t, args|
+  t.package = Dir.pwd
+  t.dist = args[:dist]
+  t.tar = true
+  t.version = ...
+  t.work_dir = File.join('/tmp', ...)
+  t.output_dir = File.join('/tmp', ...)
+end
+```
 
-## Update package
+## Usage - CLI
 
-1. Update spec file with new version
-2. Change to package directory
-3. Download source
-  * `spectool -g -S example.spec`
-4. Add the source to git annex by running
-  * `git annex add example-2.0.0.tar.gz`
-5. Remove old source
-  * `git annex drop example-1.0.0.tar.gz`
-  * `git rm example-1.0.0.tar.gz`
-6. Build [Build RPM](#build-rpm)
-7. Commit changes
-8. Release Package [Publish RPMs (OSC)](#publish-rpms-osc)
+If you install this repo via Gemfile replace `ood_package` with `bundle exec ood_package`.
+
+If you clone this repo place `ood_package` with `./bin/ood_package`.
+
+**NOTE: Replace `$DIST` with actual dist you wish to build against**
+
+```
+ood_package -w /tmp/work -o /tmp/output -d $DIST -V <VERSION HERE>
+```
+
+## Create build box image
+
+Set `$DIST` to one of the supported dist values like `el8`
+
+**NOTE: The official build images are created automatically upon a new release**
+
+```
+bundle exec rake ood_packaging:buildbox:build[$DIST]
+```
+
+## Publish RPMs (OSC)
+
+If the ood_packaging `output_dir` was `/tmp/output` then the following command will upload the produced RPMs to the repo server:
+
+```
+./virtualenv/bin/python ./release.py /tmp/output/*
+```
+
+**CAUTION**: The `--force` flag is required if you wish to overwrite existing RPMs.
+
+## Release RPMs
+
+Build release RPMs:
+
+```
+rake ood_packaging:package:ondemand-release[el8]
+rake ood_packaging:package:ondemand-release[ubuntu-20.04]
+```
+
+Release RPMs:
+
+```
+./virtualenv/bin/python ./release.py -c release ./tmp/output/*
+```
+
+## Compute RPMs
+
+Build RPMs for compute:
+
+```
+rake ood_packaging:package:ondemand-compute[el8]
+```
+
+Release RPMs:
+
+```
+./virtualenv/bin/python ./release.py -c compute /tmp/output/*
+```
 
 ## Increment repo release
 
@@ -93,7 +132,7 @@ Any changes that need to be made to package versions after a release repo is cre
 
 ## Bootstrap latest release
 
-This only has to be done once
+This only has to be done once as `oodpkg` on OSC repo server
 
 ```
 ./sync-release.py --release latest
@@ -101,35 +140,10 @@ This only has to be done once
 
 ## Bootstrap build release
 
-This only has to be done once
+This only has to be done once as `oodpkg` on OSC repo server
 
 ```
 ./sync-release.py --release build/1.8
-```
-
-## Build ondemand_buildbox Docker container
-
-```
-cd docker-image
-# update build/env
-source ./env
-rm mock-cache*
-docker build -t $BUILDBOX_IMAGE .
-./make-mock-cache.sh
-rm mock-cache*
-docker build --no-cache -t $BUILDBOX_IMAGE .
-docker push $BUILDBOX_IMAGE
-```
-
-## Build Debian/Ubuntu ondemand_buildbox Docker container
-
-```
-cd docker-image
-export DIST=ubuntu
-export DISTVERSION=20.04
-source ./env
-docker build --build-arg DIST=$DIST --build-arg VERSION=$DISTVERSION -f Dockerfile.deb -t $DEB_BUILDBOX_IMAGE .
-docker push $DEB_BUILDBOX_IMAGE
 ```
 
 ## Example using debmake to bootstrap deb files
@@ -181,60 +195,3 @@ gpg --gen-key --batch gen
 ```
 
 Substitute `Name-Real` and `Name-Email` with site specific values.  The value of `Name-Real` needs to be passed to `build.sh` at build time via the `-G` flag.
-
-## Build RPM
-
-Builds are performed using Docker.
-
-The following example will build an RPM for CentOS/RHEL 7.  The RPMs will be written to /tmp/output/el7 and signed by GPG key named 'My Site Key'.  The files `.gpgpass` and `ondemand.sec` must exist at the root of this repo if you wish to perform GPG signing. The value for `-g` must point to path to GPG public key.
-
-```
-./build.sh -w /tmp/work -o /tmp/output -d el7 -G 'My Site Key' -g /path/to/GPG-pubkey /path/to/app/directory/with/spec
-```
-
-The last argument is the path to a directory holding spec file for the package you wish to build.
-
-If there are errors during build you can either check under the path for `-w` or build with `-A` flag.  If you build with `-A` flag you are given a shell after all builds.
-
-```
-./build.sh -w /tmp/work -o /tmp/output -d el7 -G 'My Site Key' -g /path/to/GPG-pubkey -A /path/to/app/directory/with/spec
-```
-
-## Publish RPMs (OSC)
-
-If `./build.sh` had `-o /tmp/output` then the following command will upload the produced RPMs to the repo server:
-
-```
-./virtualenv/bin/python ./release.py /tmp/output/*
-```
-
-**CAUTION**: The `--force` flag is required if you wish to overwrite existing RPMs.
-
-## Release RPMs
-
-Build release RPMs:
-
-```
-./build.sh -w /tmp/work -o /tmp/output -d el7 -S $(pwd)/packages/ondemand-release/rpm
-./build.sh -w /tmp/work -o /tmp/output -D ubuntu-20.04 -S $(pwd)/packages/ondemand-release/deb
-```
-
-Release RPMs:
-
-```
-./virtualenv/bin/python ./release.py -c release /tmp/output/*
-```
-
-## Compute RPMs
-
-Build RPMs for compute:
-
-```
-./build.sh -w /tmp/work -o /tmp/output $(pwd)/packages/ondemand-compute
-```
-
-Release RPMs:
-
-```
-./virtualenv/bin/python ./release.py -c compute /tmp/output/*
-```
