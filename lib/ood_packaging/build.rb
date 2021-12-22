@@ -76,6 +76,8 @@ class OodPackaging::Build
                     '/package/rpm'
                   elsif Dir.exist?('/package/packaging/rpm')
                     '/package/packaging/rpm'
+                  elsif Dir.exist?('/packaging')
+                    '/packaging'
                   else
                     '/package'
                   end
