@@ -67,6 +67,10 @@ module OodPackaging::Utils
     '/ondemand-packaging'
   end
 
+  def ctr_gems_dir
+    File.join(ctr_scripts_dir, 'gems')
+  end
+
   def gpg_private_key
     File.join(ctr_scripts_dir, 'ondemand.sec')
   end

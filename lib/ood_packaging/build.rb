@@ -130,6 +130,7 @@ class OodPackaging::Build
   end
 
   def run!
+    fix_env!
     env_dump! if debug?
     bootstrap_rpm! if build_box.rpm?
     bootstrap_deb! if build_box.deb?
@@ -139,6 +140,10 @@ class OodPackaging::Build
     copy_output!
     gpg_sign! if build_box.rpm? && gpg_sign?
     sanity!
+  end
+
+  def fix_env!
+    ENV.delete('GEM_PATH')
   end
 
   def env_dump!

@@ -73,9 +73,9 @@ echo "allow-loopback-pinentry" >> <%= ctr_gpg_dir %>/gpg-agent.conf
 
 header "Install ood_packaging gem"
 <%- if rpm? && !dnf? -%>
-run scl enable <%= scl_ruby %> -- gem install --no-doc /build/*.gem
+run scl enable <%= scl_ruby %> -- gem install --no-doc --bindir <%= ctr_scripts_dir %> --install-dir <%= ctr_gems_dir %> /build/*.gem
 <%- else -%>
-run gem install --no-doc /build/*.gem
+run gem install --no-doc --bindir <%= ctr_scripts_dir %> --install-dir <%= ctr_gems_dir %> /build/*.gem
 <%- end -%>
 
 header "Copy in launch scripts"
