@@ -199,10 +199,7 @@ class OodPackaging::Build
     if exit_code.zero?
       source = File.join(work_dir, 'SOURCES', File.basename(output))
       tar = File.join(work_dir, 'SOURCES', ENV['TAR_NAME'])
-      if !File.exist?(source) && File.exist?(tar)
-        sh "mv #{tar} #{source}"
-        return
-      end
+      sh "mv #{tar} #{source}" if !File.exist?(source) && File.exist?(tar)
     end
     puts "\tDownloading sources defined in #{spec_file}".blue
     sh "spectool #{rpm_defines.join(' ')} -g -R -S #{spec_file}#{cmd_suffix}"
