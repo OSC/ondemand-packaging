@@ -1,0 +1,64 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release-buildbox:
+    strategy:
+      fail-fast: false
+      matrix:
+        dist:
+          - el7
+          - el8
+          - ubuntu-20.04
+    name: Release buildbox
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: Setup Ruby using Bundler
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '2.7.1'
+          bundler: '2.1.4'
+          bundler-cache: true
+      - name: setup the environment
+        run: echo "OOD_PACKAGING_BUILD_BOX_VERSION=${GITHUB_REF#refs/*/v}" >> $GITHUB_ENV
+      - name: docker build and tag
+        run: bundle exec rake ood_packaging:buildbox:build[${{ matrix.dist }}]
+      - name: login to dockerhub
+        run: docker login -u ${{ secrets.OSC_ROBOT_DOCKERHUB_USER }} -p ${{ secrets.OSC_ROBOT_DOCKERHUB_TOKEN }}
+      - name: push images to dockerhub
+        run: bundle exec rake ood_packaging:buildbox:push[${{ matrix.dist }}]
+  release-gem:
+    needs: [release-buildbox]
+    name: Release gem
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set version
+        id: version
+        run: echo ::set-output name=version::${GITHUB_REF#refs/*/v}
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: Setup Ruby using Bundler
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '2.7.1'
+          bundler: '2.1.4'
+          bundler-cache: true
+      - name: Setup Rubygems credentials
+        run: |
+          set +x
+          mkdir -p ~/.gem
+          cat << EOF > ~/.gem/credentials
+          ---
+          :rubygems_api_key: ${{ secrets.OSC_ROBOT_RUBYGEMS_TOKEN }}
+          EOF
+          chmod 0600 ~/.gem/credentials
+      - name: Publish gem
+        run: |
+          bundle exec rake build
+          gem push pkg/ood_packaging-${{ steps.version.outputs.version }}.gem

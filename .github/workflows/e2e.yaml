@@ -1,0 +1,135 @@
+name: E2E tests
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  buildbox:
+    strategy:
+      fail-fast: false
+      matrix:
+        dist:
+          - el7
+          - el8
+          - ubuntu-20.04
+    runs-on: ubuntu-latest
+    name: Buildbox tests
+    steps:
+      - name: Checkout ${{ github.sha	}}
+        uses: actions/checkout@v2
+      - name: Setup Ruby using Bundler
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '2.7.1'
+          bundler: '2.1.4'
+          bundler-cache: true
+      - name: Build the build box
+        run: bundle exec rake ood_packaging:buildbox:build[${{ matrix.dist }}]
+      - name: Export Docker image
+        run: bundle exec rake ood_packaging:buildbox:save[${{ matrix.dist }},/tmp/ood_packaging-${{ matrix.dist }}.tar.gz]
+      - name: Upload Docker image
+        uses: actions/upload-artifact@v2
+        with:
+          name: image-${{ matrix.dist }}
+          path: /tmp/ood_packaging-${{ matrix.dist }}.tar.gz
+  package:
+    needs: [buildbox]
+    strategy:
+      fail-fast: false
+      matrix:
+        dist:
+          - el7
+          - el8
+          - ubuntu-20.04
+        package:
+          - ondemand-release
+          - ondemand-release-latest
+          - ondemand-runtime
+          - passenger
+          - cjose
+          - mod_auth_openidc
+          - ondemand_exporter
+          - ondemand-compute
+          - python-websockify
+          - turbovnc
+        exclude:
+          - dist: ubuntu-20.04
+            package: ondemand-runtime
+          - dist: ubuntu-20.04
+            package: cjose
+          - dist: ubuntu-20.04
+            package: mod_auth_openidc
+          - dist: ubuntu-20.04
+            package: ondemand_exporter
+          - dist: ubuntu-20.04
+            package: ondemand-compute
+          - dist: ubuntu-20.04
+            package: python-websockify
+          - dist: ubuntu-20.04
+            package: turbovnc
+        include:
+          - dist: el7
+            package: sqlite
+    runs-on: ubuntu-latest
+    name: Package test package=${{ matrix.package }} dist=${{ matrix.dist }}
+    steps:
+      - name: Checkout ${{ github.sha	}}
+        uses: actions/checkout@v2
+      - name: Setup Ruby ${{ matrix.ruby }} using Bundler ${{ matrix.bundler }}
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '2.7.1'
+          bundler: '2.1.4'
+          bundler-cache: true
+      - name: Download image
+        uses: actions/download-artifact@v2
+        with:
+          name: image-${{ matrix.dist }}
+          path: /tmp
+      - name: Load image
+        run: docker load --input /tmp/ood_packaging-${{ matrix.dist }}.tar.gz
+      - name: Build package
+        run: bundle exec rake ood_packaging:package:${{ matrix.package }}[${{ matrix.dist }}]
+        env:
+          OOD_PACKAGING_DEBUG: 'true'
+  package-external:
+    needs: [buildbox]
+    strategy:
+      fail-fast: false
+      matrix:
+        dist:
+          - el7
+          - el8
+          - ubuntu-20.04
+        package:
+          - ondemand
+          - bc_osc_rstudio_server
+        exclude:
+          - dist: ubuntu-20.04
+            package: bc_osc_rstudio_server
+    runs-on: ubuntu-latest
+    name: Package ${{ matrix.package }} dist=${{ matrix.dist }}
+    steps:
+      - name: Checkout ${{ github.sha	}}
+        uses: actions/checkout@v2
+      - name: Setup Ruby using Bundler
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '2.7.1'
+          bundler: '2.1.4'
+          bundler-cache: true
+      - name: Download image
+        uses: actions/download-artifact@v2
+        with:
+          name: image-${{ matrix.dist }}
+          path: /tmp
+      - name: Load image
+        run: docker load --input /tmp/ood_packaging-${{ matrix.dist }}.tar.gz
+      - name: Clone ${{ matrix.package }}
+        run: |
+          mkdir -p ./tmp
+          git clone https://github.com/OSC/${{ matrix.package }}.git ./tmp/${{ matrix.package }}
+      - name: Build ${{ matrix.package }} package
+        run: ./bin/ood_packaging -w ./tmp/work -o ./tmp/output -d ${{ matrix.dist }} -V v2.1.0 -T --debug $(pwd)/tmp/${{ matrix.package }}
