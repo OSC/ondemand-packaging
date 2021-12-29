@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ood_packaging (0.0.1.rc.8)
+    ood_packaging (0.1.0)
       rake (~> 13.0.1)
 
 GEM
