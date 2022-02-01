@@ -21,7 +21,7 @@
 
 Name:      ondemand-runtime
 Version:   2.0
-Release:   1%{?dist}
+Release:   2%{?dist}
 Summary:   Package that handles %{scl} Software Collection.
 License:   MIT
 
@@ -64,6 +64,8 @@ Requires: ruby-devel
 Requires: rubygems
 Requires: rubygems-devel
 Requires: sqlite-devel
+# In some cases this RPM doesn't get pulled in
+Requires: rubygem-bigdecimal
 %else
 Requires: %{ruby}
 Requires: %{ruby}-rubygem-rake
