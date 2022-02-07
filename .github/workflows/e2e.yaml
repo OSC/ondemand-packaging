@@ -93,6 +93,9 @@ jobs:
           - ondemand-release
           - ondemand-release-latest
           - passenger
+        include:
+          - dist: ubuntu-18.04
+            package: bundler
     runs-on: ubuntu-latest
     name: Package test package=${{ matrix.package }} dist=${{ matrix.dist }}
     steps:
