@@ -27,8 +27,8 @@ RUN apt update -y && apt install -y locales && locale-gen $LANG && \
 RUN apt update -y && apt install -y apt-transport-https ca-certificates \
     init debhelper devscripts dh-make build-essential lintian equivs \
     sudo rake wget curl ruby && \
-    ln -snf /bin/bundle2.7 /bin/bundle && \
     apt clean all -y
+RUN test -f /bin/bundle2.7 && ln -snf /bin/bundle2.7 /bin/bundle || exit 0
 RUN echo "deb https://deb.nodesource.com/node_<%= nodejs_version %>.x <%= codename %> main" > /etc/apt/sources.list.d/nodesource.list
 RUN curl -s https://deb.nodesource.com/gpgkey/nodesource.gpg.key | gpg --dearmor > /etc/apt/trusted.gpg.d/nodesource.gpg
 <% end -%>

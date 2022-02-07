@@ -12,10 +12,12 @@ class OodPackaging::BuildBox
   BASE_IMAGES = {
     'el7'          => 'centos:7',
     'el8'          => 'rockylinux/rockylinux:8',
+    'ubuntu-18.04' => 'ubuntu:18.04',
     'ubuntu-20.04' => 'ubuntu:20.04'
   }.freeze
 
   CODENAMES = {
+    'ubuntu-18.04' => 'bionic',
     'ubuntu-20.04' => 'focal'
   }.freeze
 
