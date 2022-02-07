@@ -21,14 +21,17 @@ RUN dnf install -y ruby sudo which wget \
     dnf clean all && rm -rf /var/cache/dnf/*
 <% elsif dist =~ /^ubuntu|debian/ -%>
 ENV DEBIAN_FRONTEND=noninteractive
+RUN apt update -y && apt install -y gpg apt-transport-https ca-certificates && apt clean all -y
+RUN echo "deb [arch=amd64] https://apt.osc.edu/ondemand/build/<%= ondemand_repo_version %>/web/apt <%= codename %> main" > /etc/apt/sources.list.d/ondemand-web.list
+COPY RPM-GPG-KEY-ondemand /build/RPM-GPG-KEY-ondemand
+RUN cat /build/RPM-GPG-KEY-ondemand | gpg --dearmor > /etc/apt/trusted.gpg.d/ondemand-web.gpg
 RUN apt update -y && apt upgrade -y && apt clean all -y
 RUN apt update -y && apt install -y locales && locale-gen $LANG && \
     apt clean all -y
-RUN apt update -y && apt install -y apt-transport-https ca-certificates \
+RUN apt update -y && apt install -y \
     init debhelper devscripts dh-make build-essential lintian equivs \
-    sudo rake wget curl ruby && \
+    sudo rake wget curl ruby bundler && \
     apt clean all -y
-RUN test -f /bin/bundle2.7 && ln -snf /bin/bundle2.7 /bin/bundle || exit 0
 RUN echo "deb https://deb.nodesource.com/node_<%= nodejs_version %>.x <%= codename %> main" > /etc/apt/sources.list.d/nodesource.list
 RUN curl -s https://deb.nodesource.com/gpgkey/nodesource.gpg.key | gpg --dearmor > /etc/apt/trusted.gpg.d/nodesource.gpg
 <% end -%>
