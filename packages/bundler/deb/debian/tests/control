@@ -1,0 +1,3 @@
+Tests: testsuite bundle-gem
+Depends: @, libxml2-dev, libz-dev, git
+Restrictions: rw-build-tree allow-stderr needs-recommends

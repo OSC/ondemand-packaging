@@ -1,0 +1,23 @@
+From: Antonio Terceiro <terceiro@debian.org>
+Date: Thu, 3 May 2018 16:38:42 -0300
+Subject: Don't use insecure temporary directory as home directory
+Closes: #881749
+Debian-Bug: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=881749
+Upstream-Bug: https://github.com/bundler/bundler/issues/6501
+
+--- a/lib/bundler.rb
++++ b/lib/bundler.rb
+@@ -661,11 +661,8 @@
+ 
+     def tmp_home_path(warning)
+       Kernel.send(:require, "tmpdir")
+-      SharedHelpers.filesystem_access(Dir.tmpdir) do
+-        path = Bundler.tmp
+-        at_exit { Bundler.rm_rf(path) }
+-        path
+-      end
++      path = Pathname.new(Dir.mktmpdir("bundler-"))
++      path
+     rescue RuntimeError => e
+       raise e.exception("#{warning}\nBundler also failed to create a temporary home directory':\n#{e}")
+     end

@@ -1,0 +1,21 @@
+From: Antonio Terceiro <terceiro@debian.org>
+Date: Thu, 3 May 2018 16:50:45 -0300
+Subject: Remove temporary home directories
+
+Closes: #796383
+---
+ lib/bundler.rb | 3 +++
+ 1 file changed, 3 insertions(+)
+
+--- a/lib/bundler.rb
++++ b/lib/bundler.rb
+@@ -662,6 +662,9 @@
+     def tmp_home_path(warning)
+       Kernel.send(:require, "tmpdir")
+       path = Pathname.new(Dir.mktmpdir("bundler-"))
++      at_exit do
++        FileUtils.remove_entry(path.to_s, true)
++      end
+       path
+     rescue RuntimeError => e
+       raise e.exception("#{warning}\nBundler also failed to create a temporary home directory':\n#{e}")

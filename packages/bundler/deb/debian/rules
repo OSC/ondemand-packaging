@@ -1,0 +1,27 @@
+#!/usr/bin/make -f
+
+export GEM2DEB_TEST_RUNNER = --check-dependencies
+%:
+	dh $@ --buildsystem=ruby --with ruby
+
+override_dh_auto_clean:
+	wget -O ../bundler_$(VERSION).orig.tar.gz http://archive.ubuntu.com/ubuntu/pool/universe/b/bundler/bundler_$(VERSION).orig.tar.gz
+	tar xf ../bundler_$(VERSION).orig.tar.gz --strip-components=1 -C .
+	rm -rf lib/bundler/vendor/net
+	rm -rf lib/bundler/vendor/molinillo
+	rm -rf lib/bundler/vendor/thor
+	rm -rf spec
+	dh_auto_clean
+
+override_dh_installchangelogs:
+	dh_installchangelogs -i CHANGELOG.md
+
+override_dh_installman:
+	# rename manpages to be acceptable to dh_installman
+	ruby -rfileutils -e " \
+	Dir.glob('lib/bundler/man/*').grep(/^((?!\.).)*$$/).each do |file| \
+		FileUtils.cp(file, file + '.1') \
+	end"
+	dh_installman
+	# bundler and bundle are the same command
+	dh_link usr/share/man/man1/bundle.1 usr/share/man/man1/bundler.1

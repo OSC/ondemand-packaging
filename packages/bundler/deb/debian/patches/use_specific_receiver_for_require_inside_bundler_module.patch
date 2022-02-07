@@ -1,0 +1,18 @@
+Description: Use explicit receiver for `require` inside `Bundler` module
+ Bundler has a `Bundler.require` method, so we need to use a explicit
+ receiver here so that we don't end up calling the wrong method.
+Author: David Rodriguez <deivid.rodriguez@riseup.net>
+Forwarded: not-needed
+Last-Update: 2020-02-06
+
+--- a/lib/bundler/vendored_thor.rb
++++ b/lib/bundler/vendored_thor.rb
+@@ -2,7 +2,7 @@
+ 
+ module Bundler
+   def self.require_thor_actions
+-    require "thor/actions"
++    Kernel.require "thor/actions"
+   end
+ end
+ require "thor"

@@ -1,0 +1,1 @@
+lib/bundler/templates/newgem/travis.yml.tt /usr/lib/ruby/vendor_ruby/bundler/templates/newgem

@@ -1,0 +1,24 @@
+From: Samuel Henrique <samueloph@debian.org>
+Date: Thu, 3 May 2018 16:22:49 -0300
+Subject: block "phone call" to check if latest release (closes: #882361)
+
+This is not the ideal solution yet, as it does not let the user unset
+disable_version_check to force-check. Should be fixed
+---
+ lib/bundler/cli.rb | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+--- a/lib/bundler/cli.rb
++++ b/lib/bundler/cli.rb
+@@ -775,6 +775,11 @@
+     end
+ 
+     def warn_on_outdated_bundler
++      ########################################################################
++      # [Debian specific] don't phone home
++      return
++      ########################################################################
++
+       return if Bundler.settings[:disable_version_check]
+ 
+       command_name = current_command.name

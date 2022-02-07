@@ -1,0 +1,6 @@
+#0001-replace-call-to-git-ls-files-with-Dir.glob.patch
+0002-Replace-bundled-libraries-with-system-versions.patch
+0004-block-phone-call-to-check-if-latest-release-closes-8.patch
+#0005-Don-t-use-insecure-temporary-directory-as-home-direc.patch
+#0006-Remove-temporary-home-directories.patch
+use_specific_receiver_for_require_inside_bundler_module.patch

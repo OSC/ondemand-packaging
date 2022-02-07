@@ -1,0 +1,24 @@
+#!/bin/sh
+
+exec 2>&1
+set -ex
+
+if [ -z "$ADTTMP" ]; then
+  ADTTMP=$(mktemp -d)
+  cleanup() {
+    rm -rf "$ADTTMP"
+  }
+  trap cleanup INT TERM EXIT
+fi
+
+cd $ADTTMP
+
+mkdir .bundle
+cat > .bundle/config <<EOF
+---
+BUNDLE_GEM__COC: true
+BUNDLE_GEM__MIT: false
+BUNDLE_GEM__TEST: rspec
+EOF
+
+HOME=$(pwd) bundle gem foobar

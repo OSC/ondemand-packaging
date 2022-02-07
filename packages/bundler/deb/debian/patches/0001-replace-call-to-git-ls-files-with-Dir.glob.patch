@@ -1,0 +1,30 @@
+From: Christian Hofstaedtler <zeha@debian.org>
+Date: Tue, 5 Jul 2016 11:17:16 +0200
+Subject: replace call to git ls-files with Dir.glob
+
+It appears gem2deb munges the gemspec file with a static Encoding of US-ASCII,
+but our gemspec is encoded in UTF-8; this causes gem2deb to fail. Avoid the
+gem2deb munging by not calling git from the gemspec.
+
+Forwarded: not-needed
+Origin: vendor
+---
+ bundler.gemspec | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/bundler.gemspec b/bundler.gemspec
+index 26fc322..b68627f 100644
+--- a/bundler.gemspec
++++ b/bundler.gemspec
+@@ -49,10 +49,7 @@ Gem::Specification.new do |s|
+   s.add_development_dependency "ronn",       "~> 0.7.3"
+   s.add_development_dependency "rspec",      "~> 3.6"
+ 
+-  s.files = `git ls-files -z`.split("\x0").select {|f| f.match(%r{^(lib|exe)/}) }
+-  # we don't check in man pages, but we need to ship them because
+-  # we use them to generate the long-form help for each command.
+-  s.files += Dir.glob("man/**/*")
++  s.files = Dir.glob('**/*') - Dir.glob('debian/**/*')
+   # Include the CHANGELOG.md, LICENSE.md, README.md manually
+   s.files += %w[CHANGELOG.md LICENSE.md README.md]
+   # include the gemspec itself because warbler breaks w/o it

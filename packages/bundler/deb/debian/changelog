@@ -1,0 +1,470 @@
+bundler (2.1.4-1) unstable; urgency=medium
+
+  [ Utkarsh Gupta ]
+  * New upstream version 2.1.4
+    - Fixes: CVE-2016-7954 (Closes: #842504)
+  * Fix package wrt cme
+    - Bump Standards-Version to 4.5.0
+    - Bump debhelper-comat to 12
+  * Bump minimum version of ruby-molinillo in ruby-bundler (Closes: #945481)
+  * Change MIT -> Expat in d/copyright
+  * Stop building manpages as they're shipped by upstream now
+  * Update manpages shipped by upstream
+  * Add myself as an uploader
+  * Use AUTOPKGTEST_TMP in tests as ADTTMP is deprecated
+  * Fix patches wrt new upstream release
+  * Rename *-package -> *-cache in manpage name
+  * Add salsa-ci.yml
+
+  [ David Rodriguez ]
+  * Amend patch to not call the incorrect method
+
+ -- Utkarsh Gupta <utkarsh@debian.org>  Fri, 07 Feb 2020 15:42:50 -0500
+
+bundler (1.17.3-3) unstable; urgency=medium
+
+  * Add test for locating bundler binaries
+  * Switch to Rubygems installation layout (Closes: #914771)
+    * 0003-Do-not-add-system-path-to-RUBYLIB.patch: dropped, not necessary
+      anymore
+  * 0001-replace-call-to-git-ls-files-with-Dir.glob.patch: fix file listing
+  * debian/install: removed, not necessary anymore
+
+ -- Antonio Terceiro <terceiro@debian.org>  Sat, 09 Mar 2019 08:41:37 -0300
+
+bundler (1.17.3-2) unstable; urgency=medium
+
+  * Team upload.
+  * Update patch to force temporary directories removal
+
+ -- Lucas Kanashiro <kanashiro@debian.org>  Wed, 06 Feb 2019 16:36:13 -0200
+
+bundler (1.17.3-1) unstable; urgency=medium
+
+  * New upstream version 1.17.3
+  * Rebase patches (no relevant changes)
+  * Bump Standards-Version to 4.3.0 (no changes needed)
+  * Build-Depends: replace ruby-ronn with ronn
+  * debian/tests/control: remove obsolete `needs-recommends` restriction
+
+ -- Antonio Terceiro <terceiro@debian.org>  Sun, 03 Feb 2019 13:30:39 -0200
+
+bundler (1.16.1-3) unstable; urgency=medium
+
+  * Team upload.
+  * Follow ronn package rename (Closes: #903285)
+  * Declare compliance with Debian Policy 4.1.5.
+
+ -- Chris Hofstaedtler <zeha@debian.org>  Mon, 23 Jul 2018 09:20:24 +0000
+
+bundler (1.16.1-2) unstable; urgency=medium
+
+  * debian/patches:
+    - convert to gbp-pq format
+    - add two new patches:
+      0006-Don-t-use-insecure-temporary-directory-as-home-direc.patch
+      (Closes: #881749)
+      0007-Remove-temporary-home-directories.patch
+      (Closes: #796383)
+  * Bump Standards-Version to 4.1.4; no changes needed
+  * debian/watch: point to gemwatch.debian.net
+
+ -- Antonio Terceiro <terceiro@debian.org>  Thu, 03 May 2018 21:18:24 -0300
+
+bundler (1.16.1-1) unstable; urgency=medium
+
+  * Team Upload
+
+  [ Samuel Henrique ]
+  * New upstream version 1.16.1
+  * Bump DH to 10
+  * Bump Standards-Version to 4.1.3
+  * d/control:
+    - remove unnecessary testsuite header
+    - update bundler package long description to explain intention of the
+      package
+    - switch vcs to salsa.d.o
+  * d/copyright: update entries
+  * d/lintian-overrides: add template file overrides
+  * d/patches
+    - refresh patches
+    - manpage-typo: new patch to address typo
+    - dont-check-if-latest: new patch to block network check (closes: #882361)
+  * d/install: update travis.yml location
+  * d/watch: use https
+
+  [ Lucas Nussbaum ]
+  * Remove '/spec' filter that does not work anyway
+
+  [ Cédric Boutillier ]
+  * Normalise URL for VCS-Browser
+  * Use https in homepage
+  * Bump debhelper compatibility level to 11
+
+ -- Cédric Boutillier <boutil@debian.org>  Thu, 15 Mar 2018 14:04:10 +0100
+
+bundler (1.15.1-1) unstable; urgency=medium
+
+  * Team upload
+  * New upstream version 1.15.1
+  * Refresh patches
+  * Refresh packaging using dh-make-ruby
+  * Update list of manpages
+  * Make the dependency on ruby-thor stricter
+  * Prepare changelog
+  * Improve devendorization of Net::HTTP::Persistent
+  * debian/gbp.conf: only remove the root 'spec' dir, not all of them
+
+ -- Lucas Nussbaum <lucas@debian.org>  Mon, 03 Jul 2017 22:57:55 +0200
+
+bundler (1.13.6-2) unstable; urgency=medium
+
+  * Team upload.
+  * Merge changelogs.
+  * Remove myself from Uploaders, again.
+
+ -- Christian Hofstaedtler <zeha@debian.org>  Thu, 08 Dec 2016 11:52:23 +0000
+
+bundler (1.13.6-1) unstable; urgency=low
+
+  [ Pirate Praveen ]
+  * refresh patches
+
+  [ Scott Leggett ]
+  * Imported Upstream version 1.13.6
+  * Build and install manpages (Closes: #834716)
+  * Add patch for manpage typo.
+  * Add myself to Uploaders.
+
+ -- Scott Leggett <scott@sl.id.au>  Wed, 07 Dec 2016 22:00:15 +1100
+
+bundler (1.12.5-4) unstable; urgency=medium
+
+  * Team upload.
+  * Remove myself from Uploaders.
+
+ -- Christian Hofstaedtler <zeha@debian.org>  Wed, 30 Nov 2016 10:20:22 +0000
+
+bundler (1.12.5-3) unstable; urgency=medium
+
+  * Do not add system path to RUBYLIB.
+    Bundler adds it's own installation path in front of RUBYLIB, but when
+    this is the system ruby path, this causes system-wide installed gems
+    to be used before bundler-installed gems.
+    Thanks to Gabriel Corona for discovering/debugging this. (Closes: #830958)
+
+ -- Christian Hofstaedtler <zeha@debian.org>  Wed, 13 Jul 2016 15:56:33 +0000
+
+bundler (1.12.5-2) unstable; urgency=medium
+
+  * Apply patch from upstream to work with molinillo 0.5.0
+
+ -- Christian Hofstaedtler <zeha@debian.org>  Tue, 05 Jul 2016 10:23:32 +0200
+
+bundler (1.12.5-1) unstable; urgency=medium
+
+  * New upstream bug-fix release.
+
+ -- Christian Hofstaedtler <zeha@debian.org>  Sun, 29 May 2016 10:53:34 +0000
+
+bundler (1.12.4-1) unstable; urgency=medium
+
+  * New upstream bug-fix release.
+
+ -- Christian Hofstaedtler <zeha@debian.org>  Mon, 16 May 2016 22:05:17 +0000
+
+bundler (1.12.3-1) unstable; urgency=medium
+
+  * New upstream release, fixing:
+    * fall back to the dependency API and the full index when the home
+      directory is not writable
+    * fix unconditional write of .bundle/config when running bundle install
+  * Bump Standards-Version to 3.9.8 (no changes needed)
+
+ -- Christian Hofstaedtler <zeha@debian.org>  Fri, 06 May 2016 22:14:48 +0000
+
+bundler (1.12.2-1) unstable; urgency=medium
+
+  * New upstream release
+
+ -- Christian Hofstaedtler <zeha@debian.org>  Thu, 05 May 2016 22:03:32 +0000
+
+bundler (1.12.1-1) unstable; urgency=medium
+
+  [ Cédric Boutillier ]
+  * Remove version in the gem2deb build-dependency
+  * Use https:// in Vcs-* fields
+  * Bump Standards-Version to 3.9.7 (no changes needed)
+  * Run wrap-and-sort on packaging files
+
+  [ Christian Hofstaedtler ]
+  * New upstream release
+    - depends on newer ruby-molinillo.
+
+ -- Christian Hofstaedtler <zeha@debian.org>  Sun, 01 May 2016 18:59:46 +0000
+
+bundler (1.11.2-1) unstable; urgency=medium
+
+  * New upstream release
+    - due to changes in the source organization, using gemspec features that
+      were not supported in gem2deb, this package now requires gem2deb >= 0.26
+      to build.
+  * Refresh patch
+  * Split into two binary packages:
+    - ruby-bundler: for use as dependency by application packages (won't pull
+      a development toolchain into end user systems).
+    - bundler: for use by application developers, recommends build-essential
+      and ruby-dev
+  * Switch Vcs-Git URL to https
+  * debian/control: add `Testsuite: autopkgtest`
+
+ -- Antonio Terceiro <terceiro@debian.org>  Sat, 20 Feb 2016 22:26:31 -0200
+
+bundler (1.10.6-2) unstable; urgency=medium
+
+  * fix `bundle gem foo` by installing
+    lib/bundler/templates/newgem/.travis.yml.tt to the correct place. gem2deb
+    doesn't install dot-files inside lib/ by default, what is probably
+    sensible.
+
+ -- Antonio Terceiro <terceiro@debian.org>  Thu, 01 Oct 2015 18:30:14 -0300
+
+bundler (1.10.6-1) unstable; urgency=medium
+
+  * Imported Upstream version 1.10.6
+  * debian/control: Remove obsolete XS-Testsuite
+  * Add extra dependencies for package tests
+  * Stop installing man pages, as ronn needs obsolete libraries
+  * Update debhelper compat level to 9
+  * Check dependencies during build
+
+ -- Christian Hofstaedtler <zeha@debian.org>  Tue, 18 Aug 2015 16:43:59 +0000
+
+bundler (1.10.5-1) unstable; urgency=medium
+
+  * Imported Upstream version 1.10.5
+  * Add ruby-dev to debian/tests requirements, hopefully fixing tests
+    on ci.debian.net.
+
+ -- Christian Hofstaedtler <zeha@debian.org>  Sun, 28 Jun 2015 02:43:48 +0200
+
+bundler (1.10.3-1) unstable; urgency=medium
+
+  * New Upstream version 1.10.3
+
+ -- Christian Hofstaedtler <zeha@debian.org>  Sat, 13 Jun 2015 20:49:55 +0200
+
+bundler (1.9.9-1) unstable; urgency=medium
+
+  * Stop shipping empty /var/lib/gems directories (Closes: #782148)
+  * Remove obsolete d/require-rubygems.overrides
+  * New upstream version (1.9.9), necessitating:
+    * Add Depends: ruby-molinillo
+    * Update ruby-thor dependency to 0.19.1
+    * Undo upstream's forced usage of bundled libraries
+    * Update lintian overrides for template files
+  * d/copyright: cleanup (update years, remove unused stuff)
+
+ -- Christian Hofstaedtler <zeha@debian.org>  Mon, 01 Jun 2015 23:58:05 +0200
+
+bundler (1.7.4-1) unstable; urgency=medium
+
+  [ Antonio Terceiro ]
+  * small test script improvements
+
+  [ Christian Hofstaedtler ]
+  * Imported Upstream version 1.7.4
+  * Bump Standards-Version to 3.9.6 (no further changes)
+
+ -- Christian Hofstaedtler <zeha@debian.org>  Tue, 21 Oct 2014 22:02:52 +0200
+
+bundler (1.7.2-2) unstable; urgency=medium
+
+  * Testsuite: don't write into global directories
+
+ -- Christian Hofstaedtler <zeha@debian.org>  Thu, 28 Aug 2014 22:27:21 +0200
+
+bundler (1.7.2-1) unstable; urgency=medium
+
+  * Imported Upstream version 1.7.2
+  * Expand testsuite to actually install a gem
+
+ -- Christian Hofstaedtler <zeha@debian.org>  Mon, 25 Aug 2014 19:20:10 +0200
+
+bundler (1.6.3-1) unstable; urgency=medium
+
+  * Imported Upstream version 1.6.3
+
+ -- Christian Hofstaedtler <zeha@debian.org>  Fri, 20 Jun 2014 19:07:35 +0200
+
+bundler (1.6.2-1) unstable; urgency=medium
+
+  * Imported Upstream version 1.6.2
+  * Drop dfsg prefix and README.source.
+    We stopped modifying the source tarball, and just remove files in
+    debian/rules.
+
+ -- Christian Hofstaedtler <zeha@debian.org>  Sat, 31 May 2014 15:28:39 +0200
+
+bundler (1.6.1+dfsg-1) unstable; urgency=medium
+
+  * New upstream version.
+
+ -- Christian Hofstaedtler <zeha@debian.org>  Thu, 03 Apr 2014 01:19:39 +0200
+
+bundler (1.6.0+dfsg-1) unstable; urgency=medium
+
+  * Imported Upstream version 1.6.0+dfsg
+  * Promote rubygems-integration to dependency
+  * Add DEP-8 smoke test
+  * Update require-rubygems.overrides
+
+ -- Christian Hofstaedtler <zeha@debian.org>  Wed, 02 Apr 2014 17:59:11 +0200
+
+bundler (1.5.3+dfsg-2) unstable; urgency=medium
+
+  * Add myself to Uploaders
+  * Remove /var/lib/gems/1.8/ as support for Ruby 1.8 is gone already
+  * Add support for new interpreter versions:
+    - /var/lib/gems/2.0.0/
+    - /var/lib/gems/2.1.0/
+
+ -- Antonio Terceiro <terceiro@debian.org>  Sat, 29 Mar 2014 12:00:35 -0300
+
+bundler (1.5.3+dfsg-1) unstable; urgency=medium
+
+  * Imported Upstream version 1.5.3+dfsg
+  * Remove upstream applied patch "revert-0d15cef"
+
+ -- Christian Hofstaedtler <zeha@debian.org>  Fri, 07 Feb 2014 20:32:07 +0100
+
+bundler (1.5.2+dfsg-1) unstable; urgency=medium
+
+  * Imported Upstream version 1.5.2+dfsg
+  * Revert upstream 0d15cef: don't require gem_full_path to be present
+    for all gems.
+
+ -- Christian Hofstaedtler <zeha@debian.org>  Thu, 16 Jan 2014 16:11:13 +0100
+
+bundler (1.5.1+dfsg-1) unstable; urgency=medium
+
+  * New upstream version.
+  * Acknowledge removal of lib/bundler/vendor/* using a dfsg version,
+    and document how to get a new tarball in debian/README.source.
+
+ -- Christian Hofstaedtler <zeha@debian.org>  Mon, 06 Jan 2014 01:43:35 +0100
+
+bundler (1.5.0-1) unstable; urgency=medium
+
+  * New upstream version, release to unstable.
+  * Bump Standards-Version to 3.9.5 (no changes needed)
+  * Ensure builds are run for ruby1.9.1 and ruby2.0 (newer gem2deb B-D)
+
+ -- Christian Hofstaedtler <zeha@debian.org>  Fri, 27 Dec 2013 11:50:17 +0100
+
+bundler (1.5.0~rc.2-exp1) experimental; urgency=medium
+
+  * New upstream release candidate.
+
+ -- Christian Hofstaedtler <zeha@debian.org>  Sat, 21 Dec 2013 22:38:30 +0100
+
+bundler (1.5.0~rc.1-exp1) experimental; urgency=low
+
+  * New upstream release candidate.
+
+ -- Christian Hofstaedtler <zeha@debian.org>  Sat, 30 Nov 2013 11:51:56 +0100
+
+bundler (1.4.0~rc.1-exp1) experimental; urgency=low
+
+  * New upstream release candidate, upload to experimental.
+  * Update my E-Mail Address.
+
+ -- Christian Hofstaedtler <zeha@debian.org>  Mon, 21 Oct 2013 22:40:19 +0200
+
+bundler (1.3.5-2) unstable; urgency=low
+
+  * Bump ruby-thor versioned dependency (Closes: #707104)
+
+ -- Christian Hofstaedtler <christian@hofstaedtler.name>  Tue, 07 May 2013 17:21:56 +0200
+
+bundler (1.3.5-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Christian Hofstaedtler <christian@hofstaedtler.name>  Mon, 06 May 2013 01:51:01 +0200
+
+bundler (1.2.3-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Christian Hofstaedtler <christian@hofstaedtler.name>  Sun, 16 Dec 2012 01:06:17 +0100
+
+bundler (1.2.2-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Christian Hofstaedtler <christian@hofstaedtler.name>  Fri, 23 Nov 2012 17:23:54 +0100
+
+bundler (1.2.1-2) unstable; urgency=low
+
+  * Remove vendored thor, net-http-persistent.
+
+ -- Christian Hofstaedtler <christian@hofstaedtler.name>  Mon, 12 Nov 2012 01:53:12 +0100
+
+bundler (1.2.1-1) unstable; urgency=low
+
+  * New upstream release.
+  * Drop patch 'fix-manpage-warning' as upstream has applied it.
+
+ -- Christian Hofstaedtler <christian@hofstaedtler.name>  Mon, 22 Oct 2012 20:44:49 +0200
+
+bundler (1.1.4-5) unstable; urgency=low
+
+  * Team upload
+  * Add a recommendation on less, as not every sensible-pager supports the
+    "-R" switch (Closes: #684798)
+
+ -- Gunnar Wolf <gwolf@debian.org>  Thu, 16 Aug 2012 10:54:13 -0500
+
+bundler (1.1.4-4) unstable; urgency=low
+
+  * Bump gem2deb build-dependency so we ship the rubygems-integration files.
+  * Recommend rubygems-integration as users might want to use it.
+
+ -- Christian Hofstaedtler <christian@hofstaedtler.name>  Sun, 24 Jun 2012 20:52:11 +0200
+
+bundler (1.1.4-3) unstable; urgency=low
+
+  * Update Depends/Recommends now that Ruby 1.9.x is the default in wheezy.
+    Thanks to Paul van Tilburg for suggesting this.
+
+ -- Christian Hofstaedtler <christian@hofstaedtler.name>  Wed, 13 Jun 2012 22:15:53 +0200
+
+bundler (1.1.4-2) unstable; urgency=low
+
+  * Install Gem.path directories using dpkg. (Closes: #676452)
+
+ -- Christian Hofstaedtler <christian@hofstaedtler.name>  Fri, 08 Jun 2012 02:29:12 +0200
+
+bundler (1.1.4-1) unstable; urgency=low
+
+  * New upstream release.
+  * Create Gem.path directories for the current Ruby interpreter versions
+    (1.8, 1.9.1) during postinst time, so `bundle install` works as non-root
+    without further actions from the user.
+
+ -- Christian Hofstaedtler <christian@hofstaedtler.name>  Mon, 04 Jun 2012 23:24:57 +0200
+
+bundler (1.1.3-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Christian Hofstaedtler <christian@hofstaedtler.name>  Wed, 28 Mar 2012 21:50:48 +0200
+
+bundler (1.1.0-1) unstable; urgency=low
+
+  * Initial release (Closes: #657143)
+  * Tests are disabled for the time being, as they break when run during
+    the build.
+
+ -- Christian Hofstaedtler <christian@hofstaedtler.name>  Thu, 15 Mar 2012 16:20:58 +0100
