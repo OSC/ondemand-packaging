@@ -97,7 +97,7 @@ LOCK_FILE="/var/lib/oodpkg/repo-update-${LOCK_NAME}.lock"
       DIST="focal"
       ;;
     ubuntu-18.04|bionic)
-      DIST="focal"
+      DIST="bionic"
       ;;
     *)
       echo "Unrecognized DIST"
