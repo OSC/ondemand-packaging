@@ -14,6 +14,7 @@ module OodPackaging
     },
     'ondemand-runtime'        => '2.1',
     'passenger'               => '6.0.11',
+    'bundler'                 => '2.1.4',
     'cjose'                   => '0.6.1',
     'mod_auth_openidc'        => '2.4.5',
     'sqlite'                  => '3.26.0-4',

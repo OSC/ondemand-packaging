@@ -72,6 +72,11 @@ namespace :ood_packaging do
       Rake::Task['ood_packaging:package:internal'].invoke(t.name, args[:dist])
     end
 
+    desc 'Package bundler'
+    task :bundler, [:dist] do |t, args|
+      Rake::Task['ood_packaging:package:internal'].invoke(t.name, args[:dist])
+    end
+
     desc 'Package cjose'
     task :cjose, [:dist] do |t, args|
       Rake::Task['ood_packaging:package:internal'].invoke(t.name, args[:dist])
