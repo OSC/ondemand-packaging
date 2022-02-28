@@ -4,6 +4,7 @@ ENV LANG=en_US.UTF-8
 ENV LC_CTYPE=en_US.UTF-8
 ENV GEM_PATH=<%= ctr_gems_dir %>:
 <% if dist == 'el7' -%>
+RUN rm -f /etc/yum.repos.d/CentOS-Vault.repo
 RUN yum update -y && yum clean all && rm -rf /var/cache/yum/*
 RUN yum install -y yum-utils epel-release centos-release-scl && yum clean all && rm -rf /var/cache/yum/*
 RUN yum install -y <%= scl_ruby %>-ruby sudo which wget @buildsys-build \
