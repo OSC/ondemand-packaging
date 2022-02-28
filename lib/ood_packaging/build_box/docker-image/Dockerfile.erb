@@ -10,8 +10,8 @@ RUN yum install -y <%= scl_ruby %>-ruby sudo which wget @buildsys-build \
     rpm-build rpmdevtools rpm-sign scl-utils-build && \
     yum clean all && rm -rf /var/cache/yum/*
 RUN rm -f /etc/yum.repos.d/CentOS-Vault.repo /etc/yum.repos.d/CentOS-Sources.repo
-RUN head -n 13 /etc/yum.repos.d/CentOS-SCLo-scl-rh.repo > /etc/yum.repos.d/CentOS-SCLo.repo
 RUN head -n 13 /etc/yum.repos.d/CentOS-SCLo-scl.repo > /etc/yum.repos.d/CentOS-SCLo.repo
+RUN head -n 13 /etc/yum.repos.d/CentOS-SCLo-scl-rh.repo >> /etc/yum.repos.d/CentOS-SCLo.repo
 RUN rm -f /etc/yum.repos.d/CentOS-SCLo-scl-rh.repo /etc/yum.repos.d/CentOS-SCLo-scl.repo
 <% elsif dist =~ /^el/ -%>
 RUN dnf update -y && dnf clean all && rm -rf /var/cache/dnf/*
