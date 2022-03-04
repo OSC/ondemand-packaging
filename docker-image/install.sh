@@ -52,7 +52,6 @@ if [[ "$ID_LIKE" == *rhel* ]]; then
 %_signature gpg
 %_gpg_path ~/.gnupg
 %_gpg /usr/bin/gpg
-%_gpg_name @GPG_NAME@
 %__gpg_check_password_cmd       %{__gpg} \\
         gpg --batch --no-verbose --passphrase-file /ondemand-packaging/.gpgpass -u "%{_gpg_name}" -so -
 %__gpg_sign_cmd %{__gpg} \\

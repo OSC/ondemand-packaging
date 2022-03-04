@@ -156,7 +156,7 @@ namespace :rpm do
     sh "rm -rf /home/ood/rpmbuild/*/*"
     if ENV['GPG_SIGN'] == 'true'
       puts "\tBootstrap GPG".blue
-      sh "sed -i 's|@GPG_NAME@|#{ENV['GPG_NAME']}|g' ~/.rpmmacros"
+      sh "echo '%_gpg_name #{ENV['GPG_NAME']}' >> ~/.rpmmacros"
       sh 'cat ~/.rpmmacros' if ENV['DEBUG'] == 'true'
       sh 'rm -rf ~/.gnupg'
       sh "gpg --batch --passphrase-file /ondemand-packaging/.gpgpass --import /ondemand-packaging/ondemand.sec #{cmd_suffix}"
