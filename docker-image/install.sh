@@ -52,6 +52,16 @@ if [[ "$ID_LIKE" == *rhel* ]]; then
 %_signature gpg
 %_gpg_path ~/.gnupg
 %_gpg /usr/bin/gpg
+%_gpg_name @GPG_NAME@
+%__gpg_check_password_cmd       %{__gpg} \\
+        gpg --batch --no-verbose --passphrase-file /ondemand-packaging/.gpgpass -u "%{_gpg_name}" -so -
+%__gpg_sign_cmd %{__gpg} \\
+        gpg --no-verbose --no-armor --batch \\
+        --passphrase-file /ondemand-packaging/.gpgpass \\
+        %{?_gpg_sign_cmd_extra_args:%{_gpg_sign_cmd_extra_args}} \\
+        %{?_gpg_digest_algo:--digest-algo %{_gpg_digest_algo}} \\
+	      --no-secmem-warning \\
+        -u \"%{_gpg_name}\" -sbo %{__signature_filename} %{__plaintext_filename}
 EOF
 	rpm --import /build/RPM-GPG-KEY-ondemand
 
