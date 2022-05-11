@@ -12,11 +12,13 @@ class OodPackaging::BuildBox
   BASE_IMAGES = {
     'el7'          => 'centos:7',
     'el8'          => 'rockylinux/rockylinux:8',
-    'ubuntu-20.04' => 'ubuntu:20.04'
+    'ubuntu-20.04' => 'ubuntu:20.04',
+    'ubuntu-22.04' => 'ubuntu:22.04'
   }.freeze
 
   CODENAMES = {
-    'ubuntu-20.04' => 'focal'
+    'ubuntu-20.04' => 'focal',
+    'ubuntu-22.04' => 'jammy'
   }.freeze
 
   def initialize(config = {})

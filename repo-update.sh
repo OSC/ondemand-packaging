@@ -93,6 +93,9 @@ LOCK_FILE="/var/lib/oodpkg/repo-update-${LOCK_NAME}.lock"
     gpg --detach-sign --passphrase-file ${GPGPASS} --batch --yes --no-tty --armor repodata/repomd.xml
   else
     case "${DIST}" in
+    ubuntu-22.04|jammy)
+      DIST="jammy"
+      ;;
     ubuntu-20.04|focal)
       DIST="focal"
       ;;

@@ -14,6 +14,7 @@ jobs:
           - el7
           - el8
           - ubuntu-20.04
+          - ubuntu-22.04
     runs-on: ubuntu-latest
     name: Buildbox tests
     steps:
@@ -34,7 +35,7 @@ jobs:
         with:
           name: image-${{ matrix.dist }}
           path: /tmp/ood_packaging-${{ matrix.dist }}.tar.gz
-  package:
+  package-el:
     needs: [buildbox]
     strategy:
       fail-fast: false
@@ -42,7 +43,6 @@ jobs:
         dist:
           - el7
           - el8
-          - ubuntu-20.04
         package:
           - ondemand-release
           - ondemand-release-latest
@@ -54,21 +54,43 @@ jobs:
           - ondemand-compute
           - python-websockify
           - turbovnc
-        exclude:
-          - dist: ubuntu-20.04
-            package: ondemand-runtime
-          - dist: ubuntu-20.04
-            package: cjose
-          - dist: ubuntu-20.04
-            package: mod_auth_openidc
-          - dist: ubuntu-20.04
-            package: ondemand_exporter
-          - dist: ubuntu-20.04
-            package: ondemand-compute
-          - dist: ubuntu-20.04
-            package: python-websockify
-          - dist: ubuntu-20.04
-            package: turbovnc
+        include:
+          - dist: el7
+            package: sqlite
+    runs-on: ubuntu-latest
+    name: Package test package=${{ matrix.package }} dist=${{ matrix.dist }}
+    steps:
+      - name: Checkout ${{ github.sha	}}
+        uses: actions/checkout@v2
+      - name: Setup Ruby ${{ matrix.ruby }} using Bundler ${{ matrix.bundler }}
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '2.7.1'
+          bundler: '2.1.4'
+          bundler-cache: true
+      - name: Download image
+        uses: actions/download-artifact@v2
+        with:
+          name: image-${{ matrix.dist }}
+          path: /tmp
+      - name: Load image
+        run: docker load --input /tmp/ood_packaging-${{ matrix.dist }}.tar.gz
+      - name: Build package
+        run: bundle exec rake ood_packaging:package:${{ matrix.package }}[${{ matrix.dist }}]
+        env:
+          OOD_PACKAGING_DEBUG: 'true'
+  package-deb:
+    needs: [buildbox]
+    strategy:
+      fail-fast: false
+      matrix:
+        dist:
+          - ubuntu-20.04
+          - ubuntu-22.04
+        package:
+          - ondemand-release
+          - ondemand-release-latest
+          - passenger
         include:
           - dist: el7
             package: sqlite
@@ -103,11 +125,13 @@ jobs:
           - el7
           - el8
           - ubuntu-20.04
+          - ubuntu-22.04
         package:
           - ondemand
-          - bc_osc_rstudio_server
-        exclude:
-          - dist: ubuntu-20.04
+        include:
+          - dist: el7
+            package: bc_osc_rstudio_server
+          - dist: el8
             package: bc_osc_rstudio_server
     runs-on: ubuntu-latest
     name: Package ${{ matrix.package }} dist=${{ matrix.dist }}
