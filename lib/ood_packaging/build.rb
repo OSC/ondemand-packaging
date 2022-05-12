@@ -249,7 +249,7 @@ class OodPackaging::Build
     sh "sudo apt update -y#{cmd_suffix}"
     cmd = [
       'mk-build-deps --install --remove --root-cmd sudo',
-      "--tool='apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes'"
+      "--tool='DEBIAN_FRONTEND=noninteractive apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes'"
     ]
     Dir.chdir(deb_work_dir) do
       sh "#{cmd.join(' ')}#{cmd_suffix}"
