@@ -90,7 +90,7 @@ describe OodPackaging::Build do
           '2>/dev/null 1>/dev/null || true'
         ]
         expect(build).to receive(:sh).with(expected_dh_make.join(' '))
-        expect(build).to receive(:sh).with("dch -b -v 0.0.1-1 --controlmaint 'Release 0.0.1' 2>/dev/null 1>/dev/null")
+        expect(build).to receive(:sh).with("dch -b -v 0.0.1 --controlmaint 'Release 0.0.1' 2>/dev/null 1>/dev/null")
         build.bootstrap_deb!
       end
     end
@@ -132,9 +132,13 @@ describe OodPackaging::Build do
       let(:version) { 'v0.0.1' }
 
       it 'installs DEB dependencies using apt' do
+        tool = [
+          'DEBIAN_FRONTEND=noninteractive apt-get',
+          '-o Debug::pkgProblemResolver=yes --no-install-recommends --yes'
+        ]
         expected_cmd = [
           'mk-build-deps', '--install', '--remove', '--root-cmd sudo',
-          "--tool='apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes'",
+          "--tool='#{tool.join(' ')}'",
           '2>/dev/null 1>/dev/null'
         ]
         expect(build).to receive(:sh).with('sudo apt update -y 2>/dev/null 1>/dev/null')
