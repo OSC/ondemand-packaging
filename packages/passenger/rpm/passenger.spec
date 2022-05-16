@@ -2,7 +2,7 @@
 %define pkg_name passenger
 %scl_package passenger
 %define passenger_version %{package_version}
-%define nginx_version 1.20.1
+%define nginx_version 1.20.2
 %define release_version %{package_release}
 %define ngix_release_version 1
 
