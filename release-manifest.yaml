@@ -37,7 +37,7 @@ ondemand-nginx:
     - ondemand-nginx
     - ondemand-nginx-debuginfo
   versions:
-    - 1.20.2-1.p6.0.14
+    - 1.20.2-1.p6.0.14.ood{major}
     # deb package
     - 1.20.2
 ondemand-passenger:
@@ -48,7 +48,7 @@ ondemand-passenger:
     - ondemand-passenger-dev
     - ondemand-passenger-doc
   versions:
-    - 6.0.14-1
+    - 6.0.14-1.ood{major}
     # deb package
     - 6.0.14
 ondemand-runtime:
