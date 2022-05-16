@@ -1,7 +1,7 @@
 %define scl ondemand
 %define pkg_name passenger
 %scl_package passenger
-%define passenger_version 6.0.7
+%define passenger_version 6.0.14
 %define nginx_version 1.18.0
 %define release_version 1
 %define ngix_release_version 2
