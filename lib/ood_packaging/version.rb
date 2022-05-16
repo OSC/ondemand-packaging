@@ -13,7 +13,7 @@ module OodPackaging
       'default'         => '1-6'
     },
     'ondemand-runtime'        => '2.1',
-    'passenger'               => '6.0.11',
+    'passenger'               => '6.0.14',
     'cjose'                   => '0.6.1',
     'mod_auth_openidc'        => '2.4.5',
     'sqlite'                  => '3.26.0-4',
