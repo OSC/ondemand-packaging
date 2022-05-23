@@ -94,6 +94,8 @@ class OodPackaging::Build
   def debian_dir
     @debian_dir ||= if Dir.exist?('/package/deb/debian')
                       '/package/deb/debian'
+                    elsif Dir.exist?('/package/packaging/deb')
+                      '/package/packaging/deb'
                     else
                       '/package/debian'
                     end
