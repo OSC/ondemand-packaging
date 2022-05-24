@@ -17,8 +17,11 @@ PROJ_ROOT = os.path.dirname(os.path.realpath(__file__))
 DISTS = [
     'el7',
     'el8',
-    'ubuntu-20.04'
+    'ubuntu-20.04',
+    'ubuntu-22.04'
 ]
+EL_RELEASES = ['el7', 'el8']
+DEB_CODENAMES = ['focal','jammy']
 
 def get_rpm_info(rpm_file):
     ts = rpm.ts()
@@ -123,7 +126,7 @@ Usage examples:
 
     # Prep release directories
     for t in ['compute', 'web']:
-        for rel in ['el7', 'el8']:
+        for rel in EL_RELEASES:
             rel_d = os.path.join(release_dir, t, rel)
             if not os.path.isdir(rel_d):
                 logger.info("mkdir -p %s", rel_d)
@@ -137,7 +140,7 @@ Usage examples:
                 if not os.path.isdir(d):
                     logger.info("mkdir -p %s", d)
                     os.makedirs(d, 0755)
-        for rel in ['focal']:
+        for rel in DEB_CODENAMES:
             rel_d = os.path.join(release_dir, t, 'apt/dists', rel, 'main/binary-amd64')
             pool_d = os.path.join(release_dir, t, 'apt/pool', rel)
             if not os.path.isdir(rel_d):

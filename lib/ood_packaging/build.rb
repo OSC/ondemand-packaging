@@ -221,7 +221,7 @@ class OodPackaging::Build
     puts "\tBootstrap debian build files".blue
     Dir.chdir(deb_work_dir) do
       sh "dh_make -s -y --createorig -f ../#{deb_name}.tar.gz#{cmd_suffix} || true"
-      sh "dch -b -v #{deb_version} 'Release #{deb_version}'#{cmd_suffix}"
+      sh "dch -b -v #{deb_version} --controlmaint 'Release #{deb_version}'#{cmd_suffix}"
     end
   end
 
@@ -249,7 +249,7 @@ class OodPackaging::Build
     sh "sudo apt update -y#{cmd_suffix}"
     cmd = [
       'mk-build-deps --install --remove --root-cmd sudo',
-      "--tool='apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes'"
+      "--tool='DEBIAN_FRONTEND=noninteractive apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes'"
     ]
     Dir.chdir(deb_work_dir) do
       sh "#{cmd.join(' ')}#{cmd_suffix}"

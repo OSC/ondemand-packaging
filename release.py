@@ -19,6 +19,7 @@ logger = logging.getLogger()
 
 deb_dist_map = {
     'ubuntu-20.04': 'focal',
+    'ubuntu-22.04': 'jammy',
 }
 PROJ_ROOT = os.path.dirname(os.path.realpath(__file__))
 
