@@ -156,3 +156,6 @@ override_dh_auto_install:
 	mkdir -p $(DEV_DESTDIR)$(PREFIX)/usr/lib64/passenger
 	mv $(DESTDIR)$(PREFIX)/usr/lib64/passenger/common $(DEV_DESTDIR)$(PREFIX)/usr/lib64/passenger/common
 	mv $(DESTDIR)$(PREFIX)/usr/lib64/passenger/nginx_dynamic $(DEV_DESTDIR)$(PREFIX)/usr/lib64/passenger/nginx_dynamic
+
+override_dh_builddeb:
+	dh_builddeb -- -Zgzip

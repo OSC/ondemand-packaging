@@ -37,7 +37,7 @@ build-ondemand-release:
     - bundle exec rake ood_packaging:package:ondemand-release
   parallel:
     matrix:
-      - OOD_PACKAGING_DIST: [el8, ubuntu-20.04, ubuntu-22.04]
+      - OOD_PACKAGING_DIST: [el8, ubuntu-20.04]
   artifacts:
     paths:
       - tmp/output
@@ -52,7 +52,7 @@ build-ondemand-release-latest:
     - bundle exec rake ood_packaging:package:ondemand-release-latest
   parallel:
     matrix:
-      - OOD_PACKAGING_DIST: [el8, ubuntu-20.04, ubuntu-22.04]
+      - OOD_PACKAGING_DIST: [el8, ubuntu-20.04]
   artifacts:
     paths:
       - tmp/output
