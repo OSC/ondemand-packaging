@@ -59,7 +59,7 @@ module OodPackaging::Utils
   end
 
   def ruby_version
-    '2.7'
+    '3.0'
   end
 
   def scl_ruby

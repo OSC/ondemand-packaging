@@ -12,7 +12,7 @@ module OodPackaging
       '(ubuntu|debian)' => '1',
       'default'         => '1-6'
     },
-    'ondemand-runtime'        => '2.1',
+    'ondemand-runtime'        => '2.1.1',
     'passenger'               => '6.0.14',
     'cjose'                   => '0.6.1',
     'mod_auth_openidc'        => '2.4.5',
