@@ -2,13 +2,9 @@
 # frozen_string_literal: true
 
 require 'optparse'
-begin
-  require 'ood_packaging'
-# If gem is not installed, load from location in git repo
-rescue LoadError
-  $LOAD_PATH.unshift(File.expand_path(File.join(__dir__, '../lib')))
-  require 'ood_packaging'
-end
+libdir = File.expand_path(File.join(__dir__, '../lib'))
+$LOAD_PATH.unshift(libdir) if Dir.exist?(libdir)
+require 'ood_packaging'
 
 options = {}
 OptionParser.new do |opts|
