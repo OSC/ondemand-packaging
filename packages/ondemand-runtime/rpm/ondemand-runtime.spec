@@ -9,11 +9,11 @@
 %global nodejs nodejs
 %global apache httpd
 %else
-%global ruby rh-ruby27
+%global ruby rh-ruby30
 %global nodejs rh-nodejs14
 %global apache httpd24
 %endif
-%global ruby_version 2.7
+%global ruby_version 3.0
 %global ondemand_gem_home %{_datadir}/gems/%{ruby_version}
 %global ondemand_apps_gem_home %{ondemand_gem_home}/apps
 %global ondemand_core_gem_home %{ondemand_gem_home}/ondemand
@@ -57,7 +57,7 @@ packages depending on %{scl} Software Collection.
 %package -n ondemand-ruby
 Summary: Meta package for pulling in SCL Ruby %{ruby}
 %if 0%{?rhel} >= 8
-Requires: %{ruby} >= 2.7, %{ruby} < 2.8
+Requires: %{ruby} >= 3.0, %{ruby} < 3.1
 Requires: rubygem-rake
 Requires: rubygem-bundler >= 2.1
 Requires: ruby-devel

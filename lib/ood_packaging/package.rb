@@ -21,8 +21,6 @@ class OodPackaging::Package
     @config = config
     @config[:dist] = 'el8' if tar_only?
     @build_box = OodPackaging::BuildBox.new(config)
-    @clean_work_dir = config[:clean_work_dir].nil? ? true : config[:clean_work_dir]
-    @clean_output_dir = config[:clean_output_dir].nil? ? true : config[:clean_output_dir]
     raise ArgumentError, 'Package is required' if package.nil?
     raise ArgumentError, 'Version is required' if version.nil?
     raise ArgumentError, "Package #{package} is not a directory" unless Dir.exist?(package)
@@ -49,8 +47,20 @@ class OodPackaging::Package
     @work_dir ||= File.expand_path(@config[:work_dir])
   end
 
+  def clean_work_dir
+    return false if ENV['OOD_PACKAGING_CLEAN_WORK_DIR'] == 'false'
+
+    @config[:clean_work_dir].nil? ? true : @config[:clean_work_dir]
+  end
+
   def output_dir
     @output_dir ||= File.expand_path(@config[:output_dir])
+  end
+
+  def clean_output_dir
+    return false if ENV['OOD_PACKAGING_CLEAN_OUTPUT_DIR'] == 'false'
+
+    @config[:clean_output_dir].nil? ? true : @config[:clean_output_dir]
   end
 
   def package
@@ -200,8 +210,8 @@ class OodPackaging::Package
   end
 
   def clean!
-    sh "rm -rf #{work_dir}", verbose: debug if @clean_work_dir
-    sh "rm -rf #{output_dir}", verbose: debug if @clean_output_dir
+    sh "rm -rf #{work_dir}", verbose: debug if clean_work_dir
+    sh "rm -rf #{output_dir}", verbose: debug if clean_output_dir
   end
 
   def bootstrap!
