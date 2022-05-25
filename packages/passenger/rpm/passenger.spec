@@ -6,11 +6,7 @@
 %define release_version %{package_release}
 %define ngix_release_version 1
 
-%define runtime_version 2.1
-%define runtime_major_version %(echo %{runtime_version} | cut -d. -f1)
-%define runtime_minor_version %(echo %{runtime_version} | cut -d. -f2)
-%define next_runtime_major_version %(echo $((%{runtime_major_version}+1))).0
-%define next_runtime_minor_version %{runtime_major_version}.%(echo $((%{runtime_minor_version}+1)))
+%define runtime_version 2.1.1
 
 %global  nginx_user          %{?scl_prefix}nginx
 %global  nginx_group         %{nginx_user}
@@ -42,16 +38,16 @@ Source1:    http://nginx.org/download/nginx-%{nginx_version}.tar.gz
 
 %{?scl:Requires:%scl_runtime}
 %{?scl:BuildRequires:%scl_runtime}
-BuildRequires:  ondemand-scldevel >= %{runtime_version}, ondemand-ruby < %{next_runtime_major_version}, ondemand-ruby < %{next_runtime_minor_version}
-BuildRequires:  ondemand-build >= %{runtime_version}, ondemand-ruby < %{next_runtime_major_version}, ondemand-ruby < %{next_runtime_minor_version}
-BuildRequires:  ondemand-ruby >= %{runtime_version}, ondemand-ruby < %{next_runtime_major_version}, ondemand-ruby < %{next_runtime_minor_version}
-BuildRequires:  ondemand-apache >= %{runtime_version}, ondemand-apache < %{next_runtime_major_version}, ondemand-apache < %{next_runtime_minor_version}
+BuildRequires:  ondemand-scldevel = %{runtime_version}
+BuildRequires:  ondemand-build = %{runtime_version}
+BuildRequires:  ondemand-ruby = %{runtime_version}
+BuildRequires:  ondemand-apache = %{runtime_version}
 BuildRequires:  libcurl-devel
 BuildRequires:  zlib-devel
 BuildRequires:  openssl-devel
 BuildRequires:  pcre-devel
-Requires: ondemand-runtime >= %{runtime_version}, ondemand-ruby < %{next_runtime_major_version}, ondemand-ruby < %{next_runtime_minor_version}
-Requires: ondemand-ruby >= %{runtime_version}, ondemand-ruby < %{next_runtime_major_version}, ondemand-ruby < %{next_runtime_minor_version}
+Requires: ondemand-runtime = %{runtime_version}
+Requires: ondemand-ruby = %{runtime_version}
 Provides: %{name} = %{version}-%{release}
 Provides: bundled(boost)  = %{bundled_boost_version}
 
