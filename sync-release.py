@@ -95,26 +95,27 @@ Usage examples:
     # Get global values
     major = manifest_data.get('major', args.release)
     full = manifest_data.get('full', None)
+    runtime = manifest_data.get('runtime', None)
     if full is None:
         logger.error("Unable to determine full version of ondemand")
         sys.exit(1)
 
     # Build manifest
     for k,v in manifest_data.iteritems():
-        if k in ['major','full']:
+        if k in ['major','full','runtime']:
             continue
-        name = k.format(major=major, full=full)
+        name = k.format(major=major, full=full, runtime=runtime)
         if isinstance(v, dict):
             for p in v['packages']:
-                name = p.format(major=major, full=full)
+                name = p.format(major=major, full=full, runtime=runtime)
                 manifest[name] = []
                 for val in v['versions']:
-                    value = val.format(major=major, full=full)
+                    value = val.format(major=major, full=full, runtime=runtime)
                     manifest[name].append(value)
         else:
             manifest[name] = []
             for val in v:
-                value = val.format(major=major, full=full)
+                value = val.format(major=major, full=full, runtime=runtime)
                 manifest[name].append(value)
 
     # Print manifest
