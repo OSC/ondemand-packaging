@@ -1,7 +1,7 @@
 %{!?package_release: %define package_release 1}
 %define __brp_mangle_shebangs /bin/true
 
-Name:           python-websockify
+Name:           python3-websockify
 Version:        %{package_version}
 Release:        %{package_release}%{?dist}
 Summary:        WSGI based adapter for the Websockets protocol
@@ -13,6 +13,7 @@ BuildArch:      noarch
 BuildRequires:  python3-rpm-macros
 BuildRequires:  python3-setuptools
 Requires:       python3-setuptools
+Obsoletes:      python-websockify
 
 %description
 Python WSGI based adapter for the Websockets protocol

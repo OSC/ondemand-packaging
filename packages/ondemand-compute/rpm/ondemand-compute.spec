@@ -11,7 +11,7 @@ URL:        https://osc.github.io/ood-documentation/
 BuildArch:  noarch
 
 Requires:   turbovnc >= 2.2.5
-Requires:   python-websockify >= 0.8.0
+Requires:   python3-websockify >= 0.10.0
 Requires:   /bin/bash
 Requires:   /usr/bin/shuf
 Requires:   /usr/bin/pgrep
