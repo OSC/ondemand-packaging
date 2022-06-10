@@ -10,15 +10,9 @@ License:        LGPLv3
 URL:            https://github.com/novnc/websockify
 Source0:        https://github.com/novnc/websockify/archive/refs/tags/v%{package_version}.tar.gz
 BuildArch:      noarch
-BuildRequires:  python2-devel
-BuildRequires:  python2-rpm-macros
-%if 0%{?rhel} >= 8
-BuildRequires:  python2-setuptools
-Requires:       python2-setuptools
-%else
-BuildRequires:  python-setuptools
-Requires:       python-setuptools
-%endif
+BuildRequires:  python3-rpm-macros
+BuildRequires:  python3-setuptools
+Requires:       python3-setuptools
 
 %description
 Python WSGI based adapter for the Websockets protocol
@@ -30,11 +24,11 @@ Python WSGI based adapter for the Websockets protocol
 sed -i '/setup_requires/d; /install_requires/d; /dependency_links/d' setup.py
 
 %build
-%{__python2} setup.py build
+%{__python3} setup.py build
 
 
 %install
-%{__python2} setup.py install -O1 --skip-build --root %{buildroot}
+%{__python3} setup.py install -O1 --skip-build --root %{buildroot}
 
 rm -Rf %{buildroot}/usr/share/websockify
 mkdir -p %{buildroot}%{_mandir}/man1/
@@ -42,10 +36,10 @@ install -m 444 docs/websockify.1 %{buildroot}%{_mandir}/man1/
 
 
 %files
-%doc LICENSE.txt docs
+%doc docs
 %{_mandir}/man1/websockify.1*
-%{python2_sitelib}/websockify/*
-%{python2_sitelib}/websockify-%{version}-py?.?.egg-info
+%{python3_sitelib}/websockify/*
+%{python3_sitelib}/websockify-%{version}-py?.?.egg-info
 %{_bindir}/websockify
 
 

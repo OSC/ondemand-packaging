@@ -196,9 +196,18 @@ build-turbovnc:
 package-deploy-latest:
   stage: deploy
   rules:
-    - if: $CI_COMMIT_TAG && $CI_COMMIT_TAG !~ /v[0-9].+/
+    - if: $CI_COMMIT_TAG && $CI_COMMIT_TAG !~ /v[0-9].+/ && $CI_COMMIT_TAG !~ /turbovnc|python-websockify|ondemand-compute/
   script:
     - ./release.py --debug --pkey /systems/osc_certs/ssh/ondemand-packaging/id_rsa -c main ./tmp/output/*
+
+package-deploy-latest-compute:
+  stage: deploy
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^turbovnc-/'
+    - if: '$CI_COMMIT_TAG =~ /^python-websockify-/'
+    - if: '$CI_COMMIT_TAG =~ /^ondemand-compute-/'
+  script:
+    - ./release.py --debug --pkey /systems/osc_certs/ssh/ondemand-packaging/id_rsa -c compute ./tmp/output/*
 
 package-deploy-build:
   stage: deploy

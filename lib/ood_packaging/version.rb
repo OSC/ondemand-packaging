@@ -22,7 +22,7 @@ module OodPackaging
       '(ubuntu|debian)' => '2.1.0',
       'default'         => '2.1'
     },
-    'python-websockify'       => '0.8.0',
+    'python-websockify'       => '0.10.0',
     'turbovnc'                => '2.2.5'
   }.freeze
 
