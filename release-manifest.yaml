@@ -89,9 +89,9 @@ ondemand_exporter:
 
 # compute
 ondemand-compute:
-  - '{major}-1'
-python-websockify:
-  - 0.8.0-1
+  - '{major}.0-1'
+python3-websockify:
+  - 0.10.0-1
 turbovnc:
   packages:
     - turbovnc
