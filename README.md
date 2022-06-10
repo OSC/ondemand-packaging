@@ -176,14 +176,14 @@ First create a GPG public and private key.  This should only be done once.  The 
 
 ```
 cat > gen <<EOF
-Key-Type: RSA
+Key-Type: default
 Key-Length: 2048
-Key-Usage: encrypt
-Subkey-Type: RSA
+Key-Usage: encrypt,sign
+Subkey-Type: default
 Subkey-Length: 2048
-Subkey-Usage: encrypt
-Name-Real: My Site Key
-Name-Email: packages@example.com
+Subkey-Usage: encrypt,sign
+Name-Real: OnDemand Release Signing Key (SHA512)
+Name-Email: packages@osc.edu
 Expire-Date: 0
 %pubring ondemand.pub
 %secring ondemand.sec
@@ -192,6 +192,25 @@ Expire-Date: 0
 EOF
 
 gpg --gen-key --batch gen
+```
+
+For RHEL9+ 
+
+```
+cat > gen <<EOF
+Key-Type: default
+Key-Length: 4096
+Key-Usage: encrypt,sign
+Subkey-Type: default
+Subkey-Length: 4096
+Subkey-Usage: encrypt,sign
+Name-Real: OnDemand Release Signing Key (SHA512)
+Name-Email: packages@osc.edu
+Expire-Date: 0
+%commit
+%echo done
+EOF
+gpg --full-gen-key --batch --pinentry-mode=loopback --passphrase-file ./.gpgpass --s2k-digest-algo sha512 ./gen
 ```
 
 Substitute `Name-Real` and `Name-Email` with site specific values.  The value of `Name-Real` needs to be passed to `build.sh` at build time via the `-G` flag.

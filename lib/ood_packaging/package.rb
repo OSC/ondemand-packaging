@@ -100,6 +100,8 @@ class OodPackaging::Package
 
   def gpg_files
     [
+      OpenStruct.new(private_key: File.join(proj_root, 'ondemand-sha512.sec'), passphrase: File.join(proj_root, '.gpgpass')),
+      OpenStruct.new(private_key: File.join(package, 'ondemand-sha512.sec'), passphrase: File.join(package, '.gpgpass')),
       OpenStruct.new(private_key: File.join(proj_root, 'ondemand.sec'), passphrase: File.join(proj_root, '.gpgpass')),
       OpenStruct.new(private_key: File.join(package, 'ondemand.sec'), passphrase: File.join(package, '.gpgpass')),
       OpenStruct.new(private_key: @config[:gpg_private_key], passphrase: @config[:gpg_passphrase]),
@@ -120,7 +122,7 @@ class OodPackaging::Package
   end
 
   def gpg_name
-    @config[:gpg_name].nil? ? 'OnDemand Release Signing Key' : @config[:gpg_name]
+    @config[:gpg_name].nil? ? 'OnDemand Release Signing Key (SHA512)' : @config[:gpg_name]
   end
 
   def container_init

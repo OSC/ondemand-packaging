@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ood_packaging (0.2.0)
+    ood_packaging (0.3.0)
       rake (~> 13.0.1)
 
 GEM
@@ -55,4 +55,4 @@ DEPENDENCIES
   rubocop-rspec
 
 BUNDLED WITH
-   2.1.4
+   2.2.3

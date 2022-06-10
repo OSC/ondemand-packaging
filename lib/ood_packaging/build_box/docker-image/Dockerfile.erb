@@ -17,9 +17,13 @@ RUN rm -f /etc/yum.repos.d/CentOS-SCLo-scl-rh.repo /etc/yum.repos.d/CentOS-SCLo-
 <% elsif dist =~ /^el/ -%>
 RUN dnf update -y && dnf clean all && rm -rf /var/cache/dnf/*
 RUN dnf install -y dnf-utils epel-release langpacks-en glibc-all-langpacks && dnf clean all && rm -rf /var/cache/dnf/*
+<% if dist == 'el8' -%>
 RUN dnf config-manager --set-enabled powertools && dnf clean all && rm -rf /var/cache/dnf/*
 RUN dnf module enable -y ruby:<%= ruby_version %> nodejs:<%= nodejs_version %> && dnf clean all && rm -rf /var/cache/dnf/*
-RUN dnf install -y systemd ruby sudo which wget \
+<% else -%>
+RUN dnf config-manager --set-enabled crb && dnf clean all && rm -rf /var/cache/dnf/*
+<% end -%>
+RUN dnf install -y systemd ruby nodejs sudo which wget \
     gcc-c++ gcc make patch \
     rpm-build rpmdevtools rpm-sign scl-utils-build && \
     dnf clean all && rm -rf /var/cache/dnf/*

@@ -13,6 +13,7 @@ jobs:
         dist:
           - el7
           - el8
+          - el9
           - ubuntu-20.04
           - ubuntu-22.04
     runs-on: ubuntu-latest
@@ -43,6 +44,7 @@ jobs:
         dist:
           - el7
           - el8
+          - el9
         package:
           - ondemand-release
           - ondemand-release-latest

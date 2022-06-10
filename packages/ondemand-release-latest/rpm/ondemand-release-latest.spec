@@ -11,7 +11,7 @@ URL:        https://osc.github.io/ood-documentation/
 BuildArch:  noarch
 Source0:    ondemand-web.repo
 Source1:    ondemand-compute.repo
-Source2:    RPM-GPG-KEY-ondemand
+Source2:    RPM-GPG-KEY-ondemand-SHA512
 Obsoletes:  ondemand-release-web
 
 %description
@@ -38,8 +38,8 @@ exit 0
 %install
 install -Dpm0644 %{SOURCE0} %{buildroot}%{_sysconfdir}/yum.repos.d/ondemand-web.repo
 install -Dpm0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/yum.repos.d/ondemand-compute.repo
-install -Dpm0644 %{SOURCE2} %{buildroot}%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand
-install -Dpm0644 %{SOURCE2} %{buildroot}%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand-compute
+install -Dpm0644 %{SOURCE2} %{buildroot}%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand-SHA512
+install -Dpm0644 %{SOURCE2} %{buildroot}%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand-compute-SHA512
 mkdir -p %{buildroot}%{_docdir}/%{name}
 
 %clean
@@ -52,11 +52,11 @@ fi
 
 %files
 %config %{_sysconfdir}/yum.repos.d/ondemand-web.repo
-%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand
+%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand-SHA512
 
 %files -n ondemand-release-compute-latest
 %config %{_sysconfdir}/yum.repos.d/ondemand-compute.repo
-%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand-compute
+%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand-compute-SHA512
 
 
 %changelog

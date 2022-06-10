@@ -8,7 +8,7 @@ ondemand-release:
     - ondemand-release-compute
     - ondemand-release-web
   versions:
-    - '{major}-1'
+    - '{major}.0-1'
 # deb package
 ondemand-release-web:
   - '{major}.0'
