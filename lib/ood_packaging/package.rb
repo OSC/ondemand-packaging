@@ -318,7 +318,7 @@ class OodPackaging::Package
     puts "Build STARTED: package=#{package} dist=#{build_box.dist} exec=#{exec_cmd[-1]}".blue
     sh cmd.join(' '), verbose: debug?
   rescue RuntimeError
-    container_kill! if container_running? && !attach?
+    container_kill! if container_running? && attach?
     false
   else
     true
