@@ -133,6 +133,7 @@ class OodPackaging::Package
 
   def default_gpg_name
     return 'OnDemand Release Signing Key' if build_box.scl?
+
     'OnDemand Release Signing Key (SHA512)'
   end
 
@@ -255,6 +256,9 @@ class OodPackaging::Package
     end
   end
 
+  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/MethodLength
+  # rubocop:disable Metrics/PerceivedComplexity
   def run!
     success = true
     if tar_only?
@@ -280,6 +284,9 @@ class OodPackaging::Package
     end
     success
   end
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/PerceivedComplexity
 
   def container_running?
     cmd = "#{container_runtime} inspect #{container_name}#{cmd_suffix}"

@@ -108,7 +108,7 @@ describe OodPackaging::Package do
       expect(package).to receive(:bootstrap!)
       expect(package).not_to receive(:tar!)
       expect(package).to receive(:container_start!)
-      expect(package).to receive(:container_exec!).and_return(true)
+      allow(package).to receive(:container_exec!).and_return(true)
       expect(package).to receive(:container_kill!)
       success = package.run!
       expect(success).to be true
@@ -120,7 +120,7 @@ describe OodPackaging::Package do
       expect(package).to receive(:bootstrap!)
       expect(package).not_to receive(:tar!)
       expect(package).to receive(:container_start!)
-      expect(package).to receive(:container_exec!).and_return(false)
+      allow(package).to receive(:container_exec!).and_return(false)
       expect(package).to receive(:container_kill!)
       success = package.run!
       expect(success).to be false
@@ -147,7 +147,7 @@ describe OodPackaging::Package do
         expect(package).to receive(:bootstrap!)
         expect(package).to receive(:tar!)
         expect(package).to receive(:container_start!)
-        expect(package).to receive(:container_exec!).and_return(true)
+        allow(package).to receive(:container_exec!).and_return(true)
         expect(package).to receive(:container_kill!)
         success = package.run!
         expect(success).to be true
