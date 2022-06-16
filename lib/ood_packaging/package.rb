@@ -270,7 +270,7 @@ class OodPackaging::Package
   end
 
   def container_running?
-    cmd = "#{container_runtime} inspect #{container_name}#{cmd_suffix}"
+    cmd = "#{container_runtime} inspect #{container_name} 2>/dev/null 1>/dev/null"
     puts cmd if debug?
     `#{cmd}`
     $CHILD_STATUS.success?
