@@ -98,10 +98,13 @@ class OodPackaging::Package
     name
   end
 
+  # rubocop:disable Metrics/AbcSize
   def gpg_files
     [
-      OpenStruct.new(private_key: File.join(proj_root, 'ondemand-sha512.sec'), passphrase: File.join(proj_root, '.gpgpass')),
-      OpenStruct.new(private_key: File.join(package, 'ondemand-sha512.sec'), passphrase: File.join(package, '.gpgpass')),
+      OpenStruct.new(private_key: File.join(proj_root, 'ondemand-sha512.sec'),
+                     passphrase:  File.join(proj_root, '.gpgpass')),
+      OpenStruct.new(private_key: File.join(package, 'ondemand-sha512.sec'),
+                     passphrase:  File.join(package, '.gpgpass')),
       OpenStruct.new(private_key: File.join(proj_root, 'ondemand.sec'), passphrase: File.join(proj_root, '.gpgpass')),
       OpenStruct.new(private_key: File.join(package, 'ondemand.sec'), passphrase: File.join(package, '.gpgpass')),
       OpenStruct.new(private_key: @config[:gpg_private_key], passphrase: @config[:gpg_passphrase]),
@@ -113,6 +116,7 @@ class OodPackaging::Package
     end
     nil
   end
+  # rubocop:enable Metrics/AbcSize
 
   def gpg_sign
     return false if ENV['OOD_PACKAGING_GPG_SIGN'].to_s == 'false'
