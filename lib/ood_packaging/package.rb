@@ -101,15 +101,15 @@ class OodPackaging::Package
   # rubocop:disable Metrics/AbcSize
   def gpg_files
     [
+      OpenStruct.new(private_key: @config[:gpg_private_key], passphrase: @config[:gpg_passphrase]),
+      OpenStruct.new(private_key: ENV['OOD_PACKAGING_GPG_PRIVATE_KEY'],
+                     passphrase:  ENV['OOD_PACKAGING_GPG_PASSPHRASE']),
       OpenStruct.new(private_key: File.join(proj_root, 'ondemand-sha512.sec'),
                      passphrase:  File.join(proj_root, '.gpgpass')),
       OpenStruct.new(private_key: File.join(package, 'ondemand-sha512.sec'),
                      passphrase:  File.join(package, '.gpgpass')),
       OpenStruct.new(private_key: File.join(proj_root, 'ondemand.sec'), passphrase: File.join(proj_root, '.gpgpass')),
-      OpenStruct.new(private_key: File.join(package, 'ondemand.sec'), passphrase: File.join(package, '.gpgpass')),
-      OpenStruct.new(private_key: @config[:gpg_private_key], passphrase: @config[:gpg_passphrase]),
-      OpenStruct.new(private_key: ENV['OOD_PACKAGING_GPG_PRIVATE_KEY'],
-                     passphrase:  ENV['OOD_PACKAGING_GPG_PASSPHRASE'])
+      OpenStruct.new(private_key: File.join(package, 'ondemand.sec'), passphrase: File.join(package, '.gpgpass'))
     ].each do |gpg|
       next if gpg.private_key.nil? || gpg.passphrase.nil?
       return gpg if File.exist?(gpg.private_key) && File.exist?(gpg.passphrase)
