@@ -108,9 +108,22 @@ describe OodPackaging::Package do
       expect(package).to receive(:bootstrap!)
       expect(package).not_to receive(:tar!)
       expect(package).to receive(:container_start!)
-      expect(package).to receive(:container_exec!)
+      expect(package).to receive(:container_exec!).and_return(true)
       expect(package).to receive(:container_kill!)
-      package.run!
+      success = package.run!
+      expect(success).to be true
+    end
+
+    it 'runs packaging with failure' do
+      allow(package).to receive(:container_running?).and_return(true)
+      expect(package).to receive(:clean!)
+      expect(package).to receive(:bootstrap!)
+      expect(package).not_to receive(:tar!)
+      expect(package).to receive(:container_start!)
+      expect(package).to receive(:container_exec!).and_return(false)
+      expect(package).to receive(:container_kill!)
+      success = package.run!
+      expect(success).to be false
     end
 
     it 'runs tar only' do
@@ -121,7 +134,8 @@ describe OodPackaging::Package do
       expect(package).not_to receive(:container_start!)
       expect(package).not_to receive(:container_exec!)
       expect(package).not_to receive(:container_kill!)
-      package.run!
+      success = package.run!
+      expect(success).to be true
     end
 
     context 'when running for DEB' do
@@ -133,9 +147,10 @@ describe OodPackaging::Package do
         expect(package).to receive(:bootstrap!)
         expect(package).to receive(:tar!)
         expect(package).to receive(:container_start!)
-        expect(package).to receive(:container_exec!)
+        expect(package).to receive(:container_exec!).and_return(true)
         expect(package).to receive(:container_kill!)
-        package.run!
+        success = package.run!
+        expect(success).to be true
       end
     end
   end
@@ -167,7 +182,8 @@ describe OodPackaging::Package do
         '/ondemand-packaging/rake', '-q', '-f', '/ondemand-packaging/Rakefile', 'ood_packaging:package:build'
       ]
       expect(package).to receive(:sh).with(expected_command.join(' '), verbose: false)
-      package.container_exec!(package.exec_rake)
+      success = package.container_exec!(package.exec_rake)
+      expect(success).to be true
     end
   end
 end

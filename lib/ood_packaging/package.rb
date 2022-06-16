@@ -245,24 +245,29 @@ class OodPackaging::Package
   end
 
   def run!
+    success = true
     if tar_only?
       tar!
-      return
+      return success
     end
     clean!
     bootstrap!
     tar! if tar?
     container_start!
-    container_exec!(exec_rake)
+    success = container_exec!(exec_rake)
   rescue RuntimeError
-    # ret = 1
+    success = false
     puts "Build FAILED package=#{package} dist=#{build_box.dist}".red
     raise
-  else
-    puts "Build SUCCESS: package=#{package} dist=#{build_box.dist}".green
   ensure
     container_exec!(exec_attach, ['-i', '-t']) if attach?
     container_kill! if container_running?
+    if success
+      puts "Build SUCCESS: package=#{package} dist=#{build_box.dist}".green
+    else
+      puts "Build FAILED package=#{package} dist=#{build_box.dist}".red
+    end
+    success
   end
 
   def container_running?
@@ -294,6 +299,9 @@ class OodPackaging::Package
     sh cmd.join(' '), verbose: debug
   rescue RuntimeError
     container_kill! if container_running?
+    false
+  else
+    true
   end
 
   def container_kill!

@@ -78,4 +78,6 @@ if ARGV.size != 1
 end
 options[:package] = ARGV[0]
 
-OodPackaging::Package.new(options).run!
+success = OodPackaging::Package.new(options).run!
+exit 1 unless success
+exit 0
