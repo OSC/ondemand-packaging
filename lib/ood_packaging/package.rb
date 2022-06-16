@@ -31,10 +31,16 @@ class OodPackaging::Package
     @container_name ||= SecureRandom.uuid
   end
 
-  def debug
+  def debug?
     return true if ENV['OOD_PACKAGING_DEBUG'] == 'true'
 
     @config[:debug].nil? ? false : @config[:debug]
+  end
+
+  def cmd_suffix
+    return '' if debug?
+
+    ' 2>/dev/null 1>/dev/null'
   end
 
   def attach?
@@ -195,7 +201,7 @@ class OodPackaging::Package
     cmd.concat exec_launchers if docker_runtime?
     cmd.concat ['scl', 'enable', scl_ruby, '--'] if podman_runtime? && build_box.scl?
     cmd.concat [File.join(ctr_scripts_dir, 'rake')]
-    cmd.concat ['-q'] unless debug
+    cmd.concat ['-q'] unless debug?
     cmd.concat ['-f', File.join(ctr_scripts_dir, 'Rakefile'), 'ood_packaging:package:build']
     cmd
   end
@@ -221,13 +227,13 @@ class OodPackaging::Package
   end
 
   def clean!
-    sh "rm -rf #{work_dir}", verbose: debug if clean_work_dir
-    sh "rm -rf #{output_dir}", verbose: debug if clean_output_dir
+    sh "rm -rf #{work_dir}", verbose: debug? if clean_work_dir
+    sh "rm -rf #{output_dir}", verbose: debug? if clean_output_dir
   end
 
   def bootstrap!
-    sh "mkdir -p #{work_dir}", verbose: debug
-    sh "mkdir -p #{output_dir}", verbose: debug
+    sh "mkdir -p #{work_dir}", verbose: debug?
+    sh "mkdir -p #{output_dir}", verbose: debug?
   end
 
   def tar!
@@ -245,7 +251,7 @@ class OodPackaging::Package
     sh "rm #{tar_file}" if File.exist?(tar_file)
     puts "Create tar archive #{tar_file}".blue
     Dir.chdir(tar_path) do
-      sh cmd.join(' '), verbose: debug
+      sh cmd.join(' '), verbose: debug?
     end
   end
 
@@ -276,7 +282,9 @@ class OodPackaging::Package
   end
 
   def container_running?
-    `#{container_runtime} inspect #{container_name} 2>/dev/null 1>/dev/null`
+    cmd = "#{container_runtime} inspect #{container_name}#{cmd_suffix}"
+    puts cmd if debug?
+    `#{cmd}`
     $CHILD_STATUS.success?
   end
 
@@ -287,9 +295,9 @@ class OodPackaging::Package
     cmd.concat container_mounts
     cmd.concat [build_box.image_tag]
     cmd.concat [container_init]
-    cmd.concat ['1>/dev/null'] unless debug
+    cmd.concat ['1>/dev/null'] unless debug?
     puts "Starting container #{container_name} using image #{build_box.image_tag}".blue
-    sh cmd.join(' '), verbose: debug
+    sh cmd.join(' '), verbose: debug?
   end
 
   def container_exec!(exec_cmd, extra_args = [])
@@ -301,7 +309,7 @@ class OodPackaging::Package
     cmd.concat [container_name]
     cmd.concat exec_cmd
     puts "Build STARTED: package=#{package} dist=#{build_box.dist} exec=#{exec_cmd[-1]}".blue
-    sh cmd.join(' '), verbose: debug
+    sh cmd.join(' '), verbose: debug?
   rescue RuntimeError
     container_kill! if container_running? && !attach?
     false
@@ -312,8 +320,8 @@ class OodPackaging::Package
   def container_kill!
     puts "Killing container #{container_name}".blue
     cmd = [container_runtime, 'kill', container_name]
-    cmd.concat ['1>/dev/null', '2>/dev/null'] unless debug
-    sh cmd.join(' '), verbose: debug
+    cmd.concat [cmd_suffix] unless debug?
+    sh cmd.join(' '), verbose: debug?
   end
 
   def container_env
@@ -327,7 +335,7 @@ class OodPackaging::Package
       'SKIP_DOWNLOAD' => @config[:skip_download],
       'OOD_UID'       => Process.uid,
       'OOD_GID'       => Process.gid,
-      'DEBUG'         => debug
+      'DEBUG'         => debug?
     }
     env['GPG_PUBKEY'] = '/gpg.pub' if @config[:gpg_pubkey]
     env
