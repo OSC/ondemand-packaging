@@ -261,7 +261,7 @@ class OodPackaging::Package
     raise
   ensure
     container_exec!(exec_attach, ['-i', '-t']) if attach?
-    container_kill! if container_running?
+    container_kill! if container_running? && !attach?
     if success
       puts "Build SUCCESS: package=#{package} dist=#{build_box.dist}".green
     else
@@ -298,7 +298,7 @@ class OodPackaging::Package
     puts "Build STARTED: package=#{package} dist=#{build_box.dist} exec=#{exec_cmd[-1]}".blue
     sh cmd.join(' '), verbose: debug
   rescue RuntimeError
-    container_kill! if container_running?
+    container_kill! if container_running? && !attach?
     false
   else
     true

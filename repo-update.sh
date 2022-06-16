@@ -1,7 +1,7 @@
 #!/bin/bash
 
 GPGPASS="/systems/osc_certs/gpg/ondemand/.gpgpass"
-GPG_KEY="7632688C"
+GPG_KEY="FD775498"
 BASE_PATH="/var/www/repos/public/ondemand"
 REPO=""
 TYPE="web"
@@ -128,7 +128,7 @@ Label: OnDemand
 Suite: stable
 Codename: ${DIST}
 Version: ${REPO}
-Architectures: amd64
+Architectures: ${ARCH}
 Components: main
 Description: OnDemand repository
 Date: $(date -Ru)
