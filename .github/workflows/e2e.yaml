@@ -59,6 +59,11 @@ jobs:
         include:
           - dist: el7
             package: sqlite
+        exclude:
+          - dist: el9
+            package: cjose
+          - dist: el9
+            package: mod_auth_openidc
     runs-on: ubuntu-latest
     name: Package test package=${{ matrix.package }} dist=${{ matrix.dist }}
     steps:
@@ -93,9 +98,6 @@ jobs:
           - ondemand-release
           - ondemand-release-latest
           - passenger
-        include:
-          - dist: el7
-            package: sqlite
     runs-on: ubuntu-latest
     name: Package test package=${{ matrix.package }} dist=${{ matrix.dist }}
     steps:
@@ -126,6 +128,7 @@ jobs:
         dist:
           - el7
           - el8
+          - el9
           - ubuntu-20.04
           - ubuntu-22.04
         package:
@@ -134,6 +137,8 @@ jobs:
           - dist: el7
             package: bc_osc_rstudio_server
           - dist: el8
+            package: bc_osc_rstudio_server
+          - dist: el9
             package: bc_osc_rstudio_server
     runs-on: ubuntu-latest
     name: Package ${{ matrix.package }} dist=${{ matrix.dist }}
