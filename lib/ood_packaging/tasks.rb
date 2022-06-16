@@ -39,8 +39,7 @@ namespace :ood_packaging do
     desc 'Build a package (INSIDE CONTAINER ONLY)'
     task :build do
       success = OodPackaging::Build.new.run!
-      exit 1 unless success
-      exit 0
+      exit 0 if success
     end
 
     OodPackaging::RakeTask.new(:internal, [:package, :dist]) do |t, args|
