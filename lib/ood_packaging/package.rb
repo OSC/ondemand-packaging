@@ -125,8 +125,13 @@ class OodPackaging::Package
     !gpg_files.nil?
   end
 
+  def default_gpg_name
+    return 'OnDemand Release Signing Key' if build_box.scl?
+    'OnDemand Release Signing Key (SHA512)'
+  end
+
   def gpg_name
-    @config[:gpg_name].nil? ? 'OnDemand Release Signing Key (SHA512)' : @config[:gpg_name]
+    @config[:gpg_name].nil? ? default_gpg_name : @config[:gpg_name]
   end
 
   def container_init
