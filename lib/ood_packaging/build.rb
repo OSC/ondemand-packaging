@@ -148,6 +148,7 @@ class OodPackaging::Build
     copy_output!
     gpg_sign! if build_box.rpm? && gpg_sign?
     sanity!
+    true
   end
 
   def fix_env!

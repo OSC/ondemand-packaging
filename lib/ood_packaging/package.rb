@@ -104,25 +104,17 @@ class OodPackaging::Package
     name
   end
 
-  # rubocop:disable Metrics/AbcSize
   def gpg_files
     [
       OpenStruct.new(private_key: @config[:gpg_private_key], passphrase: @config[:gpg_passphrase]),
       OpenStruct.new(private_key: ENV['OOD_PACKAGING_GPG_PRIVATE_KEY'],
-                     passphrase:  ENV['OOD_PACKAGING_GPG_PASSPHRASE']),
-      OpenStruct.new(private_key: File.join(proj_root, 'ondemand-sha512.sec'),
-                     passphrase:  File.join(proj_root, '.gpgpass')),
-      OpenStruct.new(private_key: File.join(package, 'ondemand-sha512.sec'),
-                     passphrase:  File.join(package, '.gpgpass')),
-      OpenStruct.new(private_key: File.join(proj_root, 'ondemand.sec'), passphrase: File.join(proj_root, '.gpgpass')),
-      OpenStruct.new(private_key: File.join(package, 'ondemand.sec'), passphrase: File.join(package, '.gpgpass'))
+                     passphrase:  ENV['OOD_PACKAGING_GPG_PASSPHRASE'])
     ].each do |gpg|
       next if gpg.private_key.nil? || gpg.passphrase.nil?
       return gpg if File.exist?(gpg.private_key) && File.exist?(gpg.passphrase)
     end
     nil
   end
-  # rubocop:enable Metrics/AbcSize
 
   def gpg_sign
     return false if ENV['OOD_PACKAGING_GPG_SIGN'].to_s == 'false'
@@ -256,9 +248,6 @@ class OodPackaging::Package
     end
   end
 
-  # rubocop:disable Metrics/AbcSize
-  # rubocop:disable Metrics/MethodLength
-  # rubocop:disable Metrics/PerceivedComplexity
   def run!
     success = true
     if tar_only?
@@ -270,23 +259,15 @@ class OodPackaging::Package
     tar! if tar?
     container_start!
     success = container_exec!(exec_rake)
+    puts "Build SUCCESS: package=#{package} dist=#{build_box.dist}".green if success
+    success
   rescue RuntimeError
-    success = false
     puts "Build FAILED package=#{package} dist=#{build_box.dist}".red
     raise
   ensure
     container_exec!(exec_attach, ['-i', '-t']) if attach?
     container_kill! if container_running? && !attach?
-    if success
-      puts "Build SUCCESS: package=#{package} dist=#{build_box.dist}".green
-    else
-      puts "Build FAILED package=#{package} dist=#{build_box.dist}".red
-    end
-    success
   end
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/PerceivedComplexity
 
   def container_running?
     cmd = "#{container_runtime} inspect #{container_name}#{cmd_suffix}"
@@ -317,11 +298,10 @@ class OodPackaging::Package
     cmd.concat exec_cmd
     puts "Build STARTED: package=#{package} dist=#{build_box.dist} exec=#{exec_cmd[-1]}".blue
     sh cmd.join(' '), verbose: debug?
+    true
   rescue RuntimeError
     container_kill! if container_running? && attach?
-    false
-  else
-    true
+    raise
   end
 
   def container_kill!
