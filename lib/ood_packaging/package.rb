@@ -249,18 +249,16 @@ class OodPackaging::Package
   end
 
   def run!
-    success = true
     if tar_only?
       tar!
-      return success
+      return
     end
     clean!
     bootstrap!
     tar! if tar?
     container_start!
-    success = container_exec!(exec_rake)
-    puts "Build SUCCESS: package=#{package} dist=#{build_box.dist}".green if success
-    success
+    container_exec!(exec_rake)
+    puts "Build SUCCESS: package=#{package} dist=#{build_box.dist}".green
   rescue RuntimeError
     puts "Build FAILED package=#{package} dist=#{build_box.dist}".red
     raise
