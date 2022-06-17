@@ -167,8 +167,7 @@ describe OodPackaging::Package do
         '/ondemand-packaging/rake', '-q', '-f', '/ondemand-packaging/Rakefile', 'ood_packaging:package:build'
       ]
       expect(package).to receive(:sh).with(expected_command.join(' '), verbose: false)
-      success = package.container_exec!(package.exec_rake)
-      expect(success).to be true
+      package.container_exec!(package.exec_rake)
     end
   end
 end
