@@ -78,7 +78,6 @@ class OodPackaging::Package
   end
 
   def tar_version
-    puts "DEBUG2: #{version}"
     version.gsub(/^v/, '')
   end
 

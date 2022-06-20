@@ -44,10 +44,9 @@ namespace :ood_packaging do
     OodPackaging::RakeTask.new(:internal, [:package, :dist]) do |t, args|
       name = args[:package].split(':').last
       t.package = File.join(proj_root, 'packages', name)
-      t.dist = args[:dist] || ENV['OOD_PACKAGING_DIST']
-      version = OodPackaging.package_version(name, args[:dist])
-      puts "DEBUG1: #{version} name=#{name} dist=#{args[:dist]}"
-      t.version = version
+      dist = args[:dist] || ENV['OOD_PACKAGING_DIST']
+      t.dist = dist
+      t.version = OodPackaging.package_version(name, dist)
       t.work_dir = File.join(proj_root, 'tmp/work')
       t.output_dir = File.join(proj_root, 'tmp/output')
     end
