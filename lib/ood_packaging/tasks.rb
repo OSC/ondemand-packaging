@@ -45,7 +45,9 @@ namespace :ood_packaging do
       name = args[:package].split(':').last
       t.package = File.join(proj_root, 'packages', name)
       t.dist = args[:dist] || ENV['OOD_PACKAGING_DIST']
-      t.version = OodPackaging.package_version(name, args[:dist])
+      version = OodPackaging.package_version(name, args[:dist])
+      puts "DEBUG1: #{version} name=#{name} dist=#{args[:dist]}"
+      t.version = version
       t.work_dir = File.join(proj_root, 'tmp/work')
       t.output_dir = File.join(proj_root, 'tmp/output')
     end
