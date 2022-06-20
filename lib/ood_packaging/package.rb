@@ -229,12 +229,6 @@ class OodPackaging::Package
     sh "mkdir -p #{output_dir}", verbose: debug?
   end
 
-  def env_dump!
-    ENV.sort.to_h.each_pair do |k, v|
-      puts "#{k}=#{v}"
-    end
-  end
-
   def tar!
     cmd = ['git', 'ls-files', '.', '|', tar, '-c']
     if build_box.rpm?
@@ -255,7 +249,6 @@ class OodPackaging::Package
   end
 
   def run!
-    env_dump! if debug?
     if tar_only?
       tar!
       return
