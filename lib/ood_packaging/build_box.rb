@@ -12,6 +12,7 @@ class OodPackaging::BuildBox
   BASE_IMAGES = {
     'el7'          => 'centos:7',
     'el8'          => 'rockylinux/rockylinux:8',
+    'el9'          => 'almalinux:9',
     'ubuntu-20.04' => 'ubuntu:20.04',
     'ubuntu-22.04' => 'ubuntu:22.04'
   }.freeze

@@ -82,10 +82,15 @@ Meta package for pulling in SCL Ruby %{ruby}
 
 %package -n ondemand-nodejs
 Summary: Meta package for pulling in SCL nodejs %{nodejs}
-%if 0%{?rhel} >= 8
+%if 0%{?rhel} == 9
+Requires: %{nodejs} >= 1:16.0, %{nodejs} < 1:18.0
+Requires: npm
+%endif
+%if 0%{?rhel} == 8
 Requires: %{nodejs} >= 1:14.0, %{nodejs} < 1:16.0
 Requires: npm
-%else
+%endif
+%if 0%{?rhel} == 7
 Requires: %{nodejs}
 Requires: %{nodejs}-npm
 %endif

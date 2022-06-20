@@ -24,7 +24,11 @@ baseurl=https://yum.osc.edu/ondemand/build/<%= ondemand_repo_version %>/web/el\$
 enabled=1
 gpgcheck=0
 EOF
+<% if scl? -%>
 run rpm --import /build/RPM-GPG-KEY-ondemand
+<% else -%>
+run rpm --import /build/RPM-GPG-KEY-ondemand-SHA512
+<% end -%>
 <% end -%>
 
 header "Creating users"
@@ -72,7 +76,7 @@ echo "allow-loopback-pinentry" >> <%= ctr_gpg_dir %>/gpg-agent.conf
 <%- end -%>
 
 header "Install ood_packaging gem"
-<%- if rpm? && !dnf? -%>
+<%- if scl? -%>
 run scl enable <%= scl_ruby %> -- gem install --no-doc --bindir <%= ctr_scripts_dir %> --install-dir <%= ctr_gems_dir %> /build/*.gem
 <%- else -%>
 run gem install --no-doc --bindir <%= ctr_scripts_dir %> --install-dir <%= ctr_gems_dir %> /build/*.gem

@@ -160,7 +160,7 @@ describe OodPackaging::Package do
         'docker', 'exec',
         '-e', "'DIST=el8'", '-e', "'PACKAGE=package'", '-e', "'VERSION=v0.0.1'", '-e',
         "'TAR_NAME=package-0.0.1.tar.gz'",
-        '-e', "'GPG_SIGN=false'", '-e', "'GPG_NAME=OnDemand Release Signing Key'",
+        '-e', "'GPG_SIGN=false'", '-e', "'GPG_NAME=OnDemand Release Signing Key (SHA512)'",
         '-e', "'OOD_UID=1000'", '-e', "'OOD_GID=1000'",
         '-e', "'DEBUG=false'",
         'uuid', '/ondemand-packaging/inituidgid.sh', '/ondemand-packaging/setuser.rb', 'ood',

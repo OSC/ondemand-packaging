@@ -17,11 +17,19 @@ PROJ_ROOT = os.path.dirname(os.path.realpath(__file__))
 DISTS = [
     'el7',
     'el8',
+    'el9',
     'ubuntu-20.04',
     'ubuntu-22.04'
 ]
-EL_RELEASES = ['el7', 'el8']
-DEB_CODENAMES = ['focal','jammy']
+EL_RELEASES = [
+    'el7',
+    'el8',
+    'el9'
+]
+DEB_CODENAMES = [
+    'focal',
+    'jammy'
+]
 
 def get_rpm_info(rpm_file):
     ts = rpm.ts()

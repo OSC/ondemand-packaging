@@ -2,6 +2,8 @@
 
 GPGPASS="/systems/osc_certs/gpg/ondemand/.gpgpass"
 BASE_PATH="/var/www/repos/public/ondemand"
+# Only EL7 uses different
+GPG_KEY="FD775498"
 REPO=""
 TYPE="web"
 DIST=""
@@ -69,6 +71,10 @@ if [[ "${DIST}" != "el"* ]]; then
   EL=false
 fi
 
+if [[ "${DIST}" == "el7" ]];
+  GPG_KEY="92D31755"
+fi
+
 if [[ "x${REPO_PATH}" = "x" ]]; then
   LOCK_NAME="$(echo '${REPO}-${TYPE}-${DIST}-${ARCH}' | md5sum | cut -d' ' -f1)"
 else
@@ -85,12 +91,12 @@ LOCK_FILE="/var/lib/oodpkg/repo-update-${LOCK_NAME}.lock"
     cd ${REPO_PATH}
     createrepo_c --update .
     echo "level=\"info\" msg=\"GPG sign repo\" repo=\"${REPO_PATH}\""
-    gpg --detach-sign --passphrase-file ${GPGPASS} --batch --yes --no-tty --armor repodata/repomd.xml
+    gpg --default-key ${GPG_KEY} --detach-sign --passphrase-file ${GPGPASS} --batch --yes --no-tty --armor repodata/repomd.xml
     echo "level=\"info\" msg=\"Update repo\" repo=\"${SRPM_PATH}\""
     cd ${SRPM_PATH}
     createrepo_c --update .
     echo "level=\"info\" msg=\"GPG sign repo\" repo=\"${SRPM_PATH}\""
-    gpg --detach-sign --passphrase-file ${GPGPASS} --batch --yes --no-tty --armor repodata/repomd.xml
+    gpg --default-key ${GPG_KEY} --detach-sign --passphrase-file ${GPGPASS} --batch --yes --no-tty --armor repodata/repomd.xml
   else
     case "${DIST}" in
     ubuntu-22.04|jammy)
@@ -127,7 +133,7 @@ Label: OnDemand
 Suite: stable
 Codename: ${DIST}
 Version: ${REPO}
-Architectures: amd64
+Architectures: ${ARCH}
 Components: main
 Description: OnDemand repository
 Date: $(date -Ru)
