@@ -136,6 +136,10 @@ class OodPackaging::BuildBox
     sh [container_runtime, 'push', image_tag].join(' ')
   end
 
+  def pull!
+    sh [container_runtime, 'pull', image_tag].join(' ')
+  end
+
   def save!(path)
     sh [container_runtime, 'save', image_tag, '| gzip >', path].join(' ')
   end
