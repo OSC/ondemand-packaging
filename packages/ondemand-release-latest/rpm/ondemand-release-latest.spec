@@ -54,7 +54,7 @@ if [ -L %{_sysconfdir}/yum.repos.d/ondemand-centos-scl.repo ]; then
     unlink %{_sysconfdir}/yum.repos.d/ondemand-centos-scl.repo
 fi
 source /etc/os-release
-if [[ $VERSION_ID =~ "^7" || $VERSION_ID =~ "^8" ]] ; then
+if [[ "$VERSION_ID" =~ ^7 || "$VERSION_ID" =~ ^8 ]] ; then
   install -m 0644 %{_datadir}/%{name}/RPM-GPG-KEY-ondemand %{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand
 else
   install -m 0644 %{_datadir}/%{name}/RPM-GPG-KEY-ondemand-SHA512 %{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand
@@ -62,7 +62,7 @@ fi
 
 %post -n ondemand-release-compute-latest
 source /etc/os-release
-if [[ $VERSION_ID =~ "^7" || $VERSION_ID =~ "^8" ]] ; then
+if [[ "$VERSION_ID" =~ ^7 || "$VERSION_ID" =~ ^8 ]] ; then
   install -m 0644 %{_datadir}/ondemand-release-compute/RPM-GPG-KEY-ondemand-compute %{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand-compute
 else
   install -m 0644 %{_datadir}/ondemand-release-compute/RPM-GPG-KEY-ondemand-compute-SHA512 %{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand-compute
