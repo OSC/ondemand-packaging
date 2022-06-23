@@ -11,7 +11,7 @@ ondemand-release:
     - '{major}-1'
 # deb package
 ondemand-release-web:
-  - '{major}-1'
+  - '{major}.0'
 
 # web
 cjose:
@@ -40,7 +40,7 @@ ondemand-nginx:
   versions:
     - 1.20.2-1.p6.0.14.ood{runtime}
     # deb package
-    - 1.20.2-1
+    - 1.20.2
 ondemand-passenger:
   packages:
     - ondemand-passenger
@@ -51,7 +51,7 @@ ondemand-passenger:
   versions:
     - 6.0.14-1.ood{runtime}
     # deb package
-    - 6.0.14-1
+    - 6.0.14
 ondemand-runtime:
   packages:
     - ondemand-apache
@@ -84,6 +84,8 @@ ondemand-sqlite:
     - '3.26.0-4'
 ondemand-dex:
   - 2.32.0-1
+  # deb package
+  - 2.32.0
 ondemand_exporter:
   - 0.9.0-1
 
