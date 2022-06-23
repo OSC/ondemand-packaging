@@ -298,7 +298,7 @@ class OodPackaging::Package
     sh cmd.join(' '), verbose: debug?
     true
   rescue RuntimeError
-    container_kill! if container_running? && attach?
+    container_kill! if container_running? && !attach?
     raise
   end
 
