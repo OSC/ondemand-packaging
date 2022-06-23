@@ -71,7 +71,7 @@ if [[ "${DIST}" != "el"* ]]; then
   EL=false
 fi
 
-if [[ "${DIST}" == "el7" ]];
+if [[ "${DIST}" == "el7" ]]; then
   GPG_KEY="92D31755"
 fi
 
