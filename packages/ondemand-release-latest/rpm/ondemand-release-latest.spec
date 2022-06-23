@@ -39,10 +39,11 @@ exit 0
 %install
 install -Dpm0644 %{SOURCE0} %{buildroot}%{_sysconfdir}/yum.repos.d/ondemand-web.repo
 install -Dpm0644 %{SOURCE1} %{buildroot}%{_sysconfdir}/yum.repos.d/ondemand-compute.repo
-install -Dpm0644 %{SOURCE2} %{buildroot}%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand
-install -Dpm0644 %{SOURCE2} %{buildroot}%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand-compute
-install -Dpm0644 %{SOURCE3} %{buildroot}%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand-SHA512
-install -Dpm0644 %{SOURCE3} %{buildroot}%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand-compute-SHA512
+mkdir -p %{buildroot}%{_datadir}/%{name}
+install -Dpm0644 %{SOURCE2} %{buildroot}%{_datadir}/%{name}/RPM-GPG-KEY-ondemand
+install -Dpm0644 %{SOURCE2} %{buildroot}%{_datadir}/ondemand-release-compute/RPM-GPG-KEY-ondemand-compute
+install -Dpm0644 %{SOURCE3} %{buildroot}%{_datadir}/%{name}/RPM-GPG-KEY-ondemand-SHA512
+install -Dpm0644 %{SOURCE3} %{buildroot}%{_datadir}/ondemand-release-compute/RPM-GPG-KEY-ondemand-compute-SHA512
 mkdir -p %{buildroot}%{_docdir}/%{name}
 
 %clean
@@ -52,16 +53,30 @@ exit 0
 if [ -L %{_sysconfdir}/yum.repos.d/ondemand-centos-scl.repo ]; then
     unlink %{_sysconfdir}/yum.repos.d/ondemand-centos-scl.repo
 fi
+source /etc/os-release
+if [[ $VERSION_ID =~ "^7" || $VERSION_ID =~ "^8" ]] ; then
+  install -m 0644 %{_datadir}/%{name}/RPM-GPG-KEY-ondemand-SHA512 %{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand
+else
+  install -m 0644 %{_datadir}/%{name}/RPM-GPG-KEY-ondemand %{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand
+fi
+
+%post -n ondemand-release-compute-latest
+source /etc/os-release
+if [[ $VERSION_ID =~ "^7" || $VERSION_ID =~ "^8" ]] ; then
+  install -m 0644 %{_datadir}/ondemand-release-compute/RPM-GPG-KEY-ondemand-compute-SHA512 %{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand-compute
+else
+  install -m 0644 %{_datadir}/ondemand-release-compute/RPM-GPG-KEY-ondemand-compute %{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand-compute
+fi
 
 %files
 %config %{_sysconfdir}/yum.repos.d/ondemand-web.repo
-%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand
-%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand-SHA512
+%{_datadir}/%{name}/*
+%ghost %{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand
 
 %files -n ondemand-release-compute-latest
 %config %{_sysconfdir}/yum.repos.d/ondemand-compute.repo
-%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand-compute
-%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand-compute-SHA512
+%{_datadir}/ondemand-release-compute/*
+%ghost %{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand-compute
 
 
 %changelog

@@ -58,6 +58,12 @@ class OodPackaging::BuildBox
     false
   end
 
+  def legacy_gpg?
+    return true if ['el7', 'el8'].include?(dist)
+
+    false
+  end
+
   def package_manager
     return 'apt' if deb?
     return 'dnf' if dnf?
