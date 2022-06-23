@@ -8,10 +8,10 @@ ondemand-release:
     - ondemand-release-compute
     - ondemand-release-web
   versions:
-    - '{major}.0-1'
+    - '{major}-1'
 # deb package
 ondemand-release-web:
-  - '{major}.0'
+  - '{major}-1'
 
 # web
 cjose:
@@ -40,7 +40,7 @@ ondemand-nginx:
   versions:
     - 1.20.2-1.p6.0.14.ood{runtime}
     # deb package
-    - 1.20.2
+    - 1.20.2-1
 ondemand-passenger:
   packages:
     - ondemand-passenger
@@ -51,7 +51,7 @@ ondemand-passenger:
   versions:
     - 6.0.14-1.ood{runtime}
     # deb package
-    - 6.0.14
+    - 6.0.14-1
 ondemand-runtime:
   packages:
     - ondemand-apache
