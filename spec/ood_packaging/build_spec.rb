@@ -133,7 +133,7 @@ describe OodPackaging::Build do
 
       it 'installs DEB dependencies using apt' do
         tool = [
-          'apt-cudf-get --solver aspcud',
+          'DEBIAN_FRONTEND=noninteractive apt-cudf-get --solver aspcud',
           '-o APT::Get::Assume-Yes=1 -o Debug::pkgProblemResolver=0 -o APT::Install-Recommends=0'
         ]
         expected_cmd = [
