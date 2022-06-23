@@ -27,9 +27,9 @@ build-image:
     - bundle exec rake ood_packaging:buildbox:build
   parallel:
     matrix:
-      - OOD_PACKAGING_DIST: el7
+      - OOD_PACKAGING_DIST: [el7, el8]
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
-      - OOD_PACKAGING_DIST: [el8, el9, ubuntu-20.04, ubuntu-22.04]
+      - OOD_PACKAGING_DIST: [el9, ubuntu-20.04, ubuntu-22.04]
 
 build-ondemand-release:
   stage: build
@@ -70,9 +70,9 @@ build-ondemand-runtime:
     - bundle exec rake ood_packaging:package:ondemand-runtime
   parallel:
     matrix:
-      - OOD_PACKAGING_DIST: el7
+      - OOD_PACKAGING_DIST: [el7, el8]
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
-      - OOD_PACKAGING_DIST: [el8, el9]
+      - OOD_PACKAGING_DIST: [el9]
   artifacts:
     paths:
       - tmp/output
@@ -87,9 +87,9 @@ build-passenger:
     - bundle exec rake ood_packaging:package:passenger[$DIST]
   parallel:
     matrix:
-      - OOD_PACKAGING_DIST: el7
+      - OOD_PACKAGING_DIST: [el7, el8]
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
-      - OOD_PACKAGING_DIST: [el8, el9, ubuntu-20.04, ubuntu-22.04]
+      - OOD_PACKAGING_DIST: [el9, ubuntu-20.04, ubuntu-22.04]
   artifacts:
     paths:
       - tmp/output
@@ -120,9 +120,8 @@ build-cjose:
     - bundle exec rake ood_packaging:package:cjose[$DIST]
   parallel:
     matrix:
-      - OOD_PACKAGING_DIST: el7
+      - OOD_PACKAGING_DIST: [el7, el8]
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
-      - OOD_PACKAGING_DIST: [el8]
   artifacts:
     paths:
       - tmp/output
@@ -137,9 +136,8 @@ build-mod_auth_openidc:
     - bundle exec rake ood_packaging:package:mod_auth_openidc[$DIST]
   parallel:
     matrix:
-      - OOD_PACKAGING_DIST: el7
+      - OOD_PACKAGING_DIST: [el7, el8]
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
-      - OOD_PACKAGING_DIST: [el8]
   artifacts:
     paths:
       - tmp/output
@@ -154,9 +152,9 @@ build-ondemand_exporter:
     - bundle exec rake ood_packaging:package:ondemand_exporter[$DIST]
   parallel:
     matrix:
-      - OOD_PACKAGING_DIST: el7
+      - OOD_PACKAGING_DIST: [el7, el8]
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
-      - OOD_PACKAGING_DIST: [el8, el9]
+      - OOD_PACKAGING_DIST: [el9]
   artifacts:
     paths:
       - tmp/output
@@ -171,9 +169,9 @@ build-ondemand-compute:
     - bundle exec rake ood_packaging:package:ondemand-compute[$DIST]
   parallel:
     matrix:
-      - OOD_PACKAGING_DIST: el7
+      - OOD_PACKAGING_DIST: [el7, el8]
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
-      - OOD_PACKAGING_DIST: [el8, el9]
+      - OOD_PACKAGING_DIST: [el9]
   artifacts:
     paths:
       - tmp/output
@@ -188,9 +186,9 @@ build-python-websockify:
     - bundle exec rake ood_packaging:package:python-websockify[$DIST]
   parallel:
     matrix:
-      - OOD_PACKAGING_DIST: el7
+      - OOD_PACKAGING_DIST: [el7, el8]
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
-      - OOD_PACKAGING_DIST: [el8, el9]
+      - OOD_PACKAGING_DIST: [el9]
   artifacts:
     paths:
       - tmp/output
@@ -205,9 +203,9 @@ build-turbovnc:
     - bundle exec rake ood_packaging:package:turbovnc
   parallel:
     matrix:
-      - OOD_PACKAGING_DIST: el7
+      - OOD_PACKAGING_DIST: [el7, el8]
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
-      - OOD_PACKAGING_DIST: [el8, el9]
+      - OOD_PACKAGING_DIST: [el9]
   artifacts:
     paths:
       - tmp/output

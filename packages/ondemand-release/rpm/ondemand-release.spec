@@ -1,4 +1,7 @@
 %{!?package_release: %define package_release 1}
+%define major_version %(echo %{package_version} | cut -d. -f1)
+%define minor_version %(echo %{package_version} | cut -d. -f2)
+%define repo_version %{major_version}.%{minor_version}
 
 Name:       ondemand-release-web
 Version:    %{package_version}
@@ -36,12 +39,13 @@ exit 0
 
 %install
 mkdir -p %{buildroot}%{_sysconfdir}/yum.repos.d
-sed 's|@REPO@|%{package_version}|g' %{SOURCE0} > %{buildroot}%{_sysconfdir}/yum.repos.d/ondemand-web.repo
-sed 's|@REPO@|%{package_version}|g' %{SOURCE1} > %{buildroot}%{_sysconfdir}/yum.repos.d/ondemand-compute.repo
-install -Dpm0644 %{SOURCE2} %{buildroot}%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand
-install -Dpm0644 %{SOURCE2} %{buildroot}%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand-compute
-install -Dpm0644 %{SOURCE3} %{buildroot}%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand-SHA512
-install -Dpm0644 %{SOURCE3} %{buildroot}%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand-compute-SHA512
+sed 's|@REPO@|%{repo_version}|g' %{SOURCE0} > %{buildroot}%{_sysconfdir}/yum.repos.d/ondemand-web.repo
+sed 's|@REPO@|%{repo_version}|g' %{SOURCE1} > %{buildroot}%{_sysconfdir}/yum.repos.d/ondemand-compute.repo
+mkdir -p %{buildroot}%{_datadir}/%{name}
+install -Dpm0644 %{SOURCE2} %{buildroot}%{_datadir}/%{name}/RPM-GPG-KEY-ondemand
+install -Dpm0644 %{SOURCE2} %{buildroot}%{_datadir}/ondemand-release-compute/RPM-GPG-KEY-ondemand-compute
+install -Dpm0644 %{SOURCE3} %{buildroot}%{_datadir}/%{name}/RPM-GPG-KEY-ondemand-SHA512
+install -Dpm0644 %{SOURCE3} %{buildroot}%{_datadir}/ondemand-release-compute/RPM-GPG-KEY-ondemand-compute-SHA512
 mkdir -p %{buildroot}%{_docdir}/%{name}
 
 %clean
@@ -51,16 +55,30 @@ exit 0
 if [ -L %{_sysconfdir}/yum.repos.d/ondemand-centos-scl.repo ]; then
     unlink %{_sysconfdir}/yum.repos.d/ondemand-centos-scl.repo
 fi
+source /etc/os-release
+if [[ $VERSION_ID =~ "^7" || $VERSION_ID =~ "^8" ]] ; then
+  install -m 0644 %{_datadir}/%{name}/RPM-GPG-KEY-ondemand-SHA512 %{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand
+else
+  install -m 0644 %{_datadir}/%{name}/RPM-GPG-KEY-ondemand %{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand
+fi
+
+%post -n ondemand-release-compute
+source /etc/os-release
+if [[ $VERSION_ID =~ "^7" || $VERSION_ID =~ "^8" ]] ; then
+  install -m 0644 %{_datadir}/ondemand-release-compute/RPM-GPG-KEY-ondemand-compute-SHA512 %{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand-compute
+else
+  install -m 0644 %{_datadir}/ondemand-release-compute/RPM-GPG-KEY-ondemand-compute %{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand-compute
+fi
 
 %files
 %config %{_sysconfdir}/yum.repos.d/ondemand-web.repo
-%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand
-%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand-SHA512
+%{_datadir}/%{name}/*
+%ghost %{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand
 
 %files -n ondemand-release-compute
 %config %{_sysconfdir}/yum.repos.d/ondemand-compute.repo
-%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand-compute
-%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand-compute-SHA512
+%{_datadir}/ondemand-release-compute/*
+%ghost %{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-ondemand-compute
 
 
 %changelog

@@ -2,7 +2,7 @@
 
 GPGPASS="/systems/osc_certs/gpg/ondemand/.gpgpass"
 BASE_PATH="/var/www/repos/public/ondemand"
-# Only EL7 uses different
+# Only EL7 and EL8 uses different
 GPG_KEY="FD775498"
 REPO=""
 TYPE="web"
@@ -71,7 +71,7 @@ if [[ "${DIST}" != "el"* ]]; then
   EL=false
 fi
 
-if [[ "${DIST}" == "el7" ]]; then
+if [[ "${DIST}" == "el7" || "${DIST}" == "el8" ]]; then
   GPG_KEY="92D31755"
 fi
 
