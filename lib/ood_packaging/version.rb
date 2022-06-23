@@ -5,8 +5,8 @@ module OodPackaging
   VERSION = '0.4.0'
   PACKAGE_VERSION = {
     'ondemand-release'        => {
-      '(ubuntu|debian)' => '2.1',
-      'default'         => '2.1.0'
+      '(ubuntu|debian)' => '2.1.0',
+      'default'         => '2.1'
     },
     'ondemand-release-latest' => {
       '(ubuntu|debian)' => '1',
