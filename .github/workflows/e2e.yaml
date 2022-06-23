@@ -28,7 +28,7 @@ jobs:
           bundler: '2.1.4'
           bundler-cache: true
       - name: Pull the builx box
-        run: bundle exec rake ood_packaging:buildbox:pull[${{ matrix.dist }}]
+        run: bundle exec rake ood_packaging:buildbox:pull[${{ matrix.dist }}] || exit 0
       - name: Build the build box
         run: bundle exec rake ood_packaging:buildbox:build[${{ matrix.dist }}]
       - name: Export Docker image
