@@ -71,6 +71,13 @@ describe OodPackaging::BuildBox do
     end
   end
 
+  describe 'pull!' do
+    it 'executeses pull image command' do
+      expect(build_box).to receive(:sh).with("docker pull ohiosupercomputer/ood-buildbox-el8:#{OodPackaging::VERSION}")
+      build_box.pull!
+    end
+  end
+
   describe 'save!' do
     it 'executeses push image command' do
       expect(build_box).to receive(:sh).with(
