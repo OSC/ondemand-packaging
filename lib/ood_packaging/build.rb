@@ -247,9 +247,13 @@ class OodPackaging::Build
 
   def install_deb_dependencies!
     sh "sudo apt update -y#{cmd_suffix}"
+    tool = [
+      'apt-cudf-get --solver aspcud',
+      '-o APT::Get::Assume-Yes=1 -o Debug::pkgProblemResolver=0 -o APT::Install-Recommends=0'
+    ]
     cmd = [
       'mk-build-deps --install --remove --root-cmd sudo',
-      "--tool='DEBIAN_FRONTEND=noninteractive apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes'"
+      "--tool='#{tool.join(' ')}'"
     ]
     Dir.chdir(deb_work_dir) do
       sh "#{cmd.join(' ')}#{cmd_suffix}"
