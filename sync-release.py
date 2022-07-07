@@ -142,7 +142,11 @@ Usage examples:
     # If a given SRPM/RPM is in the manifest, copy to release repo
     for r in sorted(rpms):
         copy = True
-        rpm_info = get_rpm_info(r)
+        try:
+            rpm_info = get_rpm_info(r)
+        except Exception:
+            logger.error("Unable to read RPM info for %s, skipping", r)
+            continue
         logger.debug("RPM info for %s: %s", r, rpm_info)
         name = rpm_info['name']
         if name not in manifest:
