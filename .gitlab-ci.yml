@@ -1,0 +1,216 @@
+before_script:
+  - docker info
+  - '[ -d tmp ] || mkdir tmp'
+  - bundle install --path vendor/bundle
+
+stages:
+  - image
+  - build
+  - deploy
+
+variables:
+  GIT_STRATEGY: clone
+  GIT_DEPTH: 0
+  OOD_BUILD_REPO: '2.0'
+  OOD_PACKAGING_DEBUG: 'true'
+  OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
+  OOD_PACKAGING_GPG_PASSPHRASE: /systems/osc_certs/gpg/ondemand/.gpgpass
+
+build-image:
+  stage: image
+  rules:
+    - if: $CI_COMMIT_TAG && $CI_COMMIT_TAG !~ /v[0-9].+/
+  script:
+    - '[ -z ${CI_COMMIT_TAG+x} ] || bundle exec rake ood_packaging:buildbox:pull || exit 0'
+    - bundle exec rake ood_packaging:buildbox:build
+  parallel:
+    matrix:
+      - OOD_PACKAGING_DIST: [el7, el8, ubuntu-20.04]
+
+build-ondemand-release:
+  stage: build
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^ondemand-release-[0-9]/'
+  script:
+    - bundle exec rake ood_packaging:package:ondemand-release
+  parallel:
+    matrix:
+      - OOD_PACKAGING_DIST: [el8, ubuntu-20.04]
+  artifacts:
+    paths:
+      - tmp/output
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
+
+build-ondemand-release-latest:
+  stage: build
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^ondemand-release-latest-/'
+  script:
+    - bundle exec rake ood_packaging:package:ondemand-release-latest
+  parallel:
+    matrix:
+      - OOD_PACKAGING_DIST: [el8, ubuntu-20.04]
+  artifacts:
+    paths:
+      - tmp/output
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
+
+build-ondemand-runtime:
+  stage: build
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^ondemand-runtime-/'
+  script:
+    - bundle exec rake ood_packaging:package:ondemand-runtime
+  parallel:
+    matrix:
+      - OOD_PACKAGING_DIST: [el7, el8]
+  artifacts:
+    paths:
+      - tmp/output
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
+
+build-passenger:
+  stage: build
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^passenger-/'
+  script:
+    - bundle exec rake ood_packaging:package:passenger[$DIST]
+  parallel:
+    matrix:
+      - OOD_PACKAGING_DIST: [el7, el8, ubuntu-20.04]
+  artifacts:
+    paths:
+      - tmp/output
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
+
+build-sqlite:
+  stage: build
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^sqlite-/'
+  script:
+    - bundle exec rake ood_packaging:package:sqlite[$DIST]
+  parallel:
+    matrix:
+      - OOD_PACKAGING_DIST: el7
+  artifacts:
+    paths:
+      - tmp/output
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
+
+build-cjose:
+  stage: build
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^cjose-/'
+  script:
+    - bundle exec rake ood_packaging:package:cjose[$DIST]
+  parallel:
+    matrix:
+      - OOD_PACKAGING_DIST: [el7, el8]
+  artifacts:
+    paths:
+      - tmp/output
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
+
+build-mod_auth_openidc:
+  stage: build
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^mod_auth_openidc-/'
+  script:
+    - bundle exec rake ood_packaging:package:mod_auth_openidc[$DIST]
+  parallel:
+    matrix:
+      - OOD_PACKAGING_DIST: [el7, el8]
+  artifacts:
+    paths:
+      - tmp/output
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
+
+build-ondemand_exporter:
+  stage: build
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^ondemand_exporter-/'
+  script:
+    - bundle exec rake ood_packaging:package:ondemand_exporter[$DIST]
+  parallel:
+    matrix:
+      - OOD_PACKAGING_DIST: [el7, el8]
+  artifacts:
+    paths:
+      - tmp/output
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
+
+build-ondemand-compute:
+  stage: build
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^ondemand-compute-/'
+  script:
+    - bundle exec rake ood_packaging:package:ondemand-compute[$DIST]
+  parallel:
+    matrix:
+      - OOD_PACKAGING_DIST: [el7, el8]
+  artifacts:
+    paths:
+      - tmp/output
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
+
+build-python-websockify:
+  stage: build
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^python-websockify-/'
+  script:
+    - bundle exec rake ood_packaging:package:python-websockify[$DIST]
+  parallel:
+    matrix:
+      - OOD_PACKAGING_DIST: [el7, el8]
+  artifacts:
+    paths:
+      - tmp/output
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
+
+build-turbovnc:
+  stage: build
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^turbovnc-/'
+  script:
+    - bundle exec rake ood_packaging:package:turbovnc
+  parallel:
+    matrix:
+      - OOD_PACKAGING_DIST: [el7, el8]
+  artifacts:
+    paths:
+      - tmp/output
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
+
+package-deploy-latest:
+  stage: deploy
+  rules:
+    - if: $CI_COMMIT_TAG && $CI_COMMIT_TAG !~ /v[0-9].+/ && $CI_COMMIT_TAG !~ /ondemand-release|turbovnc|python-websockify|ondemand-compute/
+  script:
+    - ./release.py --debug --pkey /systems/osc_certs/ssh/ondemand-packaging/id_rsa -c main ./tmp/output/*
+
+package-deploy-release:
+  stage: deploy
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^ondemand-release/'
+  script:
+    - ./release.py --debug --pkey /systems/osc_certs/ssh/ondemand-packaging/id_rsa -c release ./tmp/output/*
+
+package-deploy-latest-compute:
+  stage: deploy
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^turbovnc-/'
+    - if: '$CI_COMMIT_TAG =~ /^python-websockify-/'
+    - if: '$CI_COMMIT_TAG =~ /^ondemand-compute-/'
+  script:
+    - ./release.py --debug --pkey /systems/osc_certs/ssh/ondemand-packaging/id_rsa -c compute ./tmp/output/*
+
+package-deploy-build:
+  stage: deploy
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^ondemand-runtime-/'
+    - if: '$CI_COMMIT_TAG =~ /^passenger-/'
+    - if: '$CI_COMMIT_TAG =~ /^sqlite-/'
+    - if: '$CI_COMMIT_TAG =~ /^cjose-/'
+    - if: '$CI_COMMIT_TAG =~ /^mod_auth_openidc-/'
+  script:
+    - ./release.py --debug --pkey /systems/osc_certs/ssh/ondemand-packaging/id_rsa -c build -r $OOD_BUILD_REPO ./tmp/output/*

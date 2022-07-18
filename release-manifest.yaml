@@ -8,6 +8,9 @@ ondemand-release:
     - ondemand-release-web
   versions:
     - '{major}-1'
+# deb package
+ondemand-release-web:
+  - '{major}.0'
 
 # web
 cjose:
@@ -35,6 +38,8 @@ ondemand-nginx:
     - ondemand-nginx-debuginfo
   versions:
     - 1.18.0-2.p6.0.14
+    # deb package
+    - 1.18.0
 ondemand-passenger:
   packages:
     - ondemand-passenger
@@ -43,6 +48,8 @@ ondemand-passenger:
     - ondemand-passenger-doc
   versions:
     - 6.0.14-1
+    # deb package
+    - 6.0.14
 ondemand-runtime:
   packages:
     - ondemand-apache
@@ -62,6 +69,8 @@ ondemand:
     - ondemand-selinux
   versions:
     - '{full}-1'
+    # deb package
+    - '{full}'
 ondemand-sqlite:
   packages:
     - ondemand-sqlite

@@ -1,0 +1,89 @@
+#!/bin/bash
+set -e
+
+function header()
+{
+	echo
+	echo "----- $@ -----"
+}
+
+function run()
+{
+	echo "+ $@"
+	"$@"
+}
+
+export HOME=/root
+
+<% if rpm? -%>
+header "Add OnDemand build repo"
+cat > /etc/yum.repos.d/ondemand-web.repo <<EOF
+[ondemand-web]
+name=Open OnDemand Web Repo
+baseurl=https://yum.osc.edu/ondemand/build/<%= ondemand_repo_version %>/web/el\$releasever/\$basearch/
+enabled=1
+gpgcheck=0
+EOF
+<% if legacy_gpg? -%>
+run rpm --import /build/RPM-GPG-KEY-ondemand
+<% end -%>
+
+header "Creating users"
+run groupadd <%= ctr_user %>
+run useradd --home-dir <%= ctr_home %> --create-home --gid <%= ctr_user %> --password '<%= ctr_user %>' <%= ctr_user %>
+
+header "Add sudo"
+cat > /etc/sudoers.d/ood <<EOF
+Defaults:<%= ctr_user %> !requiretty, !authenticate
+%<%= ctr_user %> ALL=NOPASSWD:ALL
+EOF
+run chmod 440 /etc/sudoers.d/ood
+
+<% if rpm? -%>
+header "Setup RPM env"
+sudo -u <%= ctr_user %> -H cat > <%= ctr_rpmmacros %> <<EOF
+%_topdir /work/<%= dist %>
+<%- # Workaround to weird issue with debuginfo stripping -%>
+<% if dist == 'el7' -%>
+%_builddir %{_topdir}/rpmbuild/BUILD
+<% end -%>
+%_signature gpg
+%_gpg_path <%= ctr_gpg_dir %>
+%_gpg /usr/bin/gpg
+%_gpg_name @GPG_NAME@
+# Modified macro from /usr/lib/rpm/macros to add pinentry-mode and passphrase-file
+# pinentry-mode only needed on EL8
+%__gpg_check_password_cmd       %{__gpg} \\
+        gpg --batch --no-verbose --passphrase-file <%= gpg_passphrase %> -u "%{_gpg_name}" -so -
+%__gpg_sign_cmd %{__gpg} \\
+        gpg --no-verbose --no-armor --batch \\
+<%- if dnf? -%>
+        --pinentry-mode loopback \\
+<%- end -%>
+        --passphrase-file <%= gpg_passphrase %> \\
+        %{?_gpg_sign_cmd_extra_args:%{_gpg_sign_cmd_extra_args}} \\
+        %{?_gpg_digest_algo:--digest-algo %{_gpg_digest_algo}} \\
+	      --no-secmem-warning \\
+        -u \"%{_gpg_name}\" -sbo %{__signature_filename} %{__plaintext_filename}
+EOF
+<% end -%>
+<%- if dnf? -%>
+run install -d -m 0700 -o ood -g ood <%= ctr_gpg_dir %>
+echo "allow-loopback-pinentry" >> <%= ctr_gpg_dir %>/gpg-agent.conf
+<%- end -%>
+
+header "Install ood_packaging gem"
+<%- if scl? -%>
+run scl enable <%= scl_ruby %> -- gem install --no-doc --bindir <%= ctr_scripts_dir %> --install-dir <%= ctr_gems_dir %> /build/*.gem
+<%- else -%>
+run gem install --no-doc --bindir <%= ctr_scripts_dir %> --install-dir <%= ctr_gems_dir %> /build/*.gem
+<%- end -%>
+
+header "Copy in launch scripts"
+run mkdir -p <%= ctr_scripts_dir %>
+run install -m 0755 /build/inituidgid.sh <%= ctr_scripts_dir %>/
+run install -m 0755 /build/setuser.rb <%= ctr_scripts_dir %>/
+run install -m 0644 /build/Rakefile <%= ctr_scripts_dir %>/
+
+header "Cleaning up"
+run rm -rf /build

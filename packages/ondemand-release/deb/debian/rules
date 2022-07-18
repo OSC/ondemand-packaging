@@ -1,0 +1,30 @@
+#!/usr/bin/make -f
+# You must remove unused comment lines for the released package.
+export DH_VERBOSE = 1
+export CODENAME = $(shell lsb_release -sc)
+export WEB_DESTDIR = $(CURDIR)/debian/ondemand-release-web
+export DEB_BUILD_OPTIONS=nocheck
+export VERSION_MAJOR = $(shell echo "$(VERSION)" | cut -d'.' -f1)
+export VERSION_MINOR = $(shell echo "$(VERSION)" | cut -d'.' -f2)
+export REPO = $(VERSION_MAJOR).$(VERSION_MINOR)
+export NODEREPO=node_12.x
+
+%:
+	dh $@
+
+override_dh_auto_configure:
+	# Do nothing
+
+override_dh_auto_build:
+	# Do nothing
+
+override_dh_auto_install:
+	mkdir -p $(WEB_DESTDIR)/etc/apt/sources.list.d
+	mkdir -p $(WEB_DESTDIR)/etc/apt/trusted.gpg.d
+	echo "deb [arch=amd64] https://apt.osc.edu/ondemand/$(REPO)/web/apt @CODENAME@ main" > $(WEB_DESTDIR)/etc/apt/sources.list.d/ondemand-web.list
+	install -m 644 -D $(CURDIR)/ondemand.gpg $(WEB_DESTDIR)/etc/apt/trusted.gpg.d/ondemand-web.gpg
+	echo "deb https://deb.nodesource.com/$(NODEREPO) @CODENAME@ main" > $(WEB_DESTDIR)/etc/apt/sources.list.d/nodesource.list
+	curl -s https://deb.nodesource.com/gpgkey/nodesource.gpg.key | gpg --dearmor > $(WEB_DESTDIR)/etc/apt/trusted.gpg.d/nodesource.gpg
+
+override_dh_builddeb:
+	dh_builddeb -- -Zgzip
