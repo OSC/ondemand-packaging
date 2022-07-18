@@ -71,6 +71,8 @@ ondemand:
     - ondemand-selinux
   versions:
     - '{full}-1'
+    # deb package
+    - '{full}'
 ondemand-sqlite:
   packages:
     - ondemand-sqlite
