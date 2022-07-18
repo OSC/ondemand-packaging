@@ -22,7 +22,7 @@ jobs:
       - name: Setup Ruby using Bundler
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '2.7.1'
+          ruby-version: '3.0.4'
           bundler: '2.1.4'
           bundler-cache: true
       - name: Pull the builx box
@@ -66,7 +66,7 @@ jobs:
       - name: Setup Ruby ${{ matrix.ruby }} using Bundler ${{ matrix.bundler }}
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '2.7.1'
+          ruby-version: '3.0.4'
           bundler: '2.1.4'
           bundler-cache: true
       - name: Download image
@@ -99,7 +99,7 @@ jobs:
       - name: Setup Ruby ${{ matrix.ruby }} using Bundler ${{ matrix.bundler }}
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '2.7.1'
+          ruby-version: '3.0.4'
           bundler: '2.1.4'
           bundler-cache: true
       - name: Download image
@@ -132,7 +132,7 @@ jobs:
       - name: Setup Ruby using Bundler
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '2.7.1'
+          ruby-version: '3.0.4'
           bundler: '2.1.4'
           bundler-cache: true
       - name: Download image
