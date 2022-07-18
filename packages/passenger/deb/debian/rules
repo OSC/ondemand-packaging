@@ -52,8 +52,7 @@ override_dh_auto_configure:
 	cd $(TMPDIR) && tar xf $(TMPDIR)/passenger-$(VERSION).tar.gz
 	wget -O $(TMPDIR)/nginx-$(NGINX_VERSION).tar.gz http://nginx.org/download/nginx-$(NGINX_VERSION).tar.gz
 	cd $(TMPDIR)/passenger-$(VERSION) && tar xf $(TMPDIR)/nginx-$(NGINX_VERSION).tar.gz
-	cd nginx-$(NGINX_VERSION)
-	patch -p0 < patch.2021.resolver.txt
+	cd $(TMPDIR)/passenger-$(VERSION)/nginx-$(NGINX_VERSION) && patch -p0 < patch.2021.resolver.txt
 
 override_dh_auto_build:
 	cd $(TMPDIR)/passenger-$(VERSION) && rake nginx OPTIMIZE=yes CACHING=false
