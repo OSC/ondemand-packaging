@@ -83,7 +83,9 @@ ondemand-sqlite:
   versions:
     - '3.26.0-4'
 ondemand-dex:
-  - 2.27.0-2
+  - 2.32.0-1
+  # deb package
+  - 2.32.0
 ondemand_exporter:
   - 0.8.0-1
 
