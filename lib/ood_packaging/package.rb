@@ -124,9 +124,7 @@ class OodPackaging::Package
   end
 
   def default_gpg_name
-    return 'OnDemand Release Signing Key' if build_box.legacy_gpg?
-
-    'OnDemand Release Signing Key (SHA512)'
+    'OnDemand Release Signing Key'
   end
 
   def gpg_name

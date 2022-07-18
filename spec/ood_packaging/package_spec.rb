@@ -52,20 +52,6 @@ describe OodPackaging::Package do
     end
   end
 
-  describe 'gpg_name' do
-    it 'uses legacy key' do
-      expect(package.gpg_name).to eq('OnDemand Release Signing Key')
-    end
-
-    context 'when el9' do
-      let(:dist) { 'el9' }
-
-      it 'uses legacy key' do
-        expect(package.gpg_name).to eq('OnDemand Release Signing Key (SHA512)')
-      end
-    end
-  end
-
   describe 'tar!' do
     context 'when packaging for EL' do
       before do

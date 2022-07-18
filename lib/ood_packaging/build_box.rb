@@ -12,11 +12,11 @@ class OodPackaging::BuildBox
   BASE_IMAGES = {
     'el7'          => 'centos:7',
     'el8'          => 'rockylinux/rockylinux:8',
-    'ubuntu-20.04' => 'ubuntu:20.04',
+    'ubuntu-20.04' => 'ubuntu:20.04'
   }.freeze
 
   CODENAMES = {
-    'ubuntu-20.04' => 'focal',
+    'ubuntu-20.04' => 'focal'
   }.freeze
 
   def initialize(config = {})
@@ -51,12 +51,6 @@ class OodPackaging::BuildBox
 
   def scl?
     return true if dist == 'el7'
-
-    false
-  end
-
-  def legacy_gpg?
-    return true if ['el7', 'el8'].include?(dist)
 
     false
   end

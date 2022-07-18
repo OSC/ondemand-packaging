@@ -24,7 +24,6 @@ baseurl=https://yum.osc.edu/ondemand/build/<%= ondemand_repo_version %>/web/el\$
 enabled=1
 gpgcheck=0
 EOF
-<% if legacy_gpg? -%>
 run rpm --import /build/RPM-GPG-KEY-ondemand
 <% end -%>
 
