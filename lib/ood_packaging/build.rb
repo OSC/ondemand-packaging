@@ -146,6 +146,7 @@ class OodPackaging::Build
     rpmbuild! if build_box.rpm?
     debuild! if build_box.deb?
     copy_output!
+    show_output!
     gpg_sign! if build_box.rpm? && gpg_sign?
     sanity!
   end
@@ -290,6 +291,13 @@ class OodPackaging::Build
     elsif build_box.deb?
       puts "\tcopy #{work_dir}/*.deb #{output_dir}/".blue
       sh "cp #{work_dir}/*.deb #{output_dir}/"
+    end
+  end
+
+  def show_output!
+    puts '== Copied output =='.blue
+    Dir["#{output_dir}/*"].each do |f|
+      puts "\tSaved output #{f}".blue
     end
   end
 

@@ -1,4 +1,4 @@
-passenger (1.20.2) UNRELEASED; urgency=low
+passenger (1.18.0) UNRELEASED; urgency=low
 
   * Initial release. Closes: #nnnn
     <nnnn is the bug number of your ITP>
