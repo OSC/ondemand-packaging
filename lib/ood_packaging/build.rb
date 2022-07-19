@@ -146,6 +146,7 @@ class OodPackaging::Build
     rpmbuild! if build_box.rpm?
     debuild! if build_box.deb?
     copy_output!
+    show_output!
     gpg_sign! if build_box.rpm? && gpg_sign?
     sanity!
   end
@@ -218,6 +219,8 @@ class OodPackaging::Build
     Dir.chdir(work_dir) do
       sh "tar -xf #{deb_name}.tar.gz"
     end
+    return unless config.fetch(:update_changelog, true)
+
     puts "\tBootstrap debian build files".blue
     Dir.chdir(deb_work_dir) do
       sh "dh_make -s -y --createorig -f ../#{deb_name}.tar.gz#{cmd_suffix} || true"
@@ -249,7 +252,8 @@ class OodPackaging::Build
     sh "sudo apt update -y#{cmd_suffix}"
     tool = [
       'DEBIAN_FRONTEND=noninteractive apt-cudf-get --solver aspcud',
-      '-o APT::Get::Assume-Yes=1 -o Debug::pkgProblemResolver=0 -o APT::Install-Recommends=0'
+      '-o APT::Get::Assume-Yes=1 -o APT::Get::Allow-Downgrades=1',
+      '-o Debug::pkgProblemResolver=0 -o APT::Install-Recommends=0'
     ]
     cmd = [
       'mk-build-deps --install --remove --root-cmd sudo',
@@ -289,6 +293,13 @@ class OodPackaging::Build
     elsif build_box.deb?
       puts "\tcopy #{work_dir}/*.deb #{output_dir}/".blue
       sh "cp #{work_dir}/*.deb #{output_dir}/"
+    end
+  end
+
+  def show_output!
+    puts '== Copied output =='.blue
+    Dir["#{output_dir}/*"].each do |f|
+      puts "\tSaved output #{f}".blue
     end
   end
 

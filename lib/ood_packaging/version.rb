@@ -2,7 +2,7 @@
 
 # Version code for OodPackaging
 module OodPackaging
-  VERSION = '0.4.0'
+  VERSION = '0.5.0'
   PACKAGE_VERSION = {
     'ondemand-release'        => {
       '(ubuntu|debian)' => '2.1.0',
