@@ -1,0 +1,162 @@
+#!/usr/bin/make -f
+# You must remove unused comment lines for the released package.
+export DH_VERBOSE = 1
+export TMPDIR = $(CURDIR)/tmp
+export DESTDIR = $(CURDIR)/debian/ondemand-passenger
+export PREFIX = /opt/ood/ondemand/root
+export DEV_DESTDIR = $(CURDIR)/debian/ondemand-passenger-dev
+export DOC_DESTDIR = $(CURDIR)/debian/ondemand-passenger-doc
+export RUBY_LIBDIR = $(PREFIX)/usr/share/ruby/vendor_ruby
+export NGINX_VERSION = 1.18.0
+export NGINX_DESTDIR = $(CURDIR)/debian/ondemand-nginx
+export NGINX_DATADIR = $(PREFIX)/usr/share/nginx
+export NGINX_CONFDIR = $(PREFIX)/etc/nginx
+export NGINX_HOME = /var/lib/ondemand-nginx
+export NGINX_HOME_TMP = $(NGINX_HOME)/tmp
+export NGINX_LOGDIR = /var/log/ondemand-nginx
+define NGINX_LOGROTATE
+$(NGINX_LOGDIR)/*log {
+    create 0644 ondemand-nginx ondemand-nginx
+    daily
+    rotate 10
+    missingok
+    notifempty
+    compress
+    sharedscripts
+    postrotate
+        /bin/kill -USR1 `cat /run/ondemand-nginx.pid 2>/dev/null` 2>/dev/null || true
+    endscript
+endef
+export NGINX_LOGROTATE
+define ONDEMAND_PASSENGER_STATUS
+#!/bin/bash
+
+$(PREFIX)/usr/sbin/passenger-status "$$@"
+endef
+export ONDEMAND_PASSENGER_STATUS
+
+export BASE_CCOPTS=-g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches -m64 -mtune=generic
+export NGINX_CCOPTS=-O2 $(BASE_CCOPTS)
+export PASSENGER_CCOPTS=$(BASE_CCOPTS) -Wno-deprecated
+export LDOPTS=-Wl,-z,relro -Wl,-E
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+
+%:
+	dh $@
+
+override_dh_auto_configure:
+	mkdir -p $(TMPDIR)
+	wget -O $(TMPDIR)/passenger-$(VERSION).tar.gz https://github.com/phusion/passenger/releases/download/release-$(VERSION)/passenger-$(VERSION).tar.gz
+	cd $(TMPDIR) && tar xf $(TMPDIR)/passenger-$(VERSION).tar.gz
+	wget -O $(TMPDIR)/nginx-$(NGINX_VERSION).tar.gz http://nginx.org/download/nginx-$(NGINX_VERSION).tar.gz
+	cd $(TMPDIR)/passenger-$(VERSION) && tar xf $(TMPDIR)/nginx-$(NGINX_VERSION).tar.gz
+	cd $(TMPDIR)/passenger-$(VERSION)/nginx-$(NGINX_VERSION) && patch -p0 < $(CURDIR)/patch.2021.resolver.txt
+
+override_dh_auto_build:
+	cd $(TMPDIR)/passenger-$(VERSION) && rake nginx OPTIMIZE=yes CACHING=false
+	cd $(TMPDIR)/passenger-$(VERSION)/nginx-$(NGINX_VERSION) && ./configure \
+	    --prefix=$(NGINX_DATADIR) \
+	    --sbin-path=$(PREFIX)/usr/sbin/nginx \
+	    --conf-path=$(NGINX_CONFDIR)/nginx.conf \
+	    --error-log-path=$(NGINX_LOGDIR)/error.log \
+	    --http-log-path=$(NGINX_LOGDIR)/access.log \
+	    --http-client-body-temp-path=$(NGINX_HOME_TMP)/client_body \
+	    --http-proxy-temp-path=$(NGINX_HOME_TMP)/proxy \
+	    --http-fastcgi-temp-path=$(NGINX_HOME_TMP)/fastcgi \
+	    --http-uwsgi-temp-path=$(NGINX_HOME_TMP)/uwsgi \
+	    --http-scgi-temp-path=$(NGINX_HOME_TMP)/scgi \
+	    --pid-path=/run/ondemand-nginx.pid \
+	    --lock-path=/run/lock/subsys/ondemand-nginx \
+	    --user=ondemand-nginx \
+	    --group=ondemand-nginx \
+	    --with-file-aio \
+	    --with-http_ssl_module \
+	    --with-http_v2_module \
+	    --with-http_realip_module \
+	    --with-http_addition_module \
+	    --with-http_xslt_module \
+	    --with-http_image_filter_module \
+	    --with-http_sub_module \
+	    --with-http_dav_module \
+	    --with-http_flv_module \
+	    --with-http_mp4_module \
+	    --with-http_gunzip_module \
+	    --with-http_gzip_static_module \
+	    --with-http_random_index_module \
+	    --with-http_secure_link_module \
+	    --with-http_degradation_module \
+	    --with-http_stub_status_module \
+	    --with-mail \
+	    --with-mail_ssl_module \
+	    --with-pcre \
+	    --with-pcre-jit \
+	    --add-module=../src/nginx_module \
+	    --with-cc-opt="$(NGINX_CCOPTS)" \
+	    --with-ld-opt="$(LDOPTS)" \
+	    --with-debug
+	cd $(TMPDIR)/passenger-$(VERSION)/nginx-$(NGINX_VERSION) && make -j$(shell nproc)
+	cd $(TMPDIR)/passenger-$(VERSION) && rake fakeroot \
+	    NATIVE_PACKAGING_METHOD=rpm \
+	    FS_PREFIX=$(PREFIX)/usr \
+	    FS_BINDIR=$(PREFIX)/usr/bin \
+	    FS_SBINDIR=$(PREFIX)/usr/sbin \
+	    FS_DATADIR=$(PREFIX)/usr/share \
+	    FS_LIBDIR=$(PREFIX)/usr/lib64 \
+	    FS_DOCDIR=$(PREFIX)/usr/share/doc \
+	    RUBY=$(shell which ruby) \
+	    RUBYLIBDIR=$(RUBY_LIBDIR) \
+	    RUBYARCHDIR=$(RUBY_LIBDIR) \
+	    APACHE2_MODULE_PATH=$(PREFIX)/usr/lib/apache2/modules/mod_passenger.so \
+			OPTIMIZE=yes \
+			CACHING=false \
+			EXTRA_CFLAGS="$(PASSENGER_CCOPTS)" \
+			EXTRA_CXXFLAGS="$(PASSENGER_CCOPTS)"
+
+override_dh_auto_install:
+	# Begin NGINX
+	cd $(TMPDIR)/passenger-$(VERSION)/nginx-$(NGINX_VERSION) && make install DESTDIR=$(NGINX_DESTDIR) INSTALLDIRS=vendor
+	find $(NGINX_DESTDIR) -type f -name .packlist -exec rm -f '{}' \;
+	find $(NGINX_DESTDIR) -type f -name perllocal.pod -exec rm -f '{}' \;
+	find $(NGINX_DESTDIR) -type f -empty -exec rm -f '{}' \;
+	find $(NGINX_DESTDIR) -type f -iname '*.so' -exec chmod 0755 '{}' \;
+	mkdir -p $(NGINX_DESTDIR)/etc/logrotate.d
+	echo "$$NGINX_LOGROTATE" > $(NGINX_DESTDIR)/etc/logrotate.d/ondemand-nginx
+	install -p -d -m 0755 $(NGINX_DESTDIR)$(NGINX_CONFDIR)
+	install -p -d -m 0700 $(NGINX_DESTDIR)$(NGINX_HOME)
+	install -p -d -m 0700 $(NGINX_DESTDIR)$(NGINX_HOME_TMP)
+	install -p -d -m 0700 $(NGINX_DESTDIR)$(NGINX_LOGDIR)
+	install -p -d -m 0755 $(NGINX_DESTDIR)$(NGINX_DATADIR)/html
+	# End NGINX
+	mkdir -p $(DESTDIR)
+	cp -a $(TMPDIR)/passenger-$(VERSION)/pkg/fakeroot/* $(DESTDIR)/
+	cd $(TMPDIR)/passenger-$(VERSION) && ./dev/install_scripts_bootstrap_code.rb --ruby $(RUBY_LIBDIR) \
+	    $(DESTDIR)$(PREFIX)/usr/bin/passenger* \
+	    $(DESTDIR)$(PREFIX)/usr/sbin/passenger* \
+	    `find $(DESTDIR)$(PREFIX) -name rack_handler.rb`
+	cd $(TMPDIR)/passenger-$(VERSION) && ./dev/install_scripts_bootstrap_code.rb --nginx-module-config $(PREFIX)/usr/bin $(DESTDIR)$(PREFIX)/usr/share/passenger/ngx_http_passenger_module/config
+	# Fix Python scripts with shebang which are not executable
+	chmod +x $(DESTDIR)$(PREFIX)/usr/share/passenger/helper-scripts/wsgi-loader.py
+	# Add passenger-status wrapper
+	mkdir -p $(DESTDIR)/usr/sbin
+	echo "$$ONDEMAND_PASSENGER_STATUS" > $(DESTDIR)/usr/sbin/ondemand-passenger-status
+	# Don't need Apache module
+	rm -f $(DESTDIR)$(PREFIX)/usr/lib/apache2/modules/mod_passenger.so
+	rmdir $(DESTDIR)$(PREFIX)/usr/lib/apache2/modules
+	rmdir $(DESTDIR)$(PREFIX)/usr/lib/apache2
+	rmdir $(DESTDIR)$(PREFIX)/usr/lib
+	# ondemand-passenger-doc package
+	mkdir -p $(DOC_DESTDIR)$(PREFIX)/usr/share
+	mv $(DESTDIR)$(PREFIX)/usr/share/doc $(DOC_DESTDIR)$(PREFIX)/usr/share/doc
+	# ondemand-passenger-dev package
+	mkdir -p $(DEV_DESTDIR)$(PREFIX)/usr/share/passenger
+	mv $(DESTDIR)$(PREFIX)/usr/share/passenger/ngx_http_passenger_module $(DEV_DESTDIR)$(PREFIX)/usr/share/passenger/ngx_http_passenger_module
+	mv $(DESTDIR)$(PREFIX)/usr/share/passenger/ruby_extension_source $(DEV_DESTDIR)$(PREFIX)/usr/share/passenger/ruby_extension_source
+	mv $(DESTDIR)$(PREFIX)/usr/share/passenger/include $(DEV_DESTDIR)$(PREFIX)/usr/share/passenger/include
+	mkdir -p $(DEV_DESTDIR)$(PREFIX)/usr/lib64/passenger
+	mv $(DESTDIR)$(PREFIX)/usr/lib64/passenger/common $(DEV_DESTDIR)$(PREFIX)/usr/lib64/passenger/common
+	mv $(DESTDIR)$(PREFIX)/usr/lib64/passenger/nginx_dynamic $(DEV_DESTDIR)$(PREFIX)/usr/lib64/passenger/nginx_dynamic
+
+override_dh_builddeb:
+	dh_builddeb -- -Zgzip

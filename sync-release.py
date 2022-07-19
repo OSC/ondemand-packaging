@@ -1,18 +1,31 @@
 #!/usr/bin/env python
 
 import argparse
+import datetime
 import getpass
 import logging
 import os
+from pydpkg import Dpkg
 import rpm
 import shutil
 import subprocess
 import sys
 import yaml
 
-
 logger = logging.getLogger()
-
+PROJ_ROOT = os.path.dirname(os.path.realpath(__file__))
+DISTS = [
+    'el7',
+    'el8',
+    'ubuntu-20.04'
+]
+EL_RELEASES = [
+    'el7',
+    'el8'
+]
+DEB_CODENAMES = [
+    'focal'
+]
 
 def get_rpm_info(rpm_file):
     ts = rpm.ts()
@@ -27,6 +40,11 @@ def get_rpm_info(rpm_file):
         'name': hdr[rpm.RPMTAG_NAME],
         'ver': "%s-%s" % (hdr[rpm.RPMTAG_VERSION],hdr[rpm.RPMTAG_RELEASE])
     }
+    return info
+
+def get_deb_info(deb_file):
+    dp = Dpkg(deb_file)
+    info = dp.headers
     return info
 
 def main():
@@ -66,6 +84,7 @@ Usage examples:
     latest_dir = os.path.join(args.repo_base, 'latest')
     release_dir = os.path.join(args.repo_base, args.release)
     rpms = []
+    debs = []
     manifest = {}
     manifest_data = {}
     copied_manifest = {}
@@ -80,26 +99,27 @@ Usage examples:
     # Get global values
     major = manifest_data.get('major', args.release)
     full = manifest_data.get('full', None)
+    runtime = manifest_data.get('runtime', None)
     if full is None:
         logger.error("Unable to determine full version of ondemand")
         sys.exit(1)
 
     # Build manifest
     for k,v in manifest_data.iteritems():
-        if k in ['major','full']:
+        if k in ['major','full','runtime']:
             continue
-        name = k.format(major=major, full=full)
+        name = k.format(major=major, full=full, runtime=runtime)
         if isinstance(v, dict):
             for p in v['packages']:
-                name = p.format(major=major, full=full)
+                name = p.format(major=major, full=full, runtime=runtime)
                 manifest[name] = []
                 for val in v['versions']:
-                    value = val.format(major=major, full=full)
+                    value = val.format(major=major, full=full, runtime=runtime)
                     manifest[name].append(value)
         else:
             manifest[name] = []
             for val in v:
-                value = val.format(major=major, full=full)
+                value = val.format(major=major, full=full, runtime=runtime)
                 manifest[name].append(value)
 
     # Print manifest
@@ -111,7 +131,7 @@ Usage examples:
 
     # Prep release directories
     for t in ['compute', 'web']:
-        for rel in ['el7', 'el8']:
+        for rel in EL_RELEASES:
             rel_d = os.path.join(release_dir, t, rel)
             if not os.path.isdir(rel_d):
                 logger.info("mkdir -p %s", rel_d)
@@ -125,6 +145,15 @@ Usage examples:
                 if not os.path.isdir(d):
                     logger.info("mkdir -p %s", d)
                     os.makedirs(d, 0755)
+        for rel in DEB_CODENAMES:
+            rel_d = os.path.join(release_dir, t, 'apt/dists', rel, 'main/binary-amd64')
+            pool_d = os.path.join(release_dir, t, 'apt/pool', rel)
+            if not os.path.isdir(rel_d):
+                logger.info("mkdir -p %s", rel_d)
+                os.makedirs(rel_d, 0755)
+            if not os.path.isdir(pool_d):
+                logger.info("mkdir -p %s", pool_d)
+                os.makedirs(pool_d, 0755)
 
     if args.release in ['latest','ci','nightly'] or args.release.startswith('build'):
         logger.info("Latest release does not require sync, exiting")
@@ -136,17 +165,16 @@ Usage examples:
             f = os.path.join(root, filename)
             if f.endswith('.rpm'):
                 rpms.append(f)
+            elif f.endswith('.deb'):
+                debs.append(f)
+    print debs
 
 
     # Determine if SRPM/RPM needs to be copie to release repo
     # If a given SRPM/RPM is in the manifest, copy to release repo
     for r in sorted(rpms):
         copy = True
-        try:
-            rpm_info = get_rpm_info(r)
-        except Exception:
-            logger.error("Unable to read RPM info for %s, skipping", r)
-            continue
+        rpm_info = get_rpm_info(r)
         logger.debug("RPM info for %s: %s", r, rpm_info)
         name = rpm_info['name']
         if name not in manifest:
@@ -170,6 +198,32 @@ Usage examples:
         logger.info("Copy %s -> %s", r, dest)
         shutil.copy2(r, dest)
 
+    for d in sorted(debs):
+        copy = True
+        deb_info = get_deb_info(d)
+        logger.debug("DEB info for %s: %s", d, deb_info)
+        name = deb_info['Package']
+        version = deb_info['Version']
+        if name not in manifest:
+            logger.warning("%s not in manifest", name)
+            continue
+        if version not in manifest[name]:
+            logger.debug("Skipping %s-%s, not in manifest", name, version)
+            continue
+        dest = d.replace('/latest/', "/%s/" % args.release)
+        if os.path.isfile(dest) and not args.force:
+            copy = False
+            logger.debug("%s already exists, skipping", dest)
+        if name in copied_manifest:
+            if version not in copied_manifest[name]:
+                copied_manifest[name].append(version)
+        else:
+            copied_manifest[name] = [version]
+        if not copy:
+            continue
+        logger.info("Copy %s -> %s", d, dest)
+        shutil.copy2(d, dest)
+
     # Check for files in manifest that were not found in latest repo
     for name, versions in sorted(manifest.items(), key=lambda item: item[0]):
         if name not in copied_manifest:
@@ -182,34 +236,37 @@ Usage examples:
     # Look for files in release repo that are not in manifest
     for root, dirnames, filenames in os.walk(release_dir):
         for filename in filenames:
-            if not filename.endswith('.rpm'):
-                continue
             f = os.path.join(root, filename)
-            rpm_info = get_rpm_info(f)
-            name = rpm_info['name']
-            version = rpm_info['ver'].replace('.el7', '').replace('.el8', '')
-            if name not in manifest or version not in manifest.get(name, []):
-                logger.error("RPM %s-%s should not be in release repo", name, version)
+            found = False
+            if filename.endswith('.rpm'):
+                found = True
+                rpm_info = get_rpm_info(f)
+                name = rpm_info['name']
+                version = rpm_info['ver'].replace('.el7', '').replace('.el8', '')
+            elif filename.endswith('.deb'):
+                found = True
+                deb_info = get_deb_info(f)
+                name = deb_info['Package']
+                version = deb_info['Version']
+            if found and name not in manifest or version not in manifest.get(name, []):
+                logger.error("Package %s-%s should not be in release repo", name, version)
                 if args.clean:
                     logger.debug("rm %s", f)
                     os.remove(f)
 
-    # Run createrepo_c on each repo directory
-    for root, dirnames, filenames in os.walk(release_dir):
-        if os.path.basename(root) in ['SRPMS', 'x86_64']:
-            logger.info("createrepo_c %s", root)
-            process = subprocess.Popen(['createrepo_c', root], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            out, err = process.communicate()
-            exit_code = process.returncode
-            if exit_code != 0:
-                logger.error("Error: %s", err)
-            repomd = os.path.join(root, 'repodata', 'repomd.xml')
-            cmd = ['gpg','--detach-sign','--passphrase-file',args.gpgpass,'--batch','--yes','--no-tty','--armor',repomd]
-            process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            out, err = process.communicate()
-            exit_code = process.returncode
-            if exit_code != 0:
-                logger.error("Error: %s", err)
+    for dist in DISTS:
+        logger.info("repo-update.sh -r %s -d %s", args.release, args.dist)
+        repo_update_cmd = [
+            os.path.join(PROJ_ROOT, 'repo-update.sh'),
+            '-r', args.release,
+            '-d', args.dist,
+        ]
+        process = subprocess.Popen(repo_update_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = process.communicate()
+        exit_code = process.returncode
+        if exit_code != 0:
+            logger.error("OUTPUT: %s", out)
+            logger.error("ERROR: %s", err)
 
 if __name__ == '__main__':
     main()
