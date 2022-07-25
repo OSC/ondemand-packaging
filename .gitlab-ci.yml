@@ -27,7 +27,7 @@ build-image:
     - bundle exec rake ood_packaging:buildbox:build
   parallel:
     matrix:
-      - OOD_PACKAGING_DIST: [el7, el8, ubuntu-20.04]
+      - OOD_PACKAGING_DIST: [el7, el8, ubuntu-18.04, ubuntu-20.04]
 
 build-ondemand-release:
   stage: build
@@ -83,7 +83,7 @@ build-passenger:
     - bundle exec rake ood_packaging:package:passenger[$DIST]
   parallel:
     matrix:
-      - OOD_PACKAGING_DIST: [el7, el8, ubuntu-20.04]
+      - OOD_PACKAGING_DIST: [el7, el8, ubuntu-18.04, ubuntu-20.04]
   artifacts:
     paths:
       - tmp/output
