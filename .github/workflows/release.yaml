@@ -13,6 +13,7 @@ jobs:
         dist:
           - el7
           - el8
+          - ubuntu-18.04
           - ubuntu-20.04
     name: Release buildbox
     runs-on: ubuntu-latest

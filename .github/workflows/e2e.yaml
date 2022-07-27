@@ -13,6 +13,7 @@ jobs:
         dist:
           - el7
           - el8
+          - ubuntu-18.04
           - ubuntu-20.04
     runs-on: ubuntu-latest
     name: Buildbox tests
@@ -86,6 +87,7 @@ jobs:
       fail-fast: false
       matrix:
         dist:
+          - ubuntu-18.04
           - ubuntu-20.04
         package:
           - ondemand-release
@@ -121,6 +123,7 @@ jobs:
         dist:
           - el7
           - el8
+          - ubuntu-18.04
           - ubuntu-20.04
         package:
           - ondemand

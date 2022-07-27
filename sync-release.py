@@ -17,6 +17,7 @@ PROJ_ROOT = os.path.dirname(os.path.realpath(__file__))
 DISTS = [
     'el7',
     'el8',
+    'ubuntu-18.04',
     'ubuntu-20.04'
 ]
 EL_RELEASES = [
@@ -24,6 +25,7 @@ EL_RELEASES = [
     'el8'
 ]
 DEB_CODENAMES = [
+    'bionic',
     'focal'
 ]
 
