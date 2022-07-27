@@ -148,6 +148,6 @@ jobs:
       - name: Clone ${{ matrix.package }}
         run: |
           mkdir -p ./tmp
-          git clone --branch ubuntu-18.04-2.0 https://github.com/OSC/${{ matrix.package }}.git ./tmp/${{ matrix.package }}
+          git clone --branch release_2.0 https://github.com/OSC/${{ matrix.package }}.git ./tmp/${{ matrix.package }}
       - name: Build ${{ matrix.package }} package
         run: ./bin/ood_packaging -w ./tmp/work -o ./tmp/output -d ${{ matrix.dist }} -V v2.0.0 -T --debug $(pwd)/tmp/${{ matrix.package }}
