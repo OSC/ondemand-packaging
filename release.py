@@ -18,6 +18,7 @@ import tempfile
 logger = logging.getLogger()
 
 deb_dist_map = {
+    'ubuntu-18.04': 'bionic',
     'ubuntu-20.04': 'focal',
     'ubuntu-22.04': 'jammy',
 }

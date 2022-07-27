@@ -18,6 +18,7 @@ DISTS = [
     'el7',
     'el8',
     'el9',
+    'ubuntu-18.04',
     'ubuntu-20.04',
     'ubuntu-22.04'
 ]
@@ -27,6 +28,7 @@ EL_RELEASES = [
     'el9'
 ]
 DEB_CODENAMES = [
+    'bionic',
     'focal',
     'jammy'
 ]
