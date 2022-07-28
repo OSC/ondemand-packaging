@@ -261,7 +261,7 @@ class OodPackaging::Package
     puts "Build FAILED package=#{package} dist=#{build_box.dist}".red
     raise
   ensure
-    container_exec!(exec_attach, ['-i', '-t']) if attach?
+    container_attach! if attach?
     container_kill! if container_running? && !attach?
   end
 
@@ -298,6 +298,12 @@ class OodPackaging::Package
   rescue RuntimeError
     container_kill! if container_running? && !attach?
     raise
+  end
+
+  def container_attach!
+    container_exec!(exec_attach, ['-i', '-t']) if attach?
+  ensure
+    container_kill! if container_running?
   end
 
   def container_kill!
