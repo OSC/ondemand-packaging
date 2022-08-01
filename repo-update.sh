@@ -91,12 +91,12 @@ LOCK_FILE="/var/lib/oodpkg/repo-update-${LOCK_NAME}.lock"
     cd ${REPO_PATH}
     createrepo_c --update .
     echo "level=\"info\" msg=\"GPG sign repo\" repo=\"${REPO_PATH}\""
-    gpg --default-key ${GPG_KEY} --detach-sign --passphrase-file ${GPGPASS} --batch --yes --no-tty --armor repodata/repomd.xml
+    gpg --default-key ${GPG_KEY} --detach-sign --passphrase-file ${GPGPASS} --pinentry-mode loopback --batch --yes --no-tty --armor repodata/repomd.xml
     echo "level=\"info\" msg=\"Update repo\" repo=\"${SRPM_PATH}\""
     cd ${SRPM_PATH}
     createrepo_c --update .
     echo "level=\"info\" msg=\"GPG sign repo\" repo=\"${SRPM_PATH}\""
-    gpg --default-key ${GPG_KEY} --detach-sign --passphrase-file ${GPGPASS} --batch --yes --no-tty --armor repodata/repomd.xml
+    gpg --default-key ${GPG_KEY} --detach-sign --passphrase-file ${GPGPASS} --pinentry-mode loopback --batch --yes --no-tty --armor repodata/repomd.xml
   else
     case "${DIST}" in
     ubuntu-22.04|jammy)
@@ -145,8 +145,8 @@ $(do_hash "SHA1" "sha1sum")
 $(do_hash "SHA256" "sha256sum")
 EOF
     echo "level=\"info\" msg=\"GPG sign Release\" repo=\"${DIST_PATH}\""
-    cat Release | gpg --detach-sign --passphrase-file ${GPGPASS} --batch --yes --no-tty --digest-algo SHA256 --cert-digest-algo SHA256 --armor > Release.gpg
-    cat Release | gpg --detach-sign --passphrase-file ${GPGPASS} --batch --yes --no-tty --armor --digest-algo SHA256 --cert-digest-algo SHA256 --clearsign > InRelease
+    cat Release | gpg --detach-sign --passphrase-file ${GPGPASS} --batch --yes --no-tty --digest-algo SHA256 --cert-digest-algo SHA256 --pinentry-mode loopback --armor > Release.gpg
+    cat Release | gpg --detach-sign --passphrase-file ${GPGPASS} --batch --yes --no-tty --armor --digest-algo SHA256 --cert-digest-algo SHA256 --pinentry-mode loopback --clearsign > InRelease
   fi
 ) 200>${LOCK_FILE}
 

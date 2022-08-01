@@ -111,7 +111,7 @@ Usage examples:
         sys.exit(1)
 
     # Build manifest
-    for k,v in manifest_data.iteritems():
+    for k,v in manifest_data.items():
         if k in ['major','full','runtime']:
             continue
         name = k.format(major=major, full=full, runtime=runtime)
@@ -141,7 +141,7 @@ Usage examples:
             rel_d = os.path.join(release_dir, t, rel)
             if not os.path.isdir(rel_d):
                 logger.info("mkdir -p %s", rel_d)
-                os.makedirs(rel_d, 0755)
+                os.makedirs(rel_d, 0o755)
             rel_l = "%sServer" % rel_d
             if not os.path.islink(rel_l):
                 logger.info("ln -s %s %s", rel, rel_l)
@@ -150,16 +150,16 @@ Usage examples:
                 d = os.path.join(release_dir, t, rel, arch)
                 if not os.path.isdir(d):
                     logger.info("mkdir -p %s", d)
-                    os.makedirs(d, 0755)
+                    os.makedirs(d, 0o755)
         for rel in DEB_CODENAMES:
             rel_d = os.path.join(release_dir, t, 'apt/dists', rel, 'main/binary-amd64')
             pool_d = os.path.join(release_dir, t, 'apt/pool', rel)
             if not os.path.isdir(rel_d):
                 logger.info("mkdir -p %s", rel_d)
-                os.makedirs(rel_d, 0755)
+                os.makedirs(rel_d, 0o755)
             if not os.path.isdir(pool_d):
                 logger.info("mkdir -p %s", pool_d)
-                os.makedirs(pool_d, 0755)
+                os.makedirs(pool_d, 0o755)
 
     if args.release in ['latest','ci','nightly'] or args.release.startswith('build'):
         logger.info("Latest release does not require sync, exiting")
@@ -173,18 +173,12 @@ Usage examples:
                 rpms.append(f)
             elif f.endswith('.deb'):
                 debs.append(f)
-    print debs
-
 
     # Determine if SRPM/RPM needs to be copie to release repo
     # If a given SRPM/RPM is in the manifest, copy to release repo
     for r in sorted(rpms):
         copy = True
-        try:
-            rpm_info = get_rpm_info(r)
-        except Exception:
-            logger.error("Unable to read RPM info for %s, skipping", r)
-            continue
+        rpm_info = get_rpm_info(r)
         logger.debug("RPM info for %s: %s", r, rpm_info)
         name = rpm_info['name']
         if name not in manifest:
