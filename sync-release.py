@@ -259,11 +259,11 @@ Usage examples:
                     os.remove(f)
 
     for dist in DISTS:
-        logger.info("repo-update.sh -r %s -d %s", args.release, args.dist)
+        logger.info("repo-update.sh -r %s -d %s", args.release, dist)
         repo_update_cmd = [
             os.path.join(PROJ_ROOT, 'repo-update.sh'),
             '-r', args.release,
-            '-d', args.dist,
+            '-d', dist,
         ]
         process = subprocess.Popen(repo_update_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out, err = process.communicate()
