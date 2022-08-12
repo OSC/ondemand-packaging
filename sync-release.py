@@ -17,7 +17,6 @@ PROJ_ROOT = os.path.dirname(os.path.realpath(__file__))
 DISTS = [
     'el7',
     'el8',
-    'el9',
     'ubuntu-18.04',
     'ubuntu-20.04',
 ]
