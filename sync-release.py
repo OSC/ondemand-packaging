@@ -166,9 +166,13 @@ Usage examples:
         for filename in filenames:
             f = os.path.join(root, filename)
             if f.endswith('.rpm'):
-                rpms.append(f)
+                for eldist in EL_RELEASES:
+                    if ("/%s/" % eldist) in f:
+                        rpms.append(f)
             elif f.endswith('.deb'):
-                debs.append(f)
+                for debdist in DEB_CODENAMES:
+                    if ("/%s/" % debdist) in f:
+                        debs.append(f)
 
     # Determine if SRPM/RPM needs to be copie to release repo
     # If a given SRPM/RPM is in the manifest, copy to release repo
