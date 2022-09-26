@@ -2,17 +2,17 @@
 
 # Version code for OodPackaging
 module OodPackaging
-  VERSION = '0.0.3.r2.0'
+  VERSION = '0.0.4.r2.0'
   PACKAGE_VERSION = {
     'ondemand-release'        => {
-      '(ubuntu|debian)' => '2.0.0',
+      '(ubuntu|debian)' => '2.0.1',
       'default'         => '2.0'
     },
     'ondemand-release-latest' => {
       '(ubuntu|debian)' => '1',
       'default'         => '1-7'
     },
-    'ondemand-runtime'        => '2.0-2',
+    'ondemand-runtime'        => '2.0-3',
     'passenger'               => '6.0.14',
     'cjose'                   => '0.6.1',
     'mod_auth_openidc'        => '2.4.5',

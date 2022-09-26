@@ -67,7 +67,7 @@ module OodPackaging::Utils
   end
 
   def nodejs_version
-    '12'
+    '14'
   end
 
   def ctr_scripts_dir
