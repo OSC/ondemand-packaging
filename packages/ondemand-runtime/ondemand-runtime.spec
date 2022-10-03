@@ -11,7 +11,7 @@
 %else
 %global ruby rh-ruby27
 %global python python
-%global nodejs rh-nodejs12
+%global nodejs rh-nodejs14
 %global apache httpd24
 %endif
 %global ruby_version 2.7
@@ -90,7 +90,7 @@ Meta package for pulling in Python needed by OnDemand
 %package -n ondemand-nodejs
 Summary: Meta package for pulling in SCL nodejs %{nodejs}
 %if 0%{?rhel} >= 8
-Requires: %{nodejs} >= 1:12.0, %{nodejs} < 1:14.0
+Requires: %{nodejs} >= 1:14.0, %{nodejs} < 1:16.0
 Requires: npm
 %else
 Requires: %{nodejs}

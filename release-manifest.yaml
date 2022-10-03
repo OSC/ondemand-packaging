@@ -10,7 +10,7 @@ ondemand-release:
     - '{major}-1'
 # deb package
 ondemand-release-web:
-  - '{major}.0'
+  - '{major}.1'
 
 # web
 cjose:
@@ -60,7 +60,7 @@ ondemand-runtime:
     - ondemand-runtime
     - ondemand-scldevel
   versions:
-    - '{major}-2'
+    - '{major}-3'
 ondemand:
   packages:
     - ondemand
