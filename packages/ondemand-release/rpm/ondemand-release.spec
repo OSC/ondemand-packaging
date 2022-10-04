@@ -1,6 +1,6 @@
 Name:       ondemand-release-web
-Version:    2.0
-Release:    1
+Version:    %{package_version}
+Release:    %{package_release}
 Summary:    Open OnDemand web repository files
 
 Group:      Applications/System
