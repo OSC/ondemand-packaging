@@ -166,7 +166,8 @@ class OodPackaging::Build
     bootstrap_gpg! if gpg_sign?
     if podman_runtime?
       puts "\tBootstrap /root".blue
-      sh "cp -r #{ctr_rpmmacros} #{ctr_gpg_dir} /root/"
+      sh "cp -r #{ctr_rpmmacros} /root/"
+      sh "cp -r #{ctr_gpg_dir} /root/" if gpg_sign?
       sh "sed -i 's|/home/ood|/root|g' /root/.rpmmacros"
     end
     puts "\tBootstrap work dir".blue
