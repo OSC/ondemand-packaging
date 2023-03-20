@@ -16,7 +16,7 @@ module OodPackaging
     'passenger'               => '6.0.14',
     'cjose'                   => '0.6.1',
     'mod_auth_openidc'        => '2.4.5',
-    'sqlite'                  => '3.26.0-4',
+    'sqlite'                  => '3.26.0-5.ood3.0',
     'ondemand_exporter'       => '0.9.0',
     'ondemand-compute'        => {
       '(ubuntu|debian)' => '3.0.0',

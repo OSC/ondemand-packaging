@@ -73,7 +73,7 @@ Requires: %{ruby}-rubygem-bundler >= 2.1
 Requires: %{ruby}-ruby-devel
 Requires: %{ruby}-rubygems
 Requires: %{ruby}-rubygems-devel
-Requires: ondemand-sqlite-devel
+Requires: ondemand-sqlite-devel = 3.26.0-5.ood3.0
 %endif
 Obsoletes: ondemand-rubygem-bundler
 
