@@ -92,7 +92,7 @@ class OodPackaging::BuildBox
   end
 
   def image_registry
-    @config[:builx_box_registry] || ENV['OOD_PACKAGING_BUILD_BOX_REGISTRY'] || nil
+    @config[:build_box_registry] || ENV['OOD_PACKAGING_BUILD_BOX_REGISTRY'] || nil
   end
 
   def image_org
@@ -100,7 +100,7 @@ class OodPackaging::BuildBox
   end
 
   def image_name
-    @config[:builx_box_name] || ENV['OOD_PACKAGING_BUILD_BOX_NAME'] || 'ood-buildbox'
+    @config[:build_box_name] || ENV['OOD_PACKAGING_BUILD_BOX_NAME'] || 'ood-buildbox'
   end
 
   def image_version
