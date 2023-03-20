@@ -1,6 +1,6 @@
-major: '2.1'
-full: '2.1.0'
-runtime: '2.1.1'
+major: '3.0'
+full: '3.0.0'
+runtime: '3.0.0'
 
 # release
 ondemand-release:
