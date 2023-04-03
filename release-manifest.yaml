@@ -67,7 +67,7 @@ ondemand:
   packages:
     - ondemand
     - ondemand-gems
-    - ondemand-gems-{full}
+    - ondemand-gems-{full}-1
     - ondemand-selinux
   versions:
     - '{full}-1'
