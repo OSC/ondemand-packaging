@@ -18,7 +18,6 @@ DISTS = [
     'el7',
     'el8',
     'el9',
-    'ubuntu-18.04',
     'ubuntu-20.04',
     'ubuntu-22.04'
 ]
@@ -28,7 +27,6 @@ EL_RELEASES = [
     'el9'
 ]
 DEB_CODENAMES = [
-    'bionic',
     'focal',
     'jammy'
 ]
@@ -184,7 +182,7 @@ Usage examples:
         if name not in manifest:
             logger.warning("%s not in manifest", name)
             continue
-        version = rpm_info['ver'].replace('.el7', '').replace('.el8', '')
+        version = rpm_info['ver'].replace('.el7', '').replace('.el8', '').replace('.el9', '')
         if version not in manifest[name]:
             logger.debug("Skipping %s-%s, not in manifest", name, version)
             continue
@@ -246,7 +244,7 @@ Usage examples:
                 found = True
                 rpm_info = get_rpm_info(f)
                 name = rpm_info['name']
-                version = rpm_info['ver'].replace('.el7', '').replace('.el8', '')
+                version = rpm_info['ver'].replace('.el7', '').replace('.el8', '').replace('.el9', '')
             elif filename.endswith('.deb'):
                 found = True
                 deb_info = get_deb_info(f)
@@ -259,11 +257,11 @@ Usage examples:
                     os.remove(f)
 
     for dist in DISTS:
-        logger.info("repo-update.sh -r %s -d %s", args.release, args.dist)
+        logger.info("repo-update.sh -r %s -d %s", args.release, dist)
         repo_update_cmd = [
             os.path.join(PROJ_ROOT, 'repo-update.sh'),
             '-r', args.release,
-            '-d', args.dist,
+            '-d', dist,
         ]
         process = subprocess.Popen(repo_update_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out, err = process.communicate()
