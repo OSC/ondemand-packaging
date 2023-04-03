@@ -165,4 +165,4 @@ jobs:
           mkdir -p ./tmp
           git clone https://github.com/OSC/${{ matrix.package }}.git ./tmp/${{ matrix.package }}
       - name: Build ${{ matrix.package }} package
-        run: ./bin/ood_packaging -w ./tmp/work -o ./tmp/output -d ${{ matrix.dist }} -V v2.1.0 -T --debug $(pwd)/tmp/${{ matrix.package }}
+        run: ./bin/ood_packaging -w ./tmp/work -o ./tmp/output -d ${{ matrix.dist }} -V v3.0.0 -T --debug $(pwd)/tmp/${{ matrix.package }}
