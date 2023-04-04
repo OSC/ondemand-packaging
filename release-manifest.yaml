@@ -9,9 +9,8 @@ ondemand-release:
     - ondemand-release-web
   versions:
     - '{major}-1'
-# deb package
-ondemand-release-web:
-  - '{major}.0'
+    # deb package
+    - '{major}.0'
 
 # web
 cjose:
