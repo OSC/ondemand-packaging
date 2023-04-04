@@ -30,6 +30,9 @@ DEB_CODENAMES = [
     'focal',
     'jammy'
 ]
+SKIP = [
+    'bionic'
+]
 
 def get_rpm_info(rpm_file):
     ts = rpm.ts()
@@ -165,6 +168,13 @@ Usage examples:
 
     # Get lists of all SRPMs and RPMs
     for root, dirnames, filenames in os.walk(latest_dir):
+        skip = False
+        for skips in SKIP:
+            if skips in root.split('/'):
+                skip = True
+        if skip:
+            logger.debug("SKIP %s", root)
+            continue
         for filename in filenames:
             f = os.path.join(root, filename)
             if f.endswith('.rpm'):
