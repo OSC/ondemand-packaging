@@ -55,7 +55,7 @@ module OodPackaging::Utils
   end
 
   def ondemand_repo_version
-    '3.0'
+    '3.1'
   end
 
   def ruby_version
