@@ -28,7 +28,7 @@ describe OodPackaging::BuildBox do
 
       it 'executes el7 build command' do
         expected_cmd = [
-          'docker build',
+          'docker build', '--platform linux/amd64',
           "--tag ohiosupercomputer/ood-buildbox-el7:#{OodPackaging::VERSION}",
           '-f /tmp/dockerfile /fake-builddir'
         ]
@@ -40,7 +40,7 @@ describe OodPackaging::BuildBox do
     context 'when building for el8' do
       it 'executes el8 build command' do
         expected_cmd = [
-          'docker build',
+          'docker build', '--platform linux/amd64',
           "--tag ohiosupercomputer/ood-buildbox-el8:#{OodPackaging::VERSION}",
           '-f /tmp/dockerfile /fake-builddir'
         ]
@@ -54,7 +54,7 @@ describe OodPackaging::BuildBox do
 
       it 'executes ubuntu-20.04 build command' do
         expected_cmd = [
-          'docker build',
+          'docker build', '--platform linux/amd64',
           "--tag ohiosupercomputer/ood-buildbox-ubuntu-20.04:#{OodPackaging::VERSION}",
           '-f /tmp/dockerfile /fake-builddir'
         ]

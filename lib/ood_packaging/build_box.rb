@@ -14,7 +14,8 @@ class OodPackaging::BuildBox
     'el8'          => 'rockylinux/rockylinux:8',
     'el9'          => 'almalinux:9',
     'ubuntu-20.04' => 'ubuntu:20.04',
-    'ubuntu-22.04' => 'ubuntu:22.04'
+    'ubuntu-22.04' => 'ubuntu:22.04',
+    'amzn2023'     => 'amazonlinux:2023'
   }.freeze
 
   CODENAMES = {
@@ -38,7 +39,7 @@ class OodPackaging::BuildBox
   end
 
   def rpm?
-    dist.start_with?('el')
+    dist.start_with?('el') || dist.start_with?('amzn')
   end
 
   def deb?
@@ -130,6 +131,7 @@ class OodPackaging::BuildBox
   def build!
     scripts
     cmd = [container_runtime, 'build']
+    cmd.concat ['--platform', 'linux/amd64']
     cmd.concat ['--tag', image_tag]
     cmd.concat [ENV['OOD_PACKAGING_BUILD_BOX_ARGS']] if ENV['OOD_PACKAGING_BUILD_BOX_ARGS']
     cmd.concat ['-f', dockerfile]

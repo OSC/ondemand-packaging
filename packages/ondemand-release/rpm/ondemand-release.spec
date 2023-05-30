@@ -5,7 +5,7 @@
 
 Name:       ondemand-release-web
 Version:    %{package_version}
-Release:    %{package_release}
+Release:    %{package_release}%{?dist}
 Summary:    Open OnDemand web repository files
 
 Group:      Applications/System
@@ -39,8 +39,10 @@ exit 0
 
 %install
 mkdir -p %{buildroot}%{_sysconfdir}/yum.repos.d
-sed 's|@REPO@|%{repo_version}|g' %{SOURCE0} > %{buildroot}%{_sysconfdir}/yum.repos.d/ondemand-web.repo
-sed 's|@REPO@|%{repo_version}|g' %{SOURCE1} > %{buildroot}%{_sysconfdir}/yum.repos.d/ondemand-compute.repo
+sed -e 's|@REPO@|%{repo_version}|g' \
+    -e 's|@DIST@|%{dist}|g' %{SOURCE0} > %{buildroot}%{_sysconfdir}/yum.repos.d/ondemand-web.repo
+sed -e 's|@REPO@|%{repo_version}|g' \
+    -e 's|@DIST@|%{dist}|g' %{SOURCE1} > %{buildroot}%{_sysconfdir}/yum.repos.d/ondemand-compute.repo
 mkdir -p %{buildroot}%{_datadir}/%{name}
 install -Dpm0644 %{SOURCE2} %{buildroot}%{_datadir}/%{name}/RPM-GPG-KEY-ondemand
 install -Dpm0644 %{SOURCE2} %{buildroot}%{_datadir}/ondemand-release-compute/RPM-GPG-KEY-ondemand-compute

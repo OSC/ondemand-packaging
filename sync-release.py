@@ -18,6 +18,7 @@ DISTS = [
     'el7',
     'el8',
     'el9',
+    'amzn2023',
     'ubuntu-20.04',
     'ubuntu-22.04'
 ]
@@ -25,6 +26,9 @@ EL_RELEASES = [
     'el7',
     'el8',
     'el9'
+]
+BASIC_RELEASES = [
+    'amzn2023',
 ]
 DEB_CODENAMES = [
     'focal',
@@ -152,6 +156,16 @@ Usage examples:
                 if not os.path.isdir(d):
                     logger.info("mkdir -p %s", d)
                     os.makedirs(d, 0o755)
+        for rel in BASIC_RELEASES:
+            rel_d = os.path.join(release_dir, t, rel)
+            if not os.path.isdir(rel_d):
+                logger.info("mkdir -p %s", rel_d)
+                os.makedirs(rel_d, 0o755)
+            for arch in ['SRPMS', 'x86_64']:
+                d = os.path.join(release_dir, t, rel, arch)
+                if not os.path.isdir(d):
+                    logger.info("mkdir -p %s", d)
+                    os.makedirs(d, 0o755)
         for rel in DEB_CODENAMES:
             rel_d = os.path.join(release_dir, t, 'apt/dists', rel, 'main/binary-amd64')
             pool_d = os.path.join(release_dir, t, 'apt/pool', rel)
@@ -192,7 +206,7 @@ Usage examples:
         if name not in manifest:
             logger.warning("%s not in manifest", name)
             continue
-        version = rpm_info['ver'].replace('.el7', '').replace('.el8', '').replace('.el9', '')
+        version = rpm_info['ver'].replace('.el7', '').replace('.el8', '').replace('.el9', '').replace('.amzn2023', '')
         if version not in manifest[name]:
             logger.debug("Skipping %s-%s, not in manifest", name, version)
             continue
@@ -254,7 +268,7 @@ Usage examples:
                 found = True
                 rpm_info = get_rpm_info(f)
                 name = rpm_info['name']
-                version = rpm_info['ver'].replace('.el7', '').replace('.el8', '').replace('.el9', '')
+                version = rpm_info['ver'].replace('.el7', '').replace('.el8', '').replace('.el9', '').replace('.amzn2023', '')
             elif filename.endswith('.deb'):
                 found = True
                 deb_info = get_deb_info(f)

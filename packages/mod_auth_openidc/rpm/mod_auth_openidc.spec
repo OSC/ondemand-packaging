@@ -59,10 +59,7 @@ make %{?_smp_mflags}
 
 %check
 export MODULES_DIR=%{_httpd_moddir}
-# Build works but tests fail on EL6
-%if 0%{?rhel} >= 7
 make test
-%endif
 
 %install
 mkdir -p $RPM_BUILD_ROOT%{_httpd_moddir}
@@ -82,11 +79,7 @@ install -m 700 -d $RPM_BUILD_ROOT%{httpd_pkg_cache_dir}/cache
 
 
 %files
-%if 0%{?rhel} && 0%{?rhel} < 7
-%doc LICENSE.txt
-%else
 %license LICENSE.txt
-%endif
 %doc ChangeLog
 %doc AUTHORS
 %doc README.md

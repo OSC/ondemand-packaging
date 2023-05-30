@@ -67,7 +67,7 @@ if [[ "${USER}" != "oodpkg" ]]; then
 fi
 
 EL=true
-if [[ "${DIST}" != "el"* ]]; then
+if [[ "${DIST}" != "el"* && "${DIST}" != "amzn"* ]]; then
   EL=false
 fi
 

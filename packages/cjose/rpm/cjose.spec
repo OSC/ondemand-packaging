@@ -1,4 +1,7 @@
 %{!?package_release: %define package_release 1}
+%if 0%{?amzn} > 0
+%define build_cflags "%{optflags} -Wno-error=deprecated-declarations"
+%endif
 
 Name:		cjose
 Version:	%{package_version}
@@ -32,7 +35,7 @@ Development libraries for cjose
 
 
 %build
-%configure --disable-static
+%configure --disable-static %{?cflags}
 make %{?_smp_mflags}
 
 # Can't test: https://github.com/cisco/cjose/issues/91
