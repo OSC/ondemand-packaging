@@ -14,7 +14,7 @@ module OodPackaging
     },
     'ondemand-runtime'        => '3.1.1',
     'scl-utils'               => '2.0.3',
-    'passenger'               => '6.0.14',
+    'passenger'               => '6.0.17',
     'cjose'                   => '0.6.1',
     'mod_auth_openidc'        => '2.4.5',
     'sqlite'                  => '3.26.0-4',
