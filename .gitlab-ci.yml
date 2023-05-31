@@ -78,6 +78,21 @@ build-ondemand-runtime:
       - tmp/output
     name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
 
+build-scl-utils:
+  stage: build
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
+    - if: '$CI_COMMIT_TAG =~ /^scl-utils-/'
+  script:
+    - bundle exec rake ood_packaging:package:scl-utils[$DIST]
+  parallel:
+    matrix:
+      - OOD_PACKAGING_DIST: [amzn2023]
+  artifacts:
+    paths:
+      - tmp/output
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
+
 build-passenger:
   stage: build
   rules:
@@ -240,6 +255,7 @@ package-deploy-build:
   stage: deploy
   rules:
     - if: '$CI_COMMIT_TAG =~ /^ondemand-runtime-/'
+    - if: '$CI_COMMIT_TAG =~ /^scl-utils-/'
     - if: '$CI_COMMIT_TAG =~ /^passenger-/'
     - if: '$CI_COMMIT_TAG =~ /^sqlite-/'
     - if: '$CI_COMMIT_TAG =~ /^cjose-/'

@@ -63,6 +63,8 @@ jobs:
         include:
           - dist: el7
             package: sqlite
+          - dist: amzn2023
+            package: scl-utils
         exclude:
           - dist: el9
             package: cjose

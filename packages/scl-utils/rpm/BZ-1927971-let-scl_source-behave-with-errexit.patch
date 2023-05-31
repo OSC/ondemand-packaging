@@ -1,0 +1,29 @@
+From a8113846229a567321ca4347b07263936307b940 Mon Sep 17 00:00:00 2001
+From: "James E. Flemer" <james.flemer@ndpgroup.com>
+Date: Tue, 16 Feb 2021 02:48:27 -0700
+Subject: [PATCH] Let scl_source behave when "-e"/errexit is set (#35)
+
+Jenkins pipelines, among other things, use `set -e` (aka bash `errexit`) to abort on "errors". So when `source scl_source` is used in a pipeline, the way the exit code from `scl_enabled` is checked via `$?` causes an unintended abort of the pipeline. (Workaround is to use `set +e; source scl_source ...; set -e`.)
+
+This trivial change to `scl_source` simply changes how the value of `scl_enalbed` is checked to be friendly to `errexit`.
+---
+ shell/scl_source | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/shell/scl_source b/shell/scl_source
+index 5822955..30b8baf 100755
+--- a/shell/scl_source
++++ b/shell/scl_source
+@@ -47,8 +47,7 @@ for arg in "$@"; do
+     done
+ 
+     # Now check if the collection isn't already enabled
+-    /usr/bin/scl_enabled $arg > /dev/null 2> /dev/null
+-    if [ $? -ne 0 ]; then
++    if ! /usr/bin/scl_enabled $arg > /dev/null 2> /dev/null; then
+         _scls+=($arg)
+         _scl_prefixes+=($_scl_prefix)
+     fi;
+-- 
+2.29.2
+

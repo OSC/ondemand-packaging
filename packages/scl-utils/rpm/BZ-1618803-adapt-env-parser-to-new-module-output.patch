@@ -1,0 +1,76 @@
+commit 98fe4dcef136eaaa323f1729c11f38b2b19b3a42
+Author: Michal Domonkos <mdomonko@redhat.com>
+Date:   Mon Jan 13 17:04:41 2020 +0100
+
+    Adapt env parser to newer module(1) versions. BZ 1618803
+    
+    With module(1) version 4.x and later (tcl-based), the command
+    
+      MODULE_CMD sh load <collection>
+    
+    prints a newline after each export line, breaking our parsing logic in
+    get_env_vars() which just tokenizes the output by semicolons and does
+    not anticipate newlines.  As a result, we would end up with
+    "\nKEY=VALUE" pairs and pass them as such to putenv(3) which then has no
+    effect.
+    
+    The fix is easy; just strip the leading newline from the KEY=VALUE pairs
+    if present.  This ensures we stay compatible with the older module(1)
+    versions as well.
+    
+    A simple reproducer follows:
+    
+      1) Make scl(1) run in "modulefile" mode by creating a modulefile in
+         /etc/scl/modulefiles corresponding to a collection, for example:
+    
+         $ /usr/share/Modules/bin/createmodule.sh /opt/rh/eap7/enable \
+           > /etc/scl/modulefiles/eap7
+    
+      2) Run a simple scl(1) command to detect the presence of an env var
+         that we know should be set in the target collection, for example:
+    
+         $ scl enable eap7 'echo $LOADEDMODULES'
+    
+         Previously, there would be no output.  With this commit, the output
+         should be "eap7".
+
+diff --git a/src/scllib.c b/src/scllib.c
+index 3c32d65..a182194 100644
+--- a/src/scllib.c
++++ b/src/scllib.c
+@@ -52,7 +52,7 @@ static scl_rc get_env_vars(const char *colname, char ***_vars)
+     char *argv[] = {MODULE_CMD, MODULE_CMD, "sh", "add", "", NULL};
+     char *output = NULL;
+     int i = 0;
+-    char **parts, **vars;
++    char **parts, *part, **vars;
+     scl_rc ret = EOK;
+ 
+     ret = initialize_env();
+@@ -73,16 +73,21 @@ static scl_rc get_env_vars(const char *colname, char ***_vars)
+      * Expected format of string stored in variable output is following:
+      * var1=value1 ;export value1 ; var2=value2 ;export value2;
+      * var3=value\ with\ spaces
++     * NOTE: Newer (tcl-based) versions of MODULE_CMD put a newline after each
++     * export command so we need to take that into account.
+      */
+ 
+     vars = parts = split(output, ';');
+ 
+     /* Filter out strings without "=" i. e. strings with export. */
+-    while (*parts !=  NULL) {
+-        if (strchr(*parts, '=')) {
+-            strip_trailing_chars(*parts, ' ');
+-            unescape_string(*parts);
+-            vars[i++] = xstrdup(*parts);
++    while (*parts != NULL) {
++        part = *parts;
++        if (part[0] == '\n')
++            part++;
++        if (strchr(part, '=')) {
++            strip_trailing_chars(part, ' ');
++            unescape_string(part);
++            vars[i++] = xstrdup(part);
+         }
+         parts++;
+     }
