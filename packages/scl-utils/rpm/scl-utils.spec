@@ -3,8 +3,8 @@
 
 Name:       scl-utils
 Epoch:      1
-Version:    2.0.2
-Release:    16%{?dist}
+Version:    2.0.3
+Release:    1%{?dist}
 Summary:    Utilities for alternative packaging
 
 License:    GPLv2+
@@ -13,16 +13,13 @@ URL:        https://github.com/sclorg/scl-utils
 Source0:    https://github.com/sclorg/%{name}/archive/%{version}/%{name}-%{version}.tar.gz
 Source1:    macros.scl-filesystem
 BuildRequires:	gcc make
-Buildrequires:  cmake 
+Buildrequires:  cmake
+BuildRequires:  libcmocka-devel
 Buildrequires:  rpm-devel
 BuildRequires:  bash-completion
 Requires:   %{_bindir}/modulecmd
 
 Patch1:     0003-Scl-utils-layout-patch-from-fedora-famillecollet.com.patch
-Patch2:     0004-define-macro-python-explicitly.patch
-Patch3:     BZ-1618803-adapt-env-parser-to-new-module-output.patch
-Patch4:     BZ-1927971-let-scl_source-behave-with-errexit.patch
-Patch5:     BZ-1867135-print-scl_source-errors-to-stderr.patch
 Patch6:     BZ-1967686-do-not-error-out-on-SIGINT.patch
 Patch7:     BZ-2091000-remove-tmp-file.patch
 
