@@ -23,8 +23,8 @@ RUN dnf module enable -y ruby:<%= ruby_version %> nodejs:<%= nodejs_version %> &
 <% elsif dist == 'el9' -%>
 RUN dnf config-manager --set-enabled crb && dnf clean all && rm -rf /var/cache/dnf/*
 <% end -%>
-RUN dnf install -y systemd ruby nodejs sudo which wget \
-    gcc-c++ gcc make patch shadow-utils \
+RUN dnf install -y --allowerasing systemd ruby nodejs sudo which wget \
+    gcc-c++ gcc make patch shadow-utils gnupg2 \
     rpm-build rpmdevtools rpm-sign <%= dist =~ /^el/ ? 'scl-utils-build' : '' %> && \
     dnf clean all && rm -rf /var/cache/dnf/*
 <% elsif dist =~ /^ubuntu|debian/ -%>
