@@ -2,9 +2,8 @@
 %global __cmake_in_source_build 1
 
 Name:       scl-utils
-Epoch:      1
-Version:    2.0.3
-Release:    1%{?dist}
+Version:   %{package_version}
+Release:   %{package_release}%{?dist}
 Summary:    Utilities for alternative packaging
 
 License:    GPLv2+
