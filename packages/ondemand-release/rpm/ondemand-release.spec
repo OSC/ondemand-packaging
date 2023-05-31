@@ -39,10 +39,11 @@ exit 0
 
 %install
 mkdir -p %{buildroot}%{_sysconfdir}/yum.repos.d
+DIST=$(echo "%{dist}" | sed -r 's|\.(.+)|\1|g')
 sed -e 's|@REPO@|%{repo_version}|g' \
-    -e 's|@DIST@|%{dist}|g' %{SOURCE0} > %{buildroot}%{_sysconfdir}/yum.repos.d/ondemand-web.repo
+    -e "s|@DIST@|$DIST|g" %{SOURCE0} > %{buildroot}%{_sysconfdir}/yum.repos.d/ondemand-web.repo
 sed -e 's|@REPO@|%{repo_version}|g' \
-    -e 's|@DIST@|%{dist}|g' %{SOURCE1} > %{buildroot}%{_sysconfdir}/yum.repos.d/ondemand-compute.repo
+    -e "s|@DIST@|$DIST|g" %{SOURCE1} > %{buildroot}%{_sysconfdir}/yum.repos.d/ondemand-compute.repo
 mkdir -p %{buildroot}%{_datadir}/%{name}
 install -Dpm0644 %{SOURCE2} %{buildroot}%{_datadir}/%{name}/RPM-GPG-KEY-ondemand
 install -Dpm0644 %{SOURCE2} %{buildroot}%{_datadir}/ondemand-release-compute/RPM-GPG-KEY-ondemand-compute
