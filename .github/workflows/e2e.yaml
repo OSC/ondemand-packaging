@@ -70,8 +70,6 @@ jobs:
             package: cjose
           - dist: el9
             package: mod_auth_openidc
-          - dist: amzn2023
-            package: ondemand-runtime
     runs-on: ubuntu-latest
     name: Package test package=${{ matrix.package }} dist=${{ matrix.dist }}
     steps:

@@ -172,6 +172,7 @@ class OodPackaging::Build
     end
     puts "\tBootstrap work dir".blue
     sh "mkdir -p #{work_dir}/{RPMS,SRPMS,SOURCES,SPECS,rpmbuild/BUILD}"
+    bootstrap_rpm_packages! if config[:bootstrap_packages]
     bootstrap_copy_source!
     bootstrap_get_source!
   end
@@ -181,6 +182,17 @@ class OodPackaging::Build
     sh "sed -i 's|@GPG_NAME@|#{ENV['GPG_NAME']}|g' #{ctr_rpmmacros}"
     sh "gpg --batch --passphrase-file #{gpg_passphrase} --import #{gpg_private_key}#{cmd_suffix}"
     sh "sudo rpm --import #{ENV['GPG_PUBKEY']}#{cmd_suffix}" if ENV['GPG_PUBKEY']
+  end
+
+  def bootstrap_rpm_packages!
+    return if config[:bootstrap_packages].nil?
+
+    cmd = ['sudo', 'dnf'] if build_box.dnf?
+    cmd = ['sudo', 'yum'] unless build_box.dnf?
+    cmd.concat ['install', '-y']
+    cmd.concat config[:bootstrap_packages]
+    puts "\tBootstrapping additional packages".blue
+    sh cmd.join(' ')
   end
 
   def bootstrap_copy_source!

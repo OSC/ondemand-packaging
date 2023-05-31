@@ -72,7 +72,7 @@ build-ondemand-runtime:
     matrix:
       - OOD_PACKAGING_DIST: [el7, el8]
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
-      - OOD_PACKAGING_DIST: [el9]
+      - OOD_PACKAGING_DIST: [el9, amzn2023]
   artifacts:
     paths:
       - tmp/output
