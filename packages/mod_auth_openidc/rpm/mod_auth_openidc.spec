@@ -46,19 +46,16 @@ an OpenID Connect Relying Party and/or OAuth 2.0 Resource Server.
 %setup -n %{pkg_name}-%{version} -q
 
 %build
-# workaround rpm-buildroot-usage
-export MODULES_DIR=%{_httpd_moddir}
-export APXS2_OPTS='-S LIBEXECDIR=${MODULES_DIR}'
-%{?scl: export APXS2=%{_scl_root}%{_root_bindir}/apxs}
+%{?scl:%define with_apxs "--with-apxs=%{_scl_root}%{_root_bindir}/apxs"}
 autoreconf
 %configure \
   %{?_with_hiredis} \
-  %{?_without_hiredis}
+  %{?_without_hiredis} \
+  %{?with_apxs}
 
 make %{?_smp_mflags}
 
 %check
-export MODULES_DIR=%{_httpd_moddir}
 make test
 
 %install
