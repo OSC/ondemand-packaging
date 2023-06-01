@@ -10,7 +10,8 @@ ondemand-release:
   versions:
     - '{major}-1'
     # deb package
-    - '{major}.0'
+    - '{major}.0-focal'
+    - '{major}.0-jammy'
 
 # web
 cjose:

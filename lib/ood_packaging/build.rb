@@ -57,6 +57,12 @@ class OodPackaging::Build
     version.gsub(/^v/, '').gsub('-', '.')
   end
 
+  def deb_chlog_version
+    return "#{deb_version}-#{build_box.codename}" if config[:codename_version]
+
+    deb_version
+  end
+
   def rpm_defines
     defines = ["--define 'git_tag #{version}'"]
     defines.concat ["--define 'package_version #{rpm_version}'"]
@@ -237,7 +243,7 @@ class OodPackaging::Build
     puts "\tBootstrap debian build files".blue
     Dir.chdir(deb_work_dir) do
       sh "dh_make -s -y --createorig -f ../#{deb_name}.tar.gz#{cmd_suffix} || true"
-      sh "dch -b -v #{deb_version} --controlmaint 'Release #{deb_version}'#{cmd_suffix}"
+      sh "dch -b -v #{deb_chlog_version} --controlmaint 'Release #{deb_chlog_version}'#{cmd_suffix}"
     end
   end
 

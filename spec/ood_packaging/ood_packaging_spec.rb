@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe OodPackaging do
   it 'gets package version for dist el8' do
-    expect(described_class.package_version('ondemand-release-latest', 'el8')).to eq('1-7')
+    expect(described_class.package_version('ondemand-release-latest', 'el8')).to eq('1-8')
   end
 
   it 'gets package version for dist ubuntu-20.04' do
