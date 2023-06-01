@@ -35,7 +35,7 @@ Development libraries for cjose
 
 
 %build
-%configure --disable-static %{?cflags}
+%configure --disable-static
 make %{?_smp_mflags}
 
 # Can't test: https://github.com/cisco/cjose/issues/91

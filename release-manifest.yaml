@@ -83,10 +83,18 @@ ondemand-sqlite:
     - ondemand-sqlite-debuginfo
   versions:
     - '3.26.0-4'
+scl-utils:
+  packages:
+    - scl-utils
+    - scl-utils-build
+    - scl-utils-debugsource
+    - scl-utils-debuginfo
+  version:
+    - 2.0.3-1
 ondemand-dex:
-  - 2.32.0-1
+  - 2.36.0-1
   # deb package
-  - 2.32.0
+  - 2.36.0
 ondemand_exporter:
   - 0.9.0-1
 
