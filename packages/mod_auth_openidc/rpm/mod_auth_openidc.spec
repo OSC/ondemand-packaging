@@ -17,15 +17,15 @@
 
 %global httpd_pkg_cache_dir %{?scl:%{_scl_root}}/var/cache/httpd/mod_auth_openidc
 
-Name:		%{?scl_prefix}mod_auth_openidc
-Version:	%{package_version}
-Release:	%{package_release}%{?dist}
-Summary:	OpenID Connect auth module for Apache HTTP Server
+Name:     %{?scl_prefix}mod_auth_openidc
+Version:  %{package_version}
+Release:  %{package_release}%{?dist}
+Summary:  OpenID Connect auth module for Apache HTTP Server
 
-Group:		System Environment/Daemons
-License:	ASL 2.0
-URL:		https://github.com/zmartzone/mod_auth_openidc
-Source0:	https://github.com/zmartzone/mod_auth_openidc/archive/v%{version}.tar.gz
+Group:    System Environment/Daemons
+License:  ASL 2.0
+URL:      https://github.com/OpenIDC/mod_auth_openidc
+Source0:  https://github.com/OpenIDC/mod_auth_openidc/releases/download/v%{version}/mod_auth_openidc-%{version}.tar.gz
 
 BuildRequires:	%{?scl_prefix}httpd-devel
 BuildRequires:	openssl-devel
@@ -63,7 +63,7 @@ make test
 
 %install
 mkdir -p $RPM_BUILD_ROOT%{_httpd_moddir}
-make install MODULES_DIR=$RPM_BUILD_ROOT%{_httpd_moddir}
+make install DESTDIR=$RPM_BUILD_ROOT
 
 install -m 755 -d $RPM_BUILD_ROOT%{_httpd_modconfdir}
 echo 'LoadModule auth_openidc_module modules/mod_auth_openidc.so' > \
