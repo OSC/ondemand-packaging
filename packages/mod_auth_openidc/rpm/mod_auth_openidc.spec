@@ -17,15 +17,15 @@
 
 %global httpd_pkg_cache_dir %{?scl:%{_scl_root}}/var/cache/httpd/mod_auth_openidc
 
-Name:		%{?scl_prefix}mod_auth_openidc
-Version:	%{package_version}
-Release:	%{package_release}%{?dist}
-Summary:	OpenID Connect auth module for Apache HTTP Server
+Name:     %{?scl_prefix}mod_auth_openidc
+Version:  %{package_version}
+Release:  %{package_release}%{?dist}
+Summary:  OpenID Connect auth module for Apache HTTP Server
 
-Group:		System Environment/Daemons
-License:	ASL 2.0
-URL:		https://github.com/zmartzone/mod_auth_openidc
-Source0:	https://github.com/zmartzone/mod_auth_openidc/archive/v%{version}.tar.gz
+Group:    System Environment/Daemons
+License:  ASL 2.0
+URL:      https://github.com/OpenIDC/mod_auth_openidc
+Source0:  https://github.com/OpenIDC/mod_auth_openidc/releases/download/v%{version}/mod_auth_openidc-%{version}.tar.gz
 
 BuildRequires:	%{?scl_prefix}httpd-devel
 BuildRequires:	openssl-devel
@@ -46,27 +46,21 @@ an OpenID Connect Relying Party and/or OAuth 2.0 Resource Server.
 %setup -n %{pkg_name}-%{version} -q
 
 %build
-# workaround rpm-buildroot-usage
-export MODULES_DIR=%{_httpd_moddir}
-export APXS2_OPTS='-S LIBEXECDIR=${MODULES_DIR}'
-%{?scl: export APXS2=%{_scl_root}%{_root_bindir}/apxs}
+%{?scl:%define with_apxs "--with-apxs=%{_scl_root}%{_root_bindir}/apxs"}
 autoreconf
 %configure \
   %{?_with_hiredis} \
-  %{?_without_hiredis}
+  %{?_without_hiredis} \
+  %{?with_apxs}
 
 make %{?_smp_mflags}
 
 %check
-export MODULES_DIR=%{_httpd_moddir}
-# Build works but tests fail on EL6
-%if 0%{?rhel} >= 7
 make test
-%endif
 
 %install
 mkdir -p $RPM_BUILD_ROOT%{_httpd_moddir}
-make install MODULES_DIR=$RPM_BUILD_ROOT%{_httpd_moddir}
+make install DESTDIR=$RPM_BUILD_ROOT
 
 install -m 755 -d $RPM_BUILD_ROOT%{_httpd_modconfdir}
 echo 'LoadModule auth_openidc_module modules/mod_auth_openidc.so' > \
@@ -82,11 +76,7 @@ install -m 700 -d $RPM_BUILD_ROOT%{httpd_pkg_cache_dir}/cache
 
 
 %files
-%if 0%{?rhel} && 0%{?rhel} < 7
-%doc LICENSE.txt
-%else
 %license LICENSE.txt
-%endif
 %doc ChangeLog
 %doc AUTHORS
 %doc README.md

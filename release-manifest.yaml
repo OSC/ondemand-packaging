@@ -1,6 +1,6 @@
 major: '3.1'
 full: '3.1.0'
-runtime: '3.1.0'
+runtime: '3.1.1'
 
 # release
 ondemand-release:
@@ -10,7 +10,8 @@ ondemand-release:
   versions:
     - '{major}-1'
     # deb package
-    - '{major}.0'
+    - '{major}.0-focal'
+    - '{major}.0-jammy'
 
 # web
 cjose:
@@ -37,9 +38,9 @@ ondemand-nginx:
     - ondemand-nginx
     - ondemand-nginx-debuginfo
   versions:
-    - 1.20.2-1.p6.0.14.ood{runtime}
+    - 1.22.1-1.p6.0.17.ood{runtime}
     # deb package
-    - 1.20.2.p6.0.14.ood{major}
+    - 1.22.1.p6.0.17.ood{major}
 ondemand-passenger:
   packages:
     - ondemand-passenger
@@ -48,9 +49,9 @@ ondemand-passenger:
     - ondemand-passenger-dev
     - ondemand-passenger-doc
   versions:
-    - 6.0.14-1.ood{runtime}
+    - 6.0.17-1.ood{runtime}
     # deb package
-    - 6.0.14.ood{major}
+    - 6.0.17.ood{major}
 ondemand-runtime:
   packages:
     - ondemand-apache
@@ -83,10 +84,18 @@ ondemand-sqlite:
     - ondemand-sqlite-debuginfo
   versions:
     - '3.26.0-4'
+scl-utils:
+  packages:
+    - scl-utils
+    - scl-utils-build
+    - scl-utils-debugsource
+    - scl-utils-debuginfo
+  version:
+    - 2.0.3-1
 ondemand-dex:
-  - 2.32.0-1
+  - 2.36.0-1
   # deb package
-  - 2.32.0
+  - 2.36.0
 ondemand_exporter:
   - 0.9.0-1
 

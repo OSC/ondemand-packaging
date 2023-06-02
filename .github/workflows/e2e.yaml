@@ -16,6 +16,7 @@ jobs:
           - el9
           - ubuntu-20.04
           - ubuntu-22.04
+          - amzn2023
     runs-on: ubuntu-latest
     name: Buildbox tests
     steps:
@@ -47,6 +48,7 @@ jobs:
           - el7
           - el8
           - el9
+          - amzn2023
         package:
           - ondemand-release
           - ondemand-release-latest
@@ -61,6 +63,8 @@ jobs:
         include:
           - dist: el7
             package: sqlite
+          - dist: amzn2023
+            package: scl-utils
         exclude:
           - dist: el9
             package: cjose
@@ -133,6 +137,7 @@ jobs:
           - el9
           - ubuntu-20.04
           - ubuntu-22.04
+          - amzn2023
         package:
           - ondemand
         include:

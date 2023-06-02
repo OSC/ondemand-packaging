@@ -1,4 +1,7 @@
 %{!?package_release: %define package_release 1}
+%if 0%{?amzn} > 0
+%define build_cflags "%{optflags} -Wno-error=deprecated-declarations"
+%endif
 
 Name:		cjose
 Version:	%{package_version}

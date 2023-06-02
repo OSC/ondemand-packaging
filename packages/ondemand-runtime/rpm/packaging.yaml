@@ -1,0 +1,4 @@
+---
+amzn2023:
+  bootstrap_packages:
+    - scl-utils-build

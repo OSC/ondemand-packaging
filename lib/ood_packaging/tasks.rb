@@ -69,8 +69,13 @@ namespace :ood_packaging do
       Rake::Task['ood_packaging:package:internal'].invoke(t.name, args[:dist])
     end
 
-    desc 'Package ondemand-release'
+    desc 'Package ondemand-runtime'
     task :'ondemand-runtime', [:dist] do |t, args|
+      Rake::Task['ood_packaging:package:internal'].invoke(t.name, args[:dist])
+    end
+
+    desc 'Package scl-utils'
+    task :'scl-utils', [:dist] do |t, args|
       Rake::Task['ood_packaging:package:internal'].invoke(t.name, args[:dist])
     end
 

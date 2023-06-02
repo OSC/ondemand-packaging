@@ -276,6 +276,7 @@ class OodPackaging::Package
 
   def container_start!
     cmd = [container_runtime, 'run', '--detach', '--rm']
+    cmd.concat ['--platform', 'linux/amd64']
     cmd.concat ['--name', container_name]
     cmd.concat rt_specific_flags
     cmd.concat container_mounts

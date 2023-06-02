@@ -157,7 +157,7 @@ describe OodPackaging::Package do
   describe 'container_start!' do
     it 'runs container' do
       expected_command = [
-        'docker', 'run', '--detach', '--rm',
+        'docker', 'run', '--detach', '--rm', '--platform linux/amd64',
         '--name', 'uuid', '--privileged', '--tty',
         '-v', "#{config[:package]}:/package:ro",
         '-v', "#{config[:work_dir]}:/work", '-v', "#{config[:output_dir]}:/output",

@@ -8,10 +8,16 @@
 %global ruby ruby
 %global nodejs nodejs
 %global apache httpd
-%else
+%endif
+%if 0%{?rhel} == 7
 %global ruby rh-ruby30
 %global nodejs rh-nodejs14
 %global apache httpd24
+%endif
+%if 0%{?amzn} == 2023
+%global ruby ruby3.2
+%global nodejs nodejs
+%global apache httpd
 %endif
 %global ruby_version 3.0
 %global ondemand_gem_home %{_datadir}/gems/%{ruby_version}
@@ -26,7 +32,7 @@ License:   MIT
 
 BuildRequires:  scl-utils-build
 Requires:       scl-utils
-%if 0%{?rhel} <= 7
+%if 0%{?rhel} == 7
 Requires:       %{ruby}-runtime
 Requires:       %{nodejs}-runtime
 Requires:       %{apache}-runtime
@@ -66,7 +72,8 @@ Requires: rubygems-devel
 # In some cases this RPM doesn't get pulled in
 Requires: rubygem-bigdecimal
 Requires: sqlite-devel
-%else
+%endif
+%if 0%{?rhel} == 7
 Requires: %{ruby}
 Requires: %{ruby}-rubygem-rake
 Requires: %{ruby}-rubygem-bundler >= 2.1
@@ -74,6 +81,17 @@ Requires: %{ruby}-ruby-devel
 Requires: %{ruby}-rubygems
 Requires: %{ruby}-rubygems-devel
 Requires: ondemand-sqlite-devel
+%endif
+%if 0%{?amzn} == 2023
+Requires: %{ruby}
+Requires: %{ruby}-rubygem-rake
+Requires: %{ruby}-rubygem-bundler >= 2.1
+Requires: %{ruby}-devel
+Requires: %{ruby}-rubygems
+Requires: rubygems-devel
+# In some cases this RPM doesn't get pulled in
+Requires: %{ruby}-rubygem-bigdecimal
+Requires: sqlite-devel
 %endif
 Obsoletes: ondemand-rubygem-bundler
 
@@ -94,6 +112,10 @@ Requires: npm
 Requires: %{nodejs}
 Requires: %{nodejs}-npm
 %endif
+%if 0%{?amzn} == 2023
+Requires: %{nodejs} >= 1:18.0, %{nodejs} < 1:19.0
+Requires: npm
+%endif
 
 %description -n ondemand-nodejs
 Meta package for pulling in SCL nodejs %{nodejs}
@@ -105,11 +127,18 @@ Requires: %{apache} >= 2.4, %{apache} < 2.5
 Requires: httpd-devel
 Requires: mod_ssl
 Requires: mod_ldap
-%else
+%endif
+%if 0%{?rhel} == 7
 Requires: %{apache}
 Requires: %{apache}-httpd-devel
 Requires: %{apache}-mod_ssl
 Requires: %{apache}-mod_ldap
+%endif
+%if 0%{?amzn} == 2023
+Requires: %{apache} >= 2.4, %{apache} < 2.5
+Requires: httpd-devel
+Requires: mod_ssl
+Requires: mod_ldap
 %endif
 
 %description -n ondemand-apache
@@ -125,7 +154,7 @@ ln -s ../ood/ondemand %{buildroot}/opt/rh/%{scl}
 mkdir -p %{buildroot}%{ondemand_apps_gem_home}
 mkdir -p %{buildroot}%{ondemand_core_gem_home}
 cat >> %{buildroot}%{_scl_scripts}/enable << EOF
-%if 0%{?rhel} <= 7
+%if 0%{?rhel} == 7
 . scl_source enable %{apache} %{ruby} %{nodejs}
 %endif
 export PATH="%{_bindir}:%{_sbindir}\${PATH:+:\${PATH}}"
@@ -149,7 +178,7 @@ cat >> %{buildroot}%{_root_sysconfdir}/rpm/macros.%{scl_name_base}-scldevel << E
 %%scl_%{scl_name_base} %{scl}
 %%scl_prefix_%{scl_name_base} %{scl_prefix}
 %%_scl_prefix_%{scl_name_base} %{_scl_prefix}
-%if 0%{?rhel} <= 7
+%if 0%{?rhel} == 7
 %%scl_%{scl_name_base}_ruby %{ruby}
 %%scl_%{scl_name_base}_prefix_ruby %{ruby}-
 %%scl_%{scl_name_base}_nodejs %{nodejs}
