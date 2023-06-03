@@ -10,6 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-22.04]
         dist:
           - el7
           - el8
@@ -20,7 +21,7 @@ jobs:
         arch:
           - x86_64
           - aarch64
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     name: Buildbox tests
     steps:
       - name: Checkout ${{ github.sha	}}
@@ -51,6 +52,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-22.04]
         dist:
           - el7
           - el8
@@ -94,7 +96,7 @@ jobs:
             package: ondemand-release-latest
           - arch: aarch64
             package: ondemand-compute
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     name: Package test package=${{ matrix.package }} dist=${{ matrix.dist }} arch=${{ matrix.arch }}
     steps:
       - name: Checkout ${{ github.sha	}}
@@ -113,14 +115,27 @@ jobs:
       - name: Load image
         run: docker load --input /tmp/ood_packaging-${{ matrix.dist }}-${{ matrix.arch }}.tar.gz
       - name: Build package
+        if: matrix.arch == 'x86_64'
         run: bundle exec rake ood_packaging:package:${{ matrix.package }}[${{ matrix.dist }},${{ matrix.arch }}]
         env:
           OOD_PACKAGING_DEBUG: 'true'
+      - name: Build package
+        if: matrix.arch != 'x86_64'
+        uses: uraimo/run-on-arch-action@v2
+        with:
+          arch: ${{ matrix.arch }}
+          distro: ${{ matrix.os }}
+          githubToken: ${{ github.token }}
+          run: |
+            bundle exec rake ood_packaging:package:${{ matrix.package }}[${{ matrix.dist }},${{ matrix.arch }}]
+          env: |
+            OOD_PACKAGING_DEBUG: 'true'
   package-deb:
     needs: [buildbox]
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-22.04]
         dist:
           - ubuntu-20.04
           - ubuntu-22.04
@@ -136,7 +151,7 @@ jobs:
             package: ondemand-release
           - arch: aarch64
             package: ondemand-release-latest
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     name: Package test package=${{ matrix.package }} dist=${{ matrix.dist }} arch=${{ matrix.arch }}
     steps:
       - name: Checkout ${{ github.sha	}}
@@ -155,14 +170,27 @@ jobs:
       - name: Load image
         run: docker load --input /tmp/ood_packaging-${{ matrix.dist }}-${{ matrix.arch }}.tar.gz
       - name: Build package
+        if: matrix.arch == 'x86_64'
         run: bundle exec rake ood_packaging:package:${{ matrix.package }}[${{ matrix.dist }},${{ matrix.arch }}]
         env:
           OOD_PACKAGING_DEBUG: 'true'
+      - name: Build package
+        if: matrix.arch != 'x86_64'
+        uses: uraimo/run-on-arch-action@v2
+        with:
+          arch: ${{ matrix.arch }}
+          distro: ${{ matrix.os }}
+          githubToken: ${{ github.token }}
+          run: |
+            bundle exec rake ood_packaging:package:${{ matrix.package }}[${{ matrix.dist }},${{ matrix.arch }}]
+          env: |
+            OOD_PACKAGING_DEBUG: 'true'
   package-external:
     needs: [buildbox]
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-22.04]
         dist:
           - el7
           - el8
@@ -185,7 +213,7 @@ jobs:
           - dist: el9
             arch: x86_64
             package: bc_osc_rstudio_server
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     name: Package ${{ matrix.package }} dist=${{ matrix.dist }} arch=${{ matrix.arch }}
     steps:
       - name: Checkout ${{ github.sha	}}
@@ -208,4 +236,16 @@ jobs:
           mkdir -p ./tmp
           git clone https://github.com/OSC/${{ matrix.package }}.git ./tmp/${{ matrix.package }}
       - name: Build ${{ matrix.package }} package
+        if: matrix.arch == 'x86_64'
         run: ./bin/ood_packaging -w ./tmp/work -o ./tmp/output -d ${{ matrix.dist }} -a ${{ matrix.arch }} -V v3.1.0 -T --debug $(pwd)/tmp/${{ matrix.package }}
+      - name: Build ${{ matrix.package }} package
+        if: matrix.arch != 'x86_64'
+        uses: uraimo/run-on-arch-action@v2
+        with:
+          arch: ${{ matrix.arch }}
+          distro: ${{ matrix.os }}
+          githubToken: ${{ github.token }}
+          run: |
+            ./bin/ood_packaging -w ./tmp/work -o ./tmp/output -d ${{ matrix.dist }} -a ${{ matrix.arch }} -V v3.1.0 -T --debug $(pwd)/tmp/${{ matrix.package }}
+          env: |
+            OOD_PACKAGING_DEBUG: 'true'
