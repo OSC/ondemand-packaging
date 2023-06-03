@@ -76,11 +76,11 @@ jobs:
             package: cjose
           - dist: el9
             package: mod_auth_openidc
-          - aarch: aarch64
+          - arch: aarch64
             package: ondemand-release
-          - aarch: aarch64
+          - arch: aarch64
             package: ondemand-release-latest
-          - aarch: aarch64
+          - arch: aarch64
             package: ondemand-compute
     runs-on: ubuntu-latest
     name: Package test package=${{ matrix.package }} dist=${{ matrix.dist }}
@@ -120,9 +120,9 @@ jobs:
           - ondemand-release-latest
           - passenger
         exclude:
-          - aarch: aarch64
+          - arch: aarch64
             package: ondemand-release
-          - aarch: aarch64
+          - arch: aarch64
             package: ondemand-release-latest
     runs-on: ubuntu-latest
     name: Package test package=${{ matrix.package }} dist=${{ matrix.dist }}
