@@ -23,19 +23,19 @@ namespace :ood_packaging do
     end
 
     desc 'Push buildbox image'
-    task :push, [:dist] do |_task, args|
+    task :push, [:dist, :arch] do |_task, args|
       @build_box = OodPackaging::BuildBox.new(args)
       @build_box.push!
     end
 
     desc 'Pull buildbox image'
-    task :pull, [:dist] do |_task, args|
+    task :pull, [:dist, :arch] do |_task, args|
       @build_box = OodPackaging::BuildBox.new(args)
       @build_box.pull!
     end
 
     desc 'Save buildbox image'
-    task :save, [:dist, :path] do |_task, args|
+    task :save, [:dist, :arch, :path] do |_task, args|
       @build_box = OodPackaging::BuildBox.new(args)
       @build_box.save!(args[:path])
     end
