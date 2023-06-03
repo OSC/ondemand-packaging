@@ -87,7 +87,7 @@ jobs:
           - arch: aarch64
             package: ondemand-compute
     runs-on: ubuntu-latest
-    name: Package test package=${{ matrix.package }} dist=${{ matrix.dist }}
+    name: Package test package=${{ matrix.package }} dist=${{ matrix.dist }} arch=${{ matrix.arch }}
     steps:
       - name: Checkout ${{ github.sha	}}
         uses: actions/checkout@v2
@@ -129,7 +129,7 @@ jobs:
           - arch: aarch64
             package: ondemand-release-latest
     runs-on: ubuntu-latest
-    name: Package test package=${{ matrix.package }} dist=${{ matrix.dist }}
+    name: Package test package=${{ matrix.package }} dist=${{ matrix.dist }} arch=${{ matrix.arch }}
     steps:
       - name: Checkout ${{ github.sha	}}
         uses: actions/checkout@v2
@@ -178,7 +178,7 @@ jobs:
             arch: x86_64
             package: bc_osc_rstudio_server
     runs-on: ubuntu-latest
-    name: Package ${{ matrix.package }} dist=${{ matrix.dist }}
+    name: Package ${{ matrix.package }} dist=${{ matrix.dist }} arch=${{ matrix.arch }}
     steps:
       - name: Checkout ${{ github.sha	}}
         uses: actions/checkout@v2
