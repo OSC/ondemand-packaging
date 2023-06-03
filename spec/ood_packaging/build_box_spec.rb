@@ -31,7 +31,7 @@ describe OodPackaging::BuildBox do
         expected_cmd = [
           'docker buildx build', '--platform linux/amd64',
           "--tag ohiosupercomputer/ood-buildbox-el7-x86_64:#{OodPackaging::VERSION}",
-          '-f /tmp/dockerfile /fake-builddir'
+          '--output', 'type=docker', '-f /tmp/dockerfile /fake-builddir'
         ]
         expect(build_box).to receive(:sh).with(expected_cmd.join(' '))
         build_box.build!
@@ -43,7 +43,7 @@ describe OodPackaging::BuildBox do
         expected_cmd = [
           'docker buildx build', '--platform linux/amd64',
           "--tag ohiosupercomputer/ood-buildbox-el8-x86_64:#{OodPackaging::VERSION}",
-          '-f /tmp/dockerfile /fake-builddir'
+          '--output', 'type=docker', '-f /tmp/dockerfile /fake-builddir'
         ]
         expect(build_box).to receive(:sh).with(expected_cmd.join(' '))
         build_box.build!
@@ -57,7 +57,7 @@ describe OodPackaging::BuildBox do
         expected_cmd = [
           'docker buildx build', '--platform linux/amd64',
           "--tag ohiosupercomputer/ood-buildbox-ubuntu-20.04-x86_64:#{OodPackaging::VERSION}",
-          '-f /tmp/dockerfile /fake-builddir'
+          '--output', 'type=docker', '-f /tmp/dockerfile /fake-builddir'
         ]
         expect(build_box).to receive(:sh).with(expected_cmd.join(' '))
         build_box.build!
@@ -71,7 +71,7 @@ describe OodPackaging::BuildBox do
         expected_cmd = [
           'docker buildx build', '--platform linux/arm64',
           "--tag ohiosupercomputer/ood-buildbox-el8-aarch64:#{OodPackaging::VERSION}",
-          '-f /tmp/dockerfile /fake-builddir'
+          '--output', 'type=docker', '-f /tmp/dockerfile /fake-builddir'
         ]
         expect(build_box).to receive(:sh).with(expected_cmd.join(' '))
         build_box.build!

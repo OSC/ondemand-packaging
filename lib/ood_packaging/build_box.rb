@@ -160,12 +160,21 @@ class OodPackaging::BuildBox
     end
   end
 
+  def build_output
+    if container_runtime == 'docker'
+      ['--output', 'type=docker']
+    else
+      []
+    end
+  end
+
   def build!
     scripts
     cmd = [container_runtime]
     cmd.concat build_command
     cmd.concat ['--platform', platform]
     cmd.concat ['--tag', image_tag]
+    cmd.concat build_output
     cmd.concat [ENV['OOD_PACKAGING_BUILD_BOX_ARGS']] if ENV['OOD_PACKAGING_BUILD_BOX_ARGS']
     cmd.concat ['-f', dockerfile]
     cmd.concat [build_dir]
