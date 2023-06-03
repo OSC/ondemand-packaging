@@ -113,7 +113,9 @@ Usage examples:
     release = config.get(args.config_section, 'release').replace('RELEASE', build_release)
 
     for release_dir in args.dirs:
-        dist = os.path.basename(release_dir)
+        release_name = os.path.basename(release_dir)
+        dist = release_name.rsplit('-', 1)[0]
+        arch = release_name.rsplit('-', 1)[1]
         deb = False
         if dist in deb_dist_map:
             deb = deb_dist_map[dist]
@@ -133,9 +135,9 @@ Usage examples:
             if debs_released and update:
                 update_repo(host, release, deb, args.pkey)
         else:
-            rpm_path = config.get(args.config_section, 'rpm_path').replace('DIST', dist).replace('RELEASE', build_release)
+            rpm_path = config.get(args.config_section, 'rpm_path').replace('DIST', dist).replace('ARCH', arch).replace('RELEASE', build_release)
             srpm_path = config.get(args.config_section, 'srpm_path').replace('DIST', dist).replace('RELEASE', build_release)
-            logger.debug("rpm_path=%s srpm_path=%s dist=%s", rpm_path, srpm_path, dist)
+            logger.debug("rpm_path=%s srpm_path=%s dist=%s arch=%s", rpm_path, srpm_path, dist, arch)
             rpms = []
             srpms = []
             for f in os.listdir(release_dir):
