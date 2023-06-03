@@ -152,9 +152,18 @@ class OodPackaging::BuildBox
     template_file('build_box/docker-image/install.sh.erb')
   end
 
+  def build_command
+    if container_runtime == 'docker'
+      ['buildx', 'build']
+    else
+      ['build']
+    end
+  end
+
   def build!
     scripts
-    cmd = [container_runtime, 'build']
+    cmd = [container_runtime]
+    cmd.concat build_command
     cmd.concat ['--platform', platform]
     cmd.concat ['--tag', image_tag]
     cmd.concat [ENV['OOD_PACKAGING_BUILD_BOX_ARGS']] if ENV['OOD_PACKAGING_BUILD_BOX_ARGS']
