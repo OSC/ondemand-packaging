@@ -90,7 +90,7 @@ scl-utils:
     - scl-utils-build
     - scl-utils-debugsource
     - scl-utils-debuginfo
-  version:
+  versions:
     - 2.0.3-1
 ondemand-dex:
   - 2.36.0-1
