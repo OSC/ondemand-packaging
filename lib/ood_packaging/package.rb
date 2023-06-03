@@ -276,7 +276,7 @@ class OodPackaging::Package
 
   def container_start!
     cmd = [container_runtime, 'run', '--detach', '--rm']
-    cmd.concat ['--platform', 'linux/amd64']
+    cmd.concat ['--platform', build_box.platform]
     cmd.concat ['--name', container_name]
     cmd.concat rt_specific_flags
     cmd.concat container_mounts
@@ -319,6 +319,7 @@ class OodPackaging::Package
   def container_env
     env = {
       'DIST'          => build_box.dist,
+      'ARCH'          => build_box.arch,
       'PACKAGE'       => package_name,
       'VERSION'       => version,
       'TAR_NAME'      => "#{tar_name}.tar.gz",

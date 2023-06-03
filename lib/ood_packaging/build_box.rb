@@ -23,6 +23,11 @@ class OodPackaging::BuildBox
     'ubuntu-22.04' => 'jammy'
   }.freeze
 
+  ARCH_PLATFORMS = {
+    'x86_64'  => 'linux/amd64',
+    'aarch64' => 'linux/arm64'
+  }.freeze
+
   def initialize(config = {})
     @config = config
     raise ArgumentError, 'Must provide dist' if dist.nil?
@@ -31,11 +36,18 @@ class OodPackaging::BuildBox
     unless valid_dist?(dist)
       raise ArgumentError, "Invalid dist selected: #{dist}. Valid choices are #{valid_dists.join(' ')}"
     end
+    unless valid_arch?(arch)
+      raise ArgumentError, "Invalid arch selected: #{arch}. Valid choices are #{valid_arches.join(' ')}"
+    end
     # rubocop:enable Style/GuardClause
   end
 
   def dist
     @dist ||= ENV['OOD_PACKAGING_DIST'] || @config[:dist]
+  end
+
+  def arch
+    @arch ||= ENV['OOD_PACKAGING_ARCH'] || @config[:arch] || 'x86_64'
   end
 
   def rpm?
@@ -80,12 +92,24 @@ class OodPackaging::BuildBox
     BASE_IMAGES.keys
   end
 
+  def valid_arch?(value)
+    ARCH_PLATFORMS.key?(value)
+  end
+
+  def valid_arches
+    ARCH_PLATFORMS.keys
+  end
+
   def base_image
     @base_image ||= BASE_IMAGES[dist]
   end
 
   def codename
     @codename ||= CODENAMES[dist]
+  end
+
+  def platform
+    @platform ||= ARCH_PLATFORMS[arch]
   end
 
   def build_dir
@@ -109,7 +133,7 @@ class OodPackaging::BuildBox
   end
 
   def image_tag
-    [image_registry, image_org, "#{image_name}-#{dist}:#{image_version}"].compact.join('/')
+    [image_registry, image_org, "#{image_name}-#{dist}-#{arch}:#{image_version}"].compact.join('/')
   end
 
   def build_gem
@@ -131,7 +155,7 @@ class OodPackaging::BuildBox
   def build!
     scripts
     cmd = [container_runtime, 'build']
-    cmd.concat ['--platform', 'linux/amd64']
+    cmd.concat ['--platform', platform]
     cmd.concat ['--tag', image_tag]
     cmd.concat [ENV['OOD_PACKAGING_BUILD_BOX_ARGS']] if ENV['OOD_PACKAGING_BUILD_BOX_ARGS']
     cmd.concat ['-f', dockerfile]

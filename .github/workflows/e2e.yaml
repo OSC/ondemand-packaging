@@ -17,6 +17,9 @@ jobs:
           - ubuntu-20.04
           - ubuntu-22.04
           - amzn2023
+        arch:
+          - x86_64
+          - aarch64
     runs-on: ubuntu-latest
     name: Buildbox tests
     steps:
@@ -28,17 +31,17 @@ jobs:
           ruby-version: '3.0.4'
           bundler: '2.1.4'
           bundler-cache: true
-      - name: Pull the builx box
+      - name: Pull the build box
         run: bundle exec rake ood_packaging:buildbox:pull[${{ matrix.dist }}] || exit 0
       - name: Build the build box
-        run: bundle exec rake ood_packaging:buildbox:build[${{ matrix.dist }}]
+        run: bundle exec rake ood_packaging:buildbox:build[${{ matrix.dist }},${{ matrix.arch }}]
       - name: Export Docker image
-        run: bundle exec rake ood_packaging:buildbox:save[${{ matrix.dist }},/tmp/ood_packaging-${{ matrix.dist }}.tar.gz]
+        run: bundle exec rake ood_packaging:buildbox:save[${{ matrix.dist }},/tmp/ood_packaging-${{ matrix.dist }}-${{ matrix.arch }}.tar.gz]
       - name: Upload Docker image
         uses: actions/upload-artifact@v2
         with:
-          name: image-${{ matrix.dist }}
-          path: /tmp/ood_packaging-${{ matrix.dist }}.tar.gz
+          name: image-${{ matrix.dist }}-${{ matrix.arch }}
+          path: /tmp/ood_packaging-${{ matrix.dist }}-${{ matrix.arch }}.tar.gz
   package-el:
     needs: [buildbox]
     strategy:
@@ -49,6 +52,9 @@ jobs:
           - el8
           - el9
           - amzn2023
+        arch:
+          - x86_64
+          - aarch64
         package:
           - ondemand-release
           - ondemand-release-latest
@@ -70,6 +76,12 @@ jobs:
             package: cjose
           - dist: el9
             package: mod_auth_openidc
+          - aarch: aarch64
+            package: ondemand-release
+          - aarch: aarch64
+            package: ondemand-release-latest
+          - aarch: aarch64
+            package: ondemand-compute
     runs-on: ubuntu-latest
     name: Package test package=${{ matrix.package }} dist=${{ matrix.dist }}
     steps:
@@ -84,12 +96,12 @@ jobs:
       - name: Download image
         uses: actions/download-artifact@v2
         with:
-          name: image-${{ matrix.dist }}
+          name: image-${{ matrix.dist }}-${{ matrix.arch }}
           path: /tmp
       - name: Load image
-        run: docker load --input /tmp/ood_packaging-${{ matrix.dist }}.tar.gz
+        run: docker load --input /tmp/ood_packaging-${{ matrix.dist }}-${{ matrix.arch }}.tar.gz
       - name: Build package
-        run: bundle exec rake ood_packaging:package:${{ matrix.package }}[${{ matrix.dist }}]
+        run: bundle exec rake ood_packaging:package:${{ matrix.package }}[${{ matrix.dist }},${{ matrix.arch }}]
         env:
           OOD_PACKAGING_DEBUG: 'true'
   package-deb:
@@ -100,10 +112,18 @@ jobs:
         dist:
           - ubuntu-20.04
           - ubuntu-22.04
+        arch:
+          - x86_64
+          - aarch64
         package:
           - ondemand-release
           - ondemand-release-latest
           - passenger
+        exclude:
+          - aarch: aarch64
+            package: ondemand-release
+          - aarch: aarch64
+            package: ondemand-release-latest
     runs-on: ubuntu-latest
     name: Package test package=${{ matrix.package }} dist=${{ matrix.dist }}
     steps:
@@ -118,12 +138,12 @@ jobs:
       - name: Download image
         uses: actions/download-artifact@v2
         with:
-          name: image-${{ matrix.dist }}
+          name: image-${{ matrix.dist }}-${{ matrix.arch }}
           path: /tmp
       - name: Load image
-        run: docker load --input /tmp/ood_packaging-${{ matrix.dist }}.tar.gz
+        run: docker load --input /tmp/ood_packaging-${{ matrix.dist }}-${{ matrix.arch }}.tar.gz
       - name: Build package
-        run: bundle exec rake ood_packaging:package:${{ matrix.package }}[${{ matrix.dist }}]
+        run: bundle exec rake ood_packaging:package:${{ matrix.package }}[${{ matrix.dist }},${{ matrix.arch }}]
         env:
           OOD_PACKAGING_DEBUG: 'true'
   package-external:
@@ -138,14 +158,20 @@ jobs:
           - ubuntu-20.04
           - ubuntu-22.04
           - amzn2023
+        arch:
+          - x86_64
+          - aarch64
         package:
           - ondemand
         include:
           - dist: el7
+            arch: x86_64
             package: bc_osc_rstudio_server
           - dist: el8
+            arch: x86_64
             package: bc_osc_rstudio_server
           - dist: el9
+            arch: x86_64
             package: bc_osc_rstudio_server
     runs-on: ubuntu-latest
     name: Package ${{ matrix.package }} dist=${{ matrix.dist }}
@@ -161,13 +187,13 @@ jobs:
       - name: Download image
         uses: actions/download-artifact@v2
         with:
-          name: image-${{ matrix.dist }}
+          name: image-${{ matrix.dist }}-${{ matrix.arch }}
           path: /tmp
       - name: Load image
-        run: docker load --input /tmp/ood_packaging-${{ matrix.dist }}.tar.gz
+        run: docker load --input /tmp/ood_packaging-${{ matrix.dist }}-${{ matrix.arch }}.tar.gz
       - name: Clone ${{ matrix.package }}
         run: |
           mkdir -p ./tmp
           git clone https://github.com/OSC/${{ matrix.package }}.git ./tmp/${{ matrix.package }}
       - name: Build ${{ matrix.package }} package
-        run: ./bin/ood_packaging -w ./tmp/work -o ./tmp/output -d ${{ matrix.dist }} -V v3.1.0 -T --debug $(pwd)/tmp/${{ matrix.package }}
+        run: ./bin/ood_packaging -w ./tmp/work -o ./tmp/output -d ${{ matrix.dist }} -a ${{ matrix.arch }} -V v3.1.0 -T --debug $(pwd)/tmp/${{ matrix.package }}

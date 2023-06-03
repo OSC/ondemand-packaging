@@ -6,9 +6,11 @@ require 'tmpdir'
 describe OodPackaging::Package do
   let(:tmp) { Dir.mktmpdir }
   let(:dist) { 'el8' }
+  let(:arch) { 'x86_64' }
   let(:default_config) do
     {
       dist:       dist,
+      arch:       arch,
       package:    File.join(tmp, 'package'),
       work_dir:   File.join(tmp, 'work'),
       output_dir: File.join(tmp, 'output'),
@@ -166,13 +168,29 @@ describe OodPackaging::Package do
       expect(package).to receive(:sh).with(expected_command.join(' '), verbose: false)
       package.container_start!
     end
+
+    context 'when arch is aarch64' do
+      let(:arch) { 'aarch64' }
+
+      it 'runs container' do
+        expected_command = [
+          'docker', 'run', '--detach', '--rm', '--platform linux/arm64',
+          '--name', 'uuid', '--privileged', '--tty',
+          '-v', "#{config[:package]}:/package:ro",
+          '-v', "#{config[:work_dir]}:/work", '-v', "#{config[:output_dir]}:/output",
+          'image-tag', '/sbin/init', '1>/dev/null'
+        ]
+        expect(package).to receive(:sh).with(expected_command.join(' '), verbose: false)
+        package.container_start!
+      end
+    end
   end
 
   describe 'container_exec!' do
     it 'execs container with Rake' do
       expected_command = [
         'docker', 'exec',
-        '-e', "'DIST=el8'", '-e', "'PACKAGE=package'", '-e', "'VERSION=v0.0.1'", '-e',
+        '-e', "'DIST=el8'", '-e', "'ARCH=x86_64'", '-e', "'PACKAGE=package'", '-e', "'VERSION=v0.0.1'", '-e',
         "'TAR_NAME=package-0.0.1.tar.gz'",
         '-e', "'GPG_SIGN=false'", '-e', "'GPG_NAME=OnDemand Release Signing Key'",
         '-e', "'OOD_UID=1000'", '-e', "'OOD_GID=1000'",
@@ -182,6 +200,25 @@ describe OodPackaging::Package do
       ]
       expect(package).to receive(:sh).with(expected_command.join(' '), verbose: false)
       package.container_exec!(package.exec_rake)
+    end
+
+    context 'when aarch64' do
+      let(:arch) { 'aarch64' }
+
+      it 'execs container with Rake using aarch64' do
+        expected_command = [
+          'docker', 'exec',
+          '-e', "'DIST=el8'", '-e', "'ARCH=aarch64'", '-e', "'PACKAGE=package'", '-e', "'VERSION=v0.0.1'", '-e',
+          "'TAR_NAME=package-0.0.1.tar.gz'",
+          '-e', "'GPG_SIGN=false'", '-e', "'GPG_NAME=OnDemand Release Signing Key'",
+          '-e', "'OOD_UID=1000'", '-e', "'OOD_GID=1000'",
+          '-e', "'DEBUG=false'",
+          'uuid', '/ondemand-packaging/inituidgid.sh', '/ondemand-packaging/setuser.rb', 'ood',
+          '/ondemand-packaging/rake', '-q', '-f', '/ondemand-packaging/Rakefile', 'ood_packaging:package:build'
+        ]
+        expect(package).to receive(:sh).with(expected_command.join(' '), verbose: false)
+        package.container_exec!(package.exec_rake)
+      end
     end
   end
 end

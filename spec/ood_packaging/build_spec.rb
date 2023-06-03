@@ -10,11 +10,13 @@ describe OodPackaging::Build do
   let(:work_dir) { File.join(tmp, 'work') }
   let(:package_dir) { File.join(work_dir, 'ondemand-0.0.1') }
   let(:dist) { 'el8' }
+  let(:arch) { 'x86_64' }
   let(:version) { 'v0.0.1-2' }
   let(:build) { described_class.new }
 
   before do
     ENV['DIST'] = dist
+    ENV['ARCH'] = arch
     ENV['VERSION'] = version
     ENV['GPG_NAME'] = 'GPG'
     FileUtils.mkdir_p(work_dir)
@@ -30,6 +32,20 @@ describe OodPackaging::Build do
     ENV.delete('VERSION')
     ENV.delete('GPG_NAME')
     FileUtils.remove_entry(tmp)
+  end
+
+  describe 'output_dir' do
+    it 'uses arch' do
+      expect(build.output_dir).to eq('/output/el8-x86_64')
+    end
+
+    context 'when aarch64' do
+      let(:arch) { 'aarch64' }
+
+      it 'uses aarch64 arch' do
+        expect(build.output_dir).to eq('/output/el8-aarch64')
+      end
+    end
   end
 
   describe 'bootstrap_rpm!' do

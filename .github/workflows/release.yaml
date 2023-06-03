@@ -17,6 +17,9 @@ jobs:
           - amzn2023
           - ubuntu-20.04
           - ubuntu-22.04
+        arch:
+          - x86_64
+          - aarch64
     name: Release buildbox
     runs-on: ubuntu-latest
     steps:
@@ -31,7 +34,7 @@ jobs:
       - name: setup the environment
         run: echo "OOD_PACKAGING_BUILD_BOX_VERSION=${GITHUB_REF#refs/*/v}" >> $GITHUB_ENV
       - name: docker build and tag
-        run: bundle exec rake ood_packaging:buildbox:build[${{ matrix.dist }}]
+        run: bundle exec rake ood_packaging:buildbox:build[${{ matrix.dist }},${{ matrix.arch }}]
       - name: login to dockerhub
         run: docker login -u ${{ secrets.OSC_ROBOT_DOCKERHUB_USER }} -p ${{ secrets.OSC_ROBOT_DOCKERHUB_TOKEN }}
       - name: push images to dockerhub

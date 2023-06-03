@@ -15,7 +15,7 @@ class OodPackaging::Build
   attr_accessor :build_box
 
   def initialize
-    @build_box = OodPackaging::BuildBox.new(dist: ENV['DIST'])
+    @build_box = OodPackaging::BuildBox.new(dist: ENV['DIST'], arch: ENV['ARCH'])
   end
 
   def config
@@ -116,11 +116,11 @@ class OodPackaging::Build
   end
 
   def output_dir
-    File.join('/output', build_box.dist)
+    File.join('/output', "#{build_box.dist}-#{build_box.arch}")
   end
 
   def work_dir
-    File.join('/work', build_box.dist)
+    File.join('/work', "#{build_box.dist}-#{build_box.arch}")
   end
 
   def packaging_config

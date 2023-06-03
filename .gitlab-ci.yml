@@ -28,8 +28,10 @@ build-image:
   parallel:
     matrix:
       - OOD_PACKAGING_DIST: [el7, el8]
+        OOD_PACKAGING_ARCH: [x86_64, aarch64]
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
       - OOD_PACKAGING_DIST: [el9, amzn2023, ubuntu-20.04, ubuntu-22.04]
+        OOD_PACKAGING_ARCH: [x86_64, aarch64]
 
 build-ondemand-release:
   stage: build
@@ -71,8 +73,10 @@ build-ondemand-runtime:
   parallel:
     matrix:
       - OOD_PACKAGING_DIST: [el7, el8]
+        OOD_PACKAGING_ARCH: [x86_64, aarch64]
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
       - OOD_PACKAGING_DIST: [el9, amzn2023]
+        OOD_PACKAGING_ARCH: [x86_64, aarch64]
   artifacts:
     paths:
       - tmp/output
@@ -88,6 +92,7 @@ build-scl-utils:
   parallel:
     matrix:
       - OOD_PACKAGING_DIST: [amzn2023]
+        OOD_PACKAGING_ARCH: [x86_64, aarch64]
   artifacts:
     paths:
       - tmp/output
@@ -103,8 +108,10 @@ build-passenger:
   parallel:
     matrix:
       - OOD_PACKAGING_DIST: [el7, el8]
+        OOD_PACKAGING_ARCH: [x86_64, aarch64]
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
       - OOD_PACKAGING_DIST: [el9, amzn2023, ubuntu-20.04, ubuntu-22.04]
+        OOD_PACKAGING_ARCH: [x86_64, aarch64]
   artifacts:
     paths:
       - tmp/output
@@ -120,6 +127,7 @@ build-sqlite:
   parallel:
     matrix:
       - OOD_PACKAGING_DIST: el7
+        OOD_PACKAGING_ARCH: [x86_64, aarch64]
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
   artifacts:
     paths:
@@ -136,8 +144,10 @@ build-cjose:
   parallel:
     matrix:
       - OOD_PACKAGING_DIST: [el7, el8]
+        OOD_PACKAGING_ARCH: [x86_64, aarch64]
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
       - OOD_PACKAGING_DIST: [amzn2023]
+        OOD_PACKAGING_ARCH: [x86_64, aarch64]
   artifacts:
     paths:
       - tmp/output
@@ -153,8 +163,10 @@ build-mod_auth_openidc:
   parallel:
     matrix:
       - OOD_PACKAGING_DIST: [el7, el8]
+        OOD_PACKAGING_ARCH: [x86_64, aarch64]
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
       - OOD_PACKAGING_DIST: [amzn2023]
+        OOD_PACKAGING_ARCH: [x86_64, aarch64]
   artifacts:
     paths:
       - tmp/output
@@ -170,8 +182,10 @@ build-ondemand_exporter:
   parallel:
     matrix:
       - OOD_PACKAGING_DIST: [el7, el8]
+        OOD_PACKAGING_ARCH: [x86_64, aarch64]
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
       - OOD_PACKAGING_DIST: [el9, amzn2023]
+        OOD_PACKAGING_ARCH: [x86_64, aarch64]
   artifacts:
     paths:
       - tmp/output
@@ -204,8 +218,10 @@ build-python-websockify:
   parallel:
     matrix:
       - OOD_PACKAGING_DIST: [el7, el8]
+        OOD_PACKAGING_ARCH: [x86_64, aarch64]
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
       - OOD_PACKAGING_DIST: [el9, amzn2023]
+        OOD_PACKAGING_ARCH: [x86_64, aarch64]
   artifacts:
     paths:
       - tmp/output
@@ -221,8 +237,10 @@ build-turbovnc:
   parallel:
     matrix:
       - OOD_PACKAGING_DIST: [el7, el8]
+        OOD_PACKAGING_ARCH: [x86_64, aarch64]
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
       - OOD_PACKAGING_DIST: [el9, amzn2023]
+        OOD_PACKAGING_ARCH: [x86_64, aarch64]
   artifacts:
     paths:
       - tmp/output
