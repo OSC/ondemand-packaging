@@ -1,4 +1,4 @@
-FROM <%= base_image %>
+FROM --platform=<%= platform %> <%= base_image %>
 ENV ARCH=<%= arch %> 
 MAINTAINER Trey Dockendorf <tdockendorf@osc.edu>
 ENV LANG=en_US.UTF-8
