@@ -72,8 +72,16 @@ jobs:
           - turbovnc
         include:
           - dist: el7
+            arch: x86_64
+            package: sqlite
+          - dist: el7
+            arch: aarch64
             package: sqlite
           - dist: amzn2023
+            arch: x86_64
+            package: scl-utils
+          - dist: amzn2023
+            arch: aarch64
             package: scl-utils
         exclude:
           - dist: el9
