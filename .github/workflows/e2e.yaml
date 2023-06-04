@@ -75,14 +75,18 @@ jobs:
         include:
           - dist: el7
             arch: x86_64
+            os: ubuntu-22.04
             package: sqlite
           - dist: el7
             arch: aarch64
+            os: ubuntu-22.04
             package: sqlite
           - dist: amzn2023
             arch: x86_64
+            os: ubuntu-22.04
             package: scl-utils
           - dist: amzn2023
+            os: ubuntu-22.04
             arch: aarch64
             package: scl-utils
         exclude:
@@ -121,7 +125,7 @@ jobs:
           OOD_PACKAGING_DEBUG: 'true'
       - name: arch distro
         run: |
-          DISTRO=$(echo "${{ matrix.os }} | sed 's|\-||g'")
+          DISTRO=$(echo "${{ matrix.os }}" | sed 's|\-||g')
           echo "DISTRO=${DISTRO}" >> $GITHUB_ENV
       - name: Build package
         if: matrix.arch != 'x86_64'
@@ -180,7 +184,7 @@ jobs:
           OOD_PACKAGING_DEBUG: 'true'
       - name: arch distro
         run: |
-          DISTRO=$(echo "${{ matrix.os }} | sed 's|\-||g'")
+          DISTRO=$(echo "${{ matrix.os }}" | sed 's|\-||g')
           echo "DISTRO=${DISTRO}" >> $GITHUB_ENV
       - name: Build package
         if: matrix.arch != 'x86_64'
@@ -214,12 +218,15 @@ jobs:
         include:
           - dist: el7
             arch: x86_64
+            os: ubuntu-22.04
             package: bc_osc_rstudio_server
           - dist: el8
             arch: x86_64
+            os: ubuntu-22.04
             package: bc_osc_rstudio_server
           - dist: el9
             arch: x86_64
+            os: ubuntu-22.04
             package: bc_osc_rstudio_server
     runs-on: ${{ matrix.os }}
     name: Package ${{ matrix.package }} dist=${{ matrix.dist }} arch=${{ matrix.arch }}
@@ -248,7 +255,7 @@ jobs:
         run: ./bin/ood_packaging -w ./tmp/work -o ./tmp/output -d ${{ matrix.dist }} -a ${{ matrix.arch }} -V v3.1.0 -T --debug $(pwd)/tmp/${{ matrix.package }}
       - name: arch distro
         run: |
-          DISTRO=$(echo "${{ matrix.os }} | sed 's|\-||g'")
+          DISTRO=$(echo "${{ matrix.os }}" | sed 's|\-||g')
           echo "DISTRO=${DISTRO}" >> $GITHUB_ENV
       - name: Build ${{ matrix.package }} package
         if: matrix.arch != 'x86_64'
