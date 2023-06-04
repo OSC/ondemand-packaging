@@ -119,12 +119,16 @@ jobs:
         run: bundle exec rake ood_packaging:package:${{ matrix.package }}[${{ matrix.dist }},${{ matrix.arch }}]
         env:
           OOD_PACKAGING_DEBUG: 'true'
+      - name: arch distro
+        run: |
+          DISTRO=$(echo "${{ matrix.os }} | sed 's|\-||g'")
+          echo "DISTRO=${DISTRO}" >> $GITHUB_ENV
       - name: Build package
         if: matrix.arch != 'x86_64'
         uses: uraimo/run-on-arch-action@v2
         with:
           arch: ${{ matrix.arch }}
-          distro: ${{ matrix.os }}
+          distro: ${{ env.DISTRO }}
           githubToken: ${{ github.token }}
           run: |
             bundle exec rake ood_packaging:package:${{ matrix.package }}[${{ matrix.dist }},${{ matrix.arch }}]
@@ -174,12 +178,16 @@ jobs:
         run: bundle exec rake ood_packaging:package:${{ matrix.package }}[${{ matrix.dist }},${{ matrix.arch }}]
         env:
           OOD_PACKAGING_DEBUG: 'true'
+      - name: arch distro
+        run: |
+          DISTRO=$(echo "${{ matrix.os }} | sed 's|\-||g'")
+          echo "DISTRO=${DISTRO}" >> $GITHUB_ENV
       - name: Build package
         if: matrix.arch != 'x86_64'
         uses: uraimo/run-on-arch-action@v2
         with:
           arch: ${{ matrix.arch }}
-          distro: ${{ matrix.os }}
+          distro: ${{ env.DISTRO }}
           githubToken: ${{ github.token }}
           run: |
             bundle exec rake ood_packaging:package:${{ matrix.package }}[${{ matrix.dist }},${{ matrix.arch }}]
@@ -238,12 +246,16 @@ jobs:
       - name: Build ${{ matrix.package }} package
         if: matrix.arch == 'x86_64'
         run: ./bin/ood_packaging -w ./tmp/work -o ./tmp/output -d ${{ matrix.dist }} -a ${{ matrix.arch }} -V v3.1.0 -T --debug $(pwd)/tmp/${{ matrix.package }}
+      - name: arch distro
+        run: |
+          DISTRO=$(echo "${{ matrix.os }} | sed 's|\-||g'")
+          echo "DISTRO=${DISTRO}" >> $GITHUB_ENV
       - name: Build ${{ matrix.package }} package
         if: matrix.arch != 'x86_64'
         uses: uraimo/run-on-arch-action@v2
         with:
           arch: ${{ matrix.arch }}
-          distro: ${{ matrix.os }}
+          distro: ${{ env.DISTRO }}
           githubToken: ${{ github.token }}
           run: |
             ./bin/ood_packaging -w ./tmp/work -o ./tmp/output -d ${{ matrix.dist }} -a ${{ matrix.arch }} -V v3.1.0 -T --debug $(pwd)/tmp/${{ matrix.package }}
