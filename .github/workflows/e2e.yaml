@@ -136,7 +136,7 @@ jobs:
           githubToken: ${{ github.token }}
           run: |
             apt update -y
-            apt install -y ruby-bundler
+            apt install -y ruby-bundler ruby-dev git
             bundle install
             bundle exec rake ood_packaging:package:${{ matrix.package }}[${{ matrix.dist }},${{ matrix.arch }}]
           env: |
@@ -198,7 +198,7 @@ jobs:
           githubToken: ${{ github.token }}
           run: |
             apt update -y
-            apt install -y ruby-bundler
+            apt install -y ruby-bundler ruby-dev git
             bundle install
             bundle exec rake ood_packaging:package:${{ matrix.package }}[${{ matrix.dist }},${{ matrix.arch }}]
           env: |
@@ -272,7 +272,7 @@ jobs:
           githubToken: ${{ github.token }}
           run: |
             apt update -y
-            apt install -y ruby-bundler
+            apt install -y ruby-bundler ruby-dev git
             bundle install
             ./bin/ood_packaging -w ./tmp/work -o ./tmp/output -d ${{ matrix.dist }} -a ${{ matrix.arch }} -V v3.1.0 -T --debug $(pwd)/tmp/${{ matrix.package }}
           env: |
