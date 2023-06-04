@@ -136,7 +136,12 @@ jobs:
           githubToken: ${{ github.token }}
           run: |
             apt update -y
-            apt install -y ruby-bundler ruby-dev git
+            apt install -y ruby-bundler ruby-dev git apt-transport-https ca-certificates curl software-properties-common
+            git config --global --add safe.directory $GITHUB_WORKSPACE
+            curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+            echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+            apt update -y
+            apt install -y docker-ce
             bundle install
             bundle exec rake ood_packaging:package:${{ matrix.package }}[${{ matrix.dist }},${{ matrix.arch }}]
           env: |
@@ -198,7 +203,12 @@ jobs:
           githubToken: ${{ github.token }}
           run: |
             apt update -y
-            apt install -y ruby-bundler ruby-dev git
+            apt install -y ruby-bundler ruby-dev git apt-transport-https ca-certificates curl software-properties-common
+            git config --global --add safe.directory $GITHUB_WORKSPACE
+            curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+            echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+            apt update -y
+            apt install -y docker-ce
             bundle install
             bundle exec rake ood_packaging:package:${{ matrix.package }}[${{ matrix.dist }},${{ matrix.arch }}]
           env: |
@@ -272,7 +282,12 @@ jobs:
           githubToken: ${{ github.token }}
           run: |
             apt update -y
-            apt install -y ruby-bundler ruby-dev git
+            apt install -y ruby-bundler ruby-dev git apt-transport-https ca-certificates curl software-properties-common
+            git config --global --add safe.directory $GITHUB_WORKSPACE
+            curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+            echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+            apt update -y
+            apt install -y docker-ce
             bundle install
             ./bin/ood_packaging -w ./tmp/work -o ./tmp/output -d ${{ matrix.dist }} -a ${{ matrix.arch }} -V v3.1.0 -T --debug $(pwd)/tmp/${{ matrix.package }}
           env: |
