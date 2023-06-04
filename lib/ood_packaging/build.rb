@@ -120,7 +120,7 @@ class OodPackaging::Build
   end
 
   def work_dir
-    File.join('/work', "#{build_box.dist}-#{build_box.arch}")
+    build_box.work_dir
   end
 
   def packaging_config

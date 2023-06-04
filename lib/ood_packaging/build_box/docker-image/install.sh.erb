@@ -45,7 +45,7 @@ run chmod 440 /etc/sudoers.d/ood
 <% if rpm? -%>
 header "Setup RPM env"
 sudo -u <%= ctr_user %> -H cat > <%= ctr_rpmmacros %> <<EOF
-%_topdir /work/<%= dist %>-<%= arch %>
+%_topdir <%= work_dir %>
 <%- # Workaround to weird issue with debuginfo stripping -%>
 <% if dist == 'el7' -%>
 %_builddir %{_topdir}/rpmbuild/BUILD

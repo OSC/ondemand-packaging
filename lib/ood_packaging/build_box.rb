@@ -116,6 +116,10 @@ class OodPackaging::BuildBox
     File.join(File.dirname(__FILE__), 'build_box/docker-image')
   end
 
+  def work_dir
+    File.join('/work', "#{dist}-#{arch}")
+  end
+
   def image_registry
     @config[:build_box_registry] || ENV['OOD_PACKAGING_BUILD_BOX_REGISTRY'] || nil
   end
