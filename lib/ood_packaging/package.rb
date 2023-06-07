@@ -314,6 +314,8 @@ class OodPackaging::Package
     cmd = [container_runtime, 'kill', container_name]
     cmd.concat [cmd_suffix] unless debug?
     sh cmd.join(' '), verbose: debug?
+  rescue RuntimeError
+    puts 'Error killing container'.red
   end
 
   def container_env
