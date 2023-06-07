@@ -22,7 +22,7 @@ build-image:
   rules:
     # Re-enable once Gitlab instance using plugin to integrate with Github
     # - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
-    - if: '$CI_COMMIT_BRANCH !~ /^(main|[0-9]\.[0-9])$/'
+    - if: '$CI_COMMIT_BRANCH !~ /^(main|[0-9]\.[0-9])$/ && $CI_COMMIT_TAG == null'
     - if: $CI_COMMIT_TAG && $CI_COMMIT_TAG !~ /v[0-9].+/
   script:
     - '[ -z ${CI_COMMIT_TAG+x} ] || bundle exec rake ood_packaging:buildbox:pull || true'
@@ -40,7 +40,7 @@ build-ondemand-release:
   rules:
     # Re-enable once Gitlab instance using plugin to integrate with Github
     # - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
-    - if: '$CI_COMMIT_BRANCH !~ /^(main|[0-9]\.[0-9])$/'
+    - if: '$CI_COMMIT_BRANCH !~ /^(main|[0-9]\.[0-9])$/ && $CI_COMMIT_TAG == null'
     - if: '$CI_COMMIT_TAG =~ /^ondemand-release-[0-9]/'
   script:
     - bundle exec rake ood_packaging:package:ondemand-release
@@ -57,7 +57,7 @@ build-ondemand-release-latest:
   rules:
     # Re-enable once Gitlab instance using plugin to integrate with Github
     # - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
-    - if: '$CI_COMMIT_BRANCH !~ /^(main|[0-9]\.[0-9])$/'
+    - if: '$CI_COMMIT_BRANCH !~ /^(main|[0-9]\.[0-9])$/ && $CI_COMMIT_TAG == null'
     - if: '$CI_COMMIT_TAG =~ /^ondemand-release-latest-/'
   script:
     - bundle exec rake ood_packaging:package:ondemand-release-latest
@@ -74,7 +74,7 @@ build-ondemand-runtime:
   rules:
     # Re-enable once Gitlab instance using plugin to integrate with Github
     # - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
-    - if: '$CI_COMMIT_BRANCH !~ /^(main|[0-9]\.[0-9])$/'
+    - if: '$CI_COMMIT_BRANCH !~ /^(main|[0-9]\.[0-9])$/ && $CI_COMMIT_TAG == null'
     - if: '$CI_COMMIT_TAG =~ /^ondemand-runtime-/'
   script:
     - bundle exec rake ood_packaging:package:ondemand-runtime
@@ -96,7 +96,7 @@ build-scl-utils:
   rules:
     # Re-enable once Gitlab instance using plugin to integrate with Github
     # - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
-    - if: '$CI_COMMIT_BRANCH !~ /^(main|[0-9]\.[0-9])$/'
+    - if: '$CI_COMMIT_BRANCH !~ /^(main|[0-9]\.[0-9])$/ && $CI_COMMIT_TAG == null'
     - if: '$CI_COMMIT_TAG =~ /^scl-utils-/'
   script:
     - bundle exec rake ood_packaging:package:scl-utils[$DIST]
@@ -114,7 +114,7 @@ build-passenger:
   rules:
     # Re-enable once Gitlab instance using plugin to integrate with Github
     # - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
-    - if: '$CI_COMMIT_BRANCH !~ /^(main|[0-9]\.[0-9])$/'
+    - if: '$CI_COMMIT_BRANCH !~ /^(main|[0-9]\.[0-9])$/ && $CI_COMMIT_TAG == null'
     - if: '$CI_COMMIT_TAG =~ /^passenger-/'
   script:
     - bundle exec rake ood_packaging:package:passenger[$DIST]
@@ -135,7 +135,7 @@ build-sqlite:
   rules:
     # Re-enable once Gitlab instance using plugin to integrate with Github
     # - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
-    - if: '$CI_COMMIT_BRANCH !~ /^(main|[0-9]\.[0-9])$/'
+    - if: '$CI_COMMIT_BRANCH !~ /^(main|[0-9]\.[0-9])$/ && $CI_COMMIT_TAG == null'
     - if: '$CI_COMMIT_TAG =~ /^sqlite-/'
   script:
     - bundle exec rake ood_packaging:package:sqlite[$DIST]
@@ -154,7 +154,7 @@ build-cjose:
   rules:
     # Re-enable once Gitlab instance using plugin to integrate with Github
     # - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
-    - if: '$CI_COMMIT_BRANCH !~ /^(main|[0-9]\.[0-9])$/'
+    - if: '$CI_COMMIT_BRANCH !~ /^(main|[0-9]\.[0-9])$/ && $CI_COMMIT_TAG == null'
     - if: '$CI_COMMIT_TAG =~ /^cjose-/'
   script:
     - bundle exec rake ood_packaging:package:cjose[$DIST]
@@ -175,7 +175,7 @@ build-mod_auth_openidc:
   rules:
     # Re-enable once Gitlab instance using plugin to integrate with Github
     # - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
-    - if: '$CI_COMMIT_BRANCH !~ /^(main|[0-9]\.[0-9])$/'
+    - if: '$CI_COMMIT_BRANCH !~ /^(main|[0-9]\.[0-9])$/ && $CI_COMMIT_TAG == null'
     - if: '$CI_COMMIT_TAG =~ /^mod_auth_openidc-/'
   script:
     - bundle exec rake ood_packaging:package:mod_auth_openidc[$DIST]
@@ -196,7 +196,7 @@ build-ondemand_exporter:
   rules:
     # Re-enable once Gitlab instance using plugin to integrate with Github
     # - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
-    - if: '$CI_COMMIT_BRANCH !~ /^(main|[0-9]\.[0-9])$/'
+    - if: '$CI_COMMIT_BRANCH !~ /^(main|[0-9]\.[0-9])$/ && $CI_COMMIT_TAG == null'
     - if: '$CI_COMMIT_TAG =~ /^ondemand_exporter-/'
   script:
     - bundle exec rake ood_packaging:package:ondemand_exporter[$DIST]
@@ -217,7 +217,7 @@ build-ondemand-compute:
   rules:
     # Re-enable once Gitlab instance using plugin to integrate with Github
     # - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
-    - if: '$CI_COMMIT_BRANCH !~ /^(main|[0-9]\.[0-9])$/'
+    - if: '$CI_COMMIT_BRANCH !~ /^(main|[0-9]\.[0-9])$/ && $CI_COMMIT_TAG == null'
     - if: '$CI_COMMIT_TAG =~ /^ondemand-compute-/'
   script:
     - bundle exec rake ood_packaging:package:ondemand-compute[$DIST]
@@ -237,7 +237,7 @@ build-python-websockify:
   rules:
     # Re-enable once Gitlab instance using plugin to integrate with Github
     # - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
-    - if: '$CI_COMMIT_BRANCH !~ /^(main|[0-9]\.[0-9])$/'
+    - if: '$CI_COMMIT_BRANCH !~ /^(main|[0-9]\.[0-9])$/ && $CI_COMMIT_TAG == null'
     - if: '$CI_COMMIT_TAG =~ /^python-websockify-/'
   script:
     - bundle exec rake ood_packaging:package:python-websockify[$DIST]
@@ -258,7 +258,7 @@ build-turbovnc:
   rules:
     # Re-enable once Gitlab instance using plugin to integrate with Github
     # - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
-    - if: '$CI_COMMIT_BRANCH !~ /^(main|[0-9]\.[0-9])$/'
+    - if: '$CI_COMMIT_BRANCH !~ /^(main|[0-9]\.[0-9])$/ && $CI_COMMIT_TAG == null'
     - if: '$CI_COMMIT_TAG =~ /^turbovnc-/'
   script:
     - bundle exec rake ood_packaging:package:turbovnc
