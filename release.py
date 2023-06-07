@@ -46,7 +46,7 @@ def release_packages(packages, host, path, pkey, force):
     ssh.close()
     return uploads
 
-def update_repo(host, release, dist, pkey):
+def update_repo(host, release, dist, arch, pkey):
     _pkey = paramiko.RSAKey.from_private_key_file(pkey)
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -56,7 +56,7 @@ def update_repo(host, release, dist, pkey):
     repo_update_dest = '/var/lib/oodpkg/repo-update.sh'
     logger.info("SFTP %s -> oodpkg@%s:%s", repo_update_src, host, repo_update_dest)
     sftp.put(repo_update_src, repo_update_dest)
-    repo_update_cmd = "/bin/bash %s -r %s -d %s" % (repo_update_dest, release, dist)
+    repo_update_cmd = "/bin/bash %s -r %s -d %s -a %s" % (repo_update_dest, release, dist, arch)
     logger.info("Executing via SSH oodpkg@%s '%s'", host, repo_update_cmd)
     stdin, stdout, stderr = ssh.exec_command(repo_update_cmd)
     out = stdout.read()
@@ -151,9 +151,9 @@ Usage examples:
             rpms_released = release_packages(rpms, host, rpm_path, args.pkey, args.force)
             srpms_released = release_packages(srpms, host, srpm_path, args.pkey, args.force)
             if rpms_released and update:
-                update_repo(host, release, dist, args.pkey)
+                update_repo(host, release, dist, arch, args.pkey)
             if srpms_released and update:
-                update_repo(host, release, dist, args.pkey)
+                update_repo(host, release, dist, arch, args.pkey)
 
 if __name__ == '__main__':
     main()
