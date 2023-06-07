@@ -85,7 +85,6 @@ build-ondemand-runtime:
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
       - OOD_PACKAGING_DIST: [el9, amzn2023]
         OOD_PACKAGING_ARCH: [x86_64, aarch64]
-  timeout: 2h
   artifacts:
     paths:
       - tmp/output
