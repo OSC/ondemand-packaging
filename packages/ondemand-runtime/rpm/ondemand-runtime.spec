@@ -24,6 +24,8 @@
 %global ondemand_apps_gem_home %{ondemand_gem_home}/apps
 %global ondemand_core_gem_home %{ondemand_gem_home}/ondemand
 
+%global debug_package %{nil}
+
 Name:      ondemand-runtime
 Version:   %{package_version}
 Release:   %{package_release}%{?dist}
