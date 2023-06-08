@@ -160,6 +160,12 @@ rm -f $RPM_BUILD_DIR/%{buildsubdir}/filesystem
 rm -rf %{buildroot}%{_datadir}/man/man*/*
 rm -rf %{buildroot}%{_datadir}/locale/*
 # End hacks
+# The %undefine macros in Amazon Linux throw errors
+%if 0%{?amzn} == 2023
+cat > %{buildroot}%{_root_sysconfdir}/rpm/macros.%{scl}-config << EOF
+%%scl %scl
+EOF
+%endif
 mkdir -p %{buildroot}/opt/rh
 ln -s ../ood/ondemand %{buildroot}/opt/rh/%{scl}
 mkdir -p %{buildroot}%{ondemand_apps_gem_home}
