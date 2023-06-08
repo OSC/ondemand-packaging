@@ -124,7 +124,7 @@ build-passenger:
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
       - OOD_PACKAGING_DIST: [el9, amzn2023, ubuntu-20.04, ubuntu-22.04]
         OOD_PACKAGING_ARCH: [x86_64, aarch64]
-  timeout: 2h
+  timeout: 3h
   artifacts:
     paths:
       - tmp/output
@@ -270,7 +270,7 @@ build-turbovnc:
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
       - OOD_PACKAGING_DIST: [el9, amzn2023]
         OOD_PACKAGING_ARCH: [x86_64, aarch64]
-  timeout: 2h
+  timeout: 3h
   artifacts:
     paths:
       - tmp/output
