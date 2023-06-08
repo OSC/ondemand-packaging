@@ -25,6 +25,11 @@
 %{!?_httpd_mmn: %{expand: %%global _httpd_mmn %%(cat %{_includedir}/httpd/.mmn 2>/dev/null || echo 0-0)}}
 %{!?_httpd_moddir: %{expand: %%global _httpd_moddir      %%{_libdir}/httpd/modules}}
 
+%ifarch aarch64
+%define mflag "-march=armv8-a"
+%else
+%define mflag "-m64"
+%endif
 
 Name:       %{?scl_prefix}passenger
 Version:    %{passenger_version}
@@ -113,8 +118,8 @@ export LC_ALL=en_US.UTF-8
 # nginx
 # TODO %optflags on EL8 caused some very odd problems so only pull in what's absolutely necessary
 %if 0%{?rhel} >= 8
-export EXTRA_CFLAGS="${CFLAGS} -m64 -mtune=generic -fPIC"
-export EXTRA_CXXFLAGS="${CXXFLAGS} -m64 -mtune=generic -fPIC"
+export EXTRA_CFLAGS="${CFLAGS} %{mflag} -mtune=generic -fPIC"
+export EXTRA_CXXFLAGS="${CXXFLAGS} %{mflag} -mtune=generic -fPIC"
 %else
 export EXTRA_CFLAGS="${CFLAGS:-%optflags} -Wno-deprecated"
 export EXTRA_CXXFLAGS="${CXXFLAGS:-%optflags} -Wno-deprecated"
