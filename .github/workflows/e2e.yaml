@@ -77,10 +77,12 @@ jobs:
             arch: x86_64
             os: ubuntu-22.04
             package: sqlite
-          - dist: el7
-            arch: aarch64
-            os: ubuntu-22.04
-            package: sqlite
+          # Github actions for multi arch run as root and
+          # this seems to break the sqlite tests
+          #- dist: el7
+          #  arch: aarch64
+          #  os: ubuntu-22.04
+          #  package: sqlite
           - dist: amzn2023
             arch: x86_64
             os: ubuntu-22.04
@@ -108,10 +110,6 @@ jobs:
           - dist: amzn2023
             arch: aarch64
             package: turbovnc
-          # Times out because very slow
-          - dist: el7
-            arch: aarch64
-            package: sqlite
     runs-on: ${{ matrix.os }}
     name: Package test package=${{ matrix.package }} dist=${{ matrix.dist }} arch=${{ matrix.arch }}
     steps:
