@@ -151,7 +151,7 @@ Usage examples:
             if not os.path.islink(rel_l):
                 logger.info("ln -s %s %s", rel, rel_l)
                 os.symlink(rel, rel_l)
-            for arch in ['SRPMS', 'x86_64']:
+            for arch in ['SRPMS', 'x86_64', 'aarch64']:
                 d = os.path.join(release_dir, t, rel, arch)
                 if not os.path.isdir(d):
                     logger.info("mkdir -p %s", d)
@@ -161,20 +161,21 @@ Usage examples:
             if not os.path.isdir(rel_d):
                 logger.info("mkdir -p %s", rel_d)
                 os.makedirs(rel_d, 0o755)
-            for arch in ['SRPMS', 'x86_64']:
+            for arch in ['SRPMS', 'x86_64', 'aarch64']:
                 d = os.path.join(release_dir, t, rel, arch)
                 if not os.path.isdir(d):
                     logger.info("mkdir -p %s", d)
                     os.makedirs(d, 0o755)
         for rel in DEB_CODENAMES:
-            rel_d = os.path.join(release_dir, t, 'apt/dists', rel, 'main/binary-amd64')
             pool_d = os.path.join(release_dir, t, 'apt/pool', rel)
-            if not os.path.isdir(rel_d):
-                logger.info("mkdir -p %s", rel_d)
-                os.makedirs(rel_d, 0o755)
             if not os.path.isdir(pool_d):
                 logger.info("mkdir -p %s", pool_d)
                 os.makedirs(pool_d, 0o755)
+            for arch in ['binary-amd64', 'binary-arm64']:
+                rel_d = os.path.join(release_dir, t, 'apt/dists', rel, 'main', arch)
+                if not os.path.isdir(rel_d):
+                    logger.info("mkdir -p %s", rel_d)
+                    os.makedirs(rel_d, 0o755)
 
     if args.release in ['latest','ci','nightly'] or args.release.startswith('build'):
         logger.info("Latest release does not require sync, exiting")

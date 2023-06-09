@@ -117,6 +117,9 @@ LOCK_FILE="/var/lib/oodpkg/repo-update-${LOCK_NAME}.lock"
     x86_64)
       ARCH="amd64"
       ;;
+    aarch64)
+      ARCH="arm64"
+      ;;
     *)
       echo "Unrecognized ARCH"
       exit 1

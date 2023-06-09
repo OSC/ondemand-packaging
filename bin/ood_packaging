@@ -22,6 +22,10 @@ OptionParser.new do |opts|
     options[:dist] = v
   end
 
+  opts.on('-a', '--arch=ARCH', String, 'Architecture to build') do |v|
+    options[:arch] = v
+  end
+
   opts.on('-V', '--version=VERSION', String, 'Version of package to build') do |v|
     options[:version] = v
   end

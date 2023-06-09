@@ -8,6 +8,12 @@
 %else
 %define apache_confd /opt/rh/httpd24/root/etc/httpd/conf.d
 %endif
+%ifarch x86_64
+%define platform amd64
+%endif
+%ifarch aarch64
+%define platform arm64
+%endif
 
 Name:       ondemand_exporter
 Version:    %{package_version}
@@ -17,7 +23,7 @@ Summary:    OnDemand Prometheus Exporter
 Group:      System Environment/Daemons
 License:    Apache-2.0
 URL:        https://github.com/OSC/ondemand_exporter
-Source0:    https://github.com/OSC/ondemand_exporter/releases/download/v%{version}/ondemand_exporter-%{version}.linux-amd64.tar.gz
+Source0:    https://github.com/OSC/ondemand_exporter/releases/download/v%{version}/ondemand_exporter-%{version}.linux-%{platform}.tar.gz
 
 BuildRequires:  systemd
 Requires:       ondemand
@@ -26,7 +32,7 @@ Requires:       ondemand
 OnDemand Prometheus Exporter
 
 %prep
-%setup -q -n ondemand_exporter-%{version}.linux-amd64
+%setup -q -n ondemand_exporter-%{version}.linux-%{platform}
 
 %install
 %__install -p -m 755 -D ondemand_exporter %{buildroot}%{_bindir}/%{name}

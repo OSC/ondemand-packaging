@@ -10,6 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-22.04]
         dist:
           - el7
           - el8
@@ -17,38 +18,49 @@ jobs:
           - ubuntu-20.04
           - ubuntu-22.04
           - amzn2023
-    runs-on: ubuntu-latest
+        arch:
+          - x86_64
+          - aarch64
+    runs-on: ${{ matrix.os }}
     name: Buildbox tests
     steps:
       - name: Checkout ${{ github.sha	}}
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
       - name: Setup Ruby using Bundler
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.0.4'
           bundler: '2.1.4'
           bundler-cache: true
-      - name: Pull the builx box
-        run: bundle exec rake ood_packaging:buildbox:pull[${{ matrix.dist }}] || exit 0
+      - name: Pull the build box
+        run: bundle exec rake ood_packaging:buildbox:pull[${{ matrix.dist }},${{ matrix.arch }}] || exit 0
       - name: Build the build box
-        run: bundle exec rake ood_packaging:buildbox:build[${{ matrix.dist }}]
+        run: bundle exec rake ood_packaging:buildbox:build[${{ matrix.dist }},${{ matrix.arch }}]
       - name: Export Docker image
-        run: bundle exec rake ood_packaging:buildbox:save[${{ matrix.dist }},/tmp/ood_packaging-${{ matrix.dist }}.tar.gz]
+        run: bundle exec rake ood_packaging:buildbox:save[${{ matrix.dist }},${{ matrix.arch }},/tmp/ood_packaging-${{ matrix.dist }}-${{ matrix.arch }}.tar.gz]
       - name: Upload Docker image
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
-          name: image-${{ matrix.dist }}
-          path: /tmp/ood_packaging-${{ matrix.dist }}.tar.gz
+          name: image-${{ matrix.dist }}-${{ matrix.arch }}
+          path: /tmp/ood_packaging-${{ matrix.dist }}-${{ matrix.arch }}.tar.gz
   package-el:
     needs: [buildbox]
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-22.04]
         dist:
           - el7
           - el8
           - el9
           - amzn2023
+        arch:
+          - x86_64
+          - aarch64
         package:
           - ondemand-release
           - ondemand-release-latest
@@ -62,19 +74,47 @@ jobs:
           - turbovnc
         include:
           - dist: el7
+            arch: x86_64
+            os: ubuntu-22.04
             package: sqlite
+          # Github actions for multi arch run as root and
+          # this seems to break the sqlite tests
+          #- dist: el7
+          #  arch: aarch64
+          #  os: ubuntu-22.04
+          #  package: sqlite
           - dist: amzn2023
+            arch: x86_64
+            os: ubuntu-22.04
+            package: scl-utils
+          - dist: amzn2023
+            os: ubuntu-22.04
+            arch: aarch64
             package: scl-utils
         exclude:
           - dist: el9
             package: cjose
           - dist: el9
             package: mod_auth_openidc
-    runs-on: ubuntu-latest
-    name: Package test package=${{ matrix.package }} dist=${{ matrix.dist }}
+          - arch: aarch64
+            package: ondemand-release
+          - arch: aarch64
+            package: ondemand-release-latest
+          - arch: aarch64
+            package: ondemand-compute
+          # Times out because very slow
+          - dist: amzn2023
+            arch: aarch64
+            package: passenger
+          # Times out because very slow
+          - dist: amzn2023
+            arch: aarch64
+            package: turbovnc
+    runs-on: ${{ matrix.os }}
+    name: Package test package=${{ matrix.package }} dist=${{ matrix.dist }} arch=${{ matrix.arch }}
     steps:
       - name: Checkout ${{ github.sha	}}
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Setup Ruby ${{ matrix.ruby }} using Bundler ${{ matrix.bundler }}
         uses: ruby/setup-ruby@v1
         with:
@@ -82,33 +122,67 @@ jobs:
           bundler: '2.1.4'
           bundler-cache: true
       - name: Download image
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
-          name: image-${{ matrix.dist }}
+          name: image-${{ matrix.dist }}-${{ matrix.arch }}
           path: /tmp
       - name: Load image
-        run: docker load --input /tmp/ood_packaging-${{ matrix.dist }}.tar.gz
+        run: docker load --input /tmp/ood_packaging-${{ matrix.dist }}-${{ matrix.arch }}.tar.gz
       - name: Build package
-        run: bundle exec rake ood_packaging:package:${{ matrix.package }}[${{ matrix.dist }}]
+        if: matrix.arch == 'x86_64'
+        run: bundle exec rake ood_packaging:package:${{ matrix.package }}[${{ matrix.dist }},${{ matrix.arch }}]
         env:
           OOD_PACKAGING_DEBUG: 'true'
+      - name: arch distro
+        run: |
+          DISTRO=$(echo "${{ matrix.os }}" | sed 's|\-||g')
+          echo "DISTRO=${DISTRO}" >> $GITHUB_ENV
+      - name: Build package
+        if: matrix.arch != 'x86_64'
+        uses: uraimo/run-on-arch-action@v2
+        with:
+          arch: ${{ matrix.arch }}
+          distro: ${{ env.DISTRO }}
+          githubToken: ${{ github.token }}
+          install: |
+            apt update -y
+            apt install -y ruby-bundler ruby-dev git apt-transport-https ca-certificates curl software-properties-common
+            curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+            echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+            apt update -y
+            apt install -y docker-ce
+          run: |
+            git config --global --add safe.directory $GITHUB_WORKSPACE
+            bundle install
+            bundle exec rake ood_packaging:package:${{ matrix.package }}[${{ matrix.dist }},${{ matrix.arch }}]
+          env: |
+            OOD_PACKAGING_DEBUG: 'true'
   package-deb:
     needs: [buildbox]
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-22.04]
         dist:
           - ubuntu-20.04
           - ubuntu-22.04
+        arch:
+          - x86_64
+          - aarch64
         package:
           - ondemand-release
           - ondemand-release-latest
           - passenger
-    runs-on: ubuntu-latest
-    name: Package test package=${{ matrix.package }} dist=${{ matrix.dist }}
+        exclude:
+          - arch: aarch64
+            package: ondemand-release
+          - arch: aarch64
+            package: ondemand-release-latest
+    runs-on: ${{ matrix.os }}
+    name: Package test package=${{ matrix.package }} dist=${{ matrix.dist }} arch=${{ matrix.arch }}
     steps:
       - name: Checkout ${{ github.sha	}}
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Setup Ruby ${{ matrix.ruby }} using Bundler ${{ matrix.bundler }}
         uses: ruby/setup-ruby@v1
         with:
@@ -116,21 +190,47 @@ jobs:
           bundler: '2.1.4'
           bundler-cache: true
       - name: Download image
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
-          name: image-${{ matrix.dist }}
+          name: image-${{ matrix.dist }}-${{ matrix.arch }}
           path: /tmp
       - name: Load image
-        run: docker load --input /tmp/ood_packaging-${{ matrix.dist }}.tar.gz
+        run: docker load --input /tmp/ood_packaging-${{ matrix.dist }}-${{ matrix.arch }}.tar.gz
       - name: Build package
-        run: bundle exec rake ood_packaging:package:${{ matrix.package }}[${{ matrix.dist }}]
+        if: matrix.arch == 'x86_64'
+        run: bundle exec rake ood_packaging:package:${{ matrix.package }}[${{ matrix.dist }},${{ matrix.arch }}]
         env:
           OOD_PACKAGING_DEBUG: 'true'
+      - name: arch distro
+        run: |
+          DISTRO=$(echo "${{ matrix.os }}" | sed 's|\-||g')
+          echo "DISTRO=${DISTRO}" >> $GITHUB_ENV
+      - name: Build package
+        if: matrix.arch != 'x86_64'
+        uses: uraimo/run-on-arch-action@v2
+        with:
+          arch: ${{ matrix.arch }}
+          distro: ${{ env.DISTRO }}
+          githubToken: ${{ github.token }}
+          install: |
+            apt update -y
+            apt install -y ruby-bundler ruby-dev git apt-transport-https ca-certificates curl software-properties-common
+            curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+            echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+            apt update -y
+            apt install -y docker-ce
+          run: |
+            git config --global --add safe.directory $GITHUB_WORKSPACE
+            bundle install
+            bundle exec rake ood_packaging:package:${{ matrix.package }}[${{ matrix.dist }},${{ matrix.arch }}]
+          env: |
+            OOD_PACKAGING_DEBUG: 'true'
   package-external:
     needs: [buildbox]
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-22.04]
         dist:
           - el7
           - el8
@@ -138,20 +238,29 @@ jobs:
           - ubuntu-20.04
           - ubuntu-22.04
           - amzn2023
+        arch:
+          - x86_64
+          - aarch64
         package:
           - ondemand
         include:
           - dist: el7
+            arch: x86_64
+            os: ubuntu-22.04
             package: bc_osc_rstudio_server
           - dist: el8
+            arch: x86_64
+            os: ubuntu-22.04
             package: bc_osc_rstudio_server
           - dist: el9
+            arch: x86_64
+            os: ubuntu-22.04
             package: bc_osc_rstudio_server
-    runs-on: ubuntu-latest
-    name: Package ${{ matrix.package }} dist=${{ matrix.dist }}
+    runs-on: ${{ matrix.os }}
+    name: Package ${{ matrix.package }} dist=${{ matrix.dist }} arch=${{ matrix.arch }}
     steps:
       - name: Checkout ${{ github.sha	}}
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Setup Ruby using Bundler
         uses: ruby/setup-ruby@v1
         with:
@@ -159,15 +268,40 @@ jobs:
           bundler: '2.1.4'
           bundler-cache: true
       - name: Download image
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
-          name: image-${{ matrix.dist }}
+          name: image-${{ matrix.dist }}-${{ matrix.arch }}
           path: /tmp
       - name: Load image
-        run: docker load --input /tmp/ood_packaging-${{ matrix.dist }}.tar.gz
+        run: docker load --input /tmp/ood_packaging-${{ matrix.dist }}-${{ matrix.arch }}.tar.gz
       - name: Clone ${{ matrix.package }}
         run: |
           mkdir -p ./tmp
           git clone https://github.com/OSC/${{ matrix.package }}.git ./tmp/${{ matrix.package }}
       - name: Build ${{ matrix.package }} package
-        run: ./bin/ood_packaging -w ./tmp/work -o ./tmp/output -d ${{ matrix.dist }} -V v3.1.0 -T --debug $(pwd)/tmp/${{ matrix.package }}
+        if: matrix.arch == 'x86_64'
+        run: ./bin/ood_packaging -w ./tmp/work -o ./tmp/output -d ${{ matrix.dist }} -a ${{ matrix.arch }} -V v3.1.0 -T --debug $(pwd)/tmp/${{ matrix.package }}
+      - name: arch distro
+        run: |
+          DISTRO=$(echo "${{ matrix.os }}" | sed 's|\-||g')
+          echo "DISTRO=${DISTRO}" >> $GITHUB_ENV
+      - name: Build ${{ matrix.package }} package
+        if: matrix.arch != 'x86_64'
+        uses: uraimo/run-on-arch-action@v2
+        with:
+          arch: ${{ matrix.arch }}
+          distro: ${{ env.DISTRO }}
+          githubToken: ${{ github.token }}
+          install: |
+            apt update -y
+            apt install -y ruby-bundler ruby-dev git apt-transport-https ca-certificates curl software-properties-common
+            curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+            echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+            apt update -y
+            apt install -y docker-ce
+          run: |
+            git config --global --add safe.directory $GITHUB_WORKSPACE
+            bundle install
+            ./bin/ood_packaging -w ./tmp/work -o ./tmp/output -d ${{ matrix.dist }} -a ${{ matrix.arch }} -V v3.1.0 -T --debug $(pwd)/tmp/${{ matrix.package }}
+          env: |
+            OOD_PACKAGING_DEBUG: 'true'

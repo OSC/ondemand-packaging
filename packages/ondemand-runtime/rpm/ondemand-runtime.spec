@@ -24,6 +24,10 @@
 %global ondemand_apps_gem_home %{ondemand_gem_home}/apps
 %global ondemand_core_gem_home %{ondemand_gem_home}/ondemand
 
+# Attempts to speed up builds on non x86_64
+%global debug_package %{nil}
+%global __os_install_post %{nil}
+
 Name:      ondemand-runtime
 Version:   %{package_version}
 Release:   %{package_release}%{?dist}
@@ -149,6 +153,19 @@ Meta package for pulling in SCL apache %{apache}
 
 %install
 %scl_install
+# Hacks to reduce number of objects in RPM which
+# should speed up non x86_64 builds running on x86_64 hardware
+rm -f $RPM_BUILD_DIR/%{buildsubdir}/filelist
+rm -f $RPM_BUILD_DIR/%{buildsubdir}/filesystem
+rm -rf %{buildroot}%{_datadir}/man/man*/*
+rm -rf %{buildroot}%{_datadir}/locale/*
+# End hacks
+# The %undefine macros in Amazon Linux throw errors
+%if 0%{?amzn} == 2023
+cat > %{buildroot}%{_root_sysconfdir}/rpm/macros.%{scl}-config << EOF
+%%scl %scl
+EOF
+%endif
 mkdir -p %{buildroot}/opt/rh
 ln -s ../ood/ondemand %{buildroot}/opt/rh/%{scl}
 mkdir -p %{buildroot}%{ondemand_apps_gem_home}
@@ -191,7 +208,7 @@ cat >> %{buildroot}%{_root_sysconfdir}/rpm/macros.%{scl_name_base}-scldevel << E
 %%scl_%{scl_name_base}_apps_gem_home %{ondemand_apps_gem_home}
 EOF
 
-%files -f filelist
+%files
 %scl_files
 /opt/rh/%{scl}
 

@@ -35,7 +35,14 @@ $(PREFIX)/usr/sbin/passenger-status "$$@"
 endef
 export ONDEMAND_PASSENGER_STATUS
 
-export BASE_CCOPTS=-g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches -m64 -mtune=generic
+export ARCH = $(shell uname -p)
+ifeq ($(ARCH),aarch64)
+export MFLAG = "-march=armv8-a"
+else
+export MFALG = "-m64"
+endif
+
+export BASE_CCOPTS=-g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches $(MFALG) -mtune=generic
 export NGINX_CCOPTS=-O2 $(BASE_CCOPTS)
 export PASSENGER_CCOPTS=$(BASE_CCOPTS) -Wno-deprecated
 export LDOPTS=-Wl,-z,relro -Wl,-E

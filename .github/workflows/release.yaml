@@ -17,11 +17,18 @@ jobs:
           - amzn2023
           - ubuntu-20.04
           - ubuntu-22.04
+        arch:
+          - x86_64
+          - aarch64
     name: Release buildbox
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
       - name: Setup Ruby using Bundler
         uses: ruby/setup-ruby@v1
         with:
@@ -31,11 +38,11 @@ jobs:
       - name: setup the environment
         run: echo "OOD_PACKAGING_BUILD_BOX_VERSION=${GITHUB_REF#refs/*/v}" >> $GITHUB_ENV
       - name: docker build and tag
-        run: bundle exec rake ood_packaging:buildbox:build[${{ matrix.dist }}]
+        run: bundle exec rake ood_packaging:buildbox:build[${{ matrix.dist }},${{ matrix.arch }}]
       - name: login to dockerhub
         run: docker login -u ${{ secrets.OSC_ROBOT_DOCKERHUB_USER }} -p ${{ secrets.OSC_ROBOT_DOCKERHUB_TOKEN }}
       - name: push images to dockerhub
-        run: bundle exec rake ood_packaging:buildbox:push[${{ matrix.dist }}]
+        run: bundle exec rake ood_packaging:buildbox:push[${{ matrix.dist }},${{ matrix.arch }}]
   release-gem:
     needs: [release-buildbox]
     name: Release gem
@@ -45,7 +52,7 @@ jobs:
         id: version
         run: echo ::set-output name=version::${GITHUB_REF#refs/*/v}
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Setup Ruby using Bundler
         uses: ruby/setup-ruby@v1
         with:

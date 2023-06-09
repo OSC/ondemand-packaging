@@ -46,7 +46,7 @@ def release_packages(packages, host, path, pkey, force):
     ssh.close()
     return uploads
 
-def update_repo(host, release, dist, pkey):
+def update_repo(host, release, dist, arch, pkey):
     _pkey = paramiko.RSAKey.from_private_key_file(pkey)
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -56,7 +56,7 @@ def update_repo(host, release, dist, pkey):
     repo_update_dest = '/var/lib/oodpkg/repo-update.sh'
     logger.info("SFTP %s -> oodpkg@%s:%s", repo_update_src, host, repo_update_dest)
     sftp.put(repo_update_src, repo_update_dest)
-    repo_update_cmd = "/bin/bash %s -r %s -d %s" % (repo_update_dest, release, dist)
+    repo_update_cmd = "/bin/bash %s -r %s -d %s -a %s" % (repo_update_dest, release, dist, arch)
     logger.info("Executing via SSH oodpkg@%s '%s'", host, repo_update_cmd)
     stdin, stdout, stderr = ssh.exec_command(repo_update_cmd)
     out = stdout.read()
@@ -113,7 +113,9 @@ Usage examples:
     release = config.get(args.config_section, 'release').replace('RELEASE', build_release)
 
     for release_dir in args.dirs:
-        dist = os.path.basename(release_dir)
+        release_name = os.path.basename(release_dir)
+        dist = release_name.rsplit('-', 1)[0]
+        arch = release_name.rsplit('-', 1)[1]
         deb = False
         if dist in deb_dist_map:
             deb = deb_dist_map[dist]
@@ -131,11 +133,11 @@ Usage examples:
                     debs.append(p)
             debs_released = release_packages(debs, host, pool_path, args.pkey, args.force)
             if debs_released and update:
-                update_repo(host, release, deb, args.pkey)
+                update_repo(host, release, deb, arch, args.pkey)
         else:
-            rpm_path = config.get(args.config_section, 'rpm_path').replace('DIST', dist).replace('RELEASE', build_release)
+            rpm_path = config.get(args.config_section, 'rpm_path').replace('DIST', dist).replace('ARCH', arch).replace('RELEASE', build_release)
             srpm_path = config.get(args.config_section, 'srpm_path').replace('DIST', dist).replace('RELEASE', build_release)
-            logger.debug("rpm_path=%s srpm_path=%s dist=%s", rpm_path, srpm_path, dist)
+            logger.debug("rpm_path=%s srpm_path=%s dist=%s arch=%s", rpm_path, srpm_path, dist, arch)
             rpms = []
             srpms = []
             for f in os.listdir(release_dir):
@@ -149,9 +151,9 @@ Usage examples:
             rpms_released = release_packages(rpms, host, rpm_path, args.pkey, args.force)
             srpms_released = release_packages(srpms, host, srpm_path, args.pkey, args.force)
             if rpms_released and update:
-                update_repo(host, release, dist, args.pkey)
+                update_repo(host, release, dist, arch, args.pkey)
             if srpms_released and update:
-                update_repo(host, release, dist, args.pkey)
+                update_repo(host, release, dist, arch, args.pkey)
 
 if __name__ == '__main__':
     main()
