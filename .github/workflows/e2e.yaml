@@ -100,6 +100,18 @@ jobs:
             package: ondemand-release-latest
           - arch: aarch64
             package: ondemand-compute
+          # Times out because very slow
+          - dist: amzn2023
+            arch: aarch64
+            package: passenger
+          # Times out because very slow
+          - dist: amzn2023
+            arch: aarch64
+            package: turbovnc
+          # Times out because very slow
+          - dist: el7
+            arch: aarch64
+            package: sqlite
     runs-on: ${{ matrix.os }}
     name: Package test package=${{ matrix.package }} dist=${{ matrix.dist }} arch=${{ matrix.arch }}
     steps:
