@@ -25,7 +25,7 @@ jobs:
     name: Buildbox tests
     steps:
       - name: Checkout ${{ github.sha	}}
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
@@ -43,7 +43,7 @@ jobs:
       - name: Export Docker image
         run: bundle exec rake ood_packaging:buildbox:save[${{ matrix.dist }},${{ matrix.arch }},/tmp/ood_packaging-${{ matrix.dist }}-${{ matrix.arch }}.tar.gz]
       - name: Upload Docker image
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: image-${{ matrix.dist }}-${{ matrix.arch }}
           path: /tmp/ood_packaging-${{ matrix.dist }}-${{ matrix.arch }}.tar.gz
@@ -116,7 +116,7 @@ jobs:
     name: Package test package=${{ matrix.package }} dist=${{ matrix.dist }} arch=${{ matrix.arch }}
     steps:
       - name: Checkout ${{ github.sha	}}
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Setup Ruby ${{ matrix.ruby }} using Bundler ${{ matrix.bundler }}
         uses: ruby/setup-ruby@v1
         with:
@@ -124,7 +124,7 @@ jobs:
           bundler: '2.1.4'
           bundler-cache: true
       - name: Download image
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: image-${{ matrix.dist }}-${{ matrix.arch }}
           path: /tmp
@@ -184,7 +184,7 @@ jobs:
     name: Package test package=${{ matrix.package }} dist=${{ matrix.dist }} arch=${{ matrix.arch }}
     steps:
       - name: Checkout ${{ github.sha	}}
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Setup Ruby ${{ matrix.ruby }} using Bundler ${{ matrix.bundler }}
         uses: ruby/setup-ruby@v1
         with:
@@ -192,7 +192,7 @@ jobs:
           bundler: '2.1.4'
           bundler-cache: true
       - name: Download image
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: image-${{ matrix.dist }}-${{ matrix.arch }}
           path: /tmp
@@ -262,7 +262,7 @@ jobs:
     name: Package ${{ matrix.package }} dist=${{ matrix.dist }} arch=${{ matrix.arch }}
     steps:
       - name: Checkout ${{ github.sha	}}
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Setup Ruby using Bundler
         uses: ruby/setup-ruby@v1
         with:
@@ -270,7 +270,7 @@ jobs:
           bundler: '2.1.4'
           bundler-cache: true
       - name: Download image
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: image-${{ matrix.dist }}-${{ matrix.arch }}
           path: /tmp
