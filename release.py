@@ -133,7 +133,7 @@ Usage examples:
                     debs.append(p)
             debs_released = release_packages(debs, host, pool_path, args.pkey, args.force)
             if debs_released and update:
-                update_repo(host, release, deb, args.pkey)
+                update_repo(host, release, deb, arch, args.pkey)
         else:
             rpm_path = config.get(args.config_section, 'rpm_path').replace('DIST', dist).replace('ARCH', arch).replace('RELEASE', build_release)
             srpm_path = config.get(args.config_section, 'srpm_path').replace('DIST', dist).replace('RELEASE', build_release)
