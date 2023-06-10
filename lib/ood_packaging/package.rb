@@ -248,7 +248,20 @@ class OodPackaging::Package
     end
   end
 
+  # Unused but left in case useful in future
+  # def handle_signals
+  #   ['QUIT', 'TERM', 'INT'].each do |signal|
+  #     Signal.trap(signal) do
+  #       puts "Caught signal #{signal}, proceeding to kill container".red
+  #       container_kill!
+  #       exit 1
+  #     end
+  #   end
+  # end
+
+  # rubocop:disable Metrics/AbcSize
   def run!
+    # handle_signals
     if tar_only?
       tar!
       return
@@ -259,6 +272,10 @@ class OodPackaging::Package
     container_start!
     container_exec!(exec_rake)
     puts "Build SUCCESS: package=#{package} dist=#{build_box.dist}".green
+  rescue SignalException => e
+    puts "Caught signal #{e}, proceeding to kill container".red
+    container_kill!
+    exit 1
   rescue RuntimeError
     puts "Build FAILED package=#{package} dist=#{build_box.dist}".red
     raise
@@ -266,6 +283,7 @@ class OodPackaging::Package
     container_attach! if attach?
     container_kill! if container_running? && !attach?
   end
+  # rubocop:enable Metrics/AbcSize
 
   def container_running?
     cmd = "#{container_runtime} inspect #{container_name} 2>/dev/null 1>/dev/null"
