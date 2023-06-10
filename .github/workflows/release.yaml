@@ -20,6 +20,7 @@ jobs:
         arch:
           - x86_64
           - aarch64
+          - ppc64le
     name: Release buildbox
     runs-on: ubuntu-latest
     steps:
@@ -49,8 +50,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set version
-        id: version
-        run: echo ::set-output name=version::${GITHUB_REF#refs/*/v}
+        run: |
+          VERSION=${GITHUB_REF#refs/*/v}
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+        run: echo ::set-output name=version::
       - name: checkout
         uses: actions/checkout@v3
       - name: Setup Ruby using Bundler
@@ -71,4 +74,4 @@ jobs:
       - name: Publish gem
         run: |
           bundle exec rake build
-          gem push pkg/ood_packaging-${{ steps.version.outputs.version }}.gem
+          gem push pkg/ood_packaging-${{ env.VERSION }}.gem

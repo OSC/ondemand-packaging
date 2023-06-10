@@ -11,7 +11,7 @@ class OodPackaging::BuildBox
 
   BASE_IMAGES = {
     'el7'          => 'centos:7',
-    'el8'          => 'rockylinux/rockylinux:8',
+    'el8'          => 'almalinux:8',
     'el9'          => 'almalinux:9',
     'ubuntu-20.04' => 'ubuntu:20.04',
     'ubuntu-22.04' => 'ubuntu:22.04',
@@ -25,7 +25,8 @@ class OodPackaging::BuildBox
 
   ARCH_PLATFORMS = {
     'x86_64'  => 'linux/amd64',
-    'aarch64' => 'linux/arm64'
+    'aarch64' => 'linux/arm64',
+    'ppc64le' => 'linux/ppc64le'
   }.freeze
 
   def initialize(config = {})

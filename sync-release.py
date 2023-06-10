@@ -151,7 +151,7 @@ Usage examples:
             if not os.path.islink(rel_l):
                 logger.info("ln -s %s %s", rel, rel_l)
                 os.symlink(rel, rel_l)
-            for arch in ['SRPMS', 'x86_64', 'aarch64']:
+            for arch in ['SRPMS', 'x86_64', 'aarch64', 'ppc64le']:
                 d = os.path.join(release_dir, t, rel, arch)
                 if not os.path.isdir(d):
                     logger.info("mkdir -p %s", d)
@@ -161,7 +161,7 @@ Usage examples:
             if not os.path.isdir(rel_d):
                 logger.info("mkdir -p %s", rel_d)
                 os.makedirs(rel_d, 0o755)
-            for arch in ['SRPMS', 'x86_64', 'aarch64']:
+            for arch in ['SRPMS', 'x86_64', 'aarch64', 'ppc64le']:
                 d = os.path.join(release_dir, t, rel, arch)
                 if not os.path.isdir(d):
                     logger.info("mkdir -p %s", d)
@@ -171,7 +171,7 @@ Usage examples:
             if not os.path.isdir(pool_d):
                 logger.info("mkdir -p %s", pool_d)
                 os.makedirs(pool_d, 0o755)
-            for arch in ['binary-amd64', 'binary-arm64']:
+            for arch in ['binary-amd64', 'binary-arm64', 'binary-ppc64le']:
                 rel_d = os.path.join(release_dir, t, 'apt/dists', rel, 'main', arch)
                 if not os.path.isdir(rel_d):
                     logger.info("mkdir -p %s", rel_d)

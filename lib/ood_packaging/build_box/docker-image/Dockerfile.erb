@@ -17,7 +17,7 @@ RUN head -n 13 /etc/yum.repos.d/CentOS-SCLo-scl-rh.repo >> /etc/yum.repos.d/Cent
 RUN rm -f /etc/yum.repos.d/CentOS-SCLo-scl-rh.repo /etc/yum.repos.d/CentOS-SCLo-scl.repo
 <% elsif dnf? -%>
 RUN dnf update -y && dnf clean all && rm -rf /var/cache/dnf/*
-RUN dnf install -y dnf-utils <%= dist =~ /^el/ ? 'epel-release' : '' %> langpacks-en glibc-all-langpacks && dnf clean all && rm -rf /var/cache/dnf/*
+RUN dnf install -y dnf-utils <%= dist =~ /^el/ ? 'epel-release' : '' %> langpacks-en glibc-langpack-en && dnf clean all && rm -rf /var/cache/dnf/*
 <% if dist == 'el8' -%>
 RUN dnf config-manager --set-enabled powertools && dnf clean all && rm -rf /var/cache/dnf/*
 RUN dnf module enable -y ruby:<%= ruby_version %> nodejs:<%= nodejs_version %> && dnf clean all && rm -rf /var/cache/dnf/*

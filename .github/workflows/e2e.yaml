@@ -21,6 +21,7 @@ jobs:
         arch:
           - x86_64
           - aarch64
+          - ppc64le
     runs-on: ${{ matrix.os }}
     name: Buildbox tests
     steps:
@@ -61,6 +62,7 @@ jobs:
         arch:
           - x86_64
           - aarch64
+          - ppc64le
         package:
           - ondemand-release
           - ondemand-release-latest
@@ -91,6 +93,10 @@ jobs:
             os: ubuntu-22.04
             arch: aarch64
             package: scl-utils
+          - dist: amzn2023
+            os: ubuntu-22.04
+            arch: ppc64le
+            package: scl-utils
         exclude:
           - dist: el9
             package: cjose
@@ -102,13 +108,25 @@ jobs:
             package: ondemand-release-latest
           - arch: aarch64
             package: ondemand-compute
+          - arch: ppc64le
+            package: ondemand-release
+          - arch: ppc64le
+            package: ondemand-release-latest
+          - arch: ppc64le
+            package: ondemand-compute
           # Times out because very slow
           - dist: amzn2023
             arch: aarch64
             package: passenger
+          - dist: amzn2023
+            arch: ppc64le
+            package: passenger
           # Times out because very slow
           - dist: amzn2023
             arch: aarch64
+            package: turbovnc
+          - dist: amzn2023
+            arch: ppc64le
             package: turbovnc
     runs-on: ${{ matrix.os }}
     name: Package test package=${{ matrix.package }} dist=${{ matrix.dist }} arch=${{ matrix.arch }}
@@ -169,6 +187,7 @@ jobs:
         arch:
           - x86_64
           - aarch64
+          - ppc64le
         package:
           - ondemand-release
           - ondemand-release-latest
@@ -177,6 +196,10 @@ jobs:
           - arch: aarch64
             package: ondemand-release
           - arch: aarch64
+            package: ondemand-release-latest
+          - arch: ppc64le
+            package: ondemand-release
+          - arch: ppc64le
             package: ondemand-release-latest
     runs-on: ${{ matrix.os }}
     name: Package test package=${{ matrix.package }} dist=${{ matrix.dist }} arch=${{ matrix.arch }}
@@ -241,6 +264,7 @@ jobs:
         arch:
           - x86_64
           - aarch64
+          - ppc64le
         package:
           - ondemand
         include:

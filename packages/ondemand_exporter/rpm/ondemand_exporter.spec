@@ -14,6 +14,9 @@
 %ifarch aarch64
 %define platform arm64
 %endif
+%ifarch ppc64le
+%define platform ppc64le
+%endif
 
 Name:       ondemand_exporter
 Version:    %{package_version}
