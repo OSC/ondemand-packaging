@@ -39,7 +39,10 @@ class OodPackaging::Build
   end
 
   def version
-    ENV['VERSION']
+    ver = ENV['VERSION']
+    return nil if ver == ''
+
+    ver
   end
 
   def rpm_version
@@ -47,6 +50,8 @@ class OodPackaging::Build
   end
 
   def rpm_release
+    return nil if version.nil?
+
     v = version.split('-', 2)
     return '1' if v.size < 2
 
@@ -64,9 +69,10 @@ class OodPackaging::Build
   end
 
   def rpm_defines
-    defines = ["--define 'git_tag #{version}'"]
-    defines.concat ["--define 'package_version #{rpm_version}'"]
-    defines.concat ["--define 'package_release #{rpm_release}'"]
+    defines = []
+    defines.concat ["--define 'git_tag #{version}'"] unless version.nil?
+    defines.concat ["--define 'package_version #{rpm_version}'"] unless rpm_version.nil?
+    defines.concat ["--define 'package_release #{rpm_release}'"] unless rpm_release.nil?
     defines.concat ["--define 'scl #{config[:scl]}'"] if config[:scl]
     defines
   end

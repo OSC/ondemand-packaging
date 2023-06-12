@@ -53,7 +53,6 @@ jobs:
         run: |
           VERSION=${GITHUB_REF#refs/*/v}
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
-        run: echo ::set-output name=version::
       - name: checkout
         uses: actions/checkout@v3
       - name: Setup Ruby using Bundler
