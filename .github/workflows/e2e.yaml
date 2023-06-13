@@ -277,6 +277,8 @@ jobs:
             package: bc_osc_rstudio_server
         exclude:
           - dist: amzn2023
+            arch: aarch64
+          - dist: amzn2023
             arch: ppc64le
     runs-on: ${{ matrix.os }}
     name: Package ${{ matrix.package }} dist=${{ matrix.dist }} arch=${{ matrix.arch }}
