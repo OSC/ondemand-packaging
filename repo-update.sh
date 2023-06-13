@@ -122,6 +122,7 @@ LOCK_FILE="/var/lib/oodpkg/repo-update-${LOCK_NAME}.lock"
       ;;
     ppc64le)
       ARCH="ppc64le"
+      ;;
     *)
       echo "Unrecognized ARCH"
       exit 1
