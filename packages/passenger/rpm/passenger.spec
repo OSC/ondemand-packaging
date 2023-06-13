@@ -30,6 +30,11 @@
 %else
 %define mflag "-m64"
 %endif
+%ifarch ppc64le
+%define mtune "-mcpu=powerpc64le"
+%else
+%define mtune "-mtune=generic"
+%endif
 
 Name:       %{?scl_prefix}passenger
 Version:    %{passenger_version}
@@ -118,8 +123,8 @@ export LC_ALL=en_US.UTF-8
 # nginx
 # TODO %optflags on EL8 caused some very odd problems so only pull in what's absolutely necessary
 %if 0%{?rhel} >= 8
-export EXTRA_CFLAGS="${CFLAGS} %{mflag} -mtune=generic -fPIC"
-export EXTRA_CXXFLAGS="${CXXFLAGS} %{mflag} -mtune=generic -fPIC"
+export EXTRA_CFLAGS="${CFLAGS} %{mflag} %{mtune} -fPIC"
+export EXTRA_CXXFLAGS="${CXXFLAGS} %{mflag} %{mtune} -fPIC"
 %else
 export EXTRA_CFLAGS="${CFLAGS:-%optflags} -Wno-deprecated"
 export EXTRA_CXXFLAGS="${CXXFLAGS:-%optflags} -Wno-deprecated"
