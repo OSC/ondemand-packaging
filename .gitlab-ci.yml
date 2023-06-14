@@ -233,6 +233,7 @@ build-ondemand-compute:
   script:
     - bundle exec rake ood_packaging:package:ondemand-compute[$DIST]
     - cp -r tmp/output/$OOD_PACKAGING_DIST-x86_64 tmp/output/$OOD_PACKAGING_DIST-aarch64
+    - cp -r tmp/output/$OOD_PACKAGING_DIST-x86_64 tmp/output/$OOD_PACKAGING_DIST-ppc64le
   parallel:
     matrix:
       - OOD_PACKAGING_DIST: [el7, el8]
