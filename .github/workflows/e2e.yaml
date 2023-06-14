@@ -326,6 +326,7 @@ jobs:
           run: |
             git config --global --add safe.directory $GITHUB_WORKSPACE
             bundle install
+            git config --global --add safe.directory $GITHUB_WORKSPACE/tmp/${{ matrix.package }}
             ./bin/ood_packaging -w ./tmp/work -o ./tmp/output -d ${{ matrix.dist }} -a ${{ matrix.arch }} -V v3.1.0 -T --debug $(pwd)/tmp/${{ matrix.package }}
           env: |
             OOD_PACKAGING_DEBUG: 'true'
