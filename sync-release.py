@@ -37,6 +37,17 @@ DEB_CODENAMES = [
 SKIP = [
     'bionic'
 ]
+COMPUTE_DISTS = [
+    'el7',
+    'el8',
+    'el9',
+    'amzn2023',
+]
+ARCHES = [
+    'x86_64',
+    'aarch64',
+    'ppc64le',
+]
 
 def get_rpm_info(rpm_file):
     ts = rpm.ts()
@@ -282,18 +293,36 @@ Usage examples:
                     os.remove(f)
 
     for dist in DISTS:
-        logger.info("repo-update.sh -r %s -d %s", args.release, dist)
-        repo_update_cmd = [
-            os.path.join(PROJ_ROOT, 'repo-update.sh'),
-            '-r', args.release,
-            '-d', dist,
-        ]
-        process = subprocess.Popen(repo_update_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        out, err = process.communicate()
-        exit_code = process.returncode
-        if exit_code != 0:
-            logger.error("OUTPUT: %s", out)
-            logger.error("ERROR: %s", err)
+        for arch in ARCHES:
+            logger.info("repo-update.sh -r %s -d %s -a %s", args.release, dist, arch)
+            repo_update_cmd = [
+                os.path.join(PROJ_ROOT, 'repo-update.sh'),
+                '-r', args.release,
+                '-d', dist,
+                '-a', arch,
+            ]
+            process = subprocess.Popen(repo_update_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            out, err = process.communicate()
+            exit_code = process.returncode
+            if exit_code != 0:
+                logger.error("OUTPUT: %s", out)
+                logger.error("ERROR: %s", err)
+            if dist not in COMPUTE_DISTS:
+                continue
+            logger.info("repo-update.sh -r %s -d %s -a %s -t compute", args.release, dist, arch)
+            repo_update_cmd = [
+                os.path.join(PROJ_ROOT, 'repo-update.sh'),
+                '-r', args.release,
+                '-d', dist,
+                '-a', arch,
+                '-t', 'compute',
+            ]
+            process = subprocess.Popen(repo_update_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            out, err = process.communicate()
+            exit_code = process.returncode
+            if exit_code != 0:
+                logger.error("OUTPUT: %s", out)
+                logger.error("ERROR: %s", err)
 
 if __name__ == '__main__':
     main()
