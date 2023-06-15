@@ -121,7 +121,7 @@ LOCK_FILE="/var/lib/oodpkg/repo-update-${LOCK_NAME}.lock"
       ARCH="arm64"
       ;;
     ppc64le)
-      ARCH="ppc64le"
+      ARCH="ppc64el"
       ;;
     *)
       echo "Unrecognized ARCH"
@@ -142,7 +142,7 @@ Label: OnDemand
 Suite: stable
 Codename: ${DIST}
 Version: ${REPO}
-Architectures: ${ARCH}
+Architectures: amd64 arm64 ppc64el
 Components: main
 Description: OnDemand repository
 Date: $(date -Ru)

@@ -171,7 +171,7 @@ Usage examples:
             if not os.path.isdir(pool_d):
                 logger.info("mkdir -p %s", pool_d)
                 os.makedirs(pool_d, 0o755)
-            for arch in ['binary-amd64', 'binary-arm64', 'binary-ppc64le']:
+            for arch in ['binary-amd64', 'binary-arm64', 'binary-ppc64el']:
                 rel_d = os.path.join(release_dir, t, 'apt/dists', rel, 'main', arch)
                 if not os.path.isdir(rel_d):
                     logger.info("mkdir -p %s", rel_d)
