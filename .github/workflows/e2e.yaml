@@ -4,6 +4,8 @@ on:
   push:
     branches: [main]
   pull_request:
+  schedule:
+    - cron: '0 4 * * *'
 
 jobs:
   buildbox:
@@ -151,11 +153,12 @@ jobs:
         env:
           OOD_PACKAGING_DEBUG: 'true'
       - name: arch distro
+        if: ${{ matrix.arch != 'x86_64' && github.event_name == 'schedule' }}
         run: |
           DISTRO=$(echo "${{ matrix.os }}" | sed 's|\-||g')
           echo "DISTRO=${DISTRO}" >> $GITHUB_ENV
       - name: Build package
-        if: matrix.arch != 'x86_64'
+        if: ${{ matrix.arch != 'x86_64' && github.event_name == 'schedule' }}
         uses: uraimo/run-on-arch-action@v2
         with:
           arch: ${{ matrix.arch }}
@@ -219,11 +222,12 @@ jobs:
         env:
           OOD_PACKAGING_DEBUG: 'true'
       - name: arch distro
+        if: ${{ matrix.arch != 'x86_64' && github.event_name == 'schedule' }}
         run: |
           DISTRO=$(echo "${{ matrix.os }}" | sed 's|\-||g')
           echo "DISTRO=${DISTRO}" >> $GITHUB_ENV
       - name: Build package
-        if: matrix.arch != 'x86_64'
+        if: ${{ matrix.arch != 'x86_64' && github.event_name == 'schedule' }}
         uses: uraimo/run-on-arch-action@v2
         with:
           arch: ${{ matrix.arch }}
@@ -309,11 +313,12 @@ jobs:
         if: matrix.arch == 'x86_64'
         run: ./bin/ood_packaging -w ./tmp/work -o ./tmp/output -d ${{ matrix.dist }} -a ${{ matrix.arch }} -V v3.1.0 -T --debug $(pwd)/tmp/${{ matrix.package }}
       - name: arch distro
+        if: ${{ matrix.arch != 'x86_64' && github.event_name == 'schedule' }}
         run: |
           DISTRO=$(echo "${{ matrix.os }}" | sed 's|\-||g')
           echo "DISTRO=${DISTRO}" >> $GITHUB_ENV
       - name: Build ${{ matrix.package }} package
-        if: matrix.arch != 'x86_64'
+        if: ${{ matrix.arch != 'x86_64' && github.event_name == 'schedule' }}
         uses: uraimo/run-on-arch-action@v2
         with:
           arch: ${{ matrix.arch }}
