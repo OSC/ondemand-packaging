@@ -21,6 +21,11 @@ DISTS = [
     'ubuntu-20.04',
     'ubuntu-22.04'
 ]
+COMPUTE_DISTS = [
+    'el7',
+    'el8',
+    'el9',
+]
 EL_RELEASES = [
     'el7',
     'el8',
@@ -31,7 +36,9 @@ DEB_CODENAMES = [
     'jammy'
 ]
 SKIP = [
-    'bionic'
+    'bionic',
+    'aarch64',
+    'ppc64le',
 ]
 
 def get_rpm_info(rpm_file):
@@ -272,6 +279,21 @@ Usage examples:
             os.path.join(PROJ_ROOT, 'repo-update.sh'),
             '-r', args.release,
             '-d', dist,
+        ]
+        process = subprocess.Popen(repo_update_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = process.communicate()
+        exit_code = process.returncode
+        if exit_code != 0:
+            logger.error("OUTPUT: %s", out)
+            logger.error("ERROR: %s", err)
+        if dist not in COMPUTE_DISTS:
+            continue
+        logger.info("repo-update.sh -r %s -d %s -t compute", args.release, dist)
+        repo_update_cmd = [
+            os.path.join(PROJ_ROOT, 'repo-update.sh'),
+            '-r', args.release,
+            '-d', dist,
+            '-t', 'compute',
         ]
         process = subprocess.Popen(repo_update_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out, err = process.communicate()
