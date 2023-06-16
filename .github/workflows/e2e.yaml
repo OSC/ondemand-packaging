@@ -4,6 +4,8 @@ on:
   push:
     branches: [main]
   pull_request:
+  schedule:
+    - cron: '0 4 * * *'
 
 jobs:
   buildbox:
@@ -21,6 +23,14 @@ jobs:
         arch:
           - x86_64
           - aarch64
+          - ppc64le
+        exclude:
+          - dist: amzn2023
+            arch: ppc64le
+          - dist: ubuntu-20.04
+            arch: ppc64le
+          - dist: ubuntu-22.04
+            arch: ppc64le
     runs-on: ${{ matrix.os }}
     name: Buildbox tests
     steps:
@@ -61,6 +71,7 @@ jobs:
         arch:
           - x86_64
           - aarch64
+          - ppc64le
         package:
           - ondemand-release
           - ondemand-release-latest
@@ -102,6 +113,12 @@ jobs:
             package: ondemand-release-latest
           - arch: aarch64
             package: ondemand-compute
+          - arch: ppc64le
+            package: ondemand-release
+          - arch: ppc64le
+            package: ondemand-release-latest
+          - arch: ppc64le
+            package: ondemand-compute
           # Times out because very slow
           - dist: amzn2023
             arch: aarch64
@@ -110,6 +127,8 @@ jobs:
           - dist: amzn2023
             arch: aarch64
             package: turbovnc
+          - dist: amzn2023
+            arch: ppc64le
     runs-on: ${{ matrix.os }}
     name: Package test package=${{ matrix.package }} dist=${{ matrix.dist }} arch=${{ matrix.arch }}
     steps:
@@ -134,11 +153,12 @@ jobs:
         env:
           OOD_PACKAGING_DEBUG: 'true'
       - name: arch distro
+        if: ${{ matrix.arch != 'x86_64' && github.event_name == 'schedule' }}
         run: |
           DISTRO=$(echo "${{ matrix.os }}" | sed 's|\-||g')
           echo "DISTRO=${DISTRO}" >> $GITHUB_ENV
       - name: Build package
-        if: matrix.arch != 'x86_64'
+        if: ${{ matrix.arch != 'x86_64' && github.event_name == 'schedule' }}
         uses: uraimo/run-on-arch-action@v2
         with:
           arch: ${{ matrix.arch }}
@@ -202,11 +222,12 @@ jobs:
         env:
           OOD_PACKAGING_DEBUG: 'true'
       - name: arch distro
+        if: ${{ matrix.arch != 'x86_64' && github.event_name == 'schedule' }}
         run: |
           DISTRO=$(echo "${{ matrix.os }}" | sed 's|\-||g')
           echo "DISTRO=${DISTRO}" >> $GITHUB_ENV
       - name: Build package
-        if: matrix.arch != 'x86_64'
+        if: ${{ matrix.arch != 'x86_64' && github.event_name == 'schedule' }}
         uses: uraimo/run-on-arch-action@v2
         with:
           arch: ${{ matrix.arch }}
@@ -241,6 +262,7 @@ jobs:
         arch:
           - x86_64
           - aarch64
+          - ppc64le
         package:
           - ondemand
         include:
@@ -256,6 +278,15 @@ jobs:
             arch: x86_64
             os: ubuntu-22.04
             package: bc_osc_rstudio_server
+        exclude:
+          - dist: amzn2023
+            arch: aarch64
+          - dist: amzn2023
+            arch: ppc64le
+          - dist: ubuntu-20.04
+            arch: ppc64le
+          - dist: ubuntu-22.04
+            arch: ppc64le
     runs-on: ${{ matrix.os }}
     name: Package ${{ matrix.package }} dist=${{ matrix.dist }} arch=${{ matrix.arch }}
     steps:
@@ -282,11 +313,12 @@ jobs:
         if: matrix.arch == 'x86_64'
         run: ./bin/ood_packaging -w ./tmp/work -o ./tmp/output -d ${{ matrix.dist }} -a ${{ matrix.arch }} -V v3.1.0 -T --debug $(pwd)/tmp/${{ matrix.package }}
       - name: arch distro
+        if: ${{ matrix.arch != 'x86_64' && github.event_name == 'schedule' }}
         run: |
           DISTRO=$(echo "${{ matrix.os }}" | sed 's|\-||g')
           echo "DISTRO=${DISTRO}" >> $GITHUB_ENV
       - name: Build ${{ matrix.package }} package
-        if: matrix.arch != 'x86_64'
+        if: ${{ matrix.arch != 'x86_64' && github.event_name == 'schedule' }}
         uses: uraimo/run-on-arch-action@v2
         with:
           arch: ${{ matrix.arch }}
@@ -302,6 +334,7 @@ jobs:
           run: |
             git config --global --add safe.directory $GITHUB_WORKSPACE
             bundle install
+            git config --global --add safe.directory $GITHUB_WORKSPACE/tmp/${{ matrix.package }}
             ./bin/ood_packaging -w ./tmp/work -o ./tmp/output -d ${{ matrix.dist }} -a ${{ matrix.arch }} -V v3.1.0 -T --debug $(pwd)/tmp/${{ matrix.package }}
           env: |
             OOD_PACKAGING_DEBUG: 'true'

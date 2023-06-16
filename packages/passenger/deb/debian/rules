@@ -41,8 +41,13 @@ export MFLAG = "-march=armv8-a"
 else
 export MFALG = "-m64"
 endif
+ifeq ($(ARCH),ppc64le)
+export MTUNE = "-mcpu=powerpc64le"
+else
+export MTUNE = "-mtune=generic"
+endif
 
-export BASE_CCOPTS=-g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches $(MFALG) -mtune=generic
+export BASE_CCOPTS=-g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches $(MFALG) $(MTUNE)
 export NGINX_CCOPTS=-O2 $(BASE_CCOPTS)
 export PASSENGER_CCOPTS=$(BASE_CCOPTS) -Wno-deprecated
 export LDOPTS=-Wl,-z,relro -Wl,-E

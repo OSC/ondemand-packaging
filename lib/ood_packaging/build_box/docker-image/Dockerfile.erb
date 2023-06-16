@@ -17,7 +17,7 @@ RUN head -n 13 /etc/yum.repos.d/CentOS-SCLo-scl-rh.repo >> /etc/yum.repos.d/Cent
 RUN rm -f /etc/yum.repos.d/CentOS-SCLo-scl-rh.repo /etc/yum.repos.d/CentOS-SCLo-scl.repo
 <% elsif dnf? -%>
 RUN dnf update -y && dnf clean all && rm -rf /var/cache/dnf/*
-RUN dnf install -y dnf-utils <%= dist =~ /^el/ ? 'epel-release' : '' %> langpacks-en glibc-all-langpacks && dnf clean all && rm -rf /var/cache/dnf/*
+RUN dnf install -y dnf-utils <%= dist =~ /^el/ ? 'epel-release' : '' %> langpacks-en glibc-langpack-en && dnf clean all && rm -rf /var/cache/dnf/*
 <% if dist == 'el8' -%>
 RUN dnf config-manager --set-enabled powertools && dnf clean all && rm -rf /var/cache/dnf/*
 RUN dnf module enable -y ruby:<%= ruby_version %> nodejs:<%= nodejs_version %> && dnf clean all && rm -rf /var/cache/dnf/*
@@ -37,8 +37,10 @@ RUN apt update -y && apt install -y apt-transport-https ca-certificates \
     init debhelper devscripts dh-make build-essential apt-cudf lintian equivs \
     sudo rake wget curl ruby bundler && \
     apt clean all -y
+<% if arch != 'ppc64le' %>
 RUN echo "deb https://deb.nodesource.com/node_<%= nodejs_version %>.x <%= codename %> main" > /etc/apt/sources.list.d/nodesource.list
 RUN curl -s https://deb.nodesource.com/gpgkey/nodesource.gpg.key | gpg --dearmor > /etc/apt/trusted.gpg.d/nodesource.gpg
+<% end %>
 <% end -%>
 COPY . /build
 RUN /bin/bash /build/install.sh

@@ -37,6 +37,17 @@ DEB_CODENAMES = [
 SKIP = [
     'bionic'
 ]
+COMPUTE_DISTS = [
+    'el7',
+    'el8',
+    'el9',
+    'amzn2023',
+]
+ARCHES = [
+    'x86_64',
+    'aarch64',
+    'ppc64le',
+]
 
 def get_rpm_info(rpm_file):
     ts = rpm.ts()
@@ -151,7 +162,7 @@ Usage examples:
             if not os.path.islink(rel_l):
                 logger.info("ln -s %s %s", rel, rel_l)
                 os.symlink(rel, rel_l)
-            for arch in ['SRPMS', 'x86_64', 'aarch64']:
+            for arch in ['SRPMS', 'x86_64', 'aarch64', 'ppc64le']:
                 d = os.path.join(release_dir, t, rel, arch)
                 if not os.path.isdir(d):
                     logger.info("mkdir -p %s", d)
@@ -161,7 +172,7 @@ Usage examples:
             if not os.path.isdir(rel_d):
                 logger.info("mkdir -p %s", rel_d)
                 os.makedirs(rel_d, 0o755)
-            for arch in ['SRPMS', 'x86_64', 'aarch64']:
+            for arch in ['SRPMS', 'x86_64', 'aarch64', 'ppc64le']:
                 d = os.path.join(release_dir, t, rel, arch)
                 if not os.path.isdir(d):
                     logger.info("mkdir -p %s", d)
@@ -171,7 +182,7 @@ Usage examples:
             if not os.path.isdir(pool_d):
                 logger.info("mkdir -p %s", pool_d)
                 os.makedirs(pool_d, 0o755)
-            for arch in ['binary-amd64', 'binary-arm64']:
+            for arch in ['binary-amd64', 'binary-arm64', 'binary-ppc64el']:
                 rel_d = os.path.join(release_dir, t, 'apt/dists', rel, 'main', arch)
                 if not os.path.isdir(rel_d):
                     logger.info("mkdir -p %s", rel_d)
@@ -282,18 +293,36 @@ Usage examples:
                     os.remove(f)
 
     for dist in DISTS:
-        logger.info("repo-update.sh -r %s -d %s", args.release, dist)
-        repo_update_cmd = [
-            os.path.join(PROJ_ROOT, 'repo-update.sh'),
-            '-r', args.release,
-            '-d', dist,
-        ]
-        process = subprocess.Popen(repo_update_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        out, err = process.communicate()
-        exit_code = process.returncode
-        if exit_code != 0:
-            logger.error("OUTPUT: %s", out)
-            logger.error("ERROR: %s", err)
+        for arch in ARCHES:
+            logger.info("repo-update.sh -r %s -d %s -a %s", args.release, dist, arch)
+            repo_update_cmd = [
+                os.path.join(PROJ_ROOT, 'repo-update.sh'),
+                '-r', args.release,
+                '-d', dist,
+                '-a', arch,
+            ]
+            process = subprocess.Popen(repo_update_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            out, err = process.communicate()
+            exit_code = process.returncode
+            if exit_code != 0:
+                logger.error("OUTPUT: %s", out)
+                logger.error("ERROR: %s", err)
+            if dist not in COMPUTE_DISTS:
+                continue
+            logger.info("repo-update.sh -r %s -d %s -a %s -t compute", args.release, dist, arch)
+            repo_update_cmd = [
+                os.path.join(PROJ_ROOT, 'repo-update.sh'),
+                '-r', args.release,
+                '-d', dist,
+                '-a', arch,
+                '-t', 'compute',
+            ]
+            process = subprocess.Popen(repo_update_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            out, err = process.communicate()
+            exit_code = process.returncode
+            if exit_code != 0:
+                logger.error("OUTPUT: %s", out)
+                logger.error("ERROR: %s", err)
 
 if __name__ == '__main__':
     main()
