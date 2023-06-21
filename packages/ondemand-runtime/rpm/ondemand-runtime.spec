@@ -67,7 +67,7 @@ packages depending on %{scl} Software Collection.
 %package -n ondemand-ruby
 Summary: Meta package for pulling in SCL Ruby %{ruby}
 %if 0%{?rhel} >= 8
-Requires: %{ruby} >= 3.0, %{ruby} < 3.1
+Requires: %{ruby} >= 3.1, %{ruby} < 3.2
 Requires: rubygem-rake
 Requires: rubygem-bundler >= 2.1
 Requires: ruby-devel
