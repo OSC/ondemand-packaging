@@ -4,7 +4,7 @@ export DH_VERBOSE = 1
 export CODENAME = $(shell lsb_release -sc)
 export WEB_DESTDIR = $(CURDIR)/debian/ondemand-release-web-latest
 export DEB_BUILD_OPTIONS=nocheck
-export NODEREPO=node_14.x
+export NODEREPO=node_18.x
 
 %:
 	dh $@

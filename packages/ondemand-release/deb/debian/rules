@@ -7,7 +7,7 @@ export DEB_BUILD_OPTIONS=nocheck
 export VERSION_MAJOR = $(shell echo "$(VERSION)" | cut -d'.' -f1)
 export VERSION_MINOR = $(shell echo "$(VERSION)" | cut -d'.' -f2)
 export REPO = $(VERSION_MAJOR).$(VERSION_MINOR)
-export NODEREPO=node_14.x
+export NODEREPO=node_18.x
 
 %:
 	dh $@

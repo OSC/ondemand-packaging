@@ -63,7 +63,9 @@ module OodPackaging::Utils
   end
 
   def ruby_version
-    '3.0'
+    return '3.0' if dist == 'el7'
+
+    '3.1'
   end
 
   def scl_ruby
@@ -71,7 +73,7 @@ module OodPackaging::Utils
   end
 
   def nodejs_version
-    '14'
+    '18'
   end
 
   def ctr_scripts_dir
