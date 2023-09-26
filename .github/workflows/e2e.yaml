@@ -19,6 +19,7 @@ jobs:
           - el9
           - ubuntu-20.04
           - ubuntu-22.04
+          - debian-12
           - amzn2023
         arch:
           - x86_64
@@ -186,6 +187,7 @@ jobs:
         dist:
           - ubuntu-20.04
           - ubuntu-22.04
+          - debian-12
         arch:
           - x86_64
           - aarch64
@@ -258,6 +260,7 @@ jobs:
           - el9
           - ubuntu-20.04
           - ubuntu-22.04
+          - debian-12
           - amzn2023
         arch:
           - x86_64

@@ -2,7 +2,9 @@ FROM --platform=<%= platform %> <%= base_image %>
 ENV ARCH=<%= arch %> 
 MAINTAINER Trey Dockendorf <tdockendorf@osc.edu>
 ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US.UTF-8
 ENV LC_CTYPE=en_US.UTF-8
+ENV LC_ALL=en_US.UTF-8
 ENV USER=<%= ctr_user %>
 ENV GEM_PATH=<%= ctr_gems_dir %>:
 <% if dist == 'el7' -%>
@@ -33,7 +35,8 @@ RUN dnf install -y --allowerasing systemd ruby nodejs sudo which wget \
 <% elsif dist =~ /^ubuntu|debian/ -%>
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update -y && apt upgrade -y && apt clean all -y
-RUN apt update -y && apt install -y locales && locale-gen $LANG && \
+RUN apt update -y && apt install -y locales && \
+    echo "en_US UTF-8" >> /etc/locale.gen && locale-gen $LANG && \
     apt clean all -y
 RUN apt update -y && apt install -y apt-transport-https ca-certificates \
     init debhelper devscripts dh-make build-essential apt-cudf lintian equivs \
