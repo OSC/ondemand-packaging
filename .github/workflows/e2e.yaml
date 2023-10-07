@@ -162,7 +162,12 @@ jobs:
         run: docker load --input /tmp/ood_packaging-${{ matrix.dist }}.tar.gz
       - name: Clone ${{ matrix.package }}
         run: |
+          if [ "${{ matrix.package }}" = "ondemand" ]; then
+            BRANCH="--branch release_3.0"
+          else
+            BRANCH=""
+          fi
           mkdir -p ./tmp
-          git clone https://github.com/OSC/${{ matrix.package }}.git ./tmp/${{ matrix.package }}
+          git clone $BRANCH https://github.com/OSC/${{ matrix.package }}.git ./tmp/${{ matrix.package }}
       - name: Build ${{ matrix.package }} package
         run: ./bin/ood_packaging -w ./tmp/work -o ./tmp/output -d ${{ matrix.dist }} -V v3.0.0 -T --debug $(pwd)/tmp/${{ matrix.package }}
