@@ -284,8 +284,13 @@ class OodPackaging::Build
       'mk-build-deps --install --remove --root-cmd sudo',
       "--tool='#{tool.join(' ')}'"
     ]
+    cleanup = [
+      "#{package}-build-deps*.buildinfo",
+      "#{package}-build-deps*.changes"
+    ]
     Dir.chdir(deb_work_dir) do
       sh "#{cmd.join(' ')}#{cmd_suffix}"
+      sh "rm -f #{cleanup.join(' ')}#{cmd_suffix}"
     end
   end
 
