@@ -158,8 +158,13 @@ describe OodPackaging::Build do
           "--tool='#{tool.join(' ')}'",
           '2>/dev/null 1>/dev/null'
         ]
+        cleanup = [
+          'ondemand-build-deps*.buildinfo',
+          'ondemand-build-deps*.changes'
+        ]
         expect(build).to receive(:sh).with('sudo apt update -y 2>/dev/null 1>/dev/null')
         expect(build).to receive(:sh).with(expected_cmd.join(' '))
+        expect(build).to receive(:sh).with("rm -f #{cleanup.join(' ')} 2>/dev/null 1>/dev/null")
         build.install_dependencies!
       end
     end

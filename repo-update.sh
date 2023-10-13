@@ -99,6 +99,9 @@ LOCK_FILE="/var/lib/oodpkg/repo-update-${LOCK_NAME}.lock"
     gpg --default-key ${GPG_KEY} --detach-sign --passphrase-file ${GPGPASS} --pinentry-mode loopback --batch --yes --no-tty --armor repodata/repomd.xml
   else
     case "${DIST}" in
+    debian-12|bookworm)
+      DIST="bookworm"
+      ;;
     ubuntu-22.04|jammy)
       DIST="jammy"
       ;;

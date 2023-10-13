@@ -12,6 +12,7 @@ ondemand-release:
     # deb package
     - '{major}.0-focal'
     - '{major}.0-jammy'
+    - '{major}.0-bookworm'
 
 # web
 cjose:
