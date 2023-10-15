@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ "$(uname -p)" = "ppc64le" ]; then
+if [ "$(uname -m)" = "ppc64le" ]; then
     rm -f /etc/apt/sources.list.d/nodesource.list
     rm -f /etc/apt/trusted.gpg.d/nodesource.gpg
 fi
