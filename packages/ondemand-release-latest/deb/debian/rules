@@ -1,7 +1,7 @@
 #!/usr/bin/make -f
 # You must remove unused comment lines for the released package.
 export DH_VERBOSE = 1
-export CODENAME = $(shell lsb_release -sc)
+export CODENAME = $(shell lsb_release -sc 2>/dev/null)
 export WEB_DESTDIR = $(CURDIR)/debian/ondemand-release-web-latest
 export DEB_BUILD_OPTIONS=nocheck
 export NODEREPO=node_18.x
@@ -21,7 +21,7 @@ override_dh_auto_install:
 	echo "deb https://apt.osc.edu/ondemand/latest/web/apt $(CODENAME) main" > $(WEB_DESTDIR)/etc/apt/sources.list.d/ondemand-web.list
 	install -m 644 -D $(CURDIR)/ondemand.gpg $(WEB_DESTDIR)/etc/apt/trusted.gpg.d/ondemand-web.gpg
 # Debian 12 (bookworm) has NodeJS 18 in OS repos
-ifeq ($(CODENAME),"bookworm")
+ifeq ($(CODENAME),bookworm)
 else
 	echo "deb https://deb.nodesource.com/$(NODEREPO) $(CODENAME) main" > $(WEB_DESTDIR)/etc/apt/sources.list.d/nodesource.list
 	curl -s https://deb.nodesource.com/gpgkey/nodesource.gpg.key | gpg --dearmor > $(WEB_DESTDIR)/etc/apt/trusted.gpg.d/nodesource.gpg
