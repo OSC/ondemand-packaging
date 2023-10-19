@@ -277,7 +277,9 @@ class OodPackaging::Build
   def install_deb_dependencies!
     sh "sudo apt update -y#{cmd_suffix}"
     extra_depends = config.fetch(:extra_depends, nil)
-    unless extra_depends.nil?
+    if extra_depends.nil?
+      extra_depends = ''
+    else
       extra_depends = extra_depends.split(',').map(&:strip) if extra_depends.is_a?(String)
       extra_depends.unshift('')
       extra_depends = extra_depends.join(', ')
@@ -296,7 +298,7 @@ class OodPackaging::Build
       "#{package}-build-deps*.changes"
     ]
     Dir.chdir(deb_work_dir) do
-      sh "sed -i 's|@EXTRA_DEPENDS@|#{extra_depends}|g' debian/control#{cmd_suffix}" unless extra_depends.nil?
+      sh "sed -i 's|@EXTRA_DEPENDS@|#{extra_depends}|g' debian/control#{cmd_suffix}"
       sh "#{cmd.join(' ')}#{cmd_suffix}"
       sh "rm -f #{cleanup.join(' ')}#{cmd_suffix}"
     end

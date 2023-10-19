@@ -168,7 +168,7 @@ describe OodPackaging::Build do
 
       it 'installs DEB dependencies using apt' do
         expect(build).to receive(:sh).with('sudo apt update -y 2>/dev/null 1>/dev/null')
-        expect(build).not_to receive(:sh).with(/^sed.+/)
+        expect(build).to receive(:sh).with("sed -i 's|@EXTRA_DEPENDS@||g' debian/control#{cmd_suffix}")
         expect(build).to receive(:sh).with(expected_cmd.join(' '))
         expect(build).to receive(:sh).with("rm -f #{cleanup.join(' ')} 2>/dev/null 1>/dev/null")
         build.install_dependencies!
