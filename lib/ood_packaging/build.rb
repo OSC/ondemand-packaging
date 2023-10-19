@@ -273,9 +273,15 @@ class OodPackaging::Build
     sh "#{cmd.join(' ')}#{cmd_suffix}"
   end
 
+  # rubocop:disable Metrics/MethodLength
   def install_deb_dependencies!
     sh "sudo apt update -y#{cmd_suffix}"
     extra_depends = config.fetch(:extra_depends, nil)
+    unless extra_depends.nil?
+      extra_depends = extra_depends.split(',').map(&:strip) if extra_depends.is_a?(String)
+      extra_depends.unshift('')
+      extra_depends = extra_depends.join(', ')
+    end
     tool = [
       'DEBIAN_FRONTEND=noninteractive apt-cudf-get --solver aspcud',
       '-o APT::Get::Assume-Yes=1 -o APT::Get::Allow-Downgrades=1',
@@ -295,6 +301,7 @@ class OodPackaging::Build
       sh "rm -f #{cleanup.join(' ')}#{cmd_suffix}"
     end
   end
+  # rubocop:enable Metrics/MethodLength
 
   def rpmbuild!
     puts "== RPM build spec=#{spec_file} ==".blue

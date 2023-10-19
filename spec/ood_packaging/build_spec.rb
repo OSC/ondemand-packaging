@@ -13,6 +13,7 @@ describe OodPackaging::Build do
   let(:arch) { 'x86_64' }
   let(:version) { 'v0.0.1-2' }
   let(:build) { described_class.new }
+  let(:cmd_suffix) { ' 2>/dev/null 1>/dev/null' }
 
   before do
     ENV['DIST'] = dist
@@ -176,13 +177,28 @@ describe OodPackaging::Build do
       context 'when extra_depends is defined' do
         let(:dist) { 'debian-12' }
 
-        before do
-          allow(build).to receive(:packaging_config).and_return({ 'debian-12' => { 'extra_depends' => 'npm' } })
+        it 'updates debian/control' do
+          allow(build).to receive(:packaging_config).and_return(
+            {
+              'debian-12' => { 'extra_depends' => 'npm' }
+            }
+          )
+          expect(build).to receive(:sh).with('sudo apt update -y 2>/dev/null 1>/dev/null')
+          expect(build).to receive(:sh).with("sed -i 's|@EXTRA_DEPENDS@|, npm|g' debian/control#{cmd_suffix}")
+          expect(build).to receive(:sh).with(expected_cmd.join(' '))
+          expect(build).to receive(:sh).with("rm -f #{cleanup.join(' ')} 2>/dev/null 1>/dev/null")
+          build.install_dependencies!
         end
 
-        it 'updates debian/control' do
+        it 'updates debian/control from array of extra_depends' do
+          allow(build).to receive(:packaging_config).and_return(
+            {
+              'debian-12' => { 'extra_depends' => ['npm', 'foo'] }
+            }
+          )
+          depends = ', npm, foo'
           expect(build).to receive(:sh).with('sudo apt update -y 2>/dev/null 1>/dev/null')
-          expect(build).to receive(:sh).with("sed -i 's|@EXTRA_DEPENDS@|npm|g' debian/control 2>/dev/null 1>/dev/null")
+          expect(build).to receive(:sh).with("sed -i 's|@EXTRA_DEPENDS@|#{depends}|g' debian/control#{cmd_suffix}")
           expect(build).to receive(:sh).with(expected_cmd.join(' '))
           expect(build).to receive(:sh).with("rm -f #{cleanup.join(' ')} 2>/dev/null 1>/dev/null")
           build.install_dependencies!
