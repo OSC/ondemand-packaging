@@ -25,7 +25,7 @@ Metrics/ModuleLength:
 Metrics/BlockLength:
   Enabled: false
 Metrics/MethodLength:
-  Max: 20
+  Max: 22
   CountAsOne:
     - 'heredoc'
 Metrics/ClassLength:
@@ -37,7 +37,7 @@ Metrics/AbcSize:
 
 # rspec
 RSpec/MultipleMemoizedHelpers:
-  Max: 11
+  Max: 12
 RSpec/MultipleExpectations:
   Enabled: false
 RSpec/ExampleLength:
