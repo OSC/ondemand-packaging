@@ -275,6 +275,7 @@ class OodPackaging::Build
 
   def install_deb_dependencies!
     sh "sudo apt update -y#{cmd_suffix}"
+    extra_depends = config.fetch(:extra_depends, nil)
     tool = [
       'DEBIAN_FRONTEND=noninteractive apt-cudf-get --solver aspcud',
       '-o APT::Get::Assume-Yes=1 -o APT::Get::Allow-Downgrades=1',
@@ -289,6 +290,7 @@ class OodPackaging::Build
       "#{package}-build-deps*.changes"
     ]
     Dir.chdir(deb_work_dir) do
+      sh "sed -i 's|@EXTRA_DEPENDS@|#{extra_depends}|g' debian/control#{cmd_suffix}" unless extra_depends.nil?
       sh "#{cmd.join(' ')}#{cmd_suffix}"
       sh "rm -f #{cleanup.join(' ')}#{cmd_suffix}"
     end

@@ -37,10 +37,12 @@ Metrics/AbcSize:
 
 # rspec
 RSpec/MultipleMemoizedHelpers:
-  Max: 10
+  Max: 11
 RSpec/MultipleExpectations:
   Enabled: false
 RSpec/ExampleLength:
   Enabled: false
 RSpec/MessageSpies:
   EnforcedStyle: receive
+RSpec/NestedGroups:
+  Max: 4

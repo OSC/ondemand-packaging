@@ -146,26 +146,47 @@ describe OodPackaging::Build do
     context 'when doing deb builds' do
       let(:dist) { 'ubuntu-20.04' }
       let(:version) { 'v0.0.1' }
-
-      it 'installs DEB dependencies using apt' do
+      let(:cleanup) do
+        [
+          'ondemand-build-deps*.buildinfo',
+          'ondemand-build-deps*.changes'
+        ]
+      end
+      let(:expected_cmd) do
         tool = [
           'DEBIAN_FRONTEND=noninteractive apt-cudf-get --solver aspcud',
           '-o APT::Get::Assume-Yes=1 -o APT::Get::Allow-Downgrades=1',
           '-o Debug::pkgProblemResolver=0 -o APT::Install-Recommends=0'
         ]
-        expected_cmd = [
+        [
           'mk-build-deps', '--install', '--remove', '--root-cmd sudo',
           "--tool='#{tool.join(' ')}'",
           '2>/dev/null 1>/dev/null'
         ]
-        cleanup = [
-          'ondemand-build-deps*.buildinfo',
-          'ondemand-build-deps*.changes'
-        ]
+      end
+
+      it 'installs DEB dependencies using apt' do
         expect(build).to receive(:sh).with('sudo apt update -y 2>/dev/null 1>/dev/null')
+        expect(build).not_to receive(:sh).with(/^sed.+/)
         expect(build).to receive(:sh).with(expected_cmd.join(' '))
         expect(build).to receive(:sh).with("rm -f #{cleanup.join(' ')} 2>/dev/null 1>/dev/null")
         build.install_dependencies!
+      end
+
+      context 'when extra_depends is defined' do
+        let(:dist) { 'debian-12' }
+
+        before do
+          allow(build).to receive(:packaging_config).and_return({ 'debian-12' => { 'extra_depends' => 'npm' } })
+        end
+
+        it 'updates debian/control' do
+          expect(build).to receive(:sh).with('sudo apt update -y 2>/dev/null 1>/dev/null')
+          expect(build).to receive(:sh).with("sed -i 's|@EXTRA_DEPENDS@|npm|g' debian/control 2>/dev/null 1>/dev/null")
+          expect(build).to receive(:sh).with(expected_cmd.join(' '))
+          expect(build).to receive(:sh).with("rm -f #{cleanup.join(' ')} 2>/dev/null 1>/dev/null")
+          build.install_dependencies!
+        end
       end
     end
   end
