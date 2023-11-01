@@ -3,4 +3,3 @@
 source /etc/os-release
 
 sed -i "s|@CODENAME@|$VERSION_CODENAME|g" /etc/apt/sources.list.d/ondemand-web.list
-sed -i "s|@CODENAME@|$VERSION_CODENAME|g" /etc/apt/sources.list.d/nodesource.list
