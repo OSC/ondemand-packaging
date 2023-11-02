@@ -23,8 +23,8 @@ override_dh_auto_install:
 # Debian 12 (bookworm) has NodeJS 18 in OS repos
 ifeq ($(CODENAME),bookworm)
 else
-	echo "deb https://deb.nodesource.com/$(NODEREPO) $(CODENAME) main" > $(WEB_DESTDIR)/etc/apt/sources.list.d/nodesource.list
-	curl -s https://deb.nodesource.com/gpgkey/nodesource.gpg.key | gpg --dearmor > $(WEB_DESTDIR)/etc/apt/trusted.gpg.d/nodesource.gpg
+	echo "deb https://deb.nodesource.com/$(NODEREPO) nodistro main" > $(WEB_DESTDIR)/etc/apt/sources.list.d/nodesource.list
+	curl -s https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor > $(WEB_DESTDIR)/etc/apt/trusted.gpg.d/nodesource.gpg
 endif
 
 override_dh_builddeb:
