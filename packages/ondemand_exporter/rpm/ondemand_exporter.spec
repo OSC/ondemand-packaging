@@ -3,11 +3,7 @@
 %define debug_package %{nil}
 %define __strip /bin/true
 
-%if 0%{?rhel} >= 8
 %define apache_confd /etc/httpd/conf.d
-%else
-%define apache_confd /opt/rh/httpd24/root/etc/httpd/conf.d
-%endif
 %ifarch x86_64
 %define platform amd64
 %endif

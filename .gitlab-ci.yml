@@ -29,7 +29,7 @@ build-image:
     - bundle exec rake ood_packaging:buildbox:build
   parallel:
     matrix:
-      - OOD_PACKAGING_DIST: [el7, el8]
+      - OOD_PACKAGING_DIST: [el8]
         OOD_PACKAGING_ARCH: [x86_64, aarch64, ppc64le]
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
       - OOD_PACKAGING_DIST: [el9, debian-12]
@@ -50,7 +50,7 @@ build-ondemand-release:
     - bundle exec rake ood_packaging:package:ondemand-release
   parallel:
     matrix:
-      - OOD_PACKAGING_DIST: [el7, el8, el9, amzn2023]
+      - OOD_PACKAGING_DIST: [el8, el9, amzn2023]
       - OOD_PACKAGING_DIST: [ubuntu-20.04, ubuntu-22.04, debian-12]
   artifacts:
     paths:
@@ -68,7 +68,7 @@ build-ondemand-release-latest:
     - bundle exec rake ood_packaging:package:ondemand-release-latest
   parallel:
     matrix:
-      - OOD_PACKAGING_DIST: [el7, el8, el9, amzn2023]
+      - OOD_PACKAGING_DIST: [el8, el9, amzn2023]
       - OOD_PACKAGING_DIST: [ubuntu-20.04, ubuntu-22.04, debian-12]
   artifacts:
     paths:
@@ -86,7 +86,7 @@ build-ondemand-runtime:
     - bundle exec rake ood_packaging:package:ondemand-runtime
   parallel:
     matrix:
-      - OOD_PACKAGING_DIST: [el7, el8]
+      - OOD_PACKAGING_DIST: [el8]
         OOD_PACKAGING_ARCH: [x86_64, aarch64, ppc64le]
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
       - OOD_PACKAGING_DIST: [el9]
@@ -127,7 +127,7 @@ build-passenger:
     - bundle exec rake ood_packaging:package:passenger[$DIST]
   parallel:
     matrix:
-      - OOD_PACKAGING_DIST: [el7, el8]
+      - OOD_PACKAGING_DIST: [el8]
         OOD_PACKAGING_ARCH: [x86_64, aarch64, ppc64le]
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
       - OOD_PACKAGING_DIST: [el9, debian-12]
@@ -144,26 +144,6 @@ build-passenger:
       - tmp/output
     name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
 
-build-sqlite:
-  stage: build
-  rules:
-    # Re-enable once Gitlab instance using plugin to integrate with Github
-    # - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
-    - if: '$CI_COMMIT_BRANCH !~ /^(main|[0-9]\.[0-9])$/ && $CI_COMMIT_TAG == null'
-    - if: '$CI_COMMIT_TAG =~ /^sqlite-/'
-  script:
-    - bundle exec rake ood_packaging:package:sqlite[$DIST]
-  parallel:
-    matrix:
-      - OOD_PACKAGING_DIST: el7
-        OOD_PACKAGING_ARCH: [x86_64, aarch64, ppc64le]
-        OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
-  timeout: 2h
-  artifacts:
-    paths:
-      - tmp/output
-    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
-
 build-cjose:
   stage: build
   rules:
@@ -175,7 +155,7 @@ build-cjose:
     - bundle exec rake ood_packaging:package:cjose[$DIST]
   parallel:
     matrix:
-      - OOD_PACKAGING_DIST: [el7, el8]
+      - OOD_PACKAGING_DIST: [el8]
         OOD_PACKAGING_ARCH: [x86_64, aarch64, ppc64le]
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
       - OOD_PACKAGING_DIST: [amzn2023]
@@ -196,7 +176,7 @@ build-mod_auth_openidc:
     - bundle exec rake ood_packaging:package:mod_auth_openidc[$DIST]
   parallel:
     matrix:
-      - OOD_PACKAGING_DIST: [el7, el8]
+      - OOD_PACKAGING_DIST: [el8]
         OOD_PACKAGING_ARCH: [x86_64, aarch64, ppc64le]
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
       - OOD_PACKAGING_DIST: [amzn2023]
@@ -217,7 +197,7 @@ build-ondemand_exporter:
     - bundle exec rake ood_packaging:package:ondemand_exporter[$DIST]
   parallel:
     matrix:
-      - OOD_PACKAGING_DIST: [el7, el8]
+      - OOD_PACKAGING_DIST: [el8]
         OOD_PACKAGING_ARCH: [x86_64, aarch64, ppc64le]
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
       - OOD_PACKAGING_DIST: [el9]
@@ -242,7 +222,7 @@ build-ondemand-compute:
     - cp -r tmp/output/$OOD_PACKAGING_DIST-x86_64 tmp/output/$OOD_PACKAGING_DIST-ppc64le
   parallel:
     matrix:
-      - OOD_PACKAGING_DIST: [el7, el8]
+      - OOD_PACKAGING_DIST: [el8]
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
       - OOD_PACKAGING_DIST: [el9, amzn2023]
   artifacts:
@@ -261,7 +241,7 @@ build-python-websockify:
     - bundle exec rake ood_packaging:package:python-websockify[$DIST]
   parallel:
     matrix:
-      - OOD_PACKAGING_DIST: [el7, el8]
+      - OOD_PACKAGING_DIST: [el8]
         OOD_PACKAGING_ARCH: [x86_64, aarch64, ppc64le]
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
       - OOD_PACKAGING_DIST: [el9]
@@ -284,7 +264,7 @@ build-turbovnc:
     - bundle exec rake ood_packaging:package:turbovnc
   parallel:
     matrix:
-      - OOD_PACKAGING_DIST: [el7, el8]
+      - OOD_PACKAGING_DIST: [el8]
         OOD_PACKAGING_ARCH: [x86_64, aarch64, ppc64le]
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
       - OOD_PACKAGING_DIST: [el9]
@@ -326,7 +306,6 @@ package-deploy-build:
     - if: '$CI_COMMIT_TAG =~ /^ondemand-runtime-/'
     - if: '$CI_COMMIT_TAG =~ /^scl-utils-/'
     - if: '$CI_COMMIT_TAG =~ /^passenger-/'
-    - if: '$CI_COMMIT_TAG =~ /^sqlite-/'
     - if: '$CI_COMMIT_TAG =~ /^cjose-/'
     - if: '$CI_COMMIT_TAG =~ /^mod_auth_openidc-/'
   script:

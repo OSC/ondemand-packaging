@@ -24,20 +24,6 @@ describe OodPackaging::BuildBox do
       allow(build_box).to receive(:build_gem)
     end
 
-    context 'when building for el7' do
-      let(:dist) { 'el7' }
-
-      it 'executes el7 build command' do
-        expected_cmd = [
-          'docker buildx build', '--platform linux/amd64',
-          "--tag ohiosupercomputer/ood-buildbox-el7-x86_64:#{OodPackaging::VERSION}",
-          '--output', 'type=docker', '-f /tmp/dockerfile /fake-builddir'
-        ]
-        expect(build_box).to receive(:sh).with(expected_cmd.join(' '))
-        build_box.build!
-      end
-    end
-
     context 'when building for el8' do
       it 'executes el8 build command' do
         expected_cmd = [

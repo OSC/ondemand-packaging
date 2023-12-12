@@ -128,22 +128,6 @@ describe OodPackaging::Build do
       end
     end
 
-    context 'when installing on EL7' do
-      let(:dist) { 'el7' }
-
-      it 'installs RPM dependencies using YUM' do
-        expected_cmd = [
-          'sudo', 'yum-builddep', '-y',
-          "--define 'git_tag v0.0.1-2'",
-          "--define 'package_version 0.0.1'",
-          "--define 'package_release 2'",
-          spec_file, '2>/dev/null 1>/dev/null'
-        ]
-        expect(build).to receive(:sh).with(expected_cmd.join(' '))
-        build.install_dependencies!
-      end
-    end
-
     context 'when doing deb builds' do
       let(:dist) { 'ubuntu-20.04' }
       let(:version) { 'v0.0.1' }
@@ -219,24 +203,6 @@ describe OodPackaging::Build do
       expect(build).to receive(:sh).with(expected_cmd.join(' '))
       build.rpmbuild!
     end
-
-    context 'when building for EL7' do
-      let(:dist) { 'el7' }
-
-      it 'executes rpmbuild with scl define' do
-        allow(build).to receive(:packaging_config).and_return({ 'el7' => { 'scl' => 'httpd24' } })
-        expected_cmd = [
-          'rpmbuild', '-ba',
-          '--define', "'git_tag v0.0.1-2'",
-          '--define', "'package_version 0.0.1'",
-          '--define', "'package_release 2'",
-          '--define', "'scl httpd24'",
-          spec_file, '2>/dev/null 1>/dev/null'
-        ]
-        expect(build).to receive(:sh).with(expected_cmd.join(' '))
-        build.rpmbuild!
-      end
-    end
   end
 
   describe 'debuild!' do
@@ -258,20 +224,6 @@ describe OodPackaging::Build do
       expect(build).to receive(:sh).with('rpmsign --addsign /output/ondemand.rpm 2>/dev/null 1>/dev/null')
       expect(build).to receive(:sh).with('rpmsign --addsign /output/ondemand-selinux.rpm 2>/dev/null 1>/dev/null')
       build.gpg_sign!
-    end
-
-    context 'when building for EL7' do
-      let(:dist) { 'el7' }
-
-      it 'signs RPMs' do
-        expect(build).to receive(:sh).with(
-          'cat /dev/null | setsid rpmsign --addsign /output/ondemand.rpm 2>/dev/null 1>/dev/null'
-        )
-        expect(build).to receive(:sh).with(
-          'cat /dev/null | setsid rpmsign --addsign /output/ondemand-selinux.rpm 2>/dev/null 1>/dev/null'
-        )
-        build.gpg_sign!
-      end
     end
   end
 end

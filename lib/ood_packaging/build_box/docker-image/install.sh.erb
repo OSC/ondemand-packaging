@@ -46,10 +46,6 @@ run chmod 440 /etc/sudoers.d/ood
 header "Setup RPM env"
 sudo -u <%= ctr_user %> -H cat > <%= ctr_rpmmacros %> <<EOF
 %_topdir <%= work_dir %>
-<%- # Workaround to weird issue with debuginfo stripping -%>
-<% if dist == 'el7' -%>
-%_builddir %{_topdir}/rpmbuild/BUILD
-<% end -%>
 %_signature gpg
 %_gpg_path <%= ctr_gpg_dir %>
 %_gpg /usr/bin/gpg
@@ -76,11 +72,7 @@ echo "allow-loopback-pinentry" >> <%= ctr_gpg_dir %>/gpg-agent.conf
 <%- end -%>
 
 header "Install ood_packaging gem"
-<%- if scl? -%>
-run scl enable <%= scl_ruby %> -- gem install --no-doc --bindir <%= ctr_scripts_dir %> --install-dir <%= ctr_gems_dir %> /build/*.gem
-<%- else -%>
 run gem install --no-doc --bindir <%= ctr_scripts_dir %> --install-dir <%= ctr_gems_dir %> /build/*.gem
-<%- end -%>
 
 header "Copy in launch scripts"
 run mkdir -p <%= ctr_scripts_dir %>

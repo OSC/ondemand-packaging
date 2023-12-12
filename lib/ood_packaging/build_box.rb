@@ -10,7 +10,6 @@ class OodPackaging::BuildBox
   include FileUtils
 
   BASE_IMAGES = {
-    'el7'          => 'centos:7',
     'el8'          => 'almalinux:8',
     'el9'          => 'almalinux:9',
     'ubuntu-20.04' => 'ubuntu:20.04',
@@ -63,19 +62,12 @@ class OodPackaging::BuildBox
 
   def dnf?
     return false unless rpm?
-    return false if dist == 'el7'
 
     true
   end
 
-  def scl?
-    return true if dist == 'el7'
-
-    false
-  end
-
   def legacy_gpg?
-    return true if ['el7', 'el8'].include?(dist)
+    return true if ['el8'].include?(dist)
 
     false
   end

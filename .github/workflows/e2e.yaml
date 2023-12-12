@@ -14,7 +14,6 @@ jobs:
       matrix:
         os: [ubuntu-22.04]
         dist:
-          - el7
           - el8
           - el9
           - ubuntu-20.04
@@ -65,7 +64,6 @@ jobs:
       matrix:
         os: [ubuntu-22.04]
         dist:
-          - el7
           - el8
           - el9
           - amzn2023
@@ -85,16 +83,6 @@ jobs:
           - python-websockify
           - turbovnc
         include:
-          - dist: el7
-            arch: x86_64
-            os: ubuntu-22.04
-            package: sqlite
-          # Github actions for multi arch run as root and
-          # this seems to break the sqlite tests
-          #- dist: el7
-          #  arch: aarch64
-          #  os: ubuntu-22.04
-          #  package: sqlite
           - dist: amzn2023
             arch: x86_64
             os: ubuntu-22.04
@@ -255,7 +243,6 @@ jobs:
       matrix:
         os: [ubuntu-22.04]
         dist:
-          - el7
           - el8
           - el9
           - ubuntu-20.04
@@ -269,10 +256,6 @@ jobs:
         package:
           - ondemand
         include:
-          - dist: el7
-            arch: x86_64
-            os: ubuntu-22.04
-            package: bc_osc_rstudio_server
           - dist: el8
             arch: x86_64
             os: ubuntu-22.04
