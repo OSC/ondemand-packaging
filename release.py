@@ -46,7 +46,7 @@ def release_packages(packages, host, path, pkey, force):
     ssh.close()
     return uploads
 
-def update_repo(host, release, dist, pkey):
+def update_repo(host, release, dist, release_type, pkey):
     _pkey = paramiko.RSAKey.from_private_key_file(pkey)
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -56,7 +56,7 @@ def update_repo(host, release, dist, pkey):
     repo_update_dest = '/var/lib/oodpkg/repo-update.sh'
     logger.info("SFTP %s -> oodpkg@%s:%s", repo_update_src, host, repo_update_dest)
     sftp.put(repo_update_src, repo_update_dest)
-    repo_update_cmd = "/bin/bash %s -r %s -d %s" % (repo_update_dest, release, dist)
+    repo_update_cmd = "/bin/bash %s -r %s -d %s -t %s" % (repo_update_dest, release, dist, release_type)
     logger.info("Executing via SSH oodpkg@%s '%s'", host, repo_update_cmd)
     stdin, stdout, stderr = ssh.exec_command(repo_update_cmd)
     out = stdout.read()
@@ -92,6 +92,11 @@ Usage examples:
         build_release = "%s.%s" % (release_bits[0], release_bits[1])
     else:
         build_release = ''
+
+    if args.config_section == 'compute':
+        release_type = 'compute'
+    else:
+        release_type = 'web'
 
     if args.debug:
         log_level = logging.DEBUG
@@ -131,7 +136,7 @@ Usage examples:
                     debs.append(p)
             debs_released = release_packages(debs, host, pool_path, args.pkey, args.force)
             if debs_released and update:
-                update_repo(host, release, deb, args.pkey)
+                update_repo(host, release, deb, release_type, args.pkey)
         else:
             rpm_path = config.get(args.config_section, 'rpm_path').replace('DIST', dist).replace('RELEASE', build_release)
             srpm_path = config.get(args.config_section, 'srpm_path').replace('DIST', dist).replace('RELEASE', build_release)
@@ -149,9 +154,9 @@ Usage examples:
             rpms_released = release_packages(rpms, host, rpm_path, args.pkey, args.force)
             srpms_released = release_packages(srpms, host, srpm_path, args.pkey, args.force)
             if rpms_released and update:
-                update_repo(host, release, dist, args.pkey)
+                update_repo(host, release, dist, release_type, args.pkey)
             if srpms_released and update:
-                update_repo(host, release, dist, args.pkey)
+                update_repo(host, release, dist, release_type, args.pkey)
 
 if __name__ == '__main__':
     main()
