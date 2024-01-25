@@ -96,11 +96,6 @@ namespace :ood_packaging do
       Rake::Task['ood_packaging:package:internal'].invoke(t.name, args[:dist], args[:arch])
     end
 
-    desc 'Package sqlite'
-    task :sqlite, [:dist, :arch] do |t, args|
-      Rake::Task['ood_packaging:package:internal'].invoke(t.name, args[:dist], args[:arch])
-    end
-
     desc 'Package ondemand_exporter'
     task :ondemand_exporter, [:dist, :arch] do |t, args|
       Rake::Task['ood_packaging:package:internal'].invoke(t.name, args[:dist], args[:arch])

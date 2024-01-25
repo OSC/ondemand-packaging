@@ -6,7 +6,7 @@
 %define release_version %{package_release}
 %define ngix_release_version 1
 
-%define runtime_version 3.1.3
+%define runtime_version 3.1.4
 
 %global  nginx_user          %{?scl_prefix}nginx
 %global  nginx_group         %{nginx_user}

@@ -63,13 +63,7 @@ module OodPackaging::Utils
   end
 
   def ruby_version
-    return '3.0' if dist == 'el7'
-
     '3.1'
-  end
-
-  def scl_ruby
-    "rh-ruby#{ruby_version.tr('.', '')}"
   end
 
   def nodejs_version

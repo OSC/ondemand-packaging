@@ -1,6 +1,6 @@
 major: '3.1'
 full: '3.1.0'
-runtime: '3.1.3'
+runtime: '3.1.4'
 
 # release
 ondemand-release:
@@ -74,17 +74,6 @@ ondemand:
     - '{full}-1'
     # deb package
     - '{full}'
-ondemand-sqlite:
-  packages:
-    - ondemand-sqlite
-    - ondemand-sqlite-devel
-    - ondemand-sqlite-doc
-    - ondemand-sqlite-libs
-    - ondemand-sqlite-tcl
-    - ondemand-sqlite-analyzer
-    - ondemand-sqlite-debuginfo
-  versions:
-    - '3.26.0-4'
 scl-utils:
   packages:
     - scl-utils
