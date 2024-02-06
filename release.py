@@ -156,9 +156,7 @@ Usage examples:
                     rpms.append(p)
             rpms_released = release_packages(rpms, host, rpm_path, args.pkey, args.force)
             srpms_released = release_packages(srpms, host, srpm_path, args.pkey, args.force)
-            if rpms_released and update:
-                update_repo(host, release, dist, arch, release_type, args.pkey)
-            if srpms_released and update:
+            if (rpms_released or srpms_released) and update:
                 update_repo(host, release, dist, arch, release_type, args.pkey)
 
 if __name__ == '__main__':
