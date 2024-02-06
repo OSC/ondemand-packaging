@@ -8,13 +8,14 @@
 %global ruby ruby
 %global nodejs nodejs
 %global apache httpd
+%global ruby_version 3.1
 %endif
 %if 0%{?amzn} == 2023
 %global ruby ruby3.2
 %global nodejs nodejs
 %global apache httpd
+%global ruby_version 3.2
 %endif
-%global ruby_version 3.0
 %global ondemand_gem_home %{_datadir}/gems/%{ruby_version}
 %global ondemand_apps_gem_home %{ondemand_gem_home}/apps
 %global ondemand_core_gem_home %{ondemand_gem_home}/ondemand
