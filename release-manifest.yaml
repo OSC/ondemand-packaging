@@ -68,12 +68,12 @@ ondemand:
   packages:
     - ondemand
     - ondemand-gems
-    - ondemand-gems-{full}-0.rc1
+    - ondemand-gems-{full}-1
     - ondemand-selinux
   versions:
-    - '{full}-0.rc1'
+    - '{full}-1'
     # deb package
-    - '{full}.0.rc1'
+    - '{full}'
 scl-utils:
   packages:
     - scl-utils
