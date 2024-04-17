@@ -238,7 +238,7 @@ class OodPackaging::Package
     end
     tar_file = "#{dir}/#{tar_name}.tar.gz"
     cmd.concat ["--transform 's,^,#{tar_name}/,'"]
-    cmd.concat ['-h', '-T', '-', '|', "gzip > #{tar_file}"]
+    cmd.concat ['-h', '--hard-dereference', '-T', '-', '|', "gzip > #{tar_file}"]
 
     sh "rm #{tar_file}" if File.exist?(tar_file)
     puts "Create tar archive #{tar_file}".blue
