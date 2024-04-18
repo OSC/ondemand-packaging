@@ -78,7 +78,8 @@ describe OodPackaging::Package do
         expected_cmd = [
           'git', 'ls-files', '.', '|', 'tar', '-c',
           "--transform 's,^,package-0.0.1/,'",
-          '-T', '-', '|', 'gzip >', File.join(config[:package], 'packaging/rpm', 'package-0.0.1.tar.gz')
+          '-h', '--hard-dereference', '-T', '-', '|',
+          'gzip >', File.join(config[:package], 'packaging/rpm', 'package-0.0.1.tar.gz')
         ]
         expect(package).to receive(:sh).with(expected_cmd.join(' '), verbose: false)
         package.tar!
@@ -93,7 +94,8 @@ describe OodPackaging::Package do
           'git', 'ls-files', '.', '|', 'tar', '-c',
           "--transform 'flags=r;s,packaging/deb,debian,'",
           "--transform 's,^,package-0.0.1/,'",
-          '-T', '-', '|', 'gzip >', File.join(config[:package], 'build', 'package-0.0.1.tar.gz')
+          '-h', '--hard-dereference', '-T', '-', '|',
+          'gzip >', File.join(config[:package], 'build', 'package-0.0.1.tar.gz')
         ]
         FileUtils.mkdir_p(File.join(config[:package], 'build'))
         expect(package).to receive(:sh).with("mkdir -p #{File.join(config[:package], 'build')}")
@@ -107,7 +109,8 @@ describe OodPackaging::Package do
           'git', 'ls-files', '.', '|', 'tar', '-c',
           "--transform 'flags=r;s,packaging/deb,debian,'",
           "--transform 's,^,package-0.0.1/,'",
-          '-T', '-', '|', 'gzip >', File.join(config[:package], 'deb/build', 'package-0.0.1.tar.gz')
+          '-h', '--hard-dereference', '-T', '-', '|',
+          'gzip >', File.join(config[:package], 'deb/build', 'package-0.0.1.tar.gz')
         ]
         FileUtils.mkdir_p(File.join(config[:package], 'deb', 'build'))
         expect(package).to receive(:sh).with("mkdir -p #{File.join(config[:package], 'deb', 'build')}")
