@@ -1,7 +1,8 @@
 %{!?package_release: %define package_release 1}
 %define __brp_mangle_shebangs /bin/true
+%global pkgname websockify
 
-Name:           python3-websockify
+Name:           python3-%{pkgname}
 Version:        %{package_version}
 Release:        %{package_release}%{?dist}
 Summary:        WSGI based adapter for the Websockets protocol
@@ -11,6 +12,7 @@ URL:            https://github.com/novnc/websockify
 Source0:        https://github.com/novnc/websockify/archive/refs/tags/v%{package_version}.tar.gz
 BuildArch:      noarch
 BuildRequires:  python3-rpm-macros
+BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
 Requires:       python3-setuptools
 Obsoletes:      python-websockify
@@ -19,17 +21,13 @@ Obsoletes:      python-websockify
 Python WSGI based adapter for the Websockets protocol
 
 %prep
-%setup -q -n websockify-%{version}
-
-# TODO: Have the following handle multi line entries
-sed -i '/setup_requires/d; /install_requires/d; /dependency_links/d' setup.py
+%autosetup -n %{pkgname}-%{version}
 
 %build
-%{__python3} setup.py build
-
+%py3_build
 
 %install
-%{__python3} setup.py install -O1 --skip-build --root %{buildroot}
+%py3_install
 
 rm -Rf %{buildroot}/usr/share/websockify
 mkdir -p %{buildroot}%{_mandir}/man1/
@@ -37,7 +35,7 @@ install -m 444 docs/websockify.1 %{buildroot}%{_mandir}/man1/
 
 
 %files
-%doc docs
+%license COPYING
 %{_mandir}/man1/websockify.1*
 %{python3_sitelib}/websockify/*
 %{python3_sitelib}/websockify-%{version}-py?.?.egg-info
