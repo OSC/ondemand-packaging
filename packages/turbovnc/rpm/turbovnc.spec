@@ -12,49 +12,48 @@
 # Path under which docs should be installed
 %define docdir /opt/TurboVNC/share/doc/TurboVNC
 
+# Path under which icons should be installed
+%define datadir /opt/TurboVNC/share
+
 # Path under which man pages should be installed
 %define mandir /opt/TurboVNC/man
 
 # Whether or not to include the Java viewer
-%define java 0
+%define viewer 0
 
-# Whether or not to include the native infrastructure for the Java viewer
-%define native 1
+# Whether or not to include a custom JRE
+%{!?jre: %define jre 0}
 
 # Work around "No build ID note found" error caused by some versions of RPM
-# trying in vain to extract debug info from libturbojpeg.so
-%if "%{java}" == "1"
-%if "%{native}" == "1"
+# trying in vain to extract debug info from the custom JRE
+%if "%{jre}" == "1"
 %undefine _missing_build_ids_terminate_build
-%endif
 %endif
 
 # Whether or not to include the server
 %define server 1
 
-# Path under which the Java viewer should be installed
-%define javadir /opt/TurboVNC/java
+# Whether or not to include the web server
+%define webserver 1
 
-# Whether or not to include the TurboJPEG JNI JAR files (used when launching
-# the Java TurboVNC Viewer via Java Web Start)
-%define jnijars 0
-
-# Directory in which the TurboJPEG JNI JARs can be found
-%if "%{jnijars}" == "1"
-%define jnijardir /opt/libjpeg-turbo-jni
+# Whether or not to include the TurboVNC Server init script
+%if "%{server}" == "1"
+%define initscript 1
 %endif
 
-# When building from a source RPM, these variables can be passed to rpmbuild in
-# order to sign the JAR file(s) using an official code signing certificate:
-#   java_keystore = value of CMake JAVA_KEYSTORE variable
-#   java_keystore_pass = value of CMake JAVA_KEYSTORE_PASS variable
-#   java_keystore_type = value of CMake JAVA_KEYSTORE_TYPE variable
-#   java_key_alias = value of CMake JAVA_KEY_ALIAS variable
-#   java_key_pass = value of CMake JAVA_KEY_PASS variable
-#   java_tsa_url = value of CMake JAVA_TSA_URL variable
-#   java_tsa_alg = value of CMake JAVA_TSA_ALG variable
-# The CMake variables in question are documented in java/CMakeLists.txt in the
-# TurboVNC source.
+# Path under which the Java viewer should be installed
+%if "%{viewer}" == "1"
+%define javadir /opt/TurboVNC/java
+%endif
+
+# Exclude the custom JRE from automatic dependency processing
+%if "%{viewer}" == "1"
+%if "%{jre}" == "1"
+%define __find_provides %{_tmppath}/%{name}-%{version}-%{release}-find-provides
+%define __find_requires %{_tmppath}/%{name}-%{version}-%{release}-find-requires
+%define _use_internal_dependency_generator 0
+%endif
+%endif
 
 Summary:   A highly-optimized version of VNC that can be used with performance-critical applications
 Name:      turbovnc
@@ -65,7 +64,14 @@ URL:       http://www.TurboVNC.org
 Source0: http://prdownloads.sourceforge.net/turbovnc/turbovnc-%{version}.tar.gz
 License:   GPL
 Group:     User Interface/Desktops
-Requires:  bash >= 2.0 /sbin/chkconfig %{_sysconfdir}/init.d
+Requires:  bash >= 2.0
+%if "%{server}" == "1"
+%if "%{initscript}" == "1"
+Requires:  /sbin/chkconfig /usr/sbin/semanage %{_sysconfdir}/init.d
+%endif
+Requires:  /usr/bin/xauth /usr/bin/xkbcomp xkeyboard-config
+Requires:  /usr/bin/dbus-launch
+%endif
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 BuildRequires: /usr/bin/perl
 BuildRequires: libjpeg-turbo
@@ -75,9 +81,8 @@ BuildRequires: libX11-devel
 BuildRequires: libXext-devel
 BuildRequires: pam-devel
 BuildRequires: openssl-devel
-%if 0%{?rhel} >= 8
 BuildRequires: libarchive
-%endif
+BuildRequires: python3
 
 %description
 Virtual Network Computing (VNC) is a remote display system that allows you to
@@ -98,48 +103,24 @@ solution for remotely displaying 3D applications with interactive performance.
 %setup -q -n turbovnc-%{version}
 
 %build
-%if %{?java_keystore:1}%{!?java_keystore:0}
-  JAVA_KEYSTORE_ARG="-DJAVA_KEYSTORE=%{java_keystore}"
-%endif
-%if %{?java_keystore_pass:1}%{!?java_keystore_pass:0}
-  JAVA_KEYSTORE_PASS_ARG="-DJAVA_KEYSTORE_PASS=%{java_keystore_pass}"
-%endif
-%if %{?java_keystore_type:1}%{!?java_keystore_type:0}
-  JAVA_KEYSTORE_TYPE_ARG="-DJAVA_KEYSTORE_TYPE=%{java_keystore_type}"
-%endif
-%if %{?java_key_alias:1}%{!?java_key_alias:0}
-  JAVA_KEY_ALIAS_ARG="-DJAVA_KEY_ALIAS=%{java_key_alias}"
-%endif
-%if %{?java_key_pass:1}%{!?java_key_pass:0}
-  JAVA_KEY_PASS_ARG="-DJAVA_KEY_PASS=%{java_key_pass}"
-%endif
-%if %{?java_tsa_url:1}%{!?java_tsa_url:0}
-  JAVA_TSA_URL_ARG="-DJAVA_TSA_URL=%{java_tsa_url}"
-%endif
-%if %{?java_tsa_alg:1}%{!?java_tsa_alg:0}
-  JAVA_TSA_ALG_ARG="-DJAVA_TSA_ALG=%{java_tsa_alg}"
-%endif
-%if "%{jnijars}" == "1"
-  JNIJARS_ARGS="-DTVNC_INCLUDEJNIJARS=1 -DTJPEG_JNIJARPATH=%{jnijardir}"
-%endif
 cmake -G"Unix Makefiles" -DCMAKE_BUILD_TYPE=RelWithDebInfo \
   -DBUILD=%{release} -DCMAKE_INSTALL_BINDIR=%{bindir} \
-  -DCMAKE_INSTALL_DOCDIR=%{docdir} -DCMAKE_INSTALL_JAVADIR=%{javadir} \
-  -DCMAKE_INSTALL_MANDIR=%{mandir} -DCMAKE_INSTALL_PREFIX=%{prefix} \
+  -DCMAKE_INSTALL_DATADIR=%{datadir} -DCMAKE_INSTALL_DOCDIR=%{docdir} \
+  -DCMAKE_INSTALL_JAVADIR=%{javadir} -DCMAKE_INSTALL_MANDIR=%{mandir} \
+  -DCMAKE_INSTALL_PREFIX=%{prefix} \
   -DCMAKE_INSTALL_SYSCONFDIR=%{sysconfdir} \
   -DCMAKE_VERBOSE_MAKEFILE=FALSE \
-  $JAVA_KEYSTORE_ARG $JAVA_KEYSTORE_PASS_ARG $JAVA_KEYSTORE_TYPE_ARG \
-  $JAVA_KEY_ALIAS_ARG $JAVA_KEY_PASS_ARG $JAVA_TSA_URL_ARG \
-  $JAVA_TSA_ALG_ARG \
-  -DTVNC_BUILDJAVA=%{java} -DTVNC_BUILDNATIVE=%{native} \
-  -DTVNC_BUILDSERVER=%{server} \
-  $JNIJARS_ARGS .
+  -DTVNC_BUILDVIEWER=%{viewer} \
+  -DTVNC_BUILDSERVER=%{server} -DTVNC_BUILDWEBSERVER=%{webserver} \
+  -DTVNC_BUILDINITSCRIPT=%{initscript} \
+  -DPYTHON_EXECUTABLE=/usr/bin/python3 -DTVNC_INCLUDEJRE=%{jre} \
+  .
 export NUMCPUS=`grep -c '^processor' /proc/cpuinfo`
 make -j$NUMCPUS --load-average=$NUMCPUS
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make install DESTDIR=$RPM_BUILD_ROOT
+DESTDIR=$RPM_BUILD_ROOT /usr/bin/gmake install
 
 %if 0
 
@@ -177,30 +158,65 @@ TVNC_DOCDIR=/opt/TurboVNC/doc
 if [ ! "$TVNC_DOCDIR" = "%{docdir}" ]; then
 	safedirmove $RPM_BUILD_ROOT/$TVNC_DOCDIR $RPM_BUILD_ROOT/%{docdir} $RPM_BUILD_ROOT/__tmpdoc
 fi
+%if "%{viewer}" == "1"
+TVNC_DATADIR=/opt/TurboVNC
+if [ ! "$TVNC_DATADIR" = "%{datadir}" ]; then
+	safedirmove $RPM_BUILD_ROOT/$TVNC_DATADIR/icons $RPM_BUILD_ROOT/%{datadir}/icons $RPM_BUILD_ROOT/__tmpicons
+fi
+%endif
 
 %endif
 
-%if "%{native}" == "1"
-mkdir -p %{buildroot}/%{prefix}/share/applications
-cat > %{buildroot}/%{prefix}/share/applications/tvncviewer.desktop << EOF
+%if "%{viewer}" == "1"
+mkdir -p %{buildroot}/usr/share/applications
+cat > %{buildroot}/usr/share/applications/tvncviewer.desktop << EOF
 [Desktop Entry]
 Name=TurboVNC Viewer
 Comment=TurboVNC client application
 Exec=%{bindir}/vncviewer
-Terminal=0
+Terminal=false
+Icon=turbovnc
 Type=Application
 Categories=Application;Utility;X-Red-Hat-Extra;
 EOF
 %endif
 
+%if "%{server}" == "1"
+%if "%{sysconfdir}" == "%{_sysconfdir}"
+mkdir -p %{buildroot}/%{sysconfdir}/polkit-1/localauthority/50-local.d
+cat > %{buildroot}/%{sysconfdir}/polkit-1/localauthority/50-local.d/45-turbovnc-gnome3.pkla << EOF
+[Eliminate GNOME 3 dialogs in TurboVNC]
+Identity=unix-user:*
+Action=org.freedesktop.color-manager.create-device;org.freedesktop.color-manager.create-profile;org.freedesktop.color-manager.delete-device;org.freedesktop.color-manager.delete-profile;org.freedesktop.color-manager.modify-device;org.freedesktop.color-manager.modify-profile;org.debian.pcsc-lite.access_pcsc;org.freedesktop.packagekit.system-sources-refresh;org.freedesktop.packagekit.system-network-proxy-configure
+ResultAny=no
+EOF
+%endif
+%endif
+
+%if "%{viewer}" == "1"
+%if "%{jre}" == "1"
+echo 'grep -v %{buildroot}%{javadir}/jre|/usr/lib/rpm/find-provides' >%{_tmppath}/%{name}-%{version}-%{release}-find-provides
+echo 'grep -v %{buildroot}%{javadir}/jre|/usr/lib/rpm/find-requires' >%{_tmppath}/%{name}-%{version}-%{release}-find-requires
+chmod 755 %{_tmppath}/%{name}-%{version}-%{release}-find-provides
+chmod 755 %{_tmppath}/%{name}-%{version}-%{release}-find-requires
+%endif
+%endif
+
 %clean
 rm -rf %{buildroot}
 
-%if "%{server}" == "1"
+%if "%{initscript}" == "1"
 %post
 %if "%{sysconfdir}" == "%{_sysconfdir}"
+if [ -x %{_sysconfdir}/rc.d/init.d/tvncserver ]; then
+  semanage fcontext -a -t bin_t %{_sysconfdir}/rc.d/init.d/tvncserver
+  restorecon -R -v %{_sysconfdir}/rc.d/init.d/tvncserver
+else
+  semanage fcontext -a -t bin_t %{_sysconfdir}/init.d/tvncserver
+  restorecon -R -v %{_sysconfdir}/init.d/tvncserver
+fi
 if [ "$1" = 1 ]; then
-  if [ -f /etc/redhat-release ]; then /sbin/chkconfig --add tvncserver; fi
+  /sbin/chkconfig --add tvncserver
 fi
 %endif
 
@@ -210,8 +226,15 @@ if [ "$1" = 0 ]; then
   if [ -x %{_sysconfdir}/init.d/tvncserver ]; then
     %{_sysconfdir}/init.d/tvncserver stop >/dev/null 2>&1
   fi
-  if [ -f /etc/redhat-release -a -f %{_sysconfdir}/init.d/tvncserver ]; then
+  if [ -f %{_sysconfdir}/init.d/tvncserver ]; then
     /sbin/chkconfig --del tvncserver
+  fi
+  if [ -x %{_sysconfdir}/rc.d/init.d/tvncserver ]; then
+    semanage fcontext -d %{_sysconfdir}/rc.d/init.d/tvncserver
+    restorecon -R -v %{_sysconfdir}/rc.d/init.d/tvncserver
+  else
+    semanage fcontext -d %{_sysconfdir}/init.d/tvncserver
+    restorecon -R -v %{_sysconfdir}/init.d/tvncserver
   fi
 fi
 %endif
@@ -231,13 +254,23 @@ fi
 %if "%{server}" == "1"
  %if "%{sysconfdir}" != "%{_sysconfdir}"
   %dir %{sysconfdir}
-  %dir %{sysconfdir}/init.d
-  %dir %{sysconfdir}/sysconfig
+  %if "%{initscript}" == "1"
+   %dir %{sysconfdir}/init.d
+   %dir %{sysconfdir}/sysconfig
+  %endif
  %endif
- %attr(0755,root,root) %config %{sysconfdir}/init.d/tvncserver
- %config(noreplace) %{sysconfdir}/sysconfig/tvncservers
+ %if "%{initscript}" == "1"
+  %attr(0755,root,root) %config %{sysconfdir}/init.d/tvncserver
+  %config(noreplace) %{sysconfdir}/sysconfig/tvncservers
+ %endif
  %config(noreplace) %{sysconfdir}/turbovncserver.conf
  %config(noreplace) %{sysconfdir}/turbovncserver-security.conf
+ %if "%{sysconfdir}" == "%{_sysconfdir}"
+  %dir %{sysconfdir}/polkit-1
+  %attr(0750,root,polkitd) %dir %{sysconfdir}/polkit-1/localauthority
+  %dir %{sysconfdir}/polkit-1/localauthority/50-local.d
+  %config %{sysconfdir}/polkit-1/localauthority/50-local.d/45-turbovnc-gnome3.pkla
+ %endif
 %endif
 
 %dir %{docdir}
@@ -247,49 +280,46 @@ fi
 %dir %{bindir}
 %dir %{mandir}
 %dir %{mandir}/man1
-%if "%{java}" == "1"
+%if "%{viewer}" == "1"
  %dir %{javadir}
 %endif
 
 %if "%{prefix}" == "/opt/TurboVNC"
-  %{prefix}/README.txt
+  %{prefix}/README.md
 %else
-  %{docdir}/README.txt
+  %{docdir}/README.md
 %endif
-%if "%{native}" == "1"
- %{bindir}/checkshmpixmaps
+%if "%{viewer}" == "1"
  %{bindir}/vncviewer
- %config(noreplace) %{prefix}/share/applications/tvncviewer.desktop
+ %config(noreplace) /usr/share/applications/tvncviewer.desktop
  %{mandir}/man1/vncviewer.1*
- %if "%{java}" == "1"
-  %{javadir}/libturbojpeg.so
-  %{javadir}/libturbovnchelper.so
- %endif
+ %{datadir}/icons/hicolor/128x128/apps/turbovnc.png
+ %{datadir}/icons/hicolor/48x48/apps/turbovnc.png
+ %{datadir}/icons/hicolor/16x16/apps/turbovnc.png
+ %{javadir}/libturbovnchelper.so
 %endif
 %if "%{server}" == "1"
  %{bindir}/Xvnc
+ %{bindir}/tvncconfig
  %{bindir}/vncserver
+ %{bindir}/xstartup.turbovnc
  %{bindir}/vncpasswd
  %{bindir}/vncconnect
-%endif
-%if "%{java}" == "1"
- %if "%{server}" == "1"
-  %config(noreplace) %{javadir}/VncViewer.jnlp
-  %{javadir}/favicon.ico
-  %if "%{jnijars}" == "1"
-   %{javadir}/ljtlinux32.jar
-   %{javadir}/ljtlinux64.jar
-   %{javadir}/ljtosx.jar
-   %{javadir}/ljtwin32.jar
-   %{javadir}/ljtwin64.jar
-  %endif
+ %if "%{webserver}" == "1"
+  %{bindir}/webserver
  %endif
+%endif
+%if "%{viewer}" == "1"
  %{javadir}/VncViewer.jar
  %{javadir}/README.md
+ %if "%{jre}" == "1"
+  %{javadir}/jre
+ %endif
 %endif
 %if "%{server}" == "1"
  %{mandir}/man1/Xvnc.1*
  %{mandir}/man1/Xserver.1*
+ %{mandir}/man1/tvncconfig.1*
  %{mandir}/man1/vncserver.1*
  %{mandir}/man1/vncconnect.1*
  %{mandir}/man1/vncpasswd.1*

@@ -22,8 +22,8 @@ module OodPackaging
       '(ubuntu|debian)' => '3.1.0',
       'default'         => '3.1.0'
     },
-    'python-websockify'       => '0.10.0',
-    'turbovnc'                => '2.2.5'
+    'python-websockify'       => '0.11.0',
+    'turbovnc'                => '3.1'
   }.freeze
 
   def self.package_version(package, dist)
