@@ -83,6 +83,7 @@ BuildRequires: pam-devel
 BuildRequires: openssl-devel
 BuildRequires: libarchive
 BuildRequires: python3
+BuildRequires: zlib-devel
 
 %description
 Virtual Network Computing (VNC) is a remote display system that allows you to
