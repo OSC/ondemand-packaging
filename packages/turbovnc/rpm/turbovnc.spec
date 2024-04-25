@@ -61,7 +61,7 @@ Version:   %{package_version}
 Release:   %{package_release}%{?dist}
 Vendor:    The VirtualGL Project
 URL:       http://www.TurboVNC.org
-Source0: http://prdownloads.sourceforge.net/turbovnc/turbovnc-%{version}.tar.gz
+Source0: https://github.com/TurboVNC/turbovnc/releases/download/%{version}/turbovnc-%{version}.tar.gz
 License:   GPL
 Group:     User Interface/Desktops
 Requires:  bash >= 2.0
