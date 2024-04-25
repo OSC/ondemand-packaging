@@ -93,10 +93,11 @@ ondemand_exporter:
 ondemand-compute:
   - '{major}.0-1'
 python3-websockify:
-  - 0.10.0-1
+  - 0.11.0-1
 turbovnc:
   packages:
     - turbovnc
     - turbovnc-debuginfo
+    - turbovnc-debugsource
   versions:
-    - 2.2.5-1
+    - 3.1-1
