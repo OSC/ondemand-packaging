@@ -2,7 +2,7 @@
 %define pkg_name passenger
 %scl_package passenger
 %define passenger_version %{package_version}
-%define nginx_version 1.22.1
+%define nginx_version 1.24.0
 %define release_version %{package_release}
 %define ngix_release_version 1
 
@@ -17,7 +17,7 @@
 %global  nginx_logdir        %{_root_localstatedir}/log/%{?scl_prefix}nginx
 %global  nginx_webroot       %{nginx_datadir}/html
 
-%global bundled_boost_version 1.81.0
+%global bundled_boost_version 1.83.0
 %global apache_module_package_name mod_passenger
 %global ruby_vendorlibdir %{_datadir}/ruby/vendor_ruby
 %global ruby_vendorarchdir %{_libdir}/ruby/vendor_ruby
