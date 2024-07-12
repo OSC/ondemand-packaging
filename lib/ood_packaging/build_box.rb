@@ -14,6 +14,7 @@ class OodPackaging::BuildBox
     'el9'          => 'almalinux:9',
     'ubuntu-20.04' => 'ubuntu:20.04',
     'ubuntu-22.04' => 'ubuntu:22.04',
+    'ubuntu-24.04' => 'ubuntu:24.04',
     'debian-12'    => 'debian:12',
     'amzn2023'     => 'amazonlinux:2023'
   }.freeze
@@ -21,6 +22,7 @@ class OodPackaging::BuildBox
   CODENAMES = {
     'ubuntu-20.04' => 'focal',
     'ubuntu-22.04' => 'jammy',
+    'ubuntu-24.04' => 'noble',
     'debian-12'    => 'bookworm'
   }.freeze
 

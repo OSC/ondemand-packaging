@@ -10,9 +10,10 @@ ondemand-release:
   versions:
     - '{major}-1'
     # deb package
-    - '{major}.1-focal'
-    - '{major}.1-jammy'
-    - '{major}.1-bookworm'
+    - '{major}.2-focal'
+    - '{major}.2-jammy'
+    - '{major}.2-noble'
+    - '{major}.2-bookworm'
 
 # web
 cjose:
