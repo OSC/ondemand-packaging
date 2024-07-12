@@ -18,6 +18,7 @@ jobs:
           - el9
           - ubuntu-20.04
           - ubuntu-22.04
+          - ubuntu-24.04
           - debian-12
           - amzn2023
         arch:
@@ -30,6 +31,8 @@ jobs:
           - dist: ubuntu-20.04
             arch: ppc64le
           - dist: ubuntu-22.04
+            arch: ppc64le
+          - dist: ubuntu-24.04
             arch: ppc64le
     runs-on: ${{ matrix.os }}
     name: Buildbox tests
@@ -175,6 +178,7 @@ jobs:
         dist:
           - ubuntu-20.04
           - ubuntu-22.04
+          - ubuntu-24.04
           - debian-12
         arch:
           - x86_64
@@ -247,6 +251,7 @@ jobs:
           - el9
           - ubuntu-20.04
           - ubuntu-22.04
+          - ubuntu-24.04
           - debian-12
           - amzn2023
         arch:
@@ -272,6 +277,8 @@ jobs:
           - dist: ubuntu-20.04
             arch: ppc64le
           - dist: ubuntu-22.04
+            arch: ppc64le
+          - dist: ubuntu-24.04
             arch: ppc64le
     runs-on: ${{ matrix.os }}
     name: Package ${{ matrix.package }} dist=${{ matrix.dist }} arch=${{ matrix.arch }}
