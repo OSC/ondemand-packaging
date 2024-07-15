@@ -21,6 +21,7 @@ deb_dist_map = {
     'ubuntu-18.04': 'bionic',
     'ubuntu-20.04': 'focal',
     'ubuntu-22.04': 'jammy',
+    'ubuntu-24.04': 'noble',
     'debian-12': 'bookworm',
 }
 PROJ_ROOT = os.path.dirname(os.path.realpath(__file__))

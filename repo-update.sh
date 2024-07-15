@@ -102,6 +102,9 @@ LOCK_FILE="/var/lib/oodpkg/repo-update-${LOCK_NAME}.lock"
     debian-12|bookworm)
       DIST="bookworm"
       ;;
+    ubuntu-24.04|noble)
+      DIST="noble"
+      ;;
     ubuntu-22.04|jammy)
       DIST="jammy"
       ;;

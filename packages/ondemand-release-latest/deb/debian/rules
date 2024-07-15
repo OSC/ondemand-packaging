@@ -20,8 +20,10 @@ override_dh_auto_install:
 	mkdir -p $(WEB_DESTDIR)/etc/apt/trusted.gpg.d
 	echo "deb https://apt.osc.edu/ondemand/latest/web/apt $(CODENAME) main" > $(WEB_DESTDIR)/etc/apt/sources.list.d/ondemand-web.list
 	install -m 644 -D $(CURDIR)/ondemand.gpg $(WEB_DESTDIR)/etc/apt/trusted.gpg.d/ondemand-web.gpg
-# Debian 12 (bookworm) has NodeJS 18 in OS repos
+# Debian 12 (bookworm) and Ubuntu 24.04 (noble)
+# have NodeJS 18 in OS repos
 ifeq ($(CODENAME),bookworm)
+else ifeq ($(CODENAME),noble)
 else
 	echo "deb https://deb.nodesource.com/$(NODEREPO) nodistro main" > $(WEB_DESTDIR)/etc/apt/sources.list.d/nodesource.list
 	curl -s https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor > $(WEB_DESTDIR)/etc/apt/trusted.gpg.d/nodesource.gpg
