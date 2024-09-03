@@ -131,7 +131,7 @@ jobs:
           bundler: '2.1.4'
           bundler-cache: true
       - name: Download image
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4.1.7
         with:
           name: image-${{ matrix.dist }}-${{ matrix.arch }}
           path: /tmp
@@ -202,7 +202,7 @@ jobs:
           bundler: '2.1.4'
           bundler-cache: true
       - name: Download image
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4.1.7
         with:
           name: image-${{ matrix.dist }}-${{ matrix.arch }}
           path: /tmp
@@ -288,7 +288,7 @@ jobs:
           bundler: '2.1.4'
           bundler-cache: true
       - name: Download image
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4.1.7
         with:
           name: image-${{ matrix.dist }}-${{ matrix.arch }}
           path: /tmp
