@@ -17,7 +17,7 @@ jobs:
     name: Unit tests
     steps:
       - name: Checkout ${{ github.sha	}}
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup Ruby ${{ matrix.ruby }} using Bundler ${{ matrix.bundler }}
         uses: ruby/setup-ruby@v1
         with:
