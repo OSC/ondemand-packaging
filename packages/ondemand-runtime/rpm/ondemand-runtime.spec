@@ -116,6 +116,7 @@ Requires: mod_ssl
 Requires: mod_ldap
 %endif
 %if 0%{?amzn} == 2023
+Requires: %{apache} >= 2.4, %{apache} < 2.5
 Requires: httpd-devel
 Requires: mod_ssl
 Requires: mod_ldap
