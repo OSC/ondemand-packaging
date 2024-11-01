@@ -12,7 +12,7 @@ module OodPackaging
       '(ubuntu|debian)' => '4',
       'default'         => '1-8'
     },
-    'ondemand-runtime'        => '3.1.5',
+    'ondemand-runtime'        => '3.1.6',
     'scl-utils'               => '2.0.3',
     'passenger'               => '6.0.20',
     'cjose'                   => '0.6.1',
