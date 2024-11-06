@@ -104,8 +104,13 @@ Meta package for pulling in SCL nodejs %{nodejs}
 
 %package -n ondemand-apache
 Summary: Meta package for pulling in SCL apache %{apache}
+%if 0%{?rhel} == 8
+Requires: %{apache} > 2.4.37-56, %{apache} < 2.5
+%endif
+%if 0%{?rhel} == 9
+Requires: %{apache} > 2.4.57-8, %{apache} < 2.5
+%endif
 %if 0%{?rhel} >= 8
-Requires: %{apache} >= 2.4, %{apache} < 2.5
 Requires: httpd-devel
 Requires: mod_ssl
 Requires: mod_ldap
