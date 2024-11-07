@@ -8,7 +8,7 @@
 %global ruby ruby
 %global nodejs nodejs
 %global apache httpd
-%global ruby_version 3.1
+%global ruby_version 3.3
 %endif
 %if 0%{?amzn} == 2023
 %global ruby ruby3.2
@@ -58,7 +58,7 @@ packages depending on %{scl} Software Collection.
 %package -n ondemand-ruby
 Summary: Meta package for pulling in SCL Ruby %{ruby}
 %if 0%{?rhel} >= 8
-Requires: %{ruby} >= 3.1, %{ruby} < 3.2
+Requires: %{ruby} >= 3.3, %{ruby} < 3.4
 Requires: rubygem-rake
 Requires: rubygem-bundler >= 2.1
 Requires: ruby-devel
@@ -87,11 +87,11 @@ Meta package for pulling in SCL Ruby %{ruby}
 %package -n ondemand-nodejs
 Summary: Meta package for pulling in SCL nodejs %{nodejs}
 %if 0%{?rhel} == 9
-Requires: %{nodejs} >= 1:18.0, %{nodejs} < 1:19.0
+Requires: %{nodejs} >= 1:20.0, %{nodejs} < 1:21.0
 Requires: npm
 %endif
 %if 0%{?rhel} == 8
-Requires: %{nodejs} >= 1:18.0, %{nodejs} < 1:19.0
+Requires: %{nodejs} >= 1:20.0, %{nodejs} < 1:21.0
 Requires: npm
 %endif
 %if 0%{?amzn} == 2023
