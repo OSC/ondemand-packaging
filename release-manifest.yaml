@@ -84,9 +84,9 @@ scl-utils:
   versions:
     - 2.0.3-1
 ondemand-dex:
-  - 2.36.0-1
+  - 2.41.1-1
   # deb package
-  - 2.36.0
+  - 2.41.1
 ondemand_exporter:
   - 0.10.0-1
 
