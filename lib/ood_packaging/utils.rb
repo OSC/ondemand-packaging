@@ -55,7 +55,7 @@ module OodPackaging::Utils
   end
 
   def ondemand_repo_version
-    '3.1'
+    '4.0'
   end
 
   def ondemand_rpm_repo_baseurl
@@ -63,11 +63,11 @@ module OodPackaging::Utils
   end
 
   def ruby_version
-    '3.1'
+    '3.3'
   end
 
   def nodejs_version
-    '18'
+    '20'
   end
 
   def ctr_scripts_dir

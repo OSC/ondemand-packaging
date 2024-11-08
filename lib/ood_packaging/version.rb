@@ -2,25 +2,25 @@
 
 # Version code for OodPackaging
 module OodPackaging
-  VERSION = '0.15.2'
+  VERSION = '0.16.0'
   PACKAGE_VERSION = {
     'ondemand-release'        => {
-      '(ubuntu|debian)' => '3.1.2',
-      'default'         => '3.1'
+      '(ubuntu|debian)' => '4.0.0',
+      'default'         => '4.0'
     },
     'ondemand-release-latest' => {
       '(ubuntu|debian)' => '4',
       'default'         => '1-8'
     },
-    'ondemand-runtime'        => '3.1.6',
+    'ondemand-runtime'        => '4.0.0',
     'scl-utils'               => '2.0.3',
-    'passenger'               => '6.0.20',
+    'passenger'               => '6.0.23',
     'cjose'                   => '0.6.1',
     'mod_auth_openidc'        => '2.4.14.1',
     'ondemand_exporter'       => '0.10.0',
     'ondemand-compute'        => {
-      '(ubuntu|debian)' => '3.1.0',
-      'default'         => '3.1.0'
+      '(ubuntu|debian)' => '4.0.0',
+      'default'         => '4.0.0'
     },
     'python-websockify'       => '0.11.0',
     'turbovnc'                => '3.1.1'
