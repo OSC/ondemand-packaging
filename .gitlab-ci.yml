@@ -32,9 +32,9 @@ build-image:
       - OOD_PACKAGING_DIST: [el8]
         OOD_PACKAGING_ARCH: [x86_64, aarch64, ppc64le]
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
-      - OOD_PACKAGING_DIST: [el9, debian-12]
+      - OOD_PACKAGING_DIST: [el9]
         OOD_PACKAGING_ARCH: [x86_64, aarch64, ppc64le]
-      - OOD_PACKAGING_DIST: [ubuntu-20.04, ubuntu-22.04, ubuntu-24.04]
+      - OOD_PACKAGING_DIST: [ubuntu-20.04, ubuntu-22.04, ubuntu-24.04, debian-12]
         OOD_PACKAGING_ARCH: [x86_64, aarch64]
       - OOD_PACKAGING_DIST: [amzn2023]
         OOD_PACKAGING_ARCH: [x86_64, aarch64]
@@ -132,9 +132,9 @@ build-passenger:
       - OOD_PACKAGING_DIST: [el8]
         OOD_PACKAGING_ARCH: [x86_64, aarch64, ppc64le]
         OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
-      - OOD_PACKAGING_DIST: [el9, debian-12]
+      - OOD_PACKAGING_DIST: [el9]
         OOD_PACKAGING_ARCH: [x86_64, aarch64, ppc64le]
-      - OOD_PACKAGING_DIST: [ubuntu-20.04, ubuntu-22.04, ubuntu-24.04]
+      - OOD_PACKAGING_DIST: [ubuntu-20.04, ubuntu-22.04, ubuntu-24.04, debian-12]
         OOD_PACKAGING_ARCH: [x86_64, aarch64]
       - OOD_PACKAGING_DIST: [amzn2023]
         # Amazon aarch64 takes hours so build by hand for now

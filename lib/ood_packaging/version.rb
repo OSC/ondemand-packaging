@@ -10,7 +10,7 @@ module OodPackaging
     },
     'ondemand-release-latest' => {
       '(ubuntu|debian)' => '4',
-      'default'         => '1-8'
+      'default'         => '1-9'
     },
     'ondemand-runtime'        => '4.0.0',
     'scl-utils'               => '2.0.3',

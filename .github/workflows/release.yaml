@@ -29,6 +29,10 @@ jobs:
             arch: ppc64le
           - dist: ubuntu-22.04
             arch: ppc64le
+          - dist: ubuntu-24.04
+            arch: ppc64le
+          - dist: debian-12
+            arch: ppc64le
     name: Release buildbox
     runs-on: ubuntu-latest
     steps:
