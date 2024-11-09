@@ -23,6 +23,10 @@ RUN dnf install -y --allowerasing systemd sudo which wget \
     gcc-c++ gcc make patch shadow-utils gnupg2 \
     rpm-build rpmdevtools rpm-sign <%= dist =~ /^el/ ? 'scl-utils-build' : '' %> && \
     dnf clean all && rm -rf /var/cache/dnf/*
+<% if dist == 'amzn2023' -%>
+RUN alternatives --install /usr/bin/node node /usr/bin/node-<%= nodejs_version %> 1 && \
+    alternatives --install /usr/bin/npm npm /usr/bin/npm-<%= nodejs_version %> 1
+<% end -%>
 <% elsif dist =~ /^ubuntu|debian/ -%>
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update -y && apt upgrade -y && apt clean all -y
