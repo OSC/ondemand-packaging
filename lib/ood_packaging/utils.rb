@@ -63,6 +63,8 @@ module OodPackaging::Utils
   end
 
   def ruby_version
+    return '3.2' if dist == 'amzn2023'
+
     '3.3'
   end
 
