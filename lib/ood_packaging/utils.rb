@@ -68,6 +68,7 @@ module OodPackaging::Utils
 
   def ruby_package
     return "ruby#{ruby_version}" if dist == 'amzn2023'
+
     'ruby'
   end
 
@@ -77,6 +78,7 @@ module OodPackaging::Utils
 
   def nodejs_package
     return "nodejs#{nodejs_version}" if dist == 'amzn2023'
+
     'nodejs'
   end
 
