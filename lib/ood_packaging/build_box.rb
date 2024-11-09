@@ -155,7 +155,7 @@ class OodPackaging::BuildBox
 
   def build_command
     if container_runtime == 'docker'
-      ['build']
+      ['buildx', 'build']
     else
       ['build']
     end
