@@ -32,6 +32,10 @@ jobs:
             arch: ppc64le
           - dist: ubuntu-22.04
             arch: ppc64le
+          - dist: ubuntu-24.04
+            arch: ppc64le
+          - dist: debian-12
+            arch: ppc64le
     runs-on: ${{ matrix.os }}
     name: Buildbox tests
     steps:
@@ -275,6 +279,10 @@ jobs:
           - dist: ubuntu-20.04
             arch: ppc64le
           - dist: ubuntu-22.04
+            arch: ppc64le
+          - dist: ubuntu-24.04
+            arch: ppc64le
+          - dist: debian-12
             arch: ppc64le
     runs-on: ${{ matrix.os }}
     name: Package ${{ matrix.package }} dist=${{ matrix.dist }} arch=${{ matrix.arch }}

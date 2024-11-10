@@ -18,10 +18,15 @@ RUN dnf config-manager --set-enabled crb && dnf clean all && rm -rf /var/cache/d
 <% if dist =~ /^el/ -%>
 RUN dnf module enable -y ruby:<%= ruby_version %> nodejs:<%= nodejs_version %> && dnf clean all && rm -rf /var/cache/dnf/*
 <% end -%>
-RUN dnf install -y --allowerasing systemd ruby nodejs sudo which wget \
+RUN dnf install -y --allowerasing systemd sudo which wget \
+    <%= ruby_package %> <%= nodejs_package %> \
     gcc-c++ gcc make patch shadow-utils gnupg2 \
     rpm-build rpmdevtools rpm-sign <%= dist =~ /^el/ ? 'scl-utils-build' : '' %> && \
     dnf clean all && rm -rf /var/cache/dnf/*
+<% if dist == 'amzn2023' -%>
+RUN alternatives --install /usr/bin/node node /usr/bin/node-<%= nodejs_version %> 1 && \
+    alternatives --install /usr/bin/npm npm /usr/bin/npm-<%= nodejs_version %> 1
+<% end -%>
 <% elsif dist =~ /^ubuntu|debian/ -%>
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update -y && apt upgrade -y && apt clean all -y
@@ -32,10 +37,8 @@ RUN apt update -y && apt install -y apt-transport-https ca-certificates \
     init debhelper devscripts dh-make build-essential apt-cudf lintian equivs \
     sudo rake wget curl ruby bundler && \
     apt clean all -y
-<% if ['focal', 'jammy'].include?(codename) && arch != 'ppc64le' %>
 RUN echo "deb https://deb.nodesource.com/node_<%= nodejs_version %>.x nodistro main" > /etc/apt/sources.list.d/nodesource.list
 RUN curl -s https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor > /etc/apt/trusted.gpg.d/nodesource.gpg
-<% end %>
 <% end -%>
 RUN ln -s /dev/null /etc/systemd/system/proc-sys-fs-binfmt_misc.automount
 COPY . /build

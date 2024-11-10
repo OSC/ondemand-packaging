@@ -63,11 +63,25 @@ module OodPackaging::Utils
   end
 
   def ruby_version
+    return '3.2' if dist == 'amzn2023'
+
     '3.3'
+  end
+
+  def ruby_package
+    return "ruby#{ruby_version}" if dist == 'amzn2023'
+
+    'ruby'
   end
 
   def nodejs_version
     '20'
+  end
+
+  def nodejs_package
+    return "nodejs#{nodejs_version}" if dist == 'amzn2023'
+
+    'nodejs'
   end
 
   def ctr_scripts_dir

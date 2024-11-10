@@ -8,6 +8,6 @@ describe OodPackaging do
   end
 
   it 'gets package version for dist ubuntu-20.04' do
-    expect(described_class.package_version('ondemand-release-latest', 'ubuntu-20.04')).to eq('4')
+    expect(described_class.package_version('ondemand-release-latest', 'ubuntu-24.04')).to eq('5')
   end
 end

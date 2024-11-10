@@ -12,7 +12,7 @@
 %endif
 %if 0%{?amzn} == 2023
 %global ruby ruby3.2
-%global nodejs nodejs
+%global nodejs nodejs20
 %global apache httpd
 %global ruby_version 3.2
 %endif
@@ -95,7 +95,7 @@ Requires: %{nodejs} >= 1:20.0, %{nodejs} < 1:21.0
 Requires: npm
 %endif
 %if 0%{?amzn} == 2023
-Requires: %{nodejs} >= 1:18.0, %{nodejs} < 1:19.0
+Requires: %{nodejs} >= 1:20.0, %{nodejs} < 1:21.0
 Requires: npm
 %endif
 
