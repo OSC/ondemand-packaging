@@ -31,7 +31,6 @@ Summary:   Package that handles %{scl} Software Collection.
 License:   MIT
 
 BuildRequires:  scl-utils-build
-Requires:       scl-utils
 Obsoletes: ondemand-python
 
 %description
@@ -39,6 +38,7 @@ Package shipping essential scripts to work with %{scl} Software Collection.
 
 %package -n ondemand-build
 Summary: Package shipping basic build configuration
+Requires: scl-utils
 Requires: scl-utils-build
 Requires: curl
 Requires: make
