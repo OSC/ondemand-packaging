@@ -16,25 +16,6 @@ ondemand-release:
     - '{major}.2-bookworm'
 
 # web
-cjose:
-  packages:
-    - cjose
-    - cjose-debuginfo
-    - cjose-devel
-  versions:
-    - 0.6.1-1
-httpd24-mod_auth_openidc:
-  packages:
-    - httpd24-mod_auth_openidc
-    - httpd24-mod_auth_openidc-debuginfo
-  versions:
-    - 2.4.14.1-1
-mod_auth_openidc:
-  packages:
-    - mod_auth_openidc
-    - mod_auth_openidc-debuginfo
-  versions:
-    - 2.4.14.1-1
 ondemand-nginx:
   packages:
     - ondemand-nginx
