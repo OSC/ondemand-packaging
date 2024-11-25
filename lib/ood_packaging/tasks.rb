@@ -86,16 +86,6 @@ namespace :ood_packaging do
       Rake::Task['ood_packaging:package:internal'].invoke(t.name, args[:dist], args[:arch])
     end
 
-    desc 'Package cjose'
-    task :cjose, [:dist, :arch] do |t, args|
-      Rake::Task['ood_packaging:package:internal'].invoke(t.name, args[:dist], args[:arch])
-    end
-
-    desc 'Package mod_auth_openidc'
-    task :mod_auth_openidc, [:dist, :arch] do |t, args|
-      Rake::Task['ood_packaging:package:internal'].invoke(t.name, args[:dist], args[:arch])
-    end
-
     desc 'Package ondemand_exporter'
     task :ondemand_exporter, [:dist, :arch] do |t, args|
       Rake::Task['ood_packaging:package:internal'].invoke(t.name, args[:dist], args[:arch])

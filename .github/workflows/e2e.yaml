@@ -81,8 +81,6 @@ jobs:
           - ondemand-release-latest
           - ondemand-runtime
           - passenger
-          - cjose
-          - mod_auth_openidc
           - ondemand_exporter
           - ondemand-compute
           - python-websockify
@@ -97,10 +95,6 @@ jobs:
             arch: aarch64
             package: scl-utils
         exclude:
-          - dist: el9
-            package: cjose
-          - dist: el9
-            package: mod_auth_openidc
           - arch: aarch64
             package: ondemand-release
           - arch: aarch64
