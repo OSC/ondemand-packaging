@@ -15,7 +15,7 @@ module OodPackaging
     'ondemand-runtime'        => '4.0.3',
     'scl-utils'               => '2.0.3',
     'passenger'               => '6.0.23',
-    'ondemand_exporter'       => '0.10.0',
+    'ondemand_exporter'       => '0.11.2',
     'ondemand-compute'        => {
       '(ubuntu|debian)' => '4.0.0',
       'default'         => '4.0.0'
