@@ -4,6 +4,8 @@
 %define __strip /bin/true
 
 %define apache_confd /etc/httpd/conf.d
+
+%define go_version 1.23.4
 %ifarch x86_64
 %define platform amd64
 %endif
@@ -22,7 +24,8 @@ Summary:    OnDemand Prometheus Exporter
 Group:      System Environment/Daemons
 License:    Apache-2.0
 URL:        https://github.com/OSC/ondemand_exporter
-Source0:    https://github.com/OSC/ondemand_exporter/releases/download/v%{version}/ondemand_exporter-%{version}.linux-%{platform}.tar.gz
+Source0:    https://github.com/OSC/ondemand_exporter/archive/v%{version}.tar.gz
+Source1:    https://dl.google.com/go/go%{go_version}.linux-%{platform}.tar.gz
 
 BuildRequires:  systemd
 Requires:       ondemand
@@ -31,7 +34,12 @@ Requires:       ondemand
 OnDemand Prometheus Exporter
 
 %prep
-%setup -q -n ondemand_exporter-%{version}.linux-%{platform}
+%setup -q -n ondemand_exporter-%{version}
+%__tar -C %{_builddir} -xzf %{SOURCE1}
+
+%build
+export PATH=$PATH:%{_builddir}/go/bin
+%__make build
 
 %install
 %__install -p -m 755 -D ondemand_exporter %{buildroot}%{_bindir}/%{name}
