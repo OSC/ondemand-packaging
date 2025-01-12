@@ -69,7 +69,7 @@ ondemand-dex:
   # deb package
   - 2.41.1
 ondemand_exporter:
-  - 0.10.0-1
+  - 0.11.2-1
 
 # compute
 ondemand-compute:
