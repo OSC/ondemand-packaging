@@ -10,10 +10,10 @@ ondemand-release:
   versions:
     - '{major}-1'
     # deb package
-    - '{major}.2-focal'
-    - '{major}.2-jammy'
-    - '{major}.2-noble'
-    - '{major}.2-bookworm'
+    - '{major}.0-focal'
+    - '{major}.0-jammy'
+    - '{major}.0-noble'
+    - '{major}.0-bookworm'
 
 # web
 ondemand-nginx:
