@@ -4,7 +4,7 @@
 %define passenger_version %{package_version}
 %define nginx_version 1.26.1
 %define release_version %{package_release}
-%define ngix_release_version 1
+%define ngix_release_version 2
 
 %define runtime_version 4.0.3
 
@@ -101,6 +101,7 @@ BuildRequires: libev-devel >= 4.0.0
 Requires: gd
 Requires: openssl
 Requires: pcre
+Requires: procps-ng
 
 %description -n %{?scl_prefix}nginx
 Nginx is a web server and a reverse proxy server for HTTP, SMTP, POP3 and
