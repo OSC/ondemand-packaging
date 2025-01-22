@@ -13,7 +13,7 @@ Package: ondemand-passenger
 Architecture: any
 Multi-Arch: foreign
 Depends: ${shlibs:Depends}, ${misc:Depends},
-  ruby
+  ruby, procps
 Description: Phusion Passenger application server for OnDemand
 
 Package: ondemand-passenger-dev
