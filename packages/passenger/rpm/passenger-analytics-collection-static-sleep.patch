@@ -1,0 +1,66 @@
+--- a/src/agent/Core/ApplicationPool/Pool/AnalyticsCollection.cpp    2025-03-28 15:04:27.371198726 +0200
++++ b/src/agent/Core/ApplicationPool/Pool/AnalyticsCollection.cpp    2025-03-28 15:06:10.586606453 +0200
+@@ -23,6 +23,9 @@
+  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+  *  THE SOFTWARE.
+  */
++#include <cstdlib> // getenv
++#include <climits> // INT_MAX
++
+ #include <Core/ApplicationPool/Pool.h>
+ 
+ /*************************************************************************
+@@ -62,8 +65,51 @@
+		}
+ 
+		UPDATE_TRACE_POINT();
+-		unsigned long long currentTime = SystemTime::getUsec();
+-		unsigned long long sleepTime = timeToNextMultipleULL(5000000, currentTime);
++
++		// Open OnDemand override: Change the default sleeping behavior unless the following environment
++		// variable is defined: OOD_OVERRIDE_PASSENGER_ANALYTICS_COLLECTION_RESTORE_UPSTREAM_BEHAVIOR.
++		// Use a static sleep of 5 seconds by default.
++		// This can be overridden with the OOD_OVERRIDE_PASSENGER_ANALYTICS_COLLECTION_SLEEP_TIME_SECONDS variable.
++		// NOTE: Setting this to a very big value will impact the usefulness of passenger-status metrics,
++		//       which will not get gathered unless this loop runs. If you do not care about the metrics,
++		//       feel free to set very large values.
++		const unsigned long long defaultSleepTime = 5000000;
++		unsigned long long sleepTime = defaultSleepTime;
++		const char* envPassengerRestoreUpstreamBehavior = std::getenv("OOD_OVERRIDE_PASSENGER_ANALYTICS_COLLECTION_RESTORE_UPSTREAM_BEHAVIOR");
++		if (envPassengerRestoreUpstreamBehavior) {
++			// Upstream Passenger behavior
++			unsigned long long currentTime = SystemTime::getUsec();
++			sleepTime = timeToNextMultipleULL(5000000, currentTime);
++		} else {
++			// Open OnDemand override: Use a static OOD_OVERRIDE_PASSENGER_ANALYTICS_COLLECTION_SLEEP_TIME seconds sleep time
++			// Try reading from the environment variable. If this is undefined, or invalid, use the defaultSleepTime instead.
++			const char* envPassengerSleepTimeOverride = std::getenv("OOD_OVERRIDE_PASSENGER_ANALYTICS_COLLECTION_SLEEP_TIME_SECONDS");
++			int sleepTimeOverride = INT_MAX; // initial value (use a smaller type to allow safe multiplication to ULL)
++			do {
++				if (envPassengerSleepTimeOverride) {
++					// Convert to an ull and check for errors. Use the default in case of errors.
++					try {
++						sleepTimeOverride = std::stoi(envPassengerSleepTimeOverride);
++					} catch (const std::exception& e) {
++						// std::invalid_argument or std::out_of_range, stop here.
++						// Print loud warnings, since this is a misconfiguration by the site admin.
++						P_WARN("ERROR: Could not parse OOD_OVERRIDE_PASSENGER_ANALYTICS_COLLECTION_SLEEP_TIME_SECONDS value '"
++								<< envPassengerSleepTimeOverride << "' as an int. Using default "
++								<< defaultSleepTime << " seconds instead.\n"
++								<< "  Reason: " << e.what() << "\n");
++						break;
++					}
++					// If we got here, there was a valid int. Sanity check that it's > 0.
++					if (sleepTimeOverride != INT_MAX && sleepTimeOverride > 0) {
++						// Use this value. Multiply by 1M microseconds.
++						sleepTime = (unsigned long long)sleepTimeOverride * 1000000ULL;
++					}
++					// Otherwise, keep the default value.
++				}
++			} while (false);
++		}
++
++
+		P_DEBUG("Analytics collection done; next analytics collection in " <<
+			std::fixed << std::setprecision(3) << (sleepTime / 1000000.0) <<
+			" sec");
