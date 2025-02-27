@@ -87,7 +87,7 @@ describe OodPackaging::Package do
     end
 
     context 'when packaging for DEB' do
-      let(:dist) { 'ubuntu-20.04' }
+      let(:dist) { 'ubuntu-24.04' }
 
       it 'creates tar archive' do
         expected_cmd = [
@@ -144,7 +144,7 @@ describe OodPackaging::Package do
     end
 
     context 'when running for DEB' do
-      let(:dist) { 'ubuntu-20.04' }
+      let(:dist) { 'ubuntu-24.04' }
 
       it 'runs packaging' do
         allow(package).to receive(:container_running?).and_return(true)
