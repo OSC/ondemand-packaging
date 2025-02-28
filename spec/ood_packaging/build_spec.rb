@@ -78,7 +78,7 @@ describe OodPackaging::Build do
   end
 
   describe 'bootstrap_deb!' do
-    let(:dist) { 'ubuntu-20.04' }
+    let(:dist) { 'ubuntu-24.04' }
     let(:version) { 'v0.0.1' }
 
     it 'bootstraps DEB build environment' do
@@ -129,7 +129,7 @@ describe OodPackaging::Build do
     end
 
     context 'when doing deb builds' do
-      let(:dist) { 'ubuntu-20.04' }
+      let(:dist) { 'ubuntu-24.04' }
       let(:version) { 'v0.0.1' }
       let(:cleanup) do
         [
