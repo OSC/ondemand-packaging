@@ -34,7 +34,7 @@ jobs:
           - dist: debian-12
             arch: ppc64le
     name: Release buildbox
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: checkout
         uses: actions/checkout@v4
