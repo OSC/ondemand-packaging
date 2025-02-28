@@ -30,8 +30,8 @@ RUN alternatives --install /usr/bin/node node /usr/bin/node-<%= nodejs_version %
 <% elsif dist =~ /^ubuntu|debian/ -%>
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update -y && apt upgrade -y && \
-<%# Ubuntu 22.04 segfaults multiarch in GHA when libc-bin is upgraded %>
-<% if dist == 'ubuntu-22.04' && arch == 'aarch64' -%>
+<%# TODO: Ubuntu 22.04 segfaults multiarch in GHA when libc-bin is upgraded %>
+<% if dist == 'ubuntu-22.04' && arch == 'aarch64' && ENV['GITHUB_ACTIONS'] == 'true' -%>
     apt-mark hold libc-bin && \
 <% end -%>
     apt clean all -y
