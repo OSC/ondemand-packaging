@@ -1,0 +1,52 @@
+--- a/src/agent/Core/ApplicationPool/Pool/AnalyticsCollection.cpp	2025-03-18 14:46:32.727000000 +0200
++++ b/src/agent/Core/ApplicationPool/Pool/AnalyticsCollection.cpp	2025-03-18 15:40:10.139000000 +0200
+@@ -23,6 +23,9 @@
+  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+  *  THE SOFTWARE.
+  */
++#include <cstdlib> // getenv
++#include <climits> // INT_MAX
++
+ #include <Core/ApplicationPool/Pool.h>
+ 
+ /*************************************************************************
+@@ -62,8 +65,39 @@
+ 		}
+ 
+ 		UPDATE_TRACE_POINT();
++
+ 		unsigned long long currentTime = SystemTime::getUsec();
+ 		unsigned long long sleepTime = timeToNextMultipleULL(5000000, currentTime);
++		// Open OnDemand override: Use a static OOD_OVERRIDE_PASSENGER_ANALYTICS_COLLECTION_SLEEP_TIME seconds sleep time
++		// if it is defined. Try reading from the environment variable.
++		// If this is undefined, or invalid, use the upstream Passenger behavior (i.e., dynamic sleeping with 5 second intervals).
++		const char* envPassengerSleepTimeOverride = std::getenv("OOD_OVERRIDE_PASSENGER_ANALYTICS_COLLECTION_SLEEP_TIME_SECONDS");
++		if (envPassengerSleepTimeOverride) {
++			// The environment variable was defined. Check if it can be parsed as a number.
++			int sleepTimeOverride = INT_MAX; // initial value (use a smaller type to allow safe multiplication to ULL)
++			do {
++				// Convert to an ull and check for errors. Use the default in case of errors.
++				try {
++					sleepTimeOverride = std::stoi(envPassengerSleepTimeOverride);
++				} catch (const std::exception& e) {
++					// std::invalid_argument or std::out_of_range, stop here.
++					P_WARN("ERROR: Could not parse OOD_OVERRIDE_PASSENGER_ANALYTICS_COLLECTION_SLEEP_TIME_SECONDS value '" <<
++							envPassengerSleepTimeOverride << "' as an int. Will revert to upstream behavior.\n");
++					break;
++					// This will cause the upstream behavior to be used.
++				}
++				// If we got here, there was a valid int. Sanity check that it's > 0.
++				if (sleepTimeOverride != INT_MAX && sleepTimeOverride > 0) {
++					// Use this value. Multiply by 1M microseconds.
++					sleepTime = (unsigned long long)sleepTimeOverride * 1000000ULL;
++				}
++				// Otherwise, keep the default value.
++			} while (false);
++		}
++		// else {
++			// Upstream Passenger behavior
++			// This is a NOOP.
++		// }
+ 		P_DEBUG("Analytics collection done; next analytics collection in " <<
+ 			std::fixed << std::setprecision(3) << (sleepTime / 1000000.0) <<
+ 			" sec");
