@@ -61,6 +61,7 @@ BuildRequires:  pcre-devel
 BuildRequires:  patch
 Requires: ondemand-runtime = %{runtime_version}
 Requires: ondemand-ruby = %{runtime_version}
+Requires: procps-ng
 Provides: %{name} = %{version}-%{release}
 Provides: bundled(boost)  = %{bundled_boost_version}
 
@@ -104,7 +105,6 @@ BuildRequires: libev-devel >= 4.0.0
 Requires: gd
 Requires: openssl
 Requires: pcre
-Requires: procps-ng
 
 %description -n %{?scl_prefix}nginx
 Nginx is a web server and a reverse proxy server for HTTP, SMTP, POP3 and
