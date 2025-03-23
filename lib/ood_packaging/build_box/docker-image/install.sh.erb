@@ -41,6 +41,7 @@ Defaults:<%= ctr_user %> !requiretty, !authenticate
 %<%= ctr_user %> ALL=NOPASSWD:ALL
 EOF
 run chmod 440 /etc/sudoers.d/ood
+run chmod 600 /etc/shadow
 
 <% if rpm? -%>
 header "Setup RPM env"
