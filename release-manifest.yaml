@@ -32,7 +32,7 @@ ondemand-passenger:
     - ondemand-passenger-dev
     - ondemand-passenger-doc
   versions:
-    - 6.0.23-3.ood{runtime}
+    - 6.0.23-2.ood{runtime}
     # deb package
     - 6.0.23.ood{major}.1
 ondemand-runtime:
