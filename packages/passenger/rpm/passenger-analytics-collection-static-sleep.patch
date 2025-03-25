@@ -25,7 +25,7 @@
 +			// The environment variable was defined. Check if it can be parsed as a number.
 +			int sleepTimeOverride = INT_MAX; // initial value (use a smaller type to allow safe multiplication to ULL)
 +			do {
-+				// Convert to an ull and check for errors. Use the default in case of errors.
++				// Convert to an int and check for errors. Use the default in case of errors.
 +				try {
 +					sleepTimeOverride = std::stoi(envPassengerSleepTimeOverride);
 +				} catch (const std::exception& e) {
