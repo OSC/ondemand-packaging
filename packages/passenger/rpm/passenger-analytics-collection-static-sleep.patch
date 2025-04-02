@@ -46,7 +46,7 @@
 +						// Print loud warnings, since this is a misconfiguration by the site admin.
 +						P_WARN("ERROR: Could not parse OOD_OVERRIDE_PASSENGER_ANALYTICS_COLLECTION_SLEEP_TIME_SECONDS value '"
 +								<< envPassengerSleepTimeOverride << "' as an int. Using default "
-+								<< defaultSleepTime << " seconds instead.\n"
++								<< defaultSleepTime << " microseconds instead.\n"
 +								<< "  Reason: " << e.what() << "\n");
 +						break;
 +					}
