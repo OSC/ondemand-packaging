@@ -58,6 +58,7 @@ BuildRequires:  libcurl-devel
 BuildRequires:  zlib-devel
 BuildRequires:  openssl-devel
 BuildRequires:  pcre-devel
+BuildRequires:  patch
 Requires: ondemand-runtime = %{runtime_version}
 Requires: ondemand-ruby = %{runtime_version}
 Requires: procps-ng
@@ -101,7 +102,6 @@ Obsoletes: %{?scl_prefix}nginx-filesystem
 BuildRequires: libxslt-devel
 BuildRequires: gd-devel
 BuildRequires: libev-devel >= 4.0.0
-BuildRequires: patch
 Requires: gd
 Requires: openssl
 Requires: pcre
