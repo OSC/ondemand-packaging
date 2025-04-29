@@ -369,13 +369,13 @@ fi
 
 %changelog
 
-* Fri Mar 28 2025 Simon Westersund <swesters@csc.fi> [6.0.23-3]
-- Patch Passenger analytics collection to sleep for 5 seconds by default,
+* Tue Apr 29 2025 Simon Westersund <swesters@csc.fi> [6.0.23-3]
+- Patch Passenger analytics collection to sleep for 30 seconds by default,
   to avoid simultaneous wake-ups by all agents. This behavior can be
   restored to upstream defaults by defining the
   OOD_OVERRIDE_PASSENGER_ANALYTICS_COLLECTION_RESTORE_UPSTREAM_BEHAVIOR
   environment variable (any value works).
-- Allow overriding the 5 second sleep time with
+- Allow overriding the 30 second sleep time with
   OOD_OVERRIDE_PASSENGER_ANALYTICS_COLLECTION_SLEEP_TIME_SECONDS. This
   must be a value that fits into a positive signed int. Fractional
   seconds are not supported.
