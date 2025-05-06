@@ -46,6 +46,8 @@ License:    Boost and BSD and BSD with advertising and MIT and zlib
 Source0:    https://github.com/phusion/passenger/releases/download/release-%{passenger_version}/passenger-%{passenger_version}.tar.gz
 Source1:    http://nginx.org/download/nginx-%{nginx_version}.tar.gz
 
+Patch0:     passenger-analytics-collection-static-sleep.patch
+
 %{?scl:Requires:%scl_runtime}
 %{?scl:BuildRequires:%scl_runtime}
 BuildRequires:  ondemand-scldevel = %{runtime_version}
@@ -56,6 +58,7 @@ BuildRequires:  libcurl-devel
 BuildRequires:  zlib-devel
 BuildRequires:  openssl-devel
 BuildRequires:  pcre-devel
+BuildRequires:  patch
 Requires: ondemand-runtime = %{runtime_version}
 Requires: ondemand-ruby = %{runtime_version}
 Provides: %{name} = %{version}-%{release}
@@ -110,6 +113,9 @@ memory usage. Includes Phusion Passenger support.
 %prep
 %setup -q -n %{pkg_name}-%{passenger_version}
 %setup -q -T -D -a 1 -n %{pkg_name}-%{passenger_version}
+
+# Apply patches
+%patch -P0 -p1 -F1
 
 %build
 scl enable ondemand - << \EOF
@@ -361,3 +367,14 @@ fi
 %config(noreplace) %{nginx_confdir}/win-utf
 
 %changelog
+
+* Tue May 6 2025 Simon Westersund <swesters@csc.fi> [6.0.20-2]
+- Patch Passenger analytics collection to sleep for 30 seconds by default,
+  to avoid simultaneous wake-ups by all agents. This behavior can be
+  restored to upstream defaults by defining the
+  OOD_OVERRIDE_PASSENGER_ANALYTICS_COLLECTION_RESTORE_UPSTREAM_BEHAVIOR
+  environment variable (any value works).
+- Allow overriding the 30 second sleep time with
+  OOD_OVERRIDE_PASSENGER_ANALYTICS_COLLECTION_SLEEP_TIME_SECONDS. This
+  must be a value that fits into a positive signed int. Fractional
+  seconds are not supported.
