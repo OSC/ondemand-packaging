@@ -116,7 +116,7 @@ memory usage. Includes Phusion Passenger support.
 %setup -q -T -D -a 1 -n %{pkg_name}-%{passenger_version}
 
 # Apply patches
-%patch -P0 -p1 -F1
+%patch0 -p1 -F1
 
 %build
 scl enable ondemand - << \EOF
