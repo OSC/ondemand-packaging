@@ -4,7 +4,7 @@
 %define passenger_version %{package_version}
 %define nginx_version 1.26.1
 %define release_version %{package_release}
-%define ngix_release_version 2
+%define ngix_release_version 3
 
 %define runtime_version 4.0.3
 
@@ -116,7 +116,7 @@ memory usage. Includes Phusion Passenger support.
 %setup -q -T -D -a 1 -n %{pkg_name}-%{passenger_version}
 
 # Apply patches
-%patch0 -p1 -F1
+%patch -P0 -p1 -F1
 
 %build
 scl enable ondemand - << \EOF
