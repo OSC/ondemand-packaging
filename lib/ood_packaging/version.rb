@@ -14,7 +14,10 @@ module OodPackaging
     },
     'ondemand-runtime'        => '3.1.6',
     'scl-utils'               => '2.0.3',
-    'passenger'               => '6.0.20',
+    'passenger'               => {
+      '(ubuntu|debian)' => '6.0.20',
+      'default'         => '6.0.20-2'
+    },
     'cjose'                   => '0.6.1',
     'mod_auth_openidc'        => '2.4.14.1',
     'ondemand_exporter'       => '0.10.0',
