@@ -16,7 +16,7 @@ module OodPackaging
     'scl-utils'               => '2.0.3',
     'passenger'               => {
       '(ubuntu|debian)' => '6.0.23',
-      'default'         => '6.0.23-2'
+      'default'         => '6.0.23-3'
     },
     'ondemand_exporter'       => '0.11.2',
     'ondemand-compute'        => {
