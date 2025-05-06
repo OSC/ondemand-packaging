@@ -66,6 +66,7 @@ override_dh_auto_configure:
 	cd $(TMPDIR)/passenger-$(VERSION) && tar xf $(TMPDIR)/nginx-$(NGINX_VERSION).tar.gz
 
 override_dh_auto_build:
+	cd $(TMPDIR)/passenger-$(VERSION) && patch -p1 -F1 ../../debian/passenger-analytics-collection-static-sleep.patch
 	cd $(TMPDIR)/passenger-$(VERSION) && rake nginx OPTIMIZE=yes CACHING=false
 	cd $(TMPDIR)/passenger-$(VERSION)/nginx-$(NGINX_VERSION) && ./configure \
 	    --prefix=$(NGINX_DATADIR) \
