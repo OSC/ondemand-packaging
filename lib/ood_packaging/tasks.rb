@@ -61,13 +61,11 @@ namespace :ood_packaging do
 
     desc 'Package ondemand-release'
     task :'ondemand-release', [:dist, :arch] do |t, args|
-      ENV['OOD_PACKAGING_GPG_SIGN'] = 'false'
       Rake::Task['ood_packaging:package:internal'].invoke(t.name, args[:dist], args[:arch])
     end
 
     desc 'Package ondemand-release-latest'
     task :'ondemand-release-latest', [:dist, :arch] do |t, args|
-      ENV['OOD_PACKAGING_GPG_SIGN'] = 'false'
       Rake::Task['ood_packaging:package:internal'].invoke(t.name, args[:dist], args[:arch])
     end
 
