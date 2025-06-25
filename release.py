@@ -81,12 +81,18 @@ Usage examples:
     parser.add_argument('-f', '--force', help='overwrite existing RPMs', action='store_true', default=False)
     parser.add_argument('--pkey', help='SSH private key to use for uploading RPMs (default: %(default)s)', default=pkey)
     parser.add_argument('-c', '--config-section', help='config section to use', default='main')
-    parser.add_argument('-r', '--release', help='Build repo release to use', default=None)
+    parser.add_argument('-r', '--release', help='Build or staging repo release to use', default=None)
     parser.add_argument('dirs', nargs='+')
     args = parser.parse_args()
 
     if args.config_section == 'build' and args.release is None:
         print("ERROR: config-section build requires -r/--release flag")
+        sys.exit(1)
+    if args.config_section == 'staging' and args.release is None:
+        print("ERROR: config-section staging requires -r/--release flag")
+        sys.exit(1)
+    if args.config_section == 'staging-compute' and args.release is None:
+        print("ERROR: config-section staging-compute requires -r/--release flag")
         sys.exit(1)
 
     if args.release is not None:
@@ -95,7 +101,7 @@ Usage examples:
     else:
         build_release = ''
 
-    if args.config_section == 'compute':
+    if args.config_section == 'compute' or args.config_section == 'staging-compute':
         release_type = 'compute'
     else:
         release_type = 'web'
