@@ -23,6 +23,11 @@ while getopts "r:" opt; do
 done
 shift $((OPTIND-1))
 
+if [[ -z "$RELEASE" ]]; then
+  echo "Must set -r RELEASE"
+  exit 1
+fi
+
 LOCK_FILE="/var/lib/oodpkg/release-staging-${RELEASE}.lock"
 
 (
