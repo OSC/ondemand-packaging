@@ -10,14 +10,19 @@ class OodPackaging::BuildBox
   include FileUtils
 
   BASE_IMAGES = {
-    'el8'          => 'almalinux:8',
-    'el9'          => 'almalinux:9',
-    'el10'         => 'almalinux:10',
+    'el8'          => 'rockylinux:8',
+    'el9'          => 'rockylinux:9',
+    'el10'         => 'rockylinux:10',
     'ubuntu-24.04' => 'ubuntu:24.04',
     'ubuntu-26.04' => 'ubuntu:26.04',
     'debian-12'    => 'debian:12',
     'debian-13'    => 'debian:13',
     'amzn2023'     => 'amazonlinux:2023'
+  }.freeze
+
+  BASE_IMAGES_ARCH = {
+    # EL8 ppc64le doesn't exist as a rockylinux:8 image
+    'el8-ppc64le' => 'almalinux:8'
   }.freeze
 
   CODENAMES = {
@@ -99,7 +104,7 @@ class OodPackaging::BuildBox
   end
 
   def base_image
-    @base_image ||= BASE_IMAGES[dist]
+    @base_image ||= BASE_IMAGES_ARCH["#{dist}-#{arch}"] || BASE_IMAGES[dist]
   end
 
   def codename
