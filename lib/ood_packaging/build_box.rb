@@ -10,8 +10,8 @@ class OodPackaging::BuildBox
   include FileUtils
 
   BASE_IMAGES = {
-    'el8'          => 'almalinux:8',
-    'el9'          => 'almalinux:9',
+    'el8'          => 'rockylinux:8',
+    'el9'          => 'rockylinux:9',
     'ubuntu-20.04' => 'ubuntu:20.04',
     'ubuntu-22.04' => 'ubuntu:22.04',
     'ubuntu-24.04' => 'ubuntu:24.04',
