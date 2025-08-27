@@ -19,6 +19,21 @@ describe OodPackaging::BuildBox do
     end
   end
 
+  describe 'base_image' do
+    it 'uses el8 box' do
+      expect(build_box.base_image).to eq('rockylinux:8')
+    end
+
+    context 'with el8 ppc64le' do
+      let(:dist) { 'el8' }
+      let(:arch) { 'ppc64le' }
+
+      it 'uses arch specific box' do
+        expect(build_box.base_image).to eq('almalinux:8')
+      end
+    end
+  end
+
   describe 'build!' do
     before do
       allow(build_box).to receive(:build_gem)
