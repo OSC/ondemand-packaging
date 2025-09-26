@@ -55,7 +55,7 @@ module OodPackaging::Utils
   end
 
   def ondemand_repo_version
-    '4.0'
+    '4.1'
   end
 
   def ondemand_rpm_repo_baseurl
@@ -75,7 +75,7 @@ module OodPackaging::Utils
   end
 
   def nodejs_version
-    '20'
+    '22'
   end
 
   def nodejs_package
