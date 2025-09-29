@@ -50,7 +50,9 @@ build-ondemand-release:
     - bundle exec rake ood_packaging:package:ondemand-release
   parallel:
     matrix:
-      - OOD_PACKAGING_DIST: [el8, el9, amzn2023]
+      - OOD_PACKAGING_DIST: [el8]
+        OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
+      - OOD_PACKAGING_DIST: [el9, amzn2023]
       - OOD_PACKAGING_DIST: [ubuntu-22.04, ubuntu-24.04]
       - OOD_PACKAGING_DIST: [debian-12]
   artifacts:
@@ -69,7 +71,9 @@ build-ondemand-release-latest:
     - bundle exec rake ood_packaging:package:ondemand-release-latest
   parallel:
     matrix:
-      - OOD_PACKAGING_DIST: [el8, el9, amzn2023]
+      - OOD_PACKAGING_DIST: [el8]
+        OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
+      - OOD_PACKAGING_DIST: [el9, amzn2023]
       - OOD_PACKAGING_DIST: [ubuntu-22.04, ubuntu-24.04]
       - OOD_PACKAGING_DIST: [debian-12]
   artifacts:
