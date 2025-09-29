@@ -1,4 +1,4 @@
-passenger (6.0.23.ood4.0.3) UNRELEASED; urgency=low
+passenger (6.1.0.ood4.1.0) UNRELEASED; urgency=low
 
   * Initial release. Closes: #nnnn
     <nnnn is the bug number of your ITP>

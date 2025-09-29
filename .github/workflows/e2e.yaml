@@ -295,7 +295,7 @@ jobs:
           git clone https://github.com/OSC/${{ matrix.package }}.git ./tmp/${{ matrix.package }}
       - name: Build ${{ matrix.package }} package
         if: matrix.arch == 'x86_64'
-        run: ./bin/ood_packaging -w ./tmp/work -o ./tmp/output -d ${{ matrix.dist }} -a ${{ matrix.arch }} -V v4.0.0 -T --debug $(pwd)/tmp/${{ matrix.package }}
+        run: ./bin/ood_packaging -w ./tmp/work -o ./tmp/output -d ${{ matrix.dist }} -a ${{ matrix.arch }} -V v4.1.0 -T --debug $(pwd)/tmp/${{ matrix.package }}
       - name: arch distro
         if: ${{ matrix.arch != 'x86_64' && github.event_name == 'schedule' }}
         run: |
@@ -319,6 +319,6 @@ jobs:
             git config --global --add safe.directory $GITHUB_WORKSPACE
             bundle install
             git config --global --add safe.directory $GITHUB_WORKSPACE/tmp/${{ matrix.package }}
-            ./bin/ood_packaging -w ./tmp/work -o ./tmp/output -d ${{ matrix.dist }} -a ${{ matrix.arch }} -V v4.0.0 -T --debug $(pwd)/tmp/${{ matrix.package }}
+            ./bin/ood_packaging -w ./tmp/work -o ./tmp/output -d ${{ matrix.dist }} -a ${{ matrix.arch }} -V v4.1.0 -T --debug $(pwd)/tmp/${{ matrix.package }}
           env: |
             OOD_PACKAGING_DEBUG: 'true'

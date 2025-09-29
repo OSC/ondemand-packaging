@@ -1,9 +1,11 @@
---- a/src/agent/Core/ApplicationPool/Pool/AnalyticsCollection.cpp    2025-03-28 15:04:27.371198726 +0200
-+++ b/src/agent/Core/ApplicationPool/Pool/AnalyticsCollection.cpp    2025-04-29 13:43:29.128752198 +0300
-@@ -23,8 +23,17 @@
-  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-  *  THE SOFTWARE.
-  */
+diff --git a/src/agent/Core/ApplicationPool/Pool/AnalyticsCollection.cpp b/src/agent/Core/ApplicationPool/Pool/AnalyticsCollection.cpp
+index 2d89b8f3f..3cd81829b 100644
+--- a/src/agent/Core/ApplicationPool/Pool/AnalyticsCollection.cpp
++++ b/src/agent/Core/ApplicationPool/Pool/AnalyticsCollection.cpp
+@@ -26,8 +26,17 @@
+ #ifndef _PASSENGER_APPLICATION_POOL_POOL_ANALYTICS_COLLECTION_CPP_
+ #define _PASSENGER_APPLICATION_POOL_POOL_ANALYTICS_COLLECTION_CPP_
+ 
 +#include <cstdlib> // getenv
 +#include <climits> // INT_MAX
 +
@@ -18,10 +20,10 @@
  /*************************************************************************
   *
   * Analytics collection functions for ApplicationPool2::Pool
-@@ -62,8 +71,51 @@
-		}
+@@ -65,8 +74,51 @@ Pool::collectAnalytics(PoolPtr self) {
+ 		}
  
-		UPDATE_TRACE_POINT();
+ 		UPDATE_TRACE_POINT();
 -		unsigned long long currentTime = SystemTime::getUsec();
 -		unsigned long long sleepTime = timeToNextMultipleULL(5000000, currentTime);
 +
@@ -69,6 +71,6 @@
 +		}
 +
 +
-		P_DEBUG("Analytics collection done; next analytics collection in " <<
-			std::fixed << std::setprecision(3) << (sleepTime / 1000000.0) <<
-			" sec");
+ 		P_DEBUG("Analytics collection done; next analytics collection in " <<
+ 			std::fixed << std::setprecision(3) << (sleepTime / 1000000.0) <<
+ 			" sec");
