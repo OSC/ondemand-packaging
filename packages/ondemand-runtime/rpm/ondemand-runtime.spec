@@ -12,7 +12,7 @@
 %endif
 %if 0%{?amzn} == 2023
 %global ruby ruby3.2
-%global nodejs nodejs20
+%global nodejs nodejs22
 %global apache httpd
 %global ruby_version 3.2
 %endif
