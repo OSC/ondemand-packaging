@@ -15,7 +15,7 @@ class OodPackaging::Build
   attr_accessor :build_box
 
   def initialize
-    @build_box = OodPackaging::BuildBox.new(dist: ENV['DIST'], arch: ENV['ARCH'])
+    @build_box = OodPackaging::BuildBox.new(dist: ENV.fetch('DIST', nil), arch: ENV.fetch('ARCH', nil))
   end
 
   def config
@@ -27,7 +27,7 @@ class OodPackaging::Build
   end
 
   def package
-    ENV['PACKAGE']
+    ENV.fetch('PACKAGE', nil)
   end
 
   def debug?
@@ -39,7 +39,7 @@ class OodPackaging::Build
   end
 
   def version
-    ver = ENV['VERSION']
+    ver = ENV.fetch('VERSION', nil)
     return nil if ver == ''
 
     ver
@@ -191,7 +191,7 @@ class OodPackaging::Build
 
   def bootstrap_gpg!
     puts "\tBootstrap GPG".blue
-    sh "sed -i 's|@GPG_NAME@|#{ENV['GPG_NAME']}|g' #{ctr_rpmmacros}"
+    sh "sed -i 's|@GPG_NAME@|#{ENV.fetch('GPG_NAME', nil)}|g' #{ctr_rpmmacros}"
     sh "gpg --batch --passphrase-file #{gpg_passphrase} --import #{gpg_private_key}#{cmd_suffix}"
     sh "sudo rpm --import #{ENV['GPG_PUBKEY']}#{cmd_suffix}" if ENV['GPG_PUBKEY']
   end
@@ -226,7 +226,7 @@ class OodPackaging::Build
     exit_code = $CHILD_STATUS.exitstatus
     if exit_code.zero?
       source = File.join(work_dir, 'SOURCES', File.basename(output))
-      tar = File.join(work_dir, 'SOURCES', ENV['TAR_NAME'])
+      tar = File.join(work_dir, 'SOURCES', ENV.fetch('TAR_NAME', nil))
       sh "mv #{tar} #{source}" if !File.exist?(source) && File.exist?(tar)
     end
     puts "\tDownloading sources defined in #{spec_file}".blue

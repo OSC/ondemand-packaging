@@ -46,3 +46,10 @@ RSpec/MessageSpies:
   EnforcedStyle: receive
 RSpec/NestedGroups:
   Max: 4
+# TODO: Delete below but disabled for now due to upgrade
+RSpec/ReceiveMessages:
+  Enabled: false
+Style/ConcatArrayLiterals:
+  Enabled: false
+Style/OpenStructUse:
+  Enabled: false
