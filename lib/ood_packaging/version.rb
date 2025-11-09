@@ -24,7 +24,7 @@ module OodPackaging
       'default'         => '4.1.0'
     },
     'python-websockify'       => '0.11.0-2',
-    'turbovnc'                => '3.1.1'
+    'turbovnc'                => '3.2.1'
   }.freeze
 
   def self.package_version(package, dist)
