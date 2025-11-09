@@ -88,6 +88,7 @@ BuildRequires: mesa-libGL-devel
 BuildRequires: pam-devel
 BuildRequires: openssl-devel
 BuildRequires: libarchive
+BuildRequires: pixman-devel
 BuildRequires: python3
 BuildRequires: xorg-x11-xtrans-devel
 BuildRequires: zlib-devel
