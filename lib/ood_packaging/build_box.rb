@@ -12,6 +12,7 @@ class OodPackaging::BuildBox
   BASE_IMAGES = {
     'el8'          => 'almalinux:8',
     'el9'          => 'almalinux:9',
+    'el10'         => 'almalinux:10',
     'ubuntu-22.04' => 'ubuntu:22.04',
     'ubuntu-24.04' => 'ubuntu:24.04',
     'debian-12'    => 'debian:12',

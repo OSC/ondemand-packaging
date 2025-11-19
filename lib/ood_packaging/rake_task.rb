@@ -5,7 +5,7 @@ require 'rake'
 require 'rake/tasklib'
 
 # Define OodPackaging rake task library
-class OodPackaging::RakeTask < ::Rake::TaskLib
+class OodPackaging::RakeTask < Rake::TaskLib
   include ::Rake::DSL if defined?(::Rake::DSL)
   include OodPackaging::Utils
 

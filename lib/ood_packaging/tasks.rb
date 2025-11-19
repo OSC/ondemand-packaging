@@ -50,7 +50,7 @@ namespace :ood_packaging do
     OodPackaging::RakeTask.new(:internal, [:package, :dist, :arch]) do |t, args|
       name = args[:package].split(':').last
       t.package = File.join(proj_root, 'packages', name)
-      dist = args[:dist] || ENV['OOD_PACKAGING_DIST']
+      dist = args[:dist] || ENV.fetch('OOD_PACKAGING_DIST', nil)
       arch = args[:arch] || ENV['OOD_PACKAGING_ARCH'] || 'x86_64'
       t.dist = dist
       t.arch = arch

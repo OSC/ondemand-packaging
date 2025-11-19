@@ -107,8 +107,8 @@ class OodPackaging::Package
   def gpg_files
     [
       OpenStruct.new(private_key: @config[:gpg_private_key], passphrase: @config[:gpg_passphrase]),
-      OpenStruct.new(private_key: ENV['OOD_PACKAGING_GPG_PRIVATE_KEY'],
-                     passphrase:  ENV['OOD_PACKAGING_GPG_PASSPHRASE'])
+      OpenStruct.new(private_key: ENV.fetch('OOD_PACKAGING_GPG_PRIVATE_KEY', nil),
+                     passphrase:  ENV.fetch('OOD_PACKAGING_GPG_PASSPHRASE', nil))
     ].each do |gpg|
       next if gpg.private_key.nil? || gpg.passphrase.nil?
       return gpg if File.exist?(gpg.private_key) && File.exist?(gpg.passphrase)

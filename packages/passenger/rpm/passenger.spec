@@ -4,7 +4,7 @@
 %define passenger_version %{package_version}
 %define nginx_version 1.26.3
 %define release_version %{package_release}
-%define ngix_release_version 1
+%define ngix_release_version 2
 
 %define runtime_version 4.1.0
 
@@ -57,7 +57,7 @@ BuildRequires:  ondemand-apache = %{runtime_version}
 BuildRequires:  libcurl-devel
 BuildRequires:  zlib-devel
 BuildRequires:  openssl-devel
-BuildRequires:  pcre-devel
+BuildRequires:  pcre2-devel
 BuildRequires:  patch
 Requires: ondemand-runtime = %{runtime_version}
 Requires: ondemand-ruby = %{runtime_version}
@@ -104,7 +104,7 @@ BuildRequires: gd-devel
 BuildRequires: libev-devel >= 4.0.0
 Requires: gd
 Requires: openssl
-Requires: pcre
+Requires: pcre2
 
 %description -n %{?scl_prefix}nginx
 Nginx is a web server and a reverse proxy server for HTTP, SMTP, POP3 and
@@ -194,7 +194,7 @@ pushd nginx-%{nginx_version}
     --with-pcre-jit \
     --add-module=../src/nginx_module \
     --with-debug \
-    --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
+    --with-cc-opt="%{optflags} $(pcre2-config --cflags)" \
     --with-ld-opt="$RPM_LD_FLAGS -Wl,-E" # so the perl module finds its symbols
 
 make %{?_smp_mflags}

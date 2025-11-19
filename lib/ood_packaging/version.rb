@@ -2,7 +2,7 @@
 
 # Version code for OodPackaging
 module OodPackaging
-  VERSION = '0.18.0'
+  VERSION = '0.19.0'
   PACKAGE_VERSION = {
     'ondemand-release'        => {
       '(ubuntu|debian)' => '4.1.0',
@@ -12,19 +12,19 @@ module OodPackaging
       '(ubuntu|debian)' => '6',
       'default'         => '1-8'
     },
-    'ondemand-runtime'        => '4.1.0',
+    'ondemand-runtime'        => '4.1.0-2',
     'scl-utils'               => '2.0.3',
     'passenger'               => {
       '(ubuntu|debian)' => '6.1.0',
-      'default'         => '6.1.0-1'
+      'default'         => '6.1.0-2'
     },
     'ondemand_exporter'       => '0.11.2',
     'ondemand-compute'        => {
       '(ubuntu|debian)' => '4.1.0',
       'default'         => '4.1.0'
     },
-    'python-websockify'       => '0.11.0',
-    'turbovnc'                => '3.1.1'
+    'python-websockify'       => '0.11.0-2',
+    'turbovnc'                => '3.2.1'
   }.freeze
 
   def self.package_version(package, dist)

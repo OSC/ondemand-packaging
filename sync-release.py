@@ -17,6 +17,7 @@ PROJ_ROOT = os.path.dirname(os.path.realpath(__file__))
 DISTS = [
     'el8',
     'el9',
+    'el10',
     'amzn2023',
     'ubuntu-22.04',
     'ubuntu-24.04',
@@ -24,7 +25,8 @@ DISTS = [
 ]
 EL_RELEASES = [
     'el8',
-    'el9'
+    'el9',
+    'el10',
 ]
 BASIC_RELEASES = [
     'amzn2023',
@@ -40,6 +42,7 @@ SKIP = [
 COMPUTE_DISTS = [
     'el8',
     'el9',
+    'el10',
     'amzn2023',
 ]
 ARCHES = [

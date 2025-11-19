@@ -77,12 +77,20 @@ BuildRequires: /usr/bin/perl
 BuildRequires: libjpeg-turbo
 BuildRequires: turbojpeg-devel
 BuildRequires: cmake
+BuildRequires: libXdmcp-devel
 BuildRequires: libX11-devel
 BuildRequires: libXext-devel
+BuildRequires: libXfont2-devel
+BuildRequires: libxkbfile-devel
+BuildRequires: libxshmfence-devel
+BuildRequires: mesa-libgbm-devel
+BuildRequires: mesa-libGL-devel
 BuildRequires: pam-devel
 BuildRequires: openssl-devel
 BuildRequires: libarchive
+BuildRequires: pixman-devel
 BuildRequires: python3
+BuildRequires: xorg-x11-xtrans-devel
 BuildRequires: zlib-devel
 
 %description
@@ -186,10 +194,27 @@ EOF
 %if "%{sysconfdir}" == "%{_sysconfdir}"
 mkdir -p %{buildroot}/%{sysconfdir}/polkit-1/localauthority/50-local.d
 cat > %{buildroot}/%{sysconfdir}/polkit-1/localauthority/50-local.d/45-turbovnc-gnome3.pkla << EOF
-[Eliminate GNOME 3 dialogs in TurboVNC]
+[Eliminate GNOME 3+ dialogs in TurboVNC]
 Identity=unix-user:*
 Action=org.freedesktop.color-manager.create-device;org.freedesktop.color-manager.create-profile;org.freedesktop.color-manager.delete-device;org.freedesktop.color-manager.delete-profile;org.freedesktop.color-manager.modify-device;org.freedesktop.color-manager.modify-profile;org.debian.pcsc-lite.access_pcsc;org.freedesktop.packagekit.system-sources-refresh;org.freedesktop.packagekit.system-network-proxy-configure
 ResultAny=no
+EOF
+mkdir -p %{buildroot}/%{sysconfdir}/polkit-1/rules.d
+cat > %{buildroot}/%{sysconfdir}/polkit-1/rules.d/45-turbovnc-gnome3.rules << EOF
+// Eliminate GNOME 3+ dialogs in TurboVNC
+polkit.addRule(function(action, subject) {
+  if ((action.id == "org.freedesktop.color-manager.create-device" ||
+       action.id == "org.freedesktop.color-manager.create-profile" ||
+       action.id == "org.freedesktop.color-manager.delete-device" ||
+       action.id == "org.freedesktop.color-manager.delete-profile" ||
+       action.id == "org.freedesktop.color-manager.modify-device" ||
+       action.id == "org.freedesktop.color-manager.modify-profile" ||
+       action.id == "org.debian.pcsc-lite.access_pcsc" ||
+       action.id == "org.freedesktop.packagekit.system-sources-refresh" ||
+       action.id == "org.freedesktop.packagekit.system-network-proxy-configure") &&
+      !subject.local)
+    return polkit.Result.NO;
+});
 EOF
 %endif
 %endif
@@ -271,6 +296,7 @@ fi
   %attr(0750,root,polkitd) %dir %{sysconfdir}/polkit-1/localauthority
   %dir %{sysconfdir}/polkit-1/localauthority/50-local.d
   %config %{sysconfdir}/polkit-1/localauthority/50-local.d/45-turbovnc-gnome3.pkla
+  %config %{sysconfdir}/polkit-1/rules.d/45-turbovnc-gnome3.rules
  %endif
 %endif
 

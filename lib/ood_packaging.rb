@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Main entry point
 module OodPackaging
   require 'ood_packaging/build'
   require 'ood_packaging/build_box'
