@@ -258,6 +258,13 @@ package-deploy-staging:
   script:
     - ./release.py --debug --pkey /systems/osc_certs/ssh/ondemand-packaging/id_rsa -c staging -r $OOD_BUILD_REPO ./tmp/output/*
 
+package-deploy-staging-release:
+  stage: deploy
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^ondemand-release/'
+  script:
+    - ./release.py --debug --pkey /systems/osc_certs/ssh/ondemand-packaging/id_rsa -c staging-release -r $OOD_BUILD_REPO ./tmp/output/*
+
 package-deploy-release:
   stage: deploy
   rules:
