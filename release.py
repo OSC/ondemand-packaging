@@ -134,7 +134,7 @@ Usage examples:
             deb = deb_dist_map[dist]
         if deb:
             deb_basepath = config.get(args.config_section, 'deb_path').replace('DIST', deb).replace('RELEASE', build_release)
-            if args.config_section == 'release':
+            if args.config_section == 'release' or args.config_section == 'staging-release':
                 pool_path = deb_basepath
             else:
                 pool_path = os.path.join(deb_basepath, 'pool', deb)
