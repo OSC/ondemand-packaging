@@ -10,6 +10,7 @@ class OodPackaging::BuildBox
   include FileUtils
 
   BASE_IMAGES = {
+    'an23'         => 'openanolis/anolisos:23.4',
     'el8'          => 'almalinux:8',
     'el9'          => 'almalinux:9',
     'el10'         => 'almalinux:10',
@@ -28,7 +29,8 @@ class OodPackaging::BuildBox
   ARCH_PLATFORMS = {
     'x86_64'  => 'linux/amd64',
     'aarch64' => 'linux/arm64',
-    'ppc64le' => 'linux/ppc64le'
+    'ppc64le' => 'linux/ppc64le',
+    'loongarch64' => 'linux/loong64'
   }.freeze
 
   def initialize(config = {})
@@ -54,7 +56,7 @@ class OodPackaging::BuildBox
   end
 
   def rpm?
-    dist.start_with?('el') || dist.start_with?('amzn')
+    dist.start_with?('el') || dist.start_with?('amzn') || dist.start_with?('an')
   end
 
   def deb?

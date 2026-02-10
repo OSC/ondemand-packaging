@@ -31,6 +31,8 @@ jobs:
             arch: ppc64le
           - dist: debian-12
             arch: ppc64le
+          - dist: an23
+            arch: loongarch64
     name: Release buildbox
     runs-on: ubuntu-22.04
     steps:

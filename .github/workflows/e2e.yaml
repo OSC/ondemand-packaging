@@ -34,6 +34,8 @@ jobs:
             arch: ppc64le
           - dist: debian-12
             arch: ppc64le
+          - dist: an23
+            arch: loongarch64
     runs-on: ${{ matrix.os }}
     name: Buildbox tests
     steps:
@@ -116,6 +118,8 @@ jobs:
             package: turbovnc
           - dist: amzn2023
             arch: ppc64le
+          - dist: an23
+            arch: loongarch64
     runs-on: ${{ matrix.os }}
     name: Package test package=${{ matrix.package }} dist=${{ matrix.dist }} arch=${{ matrix.arch }}
     steps:
@@ -278,6 +282,8 @@ jobs:
             arch: ppc64le
           - dist: debian-12
             arch: ppc64le
+          - dist: an23
+            arch: loongarch64
     runs-on: ${{ matrix.os }}
     name: Package ${{ matrix.package }} dist=${{ matrix.dist }} arch=${{ matrix.arch }}
     steps:
