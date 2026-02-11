@@ -4,7 +4,7 @@
 %scl_package %scl
 %{!?package_release: %define package_release 1}
 
-%if 0%{?rhel} >= 8
+%if 0%{?rhel} >= 8 || 0%{?anolis} >= 23
 %global ruby ruby
 %global nodejs nodejs
 %global apache httpd
@@ -57,7 +57,7 @@ packages depending on %{scl} Software Collection.
 
 %package -n ondemand-ruby
 Summary: Meta package for pulling in SCL Ruby %{ruby}
-%if 0%{?rhel} >= 8
+%if 0%{?rhel} >= 8 || 0%{?anolis} >= 23
 Requires: %{ruby} >= 3.3, %{ruby} < 3.4
 Requires: rubygem-rake
 Requires: rubygem-bundler >= 2.1
@@ -88,19 +88,7 @@ Meta package for pulling in SCL Ruby %{ruby}
 
 %package -n ondemand-nodejs
 Summary: Meta package for pulling in SCL nodejs %{nodejs}
-%if 0%{?rhel} == 10
-Requires: %{nodejs} >= 1:22.0, %{nodejs} < 1:23.0
-Requires: npm
-%endif
-%if 0%{?rhel} == 9
-Requires: %{nodejs} >= 1:22.0, %{nodejs} < 1:23.0
-Requires: npm
-%endif
-%if 0%{?rhel} == 8
-Requires: %{nodejs} >= 1:22.0, %{nodejs} < 1:23.0
-Requires: npm
-%endif
-%if 0%{?amzn} == 2023
+%if 0%{?rhel} == 10 || 0%{?rhel} == 9 || 0%{?rhel} == 8 || 0%{?amzn} == 2023 || 0%{?anolis} == 23
 Requires: %{nodejs} >= 1:22.0, %{nodejs} < 1:23.0
 Requires: npm
 %endif
@@ -116,10 +104,10 @@ Requires: %{apache} > 2.4.37-56, %{apache} < 2.5
 %if 0%{?rhel} == 9
 Requires: %{apache} > 2.4.57-8, %{apache} < 2.5
 %endif
-%if 0%{?rhel} == 10
+%if 0%{?rhel} == 10 || 0%{?anolis} == 23
 Requires: %{apache} >= 2.4.63, %{apache} < 2.5
 %endif
-%if 0%{?rhel} >= 8
+%if 0%{?rhel} >= 8 || 0%{?anolis} == 23
 Requires: httpd-devel
 Requires: mod_ssl
 Requires: mod_ldap

@@ -15,6 +15,9 @@
 %ifarch ppc64le
 %define platform ppc64le
 %endif
+%ifarch loongarch64
+%define platform loong64
+%endif
 
 Name:       ondemand_exporter
 Version:    %{package_version}

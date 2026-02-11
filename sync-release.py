@@ -49,6 +49,7 @@ ARCHES = [
     'x86_64',
     'aarch64',
     'ppc64le',
+    'loongarch64',
 ]
 
 def get_rpm_info(rpm_file):
@@ -164,7 +165,7 @@ Usage examples:
             if not os.path.islink(rel_l):
                 logger.info("ln -s %s %s", rel, rel_l)
                 os.symlink(rel, rel_l)
-            for arch in ['SRPMS', 'x86_64', 'aarch64', 'ppc64le']:
+            for arch in ['SRPMS', 'x86_64', 'aarch64', 'ppc64le', 'loongarch64']:
                 d = os.path.join(release_dir, t, rel, arch)
                 if not os.path.isdir(d):
                     logger.info("mkdir -p %s", d)
@@ -174,7 +175,7 @@ Usage examples:
             if not os.path.isdir(rel_d):
                 logger.info("mkdir -p %s", rel_d)
                 os.makedirs(rel_d, 0o755)
-            for arch in ['SRPMS', 'x86_64', 'aarch64', 'ppc64le']:
+            for arch in ['SRPMS', 'x86_64', 'aarch64', 'ppc64le', 'loongarch64']:
                 d = os.path.join(release_dir, t, rel, arch)
                 if not os.path.isdir(d):
                     logger.info("mkdir -p %s", d)

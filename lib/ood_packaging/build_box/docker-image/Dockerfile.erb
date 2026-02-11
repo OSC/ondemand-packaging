@@ -23,6 +23,9 @@ RUN dnf install -y --allowerasing systemd sudo which wget \
     gcc-c++ gcc make patch shadow-utils gnupg2 \
     rpm-build rpmdevtools rpm-sign <%= dist =~ /^el/ ? 'scl-utils-build' : '' %> && \
     dnf clean all && rm -rf /var/cache/dnf/*
+<% if dist == 'an23' -%>
+RUN dnf install -y scl-utils-build ruby-devel
+<% end -%>
 <% if dist == 'amzn2023' -%>
 RUN alternatives --install /usr/bin/node node /usr/bin/node-<%= nodejs_version %> 1 && \
     alternatives --install /usr/bin/npm npm /usr/bin/npm-<%= nodejs_version %> 1

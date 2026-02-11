@@ -117,6 +117,19 @@ memory usage. Includes Phusion Passenger support.
 
 # Apply patches
 %patch -P0 -p1 -F1
+#update config.guess and config.sub to support loongarch64
+%ifarch loongarch64
+for dir in $(dirname $(find -name "config.sub"))
+do
+    rm ./$dir/config.{sub,guess}
+    pushd ./$dir
+        libtoolize --force --copy
+        aclocal
+        autoconf
+        automake --add-missing
+    popd
+done
+%endif
 
 %build
 scl enable ondemand - << \EOF
