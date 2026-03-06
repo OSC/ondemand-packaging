@@ -2,7 +2,7 @@
 
 # Version code for OodPackaging
 module OodPackaging
-  VERSION = '0.19.0'
+  VERSION = '0.19.1'
   PACKAGE_VERSION = {
     'ondemand-release'        => {
       '(ubuntu|debian)' => '4.1.0',
@@ -12,7 +12,7 @@ module OodPackaging
       '(ubuntu|debian)' => '6',
       'default'         => '1-8'
     },
-    'ondemand-runtime'        => '4.1.0-2',
+    'ondemand-runtime'        => '4.1.0-3',
     'scl-utils'               => '2.0.3',
     'passenger'               => {
       '(ubuntu|debian)' => '6.1.0',

@@ -7,12 +7,14 @@
 %if 0%{?rhel} >= 8
 %global ruby ruby
 %global nodejs nodejs
+%global npm npm
 %global apache httpd
 %global ruby_version 3.3
 %endif
 %if 0%{?amzn} == 2023
 %global ruby ruby3.2
 %global nodejs nodejs22
+%global npm %{nodejs}-npm
 %global apache httpd
 %global ruby_version 3.2
 %endif
@@ -90,19 +92,19 @@ Meta package for pulling in SCL Ruby %{ruby}
 Summary: Meta package for pulling in SCL nodejs %{nodejs}
 %if 0%{?rhel} == 10
 Requires: %{nodejs} >= 1:22.0, %{nodejs} < 1:23.0
-Requires: npm
+Requires: %{npm}
 %endif
 %if 0%{?rhel} == 9
 Requires: %{nodejs} >= 1:22.0, %{nodejs} < 1:23.0
-Requires: npm
+Requires: %{npm}
 %endif
 %if 0%{?rhel} == 8
 Requires: %{nodejs} >= 1:22.0, %{nodejs} < 1:23.0
-Requires: npm
+Requires: %{npm}
 %endif
 %if 0%{?amzn} == 2023
 Requires: %{nodejs} >= 1:22.0, %{nodejs} < 1:23.0
-Requires: npm
+Requires: %{npm}
 %endif
 
 %description -n ondemand-nodejs
