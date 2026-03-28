@@ -55,7 +55,7 @@ module OodPackaging::Utils
   end
 
   def ondemand_repo_version
-    '4.1'
+    '4.2'
   end
 
   def ondemand_rpm_repo_baseurl
