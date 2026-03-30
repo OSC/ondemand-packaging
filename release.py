@@ -23,6 +23,7 @@ deb_dist_map = {
     'ubuntu-22.04': 'jammy',
     'ubuntu-24.04': 'noble',
     'debian-12': 'bookworm',
+    'debian-13': 'trixie',
 }
 PROJ_ROOT = os.path.dirname(os.path.realpath(__file__))
 

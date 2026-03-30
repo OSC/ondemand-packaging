@@ -16,13 +16,15 @@ class OodPackaging::BuildBox
     'ubuntu-22.04' => 'ubuntu:22.04',
     'ubuntu-24.04' => 'ubuntu:24.04',
     'debian-12'    => 'debian:12',
+    'debian-13'    => 'debian:13',
     'amzn2023'     => 'amazonlinux:2023'
   }.freeze
 
   CODENAMES = {
     'ubuntu-22.04' => 'jammy',
     'ubuntu-24.04' => 'noble',
-    'debian-12'    => 'bookworm'
+    'debian-12'    => 'bookworm',
+    'debian-13'    => 'trixie'
   }.freeze
 
   ARCH_PLATFORMS = {
