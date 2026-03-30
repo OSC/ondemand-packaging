@@ -13,7 +13,6 @@ class OodPackaging::BuildBox
     'el8'          => 'almalinux:8',
     'el9'          => 'almalinux:9',
     'el10'         => 'almalinux:10',
-    'ubuntu-22.04' => 'ubuntu:22.04',
     'ubuntu-24.04' => 'ubuntu:24.04',
     'debian-12'    => 'debian:12',
     'debian-13'    => 'debian:13',
@@ -21,7 +20,6 @@ class OodPackaging::BuildBox
   }.freeze
 
   CODENAMES = {
-    'ubuntu-22.04' => 'jammy',
     'ubuntu-24.04' => 'noble',
     'debian-12'    => 'bookworm',
     'debian-13'    => 'trixie'

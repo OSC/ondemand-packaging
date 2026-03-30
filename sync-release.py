@@ -19,7 +19,6 @@ DISTS = [
     'el9',
     'el10',
     'amzn2023',
-    'ubuntu-22.04',
     'ubuntu-24.04',
     'debian-12',
     'debian-13',
@@ -33,13 +32,13 @@ BASIC_RELEASES = [
     'amzn2023',
 ]
 DEB_CODENAMES = [
-    'jammy',
     'noble',
     'bookworm',
     'trixie',
 ]
 SKIP = [
-    'bionic'
+    'bionic',
+    'jammy',
 ]
 COMPUTE_DISTS = [
     'el8',

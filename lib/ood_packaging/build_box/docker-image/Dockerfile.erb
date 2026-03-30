@@ -26,10 +26,6 @@ RUN dnf install -y --allowerasing systemd sudo which wget \
 <% elsif dist =~ /^ubuntu|debian/ -%>
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update -y && apt upgrade -y && \
-<%# TODO: Ubuntu 22.04 segfaults multiarch in GHA when libc-bin is upgraded %>
-<% if dist == 'ubuntu-22.04' && arch == 'aarch64' && ENV['GITHUB_ACTIONS'] == 'true' -%>
-    apt-mark hold libc-bin && \
-<% end -%>
     apt clean all -y
 RUN apt update -y && apt install -y locales && \
     echo "en_US UTF-8" >> /etc/locale.gen && locale-gen $LANG && \
