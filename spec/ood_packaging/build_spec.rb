@@ -94,8 +94,8 @@ describe OodPackaging::Build do
       build.bootstrap_deb!
     end
 
-    context 'when ubuntu-22.04' do
-      let(:dist) { 'ubuntu-22.04' }
+    context 'when ubuntu-24.04' do
+      let(:dist) { 'ubuntu-24.04' }
       let(:version) { 'v0.0.1' }
 
       it 'bootstraps DEB build environment with release' do
