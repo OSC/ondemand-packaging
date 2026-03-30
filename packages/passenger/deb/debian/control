@@ -3,7 +3,7 @@ Section: unknown
 Priority: optional
 Maintainer: Trey Dockendorf <tdockendorf@osc.edu>
 Build-Depends: debhelper (>=11~), build-essential,
-  libcurl4-openssl-dev, libssl-dev, zlib1g-dev, libpcre3-dev, apache2, apache2-dev,
+  libcurl4-openssl-dev, libssl-dev, zlib1g-dev, libpcre2-dev | libpcre3-dev, apache2, apache2-dev,
   libxslt1-dev, libgd-dev, libev-dev,
   wget, ruby, ruby-dev, rake
 Standards-Version: 4.1.4
