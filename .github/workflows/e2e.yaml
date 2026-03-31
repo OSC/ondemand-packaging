@@ -298,6 +298,7 @@ jobs:
         run: |
           docker load --input /tmp/ood_packaging-${{ matrix.dist }}-${{ matrix.arch }}.tar.gz
           podman load --input /tmp/ood_packaging-${{ matrix.dist }}-${{ matrix.arch }}.tar.gz
+          podman image ls
       - name: Clone ${{ matrix.package }}
         run: |
           mkdir -p ./tmp
