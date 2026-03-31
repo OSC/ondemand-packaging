@@ -323,9 +323,14 @@ jobs:
             apt update -y
             apt install -y docker-ce
           run: |
+            # have to use docker for el8 packaging.
+            if [[ "${{ matrix.dist }}" == "el8" ]]; then
+              unset CONTAINER_RT
+            fi
             git config --global --add safe.directory $GITHUB_WORKSPACE
             bundle install
             git config --global --add safe.directory $GITHUB_WORKSPACE/tmp/${{ matrix.package }}
             ./bin/ood_packaging -w ./tmp/work -o ./tmp/output -d ${{ matrix.dist }} -a ${{ matrix.arch }} -V v4.2.0 -T --debug $(pwd)/tmp/${{ matrix.package }}
           env: |
             OOD_PACKAGING_DEBUG: 'true'
+            CONTAINER_RT: 'podman'

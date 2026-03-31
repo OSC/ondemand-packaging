@@ -35,11 +35,13 @@ module OodPackaging::Utils
   end
 
   def rt_specific_flags
+    extra = []
+    extra = ['--privileged'] if build_box.dist == 'debian-13'
     if podman_runtime?
       # SELinux doesn't like it if you're mounting from $HOME
       [
         '--security-opt', 'label=disable'
-      ]
+      ] + extra
     else
       ['--privileged', '--tty']
     end
