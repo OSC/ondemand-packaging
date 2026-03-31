@@ -308,7 +308,7 @@ jobs:
             unset CONTAINER_RT
           fi
           ./bin/ood_packaging -w ./tmp/work -o ./tmp/output -d ${{ matrix.dist }} -a ${{ matrix.arch }} -V v4.2.0 -T --debug $(pwd)/tmp/${{ matrix.package }}
-        env: |
+        env:
           OOD_PACKAGING_DEBUG: 'true'
           CONTAINER_RT: 'podman'
       - name: arch distro
