@@ -302,7 +302,15 @@ jobs:
           git clone https://github.com/OSC/${{ matrix.package }}.git ./tmp/${{ matrix.package }}
       - name: Build ${{ matrix.package }} package
         if: matrix.arch == 'x86_64'
-        run: ./bin/ood_packaging -w ./tmp/work -o ./tmp/output -d ${{ matrix.dist }} -a ${{ matrix.arch }} -V v4.2.0 -T --debug $(pwd)/tmp/${{ matrix.package }}
+        run: |
+          # have to use docker for el8 packaging.
+          if [[ "${{ matrix.dist }}" == "el8" ]]; then
+            unset CONTAINER_RT
+          fi
+          ./bin/ood_packaging -w ./tmp/work -o ./tmp/output -d ${{ matrix.dist }} -a ${{ matrix.arch }} -V v4.2.0 -T --debug $(pwd)/tmp/${{ matrix.package }}
+        env: |
+          OOD_PACKAGING_DEBUG: 'true'
+          CONTAINER_RT: 'podman'
       - name: arch distro
         if: ${{ matrix.arch != 'x86_64' && github.event_name == 'schedule' }}
         run: |
