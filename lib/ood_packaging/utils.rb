@@ -39,7 +39,7 @@ module OodPackaging::Utils
       # SELinux doesn't like it if you're mounting from $HOME
       [
         '--security-opt', 'label=disable'
-      ] + extra
+      ]
     else
       ['--privileged', '--tty']
     end
