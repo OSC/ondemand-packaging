@@ -5,6 +5,17 @@ export CODENAME = $(shell lsb_release -sc 2>/dev/null)
 export WEB_DESTDIR = $(CURDIR)/debian/ondemand-release-web-latest
 export DEB_BUILD_OPTIONS=nocheck
 export NODEREPO=node_22.x
+ifneq ($(filter $(CODENAME),trixie resolute),)
+export REPO_PREFIX=deb [signed-by=/usr/share/keyrings/ondemand-web.gpg]
+export KEYDIR=$(WEB_DESTDIR)/usr/share/keyrings
+export KEY=https://apt.osc.edu/ondemand/DEB-GPG-KEY-ondemand-SHA512
+export NODE_PREFIX=deb [signed-by=/usr/share/keyrings/nodesource.gpg]
+else
+export REPO_PREFIX=deb
+export KEYDIR=$(WEB_DESTDIR)/etc/apt/trusted.gpg.d
+export KEY=https://apt.osc.edu/ondemand/DEB-GPG-KEY-ondemand-SHA512
+export NODE_PREFIX=deb
+endif
 
 %:
 	dh $@
@@ -17,11 +28,11 @@ override_dh_auto_build:
 
 override_dh_auto_install:
 	mkdir -p $(WEB_DESTDIR)/etc/apt/sources.list.d
-	mkdir -p $(WEB_DESTDIR)/etc/apt/trusted.gpg.d
-	echo "deb https://apt.osc.edu/ondemand/latest/web/apt $(CODENAME) main" > $(WEB_DESTDIR)/etc/apt/sources.list.d/ondemand-web.list
-	install -m 644 -D $(CURDIR)/ondemand.gpg $(WEB_DESTDIR)/etc/apt/trusted.gpg.d/ondemand-web.gpg
-	echo "deb https://deb.nodesource.com/$(NODEREPO) nodistro main" > $(WEB_DESTDIR)/etc/apt/sources.list.d/nodesource.list
-	curl -s https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor > $(WEB_DESTDIR)/etc/apt/trusted.gpg.d/nodesource.gpg
+	echo "$(REPO_PREFIX) https://apt.osc.edu/ondemand/latest/web/apt $(CODENAME) main" > $(WEB_DESTDIR)/etc/apt/sources.list.d/ondemand-web.list
+	mkdir -p $(KEYDIR)
+	curl -fsSL $(KEY) | gpg --dearmor -o $(KEYDIR)/ondemand-web.gpg
+	echo "$(NODE_PREFIX) https://deb.nodesource.com/$(NODEREPO) nodistro main" > $(WEB_DESTDIR)/etc/apt/sources.list.d/nodesource.list
+	curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o $(KEYDIR)/nodesource.gpg
 
 override_dh_builddeb:
 	dh_builddeb -- -Zgzip

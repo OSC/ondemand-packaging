@@ -161,13 +161,13 @@ debmake -x 0
 ## Generate Deb GPG trust
 
 ```
-docker run --rm -it --name ondemand-deb-gpg ubuntu:20.04 /bin/bash
+docker run --rm -it --name ondemand-deb-gpg debian:13 /bin/bash
 apt-get update
 apt -y install gnupg wget
-wget -qO - https://apt.osc.edu/ondemand/DEB-GPG-KEY-ondemand | apt-key add -
+wget -qO - https://apt.osc.edu/ondemand/DEB-GPG-KEY-ondemand-SHA512 | gpg --dearmor -o /usr/share/keyrings/ondemand-sha512.gpg
 
 # Back out of container
-docker cp ondemand-deb-gpg:/etc/apt/trusted.gpg packages/deb/ondemand-release/ondemand.gpg
+docker cp ondemand-deb-gpg:/usr/share/keyrings/ondemand-sha512.gpg packages/ondemand-release/deb/ondemand-sha512.gpg
 ```
 
 ## GPG Setup

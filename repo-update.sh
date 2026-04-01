@@ -160,8 +160,8 @@ $(do_hash "SHA1" "sha1sum")
 $(do_hash "SHA256" "sha256sum")
 EOF
     echo "level=\"info\" msg=\"GPG sign Release\" repo=\"${DIST_PATH}\""
-    cat Release | gpg --detach-sign --passphrase-file ${GPGPASS} --batch --yes --no-tty --digest-algo SHA256 --cert-digest-algo SHA256 --pinentry-mode loopback --armor > Release.gpg
-    cat Release | gpg --detach-sign --passphrase-file ${GPGPASS} --batch --yes --no-tty --armor --digest-algo SHA256 --cert-digest-algo SHA256 --pinentry-mode loopback --clearsign > InRelease
+    cat Release | gpg --default-key ${GPG_KEY} --detach-sign --passphrase-file ${GPGPASS} --batch --yes --no-tty --digest-algo SHA256 --cert-digest-algo SHA256 --pinentry-mode loopback --armor > Release.gpg
+    cat Release | gpg --default-key ${GPG_KEY} --detach-sign --passphrase-file ${GPGPASS} --batch --yes --no-tty --armor --digest-algo SHA256 --cert-digest-algo SHA256 --pinentry-mode loopback --clearsign > InRelease
   fi
 ) 200>${LOCK_FILE}
 

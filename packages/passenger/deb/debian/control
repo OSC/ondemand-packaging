@@ -31,5 +31,5 @@ Package: ondemand-nginx
 Architecture: any
 Multi-Arch: foreign
 Depends: ${shlibs:Depends}, ${misc:Depends},
-  libgd3, openssl, libpcre3
+  libgd3, openssl, libpcre3-dev | libpcre2-dev
 Description: A high performance web server and reverse proxy server
