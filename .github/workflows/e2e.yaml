@@ -312,6 +312,9 @@ jobs:
           if [[ "${{ matrix.dist }}" == "el8" ]]; then
             unset CONTAINER_RT
           fi
+          if [[ "${{ matrix.package }}" == bc_osc* ]]; then
+            unset CONTAINER_RT
+          fi
           if [[ "${{ matrix.dist }}" == "debian-13" ]]; then
             export OOD_PACKAGING_CONTAINER_FLAGS="--privileged"
           fi
