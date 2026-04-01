@@ -9,7 +9,7 @@ module OodPackaging
       'default'         => '4.2'
     },
     'ondemand-release-latest' => {
-      '(ubuntu|debian)' => '6',
+      '(ubuntu|debian)' => '7',
       'default'         => '1-8'
     },
     'ondemand-runtime'        => '4.2.0-1',
