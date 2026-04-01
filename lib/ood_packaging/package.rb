@@ -296,6 +296,7 @@ class OodPackaging::Package
     cmd.concat ['--platform', build_box.platform]
     cmd.concat ['--name', container_name]
     cmd.concat rt_specific_flags
+    cmd.concat [ENV['OOD_PACKAGING_CONTAINER_FLAGS']] if ENV['OOD_PACKAGING_CONTAINER_FLAGS']
     cmd.concat container_mounts
     cmd.concat [build_box.image_tag]
     cmd.concat [container_init]

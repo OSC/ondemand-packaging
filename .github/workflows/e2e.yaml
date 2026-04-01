@@ -295,14 +295,33 @@ jobs:
           name: image-${{ matrix.dist }}-${{ matrix.arch }}
           path: /tmp
       - name: Load image
-        run: docker load --input /tmp/ood_packaging-${{ matrix.dist }}-${{ matrix.arch }}.tar.gz
+        run: |
+          docker load --input /tmp/ood_packaging-${{ matrix.dist }}-${{ matrix.arch }}.tar.gz
+          podman load --input /tmp/ood_packaging-${{ matrix.dist }}-${{ matrix.arch }}.tar.gz
+          IMAGE=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep ood-buildbox)
+          podman tag $(podman images --format "{{.Repository}}:{{.Tag}}" | grep localhost) $IMAGE
+          podman image ls
       - name: Clone ${{ matrix.package }}
         run: |
           mkdir -p ./tmp
           git clone https://github.com/OSC/${{ matrix.package }}.git ./tmp/${{ matrix.package }}
       - name: Build ${{ matrix.package }} package
         if: matrix.arch == 'x86_64'
-        run: ./bin/ood_packaging -w ./tmp/work -o ./tmp/output -d ${{ matrix.dist }} -a ${{ matrix.arch }} -V v4.2.0 -T --debug $(pwd)/tmp/${{ matrix.package }}
+        run: |
+          # have to use docker for el8 packaging.
+          if [[ "${{ matrix.dist }}" == "el8" ]]; then
+            unset CONTAINER_RT
+          fi
+          if [[ "${{ matrix.package }}" == bc_osc* ]]; then
+            unset CONTAINER_RT
+          fi
+          if [[ "${{ matrix.dist }}" == "debian-13" ]]; then
+            export OOD_PACKAGING_CONTAINER_FLAGS="--privileged"
+          fi
+          ./bin/ood_packaging -w ./tmp/work -o ./tmp/output -d ${{ matrix.dist }} -a ${{ matrix.arch }} -V v4.2.0 -T --debug $(pwd)/tmp/${{ matrix.package }}
+        env:
+          OOD_PACKAGING_DEBUG: 'true'
+          CONTAINER_RT: 'podman'
       - name: arch distro
         if: ${{ matrix.arch != 'x86_64' && github.event_name == 'schedule' }}
         run: |
@@ -323,9 +342,14 @@ jobs:
             apt update -y
             apt install -y docker-ce
           run: |
+            # have to use docker for el8 packaging.
+            if [[ "${{ matrix.dist }}" == "el8" ]]; then
+              unset CONTAINER_RT
+            fi
             git config --global --add safe.directory $GITHUB_WORKSPACE
             bundle install
             git config --global --add safe.directory $GITHUB_WORKSPACE/tmp/${{ matrix.package }}
             ./bin/ood_packaging -w ./tmp/work -o ./tmp/output -d ${{ matrix.dist }} -a ${{ matrix.arch }} -V v4.2.0 -T --debug $(pwd)/tmp/${{ matrix.package }}
           env: |
             OOD_PACKAGING_DEBUG: 'true'
+            CONTAINER_RT: 'podman'
