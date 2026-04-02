@@ -8,17 +8,10 @@ export VERSION_MAJOR = $(shell echo "$(VERSION)" | cut -d'.' -f1)
 export VERSION_MINOR = $(shell echo "$(VERSION)" | cut -d'.' -f2)
 export REPO = $(VERSION_MAJOR).$(VERSION_MINOR)
 export NODEREPO=node_22.x
-ifneq ($(filter $(CODENAME),trixie resolute),)
 export REPO_PREFIX=deb [signed-by=/usr/share/keyrings/ondemand-web.gpg]
 export KEYDIR=$(WEB_DESTDIR)/usr/share/keyrings
 export KEY=https://apt.osc.edu/ondemand/DEB-GPG-KEY-ondemand-SHA512
 export NODE_PREFIX=deb [signed-by=/usr/share/keyrings/nodesource.gpg]
-else
-export REPO_PREFIX=deb
-export KEYDIR=$(WEB_DESTDIR)/etc/apt/trusted.gpg.d
-export KEY=https://apt.osc.edu/ondemand/DEB-GPG-KEY-ondemand-SHA512
-export NODE_PREFIX=deb
-endif
 
 %:
 	dh $@
