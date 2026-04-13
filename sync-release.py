@@ -20,6 +20,7 @@ DISTS = [
     'el10',
     'amzn2023',
     'ubuntu-24.04',
+    'ubuntu-26.04',
     'debian-12',
     'debian-13',
 ]
@@ -33,6 +34,7 @@ BASIC_RELEASES = [
 ]
 DEB_CODENAMES = [
     'noble',
+    'resolute',
     'bookworm',
     'trixie',
 ]
