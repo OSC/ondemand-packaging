@@ -142,6 +142,9 @@ LOCK_FILE="/var/lib/oodpkg/repo-update-${LOCK_NAME}.lock"
     esac
     REPO_PATH="${BASE_PATH}/${REPO}/${TYPE}/apt"
     DIST_PATH="${REPO_PATH}/dists/${DIST}"
+    if [[ "$REPO" == *"4.1" || "$REPO" == *"4.0" ]]; then
+      GPG_KEY="92D31755"
+    fi
     echo "level=\"info\" msg=\"Scan packages repo\" repo=\"${REPO_PATH}\""
     pushd ${REPO_PATH}
     dpkg-scanpackages --multiversion --arch ${ARCH} pool/${DIST} > dists/${DIST}/main/binary-${ARCH}/Packages
