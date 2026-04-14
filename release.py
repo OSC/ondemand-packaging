@@ -22,6 +22,7 @@ deb_dist_map = {
     'ubuntu-20.04': 'focal',
     'ubuntu-22.04': 'jammy',
     'ubuntu-24.04': 'noble',
+    'ubuntu-26.04': 'resolute',
     'debian-12': 'bookworm',
     'debian-13': 'trixie',
 }

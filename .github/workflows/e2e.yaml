@@ -18,6 +18,7 @@ jobs:
           - el9
           - el10
           - ubuntu-24.04
+          - ubuntu-26.04
           - debian-12
           - debian-13
           - amzn2023
@@ -29,6 +30,8 @@ jobs:
           - dist: amzn2023
             arch: ppc64le
           - dist: ubuntu-24.04
+            arch: ppc64le
+          - dist: ubuntu-26.04
             arch: ppc64le
           - dist: debian-12
             arch: ppc64le
@@ -172,6 +175,7 @@ jobs:
         os: [ubuntu-22.04]
         dist:
           - ubuntu-24.04
+          - ubuntu-26.04
           - debian-12
           - debian-13
         arch:
@@ -245,6 +249,7 @@ jobs:
           - el9
           - el10
           - ubuntu-24.04
+          - ubuntu-26.04
           - debian-12
           - debian-13
           - amzn2023
@@ -273,6 +278,8 @@ jobs:
           - dist: amzn2023
             arch: ppc64le
           - dist: ubuntu-24.04
+            arch: ppc64le
+          - dist: ubuntu-26.04
             arch: ppc64le
           - dist: debian-12
             arch: ppc64le
