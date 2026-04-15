@@ -36,7 +36,7 @@ run groupadd <%= ctr_user %>
 run useradd --home-dir <%= ctr_home %> --create-home --gid <%= ctr_user %> --password '<%= ctr_user %>' <%= ctr_user %>
 
 if sudo --version | grep sudo-rs ; then
-  SUDO_DEFAULTS="!authenticate"
+  SUDO_DEFAULTS="!pwfeedback, !use_pty"
 else
   SUDO_DEFAULTS="!requiretty, !authenticate"
 fi
