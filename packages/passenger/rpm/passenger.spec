@@ -312,6 +312,9 @@ if [ $1 -eq 2 ]; then
     chmod o-rwx %{nginx_home}
     chmod o-rwx %{nginx_home_tmp}
     chmod o-rwx %{nginx_logdir}
+    chown %{nginx_user}:%{nginx_group} %{nginx_home}
+    chown %{nginx_user}:%{nginx_group} %{nginx_home_tmp}
+    chown %{nginx_user}:%{nginx_group} %{nginx_logdir}
 fi
 
 %files
