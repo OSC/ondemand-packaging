@@ -4,7 +4,7 @@
 %define passenger_version %{package_version}
 %define nginx_version 1.26.3
 %define release_version %{package_release}
-%define ngix_release_version 2
+%define ngix_release_version 3
 
 %define runtime_version 4.1.0
 
