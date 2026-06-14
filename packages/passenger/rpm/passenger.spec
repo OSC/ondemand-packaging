@@ -4,7 +4,7 @@
 %define passenger_version %{package_version}
 %define nginx_version 1.26.3
 %define release_version %{package_release}
-%define ngix_release_version 2
+%define ngix_release_version 3
 
 %define runtime_version 4.1.0
 
@@ -312,6 +312,9 @@ if [ $1 -eq 2 ]; then
     chmod o-rwx %{nginx_home}
     chmod o-rwx %{nginx_home_tmp}
     chmod o-rwx %{nginx_logdir}
+    chown %{nginx_user}:%{nginx_group} %{nginx_home}
+    chown %{nginx_user}:%{nginx_group} %{nginx_home_tmp}
+    chown %{nginx_user}:%{nginx_group} %{nginx_logdir}
 fi
 
 %files
