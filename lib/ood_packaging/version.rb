@@ -18,7 +18,7 @@ module OodPackaging
       '(ubuntu|debian)' => '6.1.2',
       'default'         => '6.1.2-1'
     },
-    'ondemand_exporter'       => '0.11.2',
+    'ondemand_exporter'       => '0.12.0',
     'ondemand-compute'        => {
       '(ubuntu|debian)' => '4.2.0',
       'default'         => '4.2.0'
