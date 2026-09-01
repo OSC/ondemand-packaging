@@ -305,7 +305,10 @@ jobs:
         run: |
           docker load --input /tmp/ood_packaging-${{ matrix.dist }}-${{ matrix.arch }}.tar.gz
           docker images --format "{{.Repository}}:{{.Tag}}"
+          podman load --help
+          echo "Load podman image"
           podman load --input /tmp/ood_packaging-${{ matrix.dist }}-${{ matrix.arch }}.tar.gz
+          echo "List podman images"
           podman images --format "{{.Repository}}:{{.Tag}}"
           IMAGE=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep ood-buildbox)
           podman tag $(podman images --format "{{.Repository}}:{{.Tag}}" | grep localhost) $IMAGE
