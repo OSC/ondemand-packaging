@@ -12,7 +12,7 @@ class OodPackaging::BuildBox
   BASE_IMAGES = {
     'el8'          => 'rockylinux:8',
     'el9'          => 'rockylinux:9',
-    'el10'         => 'rockylinux:10',
+    'el10'         => 'rockylinux/rockylinux:10',
     'ubuntu-24.04' => 'ubuntu:24.04',
     'ubuntu-26.04' => 'ubuntu:26.04',
     'debian-12'    => 'debian:12',
