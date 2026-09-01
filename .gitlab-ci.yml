@@ -141,8 +141,11 @@ build-passenger:
       # el10 aarch64 builds are timing out so skip those builds
       - OOD_PACKAGING_DIST: [el10]
         OOD_PACKAGING_ARCH: [x86_64, ppc64le]
-      - OOD_PACKAGING_DIST: [ubuntu-24.04, ubuntu-26.04, debian-12, debian-13]
+      - OOD_PACKAGING_DIST: [ubuntu-24.04, debian-12, debian-13]
         OOD_PACKAGING_ARCH: [x86_64, aarch64]
+      - OOD_PACKAGING_DIST: [ubuntu-26.04]
+        OOD_PACKAGING_ARCH: [x86_64, aarch64]
+        OOD_PACKAGING_CONTAINER_FLAGS: ['--security-opt seccomp=unconfined']
       - OOD_PACKAGING_DIST: [amzn2023]
         # Amazon aarch64 takes hours so build by hand for now
         # OOD_PACKAGING_ARCH: [x86_64, aarch64]
