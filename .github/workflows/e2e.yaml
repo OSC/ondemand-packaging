@@ -311,6 +311,13 @@ jobs:
           podman load --input /tmp/ood_packaging-${{ matrix.dist }}-${{ matrix.arch }}.tar.gz
           echo "List podman images"
           podman image ls
+          PODMAN_IMAGE=$(podman images --format "{{.Repository}}:{{.Tag}}" | grep localhost)
+          if [ -z "$PODMAN_IMAGE" ]; then
+            echo "PODMAN_IMAGE empty, exit"
+            exit 0
+          fi
+          IMAGE=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep ood-buildbox)
+          podman tag $PODMAN_IMAGE $IMAGE
       - name: Clone ${{ matrix.package }}
         run: |
           mkdir -p ./tmp
