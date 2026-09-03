@@ -49,8 +49,8 @@ jobs:
       - name: Setup Ruby using Bundler
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.0.4'
-          bundler: '2.1.4'
+          ruby-version: '3.2'
+          bundler: '2.5.23'
           bundler-cache: true
       - name: Pull the build box
         run: bundle exec rake ood_packaging:buildbox:pull[${{ matrix.dist }},${{ matrix.arch }}] || exit 0
@@ -127,8 +127,8 @@ jobs:
       - name: Setup Ruby ${{ matrix.ruby }} using Bundler ${{ matrix.bundler }}
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.0.4'
-          bundler: '2.1.4'
+          ruby-version: '3.2'
+          bundler: '2.5.23'
           bundler-cache: true
       - name: Download image
         uses: actions/download-artifact@v4
@@ -198,8 +198,8 @@ jobs:
       - name: Setup Ruby ${{ matrix.ruby }} using Bundler ${{ matrix.bundler }}
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.0.4'
-          bundler: '2.1.4'
+          ruby-version: '3.2'
+          bundler: '2.5.23'
           bundler-cache: true
       - name: Download image
         uses: actions/download-artifact@v4
@@ -293,8 +293,8 @@ jobs:
       - name: Setup Ruby using Bundler
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.0.4'
-          bundler: '2.1.4'
+          ruby-version: '3.2'
+          bundler: '2.5.23'
           bundler-cache: true
       - name: Download image
         uses: actions/download-artifact@v4
@@ -303,11 +303,22 @@ jobs:
           path: /tmp
       - name: Load image
         run: |
+          echo "Load Docker image"
           docker load --input /tmp/ood_packaging-${{ matrix.dist }}-${{ matrix.arch }}.tar.gz
+          echo "List Docker images"
+          docker images
+          echo "Load podman image"
           podman load --input /tmp/ood_packaging-${{ matrix.dist }}-${{ matrix.arch }}.tar.gz
-          IMAGE=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep ood-buildbox)
-          podman tag $(podman images --format "{{.Repository}}:{{.Tag}}" | grep localhost) $IMAGE
+          echo "List podman images"
           podman image ls
+          PODMAN_IMAGE=$(podman images --format "{{.Repository}}:{{.Tag}}" | grep localhost || true)
+          echo "PODMAN_IMAGE: ${PODMAN_IMAGE}"
+          if [ -z "$PODMAN_IMAGE" ]; then
+            echo "PODMAN_IMAGE empty, exit"
+            exit 0
+          fi
+          IMAGE=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep ood-buildbox)
+          podman tag $PODMAN_IMAGE $IMAGE
       - name: Clone ${{ matrix.package }}
         run: |
           mkdir -p ./tmp

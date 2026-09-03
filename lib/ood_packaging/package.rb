@@ -351,6 +351,7 @@ class OodPackaging::Package
       'DEBUG'         => debug?
     }
     env['GPG_PUBKEY'] = '/gpg.pub' if @config[:gpg_pubkey]
+    env['CONTAINER_RT'] = 'podman' if podman_runtime?
     env
   end
 end
