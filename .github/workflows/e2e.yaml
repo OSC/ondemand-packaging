@@ -311,7 +311,8 @@ jobs:
           podman load --input /tmp/ood_packaging-${{ matrix.dist }}-${{ matrix.arch }}.tar.gz
           echo "List podman images"
           podman image ls
-          PODMAN_IMAGE=$(podman images --format "{{.Repository}}:{{.Tag}}" | grep localhost)
+          PODMAN_IMAGE=$(podman images --format "{{.Repository}}:{{.Tag}}" | grep localhost || true)
+          echo "PODMAN_IMAGE: ${PODMAN_IMAGE}"
           if [ -z "$PODMAN_IMAGE" ]; then
             echo "PODMAN_IMAGE empty, exit"
             exit 0
