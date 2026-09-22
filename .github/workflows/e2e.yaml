@@ -121,6 +121,8 @@ jobs:
             arch: ppc64le
     runs-on: ${{ matrix.os }}
     name: Package test package=${{ matrix.package }} dist=${{ matrix.dist }} arch=${{ matrix.arch }}
+    env:
+      OOD_OSC_EARLY_ACCESS_PASSWORD: ${{ secrets.OOD_OSC_EARLY_ACCESS_PASSWORD }}
     steps:
       - name: Checkout ${{ github.sha	}}
         uses: actions/checkout@v4
@@ -287,6 +289,8 @@ jobs:
             arch: ppc64le
     runs-on: ${{ matrix.os }}
     name: Package ${{ matrix.package }} dist=${{ matrix.dist }} arch=${{ matrix.arch }}
+    env:
+      OOD_OSC_EARLY_ACCESS_PASSWORD: ${{ secrets.OOD_OSC_EARLY_ACCESS_PASSWORD }}
     steps:
       - name: Checkout ${{ github.sha	}}
         uses: actions/checkout@v4
