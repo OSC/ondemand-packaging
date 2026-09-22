@@ -117,7 +117,7 @@ describe OodPackaging::Build do
     context 'when installing on EL8' do
       it 'installs RPM dependencies using DNF' do
         expected_cmd = [
-          'sudo', 'dnf', 'builddep', '-y',
+          'sudo', '-E', 'dnf', 'builddep', '-y',
           "--define 'git_tag v0.0.1-2'",
           "--define 'package_version 0.0.1'",
           "--define 'package_release 2'",
