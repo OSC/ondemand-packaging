@@ -24,7 +24,7 @@ baseurl=<%= ondemand_rpm_repo_baseurl %>
 enabled=1
 gpgcheck=0
 username=osc
-password=$EARLY_ACCESS_PASSWORD
+password=\$EARLY_ACCESS_PASSWORD
 EOF
 <% if legacy_gpg? -%>
 run rpm --import /build/RPM-GPG-KEY-ondemand
