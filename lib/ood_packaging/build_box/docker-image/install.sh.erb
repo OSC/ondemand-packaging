@@ -23,7 +23,7 @@ name=Open OnDemand Web Repo
 baseurl=<%= ondemand_rpm_repo_baseurl %>
 enabled=1
 gpgcheck=0
-username=osc
+username=\$EARLY_ACCESS_USERNAME
 password=\$EARLY_ACCESS_PASSWORD
 EOF
 <% if legacy_gpg? -%>

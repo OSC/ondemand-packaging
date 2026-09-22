@@ -62,6 +62,10 @@ module OodPackaging::Utils
     "https://yum.osc.edu/ondemand/early-access/#{ondemand_repo_version}/web/#{dist}/\\$basearch/"
   end
 
+  def ondemand_rpm_repo_username
+    ENV['OOD_EARLY_ACCESS_USERNAME'] || 'osc'
+  end
+
   def ruby_version
     return '3.2' if dist == 'amzn2023'
 

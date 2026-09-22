@@ -198,6 +198,7 @@ describe OodPackaging::Package do
         '-e', "'GPG_SIGN=false'", '-e', "'GPG_NAME=OnDemand Release Signing Key'",
         '-e', "'OOD_UID=1000'", '-e', "'OOD_GID=1000'",
         '-e', "'DEBUG=false'",
+        '-e', "'DNF_VAR_EARLY_ACCESS_USERNAME=osc'",
         'uuid', '/ondemand-packaging/inituidgid.sh', '/ondemand-packaging/setuser.rb', 'ood',
         '/ondemand-packaging/rake', '-q', '-f', '/ondemand-packaging/Rakefile', 'ood_packaging:package:build'
       ]
@@ -216,6 +217,7 @@ describe OodPackaging::Package do
           '-e', "'GPG_SIGN=false'", '-e', "'GPG_NAME=OnDemand Release Signing Key'",
           '-e', "'OOD_UID=1000'", '-e', "'OOD_GID=1000'",
           '-e', "'DEBUG=false'",
+          '-e', "'DNF_VAR_EARLY_ACCESS_USERNAME=osc'",
           'uuid', '/ondemand-packaging/inituidgid.sh', '/ondemand-packaging/setuser.rb', 'ood',
           '/ondemand-packaging/rake', '-q', '-f', '/ondemand-packaging/Rakefile', 'ood_packaging:package:build'
         ]

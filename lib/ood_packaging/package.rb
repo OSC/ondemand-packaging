@@ -351,7 +351,8 @@ class OodPackaging::Package
       'DEBUG'         => debug?
     }
     env['GPG_PUBKEY'] = '/gpg.pub' if @config[:gpg_pubkey]
-    env['DNF_VAR_EARLY_ACCESS_PASSWORD'] = ENV['OOD_OSC_EARLY_ACCESS_PASSWORD'] if ENV['OOD_OSC_EARLY_ACCESS_PASSWORD']
+    env['DNF_VAR_EARLY_ACCESS_USERNAME'] = ondemand_rpm_repo_username
+    env['DNF_VAR_EARLY_ACCESS_PASSWORD'] = ENV['OOD_EARLY_ACCESS_PASSWORD'] if ENV['OOD_EARLY_ACCESS_PASSWORD']
     env
   end
 end
