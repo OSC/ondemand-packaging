@@ -351,6 +351,7 @@ class OodPackaging::Package
       'DEBUG'         => debug?
     }
     env['GPG_PUBKEY'] = '/gpg.pub' if @config[:gpg_pubkey]
+    env['OOD_OSC_EARLY_ACCESS_PASSWORD'] = ENV['OOD_OSC_EARLY_ACCESS_PASSWORD'] if ENV['OOD_OSC_EARLY_ACCESS_PASSWORD']
     env
   end
 end
