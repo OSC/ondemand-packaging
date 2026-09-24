@@ -62,7 +62,7 @@ PLATFORMS
 DEPENDENCIES
   ood_packaging!
   rspec
-  rubocop (~> 1.72.0)
+  rubocop (>= 1.72.0)
   rubocop-rspec
 
 BUNDLED WITH
