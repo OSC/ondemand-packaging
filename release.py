@@ -83,7 +83,7 @@ Usage examples:
     parser.add_argument('-f', '--force', help='overwrite existing RPMs', action='store_true', default=False)
     parser.add_argument('--pkey', help='SSH private key to use for uploading RPMs (default: %(default)s)', default=pkey)
     parser.add_argument('-c', '--config-section', help='config section to use', default='main')
-    parser.add_argument('-r', '--release', help='Build or staging repo release to use', default=None)
+    parser.add_argument('-r', '--release', help='Build, staging or early-access repo release to use', default=None)
     parser.add_argument('dirs', nargs='+')
     args = parser.parse_args()
 
@@ -96,6 +96,12 @@ Usage examples:
     if args.config_section == 'staging-compute' and args.release is None:
         print("ERROR: config-section staging-compute requires -r/--release flag")
         sys.exit(1)
+    if args.config_section == 'early-access' and args.release is None:
+        print("ERROR: config-section early-access requires -r/--release flag")
+        sys.exit(1)
+    if args.config_section == 'early-access-compute' and args.release is None:
+        print("ERROR: config-section early-access-compute requires -r/--release flag")
+        sys.exit(1)
 
     if args.release is not None:
         release_bits = args.release.replace('v', '').split('.')
@@ -103,7 +109,7 @@ Usage examples:
     else:
         build_release = ''
 
-    if args.config_section == 'compute' or args.config_section == 'staging-compute':
+    if args.config_section == 'compute' or args.config_section == 'staging-compute' or args.config_section == 'early-access-compute':
         release_type = 'compute'
     else:
         release_type = 'web'
@@ -136,7 +142,7 @@ Usage examples:
             deb = deb_dist_map[dist]
         if deb:
             deb_basepath = config.get(args.config_section, 'deb_path').replace('DIST', deb).replace('RELEASE', build_release)
-            if args.config_section == 'release' or args.config_section == 'staging-release':
+            if args.config_section == 'release' or args.config_section == 'staging-release' or args.config_section == 'early-access-release':
                 pool_path = deb_basepath
             else:
                 pool_path = os.path.join(deb_basepath, 'pool', deb)
