@@ -33,9 +33,9 @@ LOCK_FILE="/var/lib/oodpkg/release-staging-${RELEASE}.lock"
 (
   flock -x -w 30 200
     STAGING_PATH="${BASE_PATH}/staging/${RELEASE}"
-    RELEASE_PATH="${BASE_PATH}/${RELEASE}"
+    EARLY_ACCESS_PATH="${BASE_PATH}/early-access/${RELEASE}"
 
-    rsync -av --delete "${STAGING_PATH}/" "${RELEASE_PATH}/"
+    rsync -av --delete "${STAGING_PATH}/" "${EARLY_ACCESS_PATH}/"
 ) 200>"${LOCK_FILE}"
 
 RETVAL=$?
