@@ -193,7 +193,10 @@ Usage examples:
                     logger.info("mkdir -p %s", rel_d)
                     os.makedirs(rel_d, 0o755)
 
-    if args.release in ['latest','ci','nightly'] or args.release.startswith('build') or args.release.startswith('staging'):
+    if args.release in ['latest','ci','nightly','osc-apps']:
+        logger.info("Latest release does not require sync, exiting")
+        sys.exit(0)
+    if args.release.startswith('build') or args.release.startswith('staging') or args.release.startswith('early-access'):
         logger.info("Latest release does not require sync, exiting")
         sys.exit(0)
 
