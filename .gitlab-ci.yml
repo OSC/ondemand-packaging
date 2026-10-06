@@ -3,7 +3,7 @@ before_script:
   - |
       if [ -z "$CI_COMMIT_TAG" ]; then
         echo "Set buildbox version to $CI_COMMIT_SHORT_SHA"
-        export OOD_PACKAGING_BUILD_BOX_VERSION=$CI_COMMIT_SHORT_SHA
+        export OOD_PACKAGING_BUILD_BOX_VERSION="sha-$CI_COMMIT_SHORT_SHA"
       fi
   - docker info
   - '[ -d tmp ] || mkdir tmp'
