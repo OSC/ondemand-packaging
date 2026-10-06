@@ -39,6 +39,12 @@ namespace :ood_packaging do
       @build_box = OodPackaging::BuildBox.new(args)
       @build_box.save!(args[:path])
     end
+
+    desc 'Remove buildbox image'
+    task :rm, [:dist, :arch] do |_task, args|
+      @build_box = OodPackaging::BuildBox.new(args)
+      @build_box.rm!
+    end
   end
 
   namespace :package do
