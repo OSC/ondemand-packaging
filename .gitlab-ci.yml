@@ -1,5 +1,10 @@
 before_script:
   - '[ "$CI_PIPELINE_SOURCE" == "external_pull_request_event" ] && export OOD_PACKAGING_BUILD_BOX_VERSION=latest'
+  - |
+      if [ -z "$CI_COMMIT_TAG" ]; then
+        echo "Set buildbox version to $CI_COMMIT_SHORT_SHA"
+        export OOD_PACKAGING_BUILD_BOX_VERSION=$CI_COMMIT_SHORT_SHA
+      fi
   - docker info
   - '[ -d tmp ] || mkdir tmp'
   - bundle install --path vendor/bundle
@@ -23,8 +28,6 @@ build-image:
     # Re-enable once Gitlab instance using plugin to integrate with Github
     # - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
     - if: '$CI_COMMIT_BRANCH !~ /^(main|[0-9]\.[0-9])$/ && $CI_COMMIT_TAG == null'
-      variables:
-        OOD_PACKAGING_BUILD_BOX_VERSION: $CI_COMMIT_SHORT_SHA
     - if: $CI_COMMIT_TAG && $CI_COMMIT_TAG !~ /v[0-9].+/
   script:
     - 'bundle exec rake ood_packaging:buildbox:pull || true'
@@ -250,8 +253,6 @@ rm-image:
   stage: deploy
   rules:
     - if: '$CI_COMMIT_BRANCH !~ /^(main|[0-9]\.[0-9])$/ && $CI_COMMIT_TAG == null'
-      variables:
-        OOD_PACKAGING_BUILD_BOX_VERSION: $CI_COMMIT_SHORT_SHA
   script:
     - 'bundle exec rake ood_packaging:buildbox:rm || true'
     - docker image prune -f
