@@ -12,6 +12,7 @@ before_script:
 stages:
   - image
   - build
+  - cleanup
   - deploy
 
 variables:
@@ -250,7 +251,8 @@ build-turbovnc:
     name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
 
 rm-image:
-  stage: deploy
+  stage: cleanup
+  when: always
   rules:
     - if: '$CI_COMMIT_BRANCH !~ /^(main|[0-9]\.[0-9])$/ && $CI_COMMIT_TAG == null'
   script:
