@@ -195,4 +195,8 @@ class OodPackaging::BuildBox
   def save!(path)
     sh [container_runtime, 'save', image_tag, '| gzip >', path].join(' ')
   end
+
+  def rm!
+    sh [container_runtime, 'rm', image_tag].join(' ')
+  end
 end

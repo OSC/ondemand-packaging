@@ -24,7 +24,8 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = '>= 2.2.0'
 
   spec.add_runtime_dependency 'rake', '~> 13.0'
+  spec.add_runtime_dependency 'ostruct'
   spec.add_development_dependency 'rspec'
-  spec.add_development_dependency 'rubocop', '~> 1.72.0'
+  spec.add_development_dependency 'rubocop', '>= 1.72.0'
   spec.add_development_dependency 'rubocop-rspec'
 end

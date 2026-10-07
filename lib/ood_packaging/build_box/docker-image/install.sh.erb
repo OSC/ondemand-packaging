@@ -23,6 +23,8 @@ name=Open OnDemand Web Repo
 baseurl=<%= ondemand_rpm_repo_baseurl %>
 enabled=1
 gpgcheck=0
+username=\$REPO_USERNAME
+password=\$REPO_PASSWORD
 EOF
 <% if legacy_gpg? -%>
 run rpm --import /build/RPM-GPG-KEY-ondemand
@@ -35,9 +37,14 @@ header "Creating users"
 run groupadd <%= ctr_user %>
 run useradd --home-dir <%= ctr_home %> --create-home --gid <%= ctr_user %> --password '<%= ctr_user %>' <%= ctr_user %>
 
+if sudo --version | grep sudo-rs ; then
+  SUDO_DEFAULTS="!pwfeedback, !use_pty"
+else
+  SUDO_DEFAULTS="!requiretty, !authenticate"
+fi
 header "Add sudo"
 cat > /etc/sudoers.d/ood <<EOF
-Defaults:<%= ctr_user %> !requiretty, !authenticate
+Defaults:<%= ctr_user %> $SUDO_DEFAULTS
 %<%= ctr_user %> ALL=NOPASSWD:ALL
 EOF
 run chmod 440 /etc/sudoers.d/ood

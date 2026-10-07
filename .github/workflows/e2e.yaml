@@ -121,6 +121,8 @@ jobs:
             arch: ppc64le
     runs-on: ${{ matrix.os }}
     name: Package test package=${{ matrix.package }} dist=${{ matrix.dist }} arch=${{ matrix.arch }}
+    env:
+      OOD_REPO_PASSWORD: ${{ secrets.OOD_OSC_EARLY_ACCESS_PASSWORD }}
     steps:
       - name: Checkout ${{ github.sha	}}
         uses: actions/checkout@v4
@@ -287,6 +289,8 @@ jobs:
             arch: ppc64le
     runs-on: ${{ matrix.os }}
     name: Package ${{ matrix.package }} dist=${{ matrix.dist }} arch=${{ matrix.arch }}
+    env:
+      OOD_REPO_PASSWORD: ${{ secrets.OOD_OSC_EARLY_ACCESS_PASSWORD }}
     steps:
       - name: Checkout ${{ github.sha	}}
         uses: actions/checkout@v4
@@ -322,7 +326,7 @@ jobs:
           if [[ "${{ matrix.package }}" == bc_osc* ]]; then
             unset CONTAINER_RT
           fi
-          if [[ "${{ matrix.dist }}" == "debian-13" ]]; then
+          if [[ "${{ matrix.dist }}" == "debian-13" || "${{ matrix.dist }}" == "ubuntu-26.04" ]]; then
             export OOD_PACKAGING_CONTAINER_FLAGS="--privileged"
           fi
           ./bin/ood_packaging -w ./tmp/work -o ./tmp/output -d ${{ matrix.dist }} -a ${{ matrix.arch }} -V v4.2.0 -T --debug $(pwd)/tmp/${{ matrix.package }}

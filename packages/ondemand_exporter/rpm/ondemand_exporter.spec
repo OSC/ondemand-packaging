@@ -5,7 +5,7 @@
 
 %define apache_confd /etc/httpd/conf.d
 
-%define go_version 1.23.4
+%define go_version 1.26.4
 %ifarch x86_64
 %define platform amd64
 %endif
