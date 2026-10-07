@@ -59,7 +59,11 @@ module OodPackaging::Utils
   end
 
   def ondemand_rpm_repo_baseurl
-    "https://yum.osc.edu/ondemand/build/#{ondemand_repo_version}/web/#{dist}/\\$basearch/"
+    "https://yum.osc.edu/ondemand/staging/#{ondemand_repo_version}/web/#{dist}/\\$basearch/"
+  end
+
+  def ondemand_rpm_repo_username
+    ENV['OOD_REPO_USERNAME'] || 'osc'
   end
 
   def ruby_version

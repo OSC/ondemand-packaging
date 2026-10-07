@@ -199,8 +199,8 @@ class OodPackaging::Build
   def bootstrap_rpm_packages!
     return if config[:bootstrap_packages].nil?
 
-    cmd = ['sudo', 'dnf'] if build_box.dnf?
-    cmd = ['sudo', 'yum'] unless build_box.dnf?
+    cmd = ['sudo', '-E', 'dnf'] if build_box.dnf?
+    cmd = ['sudo', '-E', 'yum'] unless build_box.dnf?
     cmd.concat ['install', '-y']
     cmd.concat config[:bootstrap_packages]
     puts "\tBootstrapping additional packages".blue
@@ -263,7 +263,7 @@ class OodPackaging::Build
   end
 
   def install_rpm_dependencies!
-    cmd = ['sudo']
+    cmd = ['sudo', '-E']
     cmd.concat [build_box.package_manager, 'builddep'] if build_box.dnf?
     cmd.concat ['yum-builddep'] if build_box.package_manager == 'yum'
     cmd.concat ['-y']

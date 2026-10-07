@@ -352,6 +352,8 @@ class OodPackaging::Package
     }
     env['GPG_PUBKEY'] = '/gpg.pub' if @config[:gpg_pubkey]
     env['CONTAINER_RT'] = 'podman' if podman_runtime?
+    env['DNF_VAR_REPO_USERNAME'] = ondemand_rpm_repo_username
+    env['DNF_VAR_REPO_PASSWORD'] = ENV['OOD_REPO_PASSWORD'] if ENV['OOD_REPO_PASSWORD']
     env
   end
 end
