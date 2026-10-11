@@ -123,7 +123,7 @@ class OodPackaging::BuildBox
   end
 
   def image_org
-    @config[:build_box_org] || ENV['OOD_PACKAGING_BUILX_BOX_ORG'] || 'ohiosupercomputer'
+    @config[:build_box_org] || ENV['OOD_PACKAGING_BUILD_BOX_ORG'] || 'openondemand'
   end
 
   def image_name
