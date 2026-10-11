@@ -258,6 +258,7 @@ rm-image:
   script:
     - 'bundle exec rake ood_packaging:buildbox:rm || true'
     - docker image prune -f
+    - docker buildx prune -f
   parallel:
     matrix:
       - OOD_PACKAGING_DIST: [el8]
