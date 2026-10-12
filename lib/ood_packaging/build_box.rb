@@ -197,6 +197,6 @@ class OodPackaging::BuildBox
   end
 
   def rm!
-    sh [container_runtime, 'rm', image_tag].join(' ')
+    sh [container_runtime, 'image', 'rm', image_tag].join(' ')
   end
 end
