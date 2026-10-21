@@ -10,7 +10,7 @@ GEM
   specs:
     ast (2.4.3)
     diff-lcs (1.4.4)
-    json (2.16.0)
+    json (2.19.9)
     language_server-protocol (3.17.0.5)
     lint_roller (1.1.0)
     ostruct (0.6.3)
