@@ -35,7 +35,7 @@ LOCK_FILE="/var/lib/oodpkg/release-early-access-${RELEASE}.lock"
     EARLY_ACCESS_PATH="${BASE_PATH}/early-access/${RELEASE}"
     RELEASE_PATH="${BASE_PATH}/${RELEASE}"
 
-    rsync -av --delete "${EARLY_ACCESS_PATH}/" "${RELEASE_PATH}/"
+    rsync -av --delete --insecure-links "${EARLY_ACCESS_PATH}/" "${RELEASE_PATH}/"
 ) 200>"${LOCK_FILE}"
 
 RETVAL=$?
