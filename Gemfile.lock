@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ood_packaging (0.23.3)
+    ood_packaging (0.23.4)
       ostruct
       rake (~> 13.0)
 
