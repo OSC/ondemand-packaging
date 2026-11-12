@@ -35,7 +35,7 @@ LOCK_FILE="/var/lib/oodpkg/release-staging-${RELEASE}.lock"
     STAGING_PATH="${BASE_PATH}/staging/${RELEASE}"
     EARLY_ACCESS_PATH="${BASE_PATH}/early-access/${RELEASE}"
 
-    rsync -av --delete --insecure-links ${STAGING_PATH}/" "${EARLY_ACCESS_PATH}/"
+    rsync -av --delete --insecure-links "${STAGING_PATH}/" "${EARLY_ACCESS_PATH}/"
 ) 200>"${LOCK_FILE}"
 
 RETVAL=$?
