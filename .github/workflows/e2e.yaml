@@ -7,6 +7,10 @@ on:
   schedule:
     - cron: '0 4 * * *'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   buildbox:
     strategy:
@@ -123,6 +127,7 @@ jobs:
     name: Package test package=${{ matrix.package }} dist=${{ matrix.dist }} arch=${{ matrix.arch }}
     env:
       OOD_REPO_PASSWORD: ${{ secrets.OOD_OSC_EARLY_ACCESS_PASSWORD }}
+      OOD_REPO_USERNAME: ${{ secrets.OOD_OSC_EARLY_ACCESS_USERNAME }}
     steps:
       - name: Checkout ${{ github.sha	}}
         uses: actions/checkout@v7
@@ -291,6 +296,7 @@ jobs:
     name: Package ${{ matrix.package }} dist=${{ matrix.dist }} arch=${{ matrix.arch }}
     env:
       OOD_REPO_PASSWORD: ${{ secrets.OOD_OSC_EARLY_ACCESS_PASSWORD }}
+      OOD_REPO_USERNAME: ${{ secrets.OOD_OSC_EARLY_ACCESS_USERNAME }}
     steps:
       - name: Checkout ${{ github.sha	}}
         uses: actions/checkout@v7
