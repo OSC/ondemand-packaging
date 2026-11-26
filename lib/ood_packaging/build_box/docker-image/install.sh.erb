@@ -79,6 +79,22 @@ run install -d -m 0700 -o ood -g ood <%= ctr_gpg_dir %>
 echo "allow-loopback-pinentry" >> <%= ctr_gpg_dir %>/gpg-agent.conf
 <%- end -%>
 
+<% if needs_altermatives? -%>
+header "Setup alternatives"
+alternatives --install /usr/bin/ruby ruby /usr/bin/ruby<%= ruby_version %> 40 \
+  --slave /usr/bin/gem gem /usr/bin/gem<%= ruby_version %> \
+  --slave /usr/bin/bundle bundle /usr/bin/bundle<%= ruby_version %> \
+  --slave /usr/bin/bundler bundler /usr/bin/bundler<%= ruby_version %> \
+  --slave /usr/bin/irb irb /usr/bin/irb<%= ruby_version %> \
+  --slave /usr/bin/rake rake /usr/bin/rake<%= ruby_version %> \
+  --slave /usr/bin/rdoc rdoc /usr/bin/rdoc<%= ruby_version %> \
+  --slave /usr/bin/ri ri /usr/bin/ri<%= ruby_version %>
+
+alternatives --install /usr/bin/node node /usr/bin/node-<%= nodejs_version %> 40 \
+  --slave /usr/bin/npm npm /usr/bin/npm-<%= nodejs_version %> \
+  --slave /usr/bin/npx npx /usr/bin/npx-<%= nodejs_version %>
+<% end -%>
+
 header "Install ood_packaging gem"
 run gem install --no-doc --bindir <%= ctr_scripts_dir %> --install-dir <%= ctr_gems_dir %> /build/*.gem
 

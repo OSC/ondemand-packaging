@@ -68,6 +68,12 @@ class OodPackaging::BuildBox
     true
   end
 
+  def needs_altermatives?
+    return true if ['el10'].include?(dist)
+
+    false
+  end
+
   def legacy_gpg?
     false
   end

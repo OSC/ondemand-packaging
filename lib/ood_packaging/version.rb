@@ -4,23 +4,23 @@
 module OodPackaging
   VERSION = '0.24.0'
   PACKAGE_VERSION = {
-    'ondemand-release'        => {
+    'ondemand-release'  => {
       '(ubuntu|debian)' => '4.3.0',
       'default'         => '4.3'
     },
-    'ondemand-runtime'        => '4.3.0-1',
-    'scl-utils'               => '2.0.3',
-    'passenger'               => {
+    'ondemand-runtime'  => '4.3.0-1',
+    'scl-utils'         => '2.0.3',
+    'passenger'         => {
       '(ubuntu|debian)' => '6.2.2',
       'default'         => '6.2.2-1'
     },
-    'ondemand_exporter'       => '0.13.0',
-    'ondemand-compute'        => {
+    'ondemand_exporter' => '0.13.0',
+    'ondemand-compute'  => {
       '(ubuntu|debian)' => '4.3.0',
       'default'         => '4.3.0'
     },
-    'python-websockify'       => '0.11.0-2',
-    'turbovnc'                => '3.2.1'
+    'python-websockify' => '0.11.0-2',
+    'turbovnc'          => '3.2.1'
   }.freeze
 
   def self.package_version(package, dist)

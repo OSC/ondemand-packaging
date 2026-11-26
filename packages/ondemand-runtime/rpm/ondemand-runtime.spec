@@ -13,7 +13,8 @@
 %endif
 %if 0%{?rhel} == 10
 %global ruby ruby4.0
-%global nodejs nodejs24
+%global nodejs_version 24
+%global nodejs nodejs%{nodejs_version}
 %global npm %{nodejs}-npm
 %global apache httpd
 %global ruby_version 4.0
@@ -80,15 +81,13 @@ Requires: sqlite-devel
 %endif
 %if 0%{?rhel} == 10
 Requires: %{ruby}
-Requires: %{ruby}-rubygem-rake
-Requires: %{ruby}-rubygem-bundler >= 2.1
 Requires: %{ruby}-devel
-Requires: %{ruby}-rubygems
-Requires: rubygems-devel
-Requires: %{ruby}-default-gems >= %{ruby_version}
-# In some cases this RPM doesn't get pulled in
-Requires: %{ruby}-rubygem-bigdecimal
 Requires: sqlite-devel
+Obsoletes: ruby
+Obsoletes: rubygem-bundler
+Obsoletes: rubygems
+Requires(post):   %{_sbindir}/alternatives
+Requires(postun): %{_sbindir}/alternatives
 %endif
 %if 0%{?amzn} == 2023
 Requires: %{ruby}
@@ -112,6 +111,10 @@ Summary: Meta package for pulling in SCL nodejs %{nodejs}
 %if 0%{?rhel} == 10
 Requires: %{nodejs} >= 1:24.0, %{nodejs} < 1:25.0
 Requires: %{npm}
+Obsoletes: nodejs
+Obsoletes: nodejs-npm
+Requires(post):   %{_sbindir}/alternatives
+Requires(postun): %{_sbindir}/alternatives
 %endif
 %if 0%{?rhel} == 9
 Requires: %{nodejs} >= 1:24.0, %{nodejs} < 1:25.0
@@ -196,6 +199,39 @@ cat >> %{buildroot}%{_root_sysconfdir}/rpm/macros.%{scl_name_base}-scldevel << E
 %%scl_%{scl_name_base}_core_gem_home %{ondemand_core_gem_home}
 %%scl_%{scl_name_base}_apps_gem_home %{ondemand_apps_gem_home}
 EOF
+
+%if 0%{?rhel} == 10
+%post -n ondemand-ruby
+%{_sbindir}/alternatives --install /usr/bin/ruby ruby /usr/bin/ruby%{ruby_version} 40 \
+  --slave /usr/bin/gem gem /usr/bin/gem%{ruby_version} \
+  --slave /usr/bin/bundle bundle /usr/bin/bundle%{ruby_version} \
+  --slave /usr/bin/bundler bundler /usr/bin/bundler%{ruby_version} \
+  --slave /usr/bin/irb irb /usr/bin/irb%{ruby_version} \
+  --slave /usr/bin/rake rake /usr/bin/rake%{ruby_version} \
+  --slave /usr/bin/rdoc rdoc /usr/bin/rdoc%{ruby_version} \
+  --slave /usr/bin/ri ri /usr/bin/ri%{ruby_version}
+%endif
+
+%if 0%{?rhel} == 10
+%post -n ondemand-nodejs
+%{_sbindir}/alternatives --install /usr/bin/node node /usr/bin/node-%{nodejs_version} 40 \
+  --slave /usr/bin/npm npm /usr/bin/npm-%{nodejs_version} \
+  --slave /usr/bin/npx npx /usr/bin/npx-%{nodejs_version}
+%endif
+
+%if 0%{?rhel} == 10
+%postun -n ondemand-ruby
+if [ $1 -eq 0 ] ; then
+    %{_sbindir}/alternatives --remove-all ruby
+fi
+%endif
+
+%if 0%{?rhel} == 10
+%postun -n ondemand-nodejs
+if [ $1 -eq 0 ] ; then
+    %{_sbindir}/alternatives --remove-all node
+fi
+%endif
 
 %files
 %scl_files
