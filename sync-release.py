@@ -15,7 +15,6 @@ import yaml
 logger = logging.getLogger()
 PROJ_ROOT = os.path.dirname(os.path.realpath(__file__))
 DISTS = [
-    'el8',
     'el9',
     'el10',
     'amzn2023',
@@ -25,7 +24,6 @@ DISTS = [
     'debian-13',
 ]
 EL_RELEASES = [
-    'el8',
     'el9',
     'el10',
 ]
@@ -43,7 +41,6 @@ SKIP = [
     'jammy',
 ]
 COMPUTE_DISTS = [
-    'el8',
     'el9',
     'el10',
     'amzn2023',
@@ -226,7 +223,7 @@ Usage examples:
         if name not in manifest:
             logger.warning("%s not in manifest", name)
             continue
-        version = rpm_info['ver'].replace('.el8', '').replace('.el9', '').replace('.amzn2023', '')
+        version = rpm_info['ver'].replace('.el9', '').replace('.el10', '').replace('.amzn2023', '')
         if version not in manifest[name]:
             logger.debug("Skipping %s-%s, not in manifest", name, version)
             continue
@@ -288,7 +285,7 @@ Usage examples:
                 found = True
                 rpm_info = get_rpm_info(f)
                 name = rpm_info['name']
-                version = rpm_info['ver'].replace('.el8', '').replace('.el9', '').replace('.amzn2023', '')
+                version = rpm_info['ver'].replace('.el9', '').replace('.el10', '').replace('.amzn2023', '')
             elif filename.endswith('.deb'):
                 found = True
                 deb_info = get_deb_info(f)

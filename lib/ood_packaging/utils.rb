@@ -55,7 +55,7 @@ module OodPackaging::Utils
   end
 
   def ondemand_repo_version
-    '4.2'
+    '4.3'
   end
 
   def ondemand_rpm_repo_baseurl
@@ -67,23 +67,21 @@ module OodPackaging::Utils
   end
 
   def ruby_version
-    return '3.2' if dist == 'amzn2023'
-
-    '3.3'
+    '4.0'
   end
 
   def ruby_package
-    return "ruby#{ruby_version}" if dist == 'amzn2023'
+    return "ruby#{ruby_version}" if ['amzn2023', 'el10'].include?(dist)
 
     'ruby'
   end
 
   def nodejs_version
-    '22'
+    '24'
   end
 
   def nodejs_package
-    return "nodejs#{nodejs_version}" if dist == 'amzn2023'
+    return "nodejs#{nodejs_version}" if ['amzn2023', 'el10'].include?(dist)
 
     'nodejs'
   end

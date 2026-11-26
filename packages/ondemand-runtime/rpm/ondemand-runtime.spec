@@ -4,19 +4,26 @@
 %scl_package %scl
 %{!?package_release: %define package_release 1}
 
-%if 0%{?rhel} >= 8
+%if 0%{?rhel} == 9
 %global ruby ruby
 %global nodejs nodejs
 %global npm npm
 %global apache httpd
-%global ruby_version 3.3
+%global ruby_version 4.0
 %endif
-%if 0%{?amzn} == 2023
-%global ruby ruby3.2
-%global nodejs nodejs22
+%if 0%{?rhel} == 10
+%global ruby ruby4.0
+%global nodejs nodejs24
 %global npm %{nodejs}-npm
 %global apache httpd
-%global ruby_version 3.2
+%global ruby_version 4.0
+%endif
+%if 0%{?amzn} == 2023
+%global ruby ruby4.0
+%global nodejs nodejs24
+%global npm %{nodejs}-npm
+%global apache httpd
+%global ruby_version 4.0
 %endif
 %global ondemand_gem_home %{_datadir}/gems/%{ruby_version}
 %global ondemand_apps_gem_home %{ondemand_gem_home}/apps
@@ -59,8 +66,8 @@ packages depending on %{scl} Software Collection.
 
 %package -n ondemand-ruby
 Summary: Meta package for pulling in SCL Ruby %{ruby}
-%if 0%{?rhel} >= 8
-Requires: %{ruby} >= 3.3, %{ruby} < 3.4
+%if 0%{?rhel} == 9
+Requires: %{ruby} >= 4.0, %{ruby} < 4.1
 Requires: rubygem-rake
 Requires: rubygem-bundler >= 2.1
 Requires: ruby-devel
@@ -69,6 +76,18 @@ Requires: rubygems-devel
 Requires: ruby-default-gems >= %{ruby_version}
 # In some cases this RPM doesn't get pulled in
 Requires: rubygem-bigdecimal
+Requires: sqlite-devel
+%endif
+%if 0%{?rhel} == 10
+Requires: %{ruby}
+Requires: %{ruby}-rubygem-rake
+Requires: %{ruby}-rubygem-bundler >= 2.1
+Requires: %{ruby}-devel
+Requires: %{ruby}-rubygems
+Requires: rubygems-devel
+Requires: %{ruby}-default-gems >= %{ruby_version}
+# In some cases this RPM doesn't get pulled in
+Requires: %{ruby}-rubygem-bigdecimal
 Requires: sqlite-devel
 %endif
 %if 0%{?amzn} == 2023
@@ -91,19 +110,15 @@ Meta package for pulling in SCL Ruby %{ruby}
 %package -n ondemand-nodejs
 Summary: Meta package for pulling in SCL nodejs %{nodejs}
 %if 0%{?rhel} == 10
-Requires: %{nodejs} >= 1:22.0, %{nodejs} < 1:23.0
+Requires: %{nodejs} >= 1:24.0, %{nodejs} < 1:25.0
 Requires: %{npm}
 %endif
 %if 0%{?rhel} == 9
-Requires: %{nodejs} >= 1:22.0, %{nodejs} < 1:23.0
-Requires: %{npm}
-%endif
-%if 0%{?rhel} == 8
-Requires: %{nodejs} >= 1:22.0, %{nodejs} < 1:23.0
+Requires: %{nodejs} >= 1:24.0, %{nodejs} < 1:25.0
 Requires: %{npm}
 %endif
 %if 0%{?amzn} == 2023
-Requires: %{nodejs} >= 1:22.0, %{nodejs} < 1:23.0
+Requires: %{nodejs} >= 1:24.0, %{nodejs} < 1:25.0
 Requires: %{npm}
 %endif
 
@@ -112,16 +127,13 @@ Meta package for pulling in SCL nodejs %{nodejs}
 
 %package -n ondemand-apache
 Summary: Meta package for pulling in SCL apache %{apache}
-%if 0%{?rhel} == 8
-Requires: %{apache} > 2.4.37-56, %{apache} < 2.5
-%endif
 %if 0%{?rhel} == 9
 Requires: %{apache} > 2.4.57-8, %{apache} < 2.5
 %endif
 %if 0%{?rhel} == 10
 Requires: %{apache} >= 2.4.63, %{apache} < 2.5
 %endif
-%if 0%{?rhel} >= 8
+%if 0%{?rhel} >= 9
 Requires: httpd-devel
 Requires: mod_ssl
 Requires: mod_ldap

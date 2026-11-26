@@ -11,11 +11,11 @@ describe OodPackaging::RakeTask do
       t.package = tmp
       t.dist = args
       t.version = '0.0.1'
-      expect(args[:dist]).to eq('el8')
+      expect(args[:dist]).to eq('el10')
     end
-    package = OodPackaging::Package.new(package: tmp, dist: 'el8', version: '0.0.1')
+    package = OodPackaging::Package.new(package: tmp, dist: 'el10', version: '0.0.1')
     allow(OodPackaging::Package).to receive(:new).and_return(package)
     expect(package).to receive(:run!)
-    Rake.application.invoke_task('package[el8]')
+    Rake.application.invoke_task('package[el10]')
   end
 end

@@ -5,7 +5,7 @@ require 'tmpdir'
 
 describe OodPackaging::Package do
   let(:tmp) { Dir.mktmpdir }
-  let(:dist) { 'el8' }
+  let(:dist) { 'el10' }
   let(:arch) { 'x86_64' }
   let(:default_config) do
     {
@@ -55,8 +55,8 @@ describe OodPackaging::Package do
   end
 
   describe 'gpg_name' do
-    it 'uses legacy key' do
-      expect(package.gpg_name).to eq('OnDemand Release Signing Key')
+    it 'does not use legacy key' do
+      expect(package.gpg_name).to eq('OnDemand Release Signing Key (SHA512)')
     end
 
     context 'when el9' do
@@ -193,9 +193,9 @@ describe OodPackaging::Package do
     it 'execs container with Rake' do
       expected_command = [
         'docker', 'exec',
-        '-e', "'DIST=el8'", '-e', "'ARCH=x86_64'", '-e', "'PACKAGE=package'", '-e', "'VERSION=v0.0.1'", '-e',
+        '-e', "'DIST=el10'", '-e', "'ARCH=x86_64'", '-e', "'PACKAGE=package'", '-e', "'VERSION=v0.0.1'", '-e',
         "'TAR_NAME=package-0.0.1.tar.gz'",
-        '-e', "'GPG_SIGN=false'", '-e', "'GPG_NAME=OnDemand Release Signing Key'",
+        '-e', "'GPG_SIGN=false'", '-e', "'GPG_NAME=OnDemand Release Signing Key (SHA512)'",
         '-e', "'OOD_UID=1000'", '-e', "'OOD_GID=1000'",
         '-e', "'DEBUG=false'",
         '-e', "'DNF_VAR_REPO_USERNAME=osc-ci'",
@@ -212,9 +212,9 @@ describe OodPackaging::Package do
       it 'execs container with Rake using aarch64' do
         expected_command = [
           'docker', 'exec',
-          '-e', "'DIST=el8'", '-e', "'ARCH=aarch64'", '-e', "'PACKAGE=package'", '-e', "'VERSION=v0.0.1'", '-e',
+          '-e', "'DIST=el10'", '-e', "'ARCH=aarch64'", '-e', "'PACKAGE=package'", '-e', "'VERSION=v0.0.1'", '-e',
           "'TAR_NAME=package-0.0.1.tar.gz'",
-          '-e', "'GPG_SIGN=false'", '-e', "'GPG_NAME=OnDemand Release Signing Key'",
+          '-e', "'GPG_SIGN=false'", '-e', "'GPG_NAME=OnDemand Release Signing Key (SHA512)'",
           '-e', "'OOD_UID=1000'", '-e', "'OOD_GID=1000'",
           '-e', "'DEBUG=false'",
           '-e', "'DNF_VAR_REPO_USERNAME=osc-ci'",

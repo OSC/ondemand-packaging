@@ -2,7 +2,7 @@
 
 GPGPASS="/systems/osc_certs/gpg/ondemand/.gpgpass"
 BASE_PATH="/var/www/repos/public/ondemand"
-# Only EL7 and EL8 uses different
+# Only EL8 uses different
 GPG_KEY="FD775498"
 REPO=""
 TYPE="web"
@@ -15,7 +15,7 @@ function usage()
 
   echo "Required options:"
   echo "  -r REPO       Repo to update (eg: 'latest', '2.1', 'build/2.1')"
-  echo "  -d DIST       Distribution to update (eg: 'el7', 'el8', 'focal')"
+  echo "  -d DIST       Distribution to update (eg: 'el9', 'el10', 'noble')"
   echo
   echo "Optional options:"
   echo "  -g GPGPASS    The path to GPG password file (default ${GPGPASS})"
@@ -71,7 +71,7 @@ if [[ "${DIST}" != "el"* && "${DIST}" != "amzn"* ]]; then
   EL=false
 fi
 
-if [[ "${DIST}" == "el7" || "${DIST}" == "el8" ]]; then
+if [[ "${DIST}" == "el8" ]]; then
   GPG_KEY="92D31755"
 fi
 

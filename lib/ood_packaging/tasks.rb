@@ -70,11 +70,6 @@ namespace :ood_packaging do
       Rake::Task['ood_packaging:package:internal'].invoke(t.name, args[:dist], args[:arch])
     end
 
-    desc 'Package ondemand-release-latest'
-    task :'ondemand-release-latest', [:dist, :arch] do |t, args|
-      Rake::Task['ood_packaging:package:internal'].invoke(t.name, args[:dist], args[:arch])
-    end
-
     desc 'Package ondemand-runtime'
     task :'ondemand-runtime', [:dist, :arch] do |t, args|
       Rake::Task['ood_packaging:package:internal'].invoke(t.name, args[:dist], args[:arch])
