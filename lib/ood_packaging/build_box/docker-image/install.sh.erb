@@ -96,7 +96,7 @@ alternatives --install /usr/bin/node node /usr/bin/node-<%= nodejs_version %> 40
 
 # Work around node-gyp not being found due to yarn lookig in
 # /usr/lib/node_modules
-ln -s /usr/lib/node_modules_24 /usr/lib/node_modules
+ln -s /usr/lib/node_modules_<%= nodejs_version %> /usr/lib/node_modules
 <% end -%>
 
 header "Install ood_packaging gem"
