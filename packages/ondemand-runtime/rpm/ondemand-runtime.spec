@@ -4,19 +4,27 @@
 %scl_package %scl
 %{!?package_release: %define package_release 1}
 
-%if 0%{?rhel} >= 8
+%if 0%{?rhel} == 9
 %global ruby ruby
 %global nodejs nodejs
 %global npm npm
 %global apache httpd
-%global ruby_version 3.3
+%global ruby_version 4.0
 %endif
-%if 0%{?amzn} == 2023
-%global ruby ruby3.2
-%global nodejs nodejs22
+%if 0%{?rhel} == 10
+%global ruby ruby4.0
+%global nodejs_version 24
+%global nodejs nodejs%{nodejs_version}
 %global npm %{nodejs}-npm
 %global apache httpd
-%global ruby_version 3.2
+%global ruby_version 4.0
+%endif
+%if 0%{?amzn} == 2023
+%global ruby ruby4.0
+%global nodejs nodejs24
+%global npm %{nodejs}-npm
+%global apache httpd
+%global ruby_version 4.0
 %endif
 %global ondemand_gem_home %{_datadir}/gems/%{ruby_version}
 %global ondemand_apps_gem_home %{ondemand_gem_home}/apps
@@ -59,8 +67,8 @@ packages depending on %{scl} Software Collection.
 
 %package -n ondemand-ruby
 Summary: Meta package for pulling in SCL Ruby %{ruby}
-%if 0%{?rhel} >= 8
-Requires: %{ruby} >= 3.3, %{ruby} < 3.4
+%if 0%{?rhel} == 9
+Requires: %{ruby} >= 4.0, %{ruby} < 4.1
 Requires: rubygem-rake
 Requires: rubygem-bundler >= 2.1
 Requires: ruby-devel
@@ -70,6 +78,16 @@ Requires: ruby-default-gems >= %{ruby_version}
 # In some cases this RPM doesn't get pulled in
 Requires: rubygem-bigdecimal
 Requires: sqlite-devel
+%endif
+%if 0%{?rhel} == 10
+Requires: %{ruby}
+Requires: %{ruby}-devel
+Requires: sqlite-devel
+Obsoletes: ruby >= 3.3, ruby < 3.4
+Obsoletes: rubygem-bundler  >= 2.5, rubygem-bundler < 2.6
+Obsoletes: rubygems >= 3.5, rubygems < 3.6
+Requires(post):   alternatives
+Requires(postun): alternatives
 %endif
 %if 0%{?amzn} == 2023
 Requires: %{ruby}
@@ -91,19 +109,19 @@ Meta package for pulling in SCL Ruby %{ruby}
 %package -n ondemand-nodejs
 Summary: Meta package for pulling in SCL nodejs %{nodejs}
 %if 0%{?rhel} == 10
-Requires: %{nodejs} >= 1:22.0, %{nodejs} < 1:23.0
+Requires: %{nodejs} >= 1:24.0, %{nodejs} < 1:25.0
 Requires: %{npm}
+Obsoletes: nodejs >= 1:22.0, nodejs < 1:23.0
+Obsoletes: nodejs-npm >= 1:10.9, nodejs-npm < 1:10.10
+Requires(post):   alternatives
+Requires(postun): alternatives
 %endif
 %if 0%{?rhel} == 9
-Requires: %{nodejs} >= 1:22.0, %{nodejs} < 1:23.0
-Requires: %{npm}
-%endif
-%if 0%{?rhel} == 8
-Requires: %{nodejs} >= 1:22.0, %{nodejs} < 1:23.0
+Requires: %{nodejs} >= 1:24.0, %{nodejs} < 1:25.0
 Requires: %{npm}
 %endif
 %if 0%{?amzn} == 2023
-Requires: %{nodejs} >= 1:22.0, %{nodejs} < 1:23.0
+Requires: %{nodejs} >= 1:24.0, %{nodejs} < 1:25.0
 Requires: %{npm}
 %endif
 
@@ -112,16 +130,13 @@ Meta package for pulling in SCL nodejs %{nodejs}
 
 %package -n ondemand-apache
 Summary: Meta package for pulling in SCL apache %{apache}
-%if 0%{?rhel} == 8
-Requires: %{apache} > 2.4.37-56, %{apache} < 2.5
-%endif
 %if 0%{?rhel} == 9
 Requires: %{apache} > 2.4.57-8, %{apache} < 2.5
 %endif
 %if 0%{?rhel} == 10
 Requires: %{apache} >= 2.4.63, %{apache} < 2.5
 %endif
-%if 0%{?rhel} >= 8
+%if 0%{?rhel} >= 9
 Requires: httpd-devel
 Requires: mod_ssl
 Requires: mod_ldap
@@ -184,6 +199,39 @@ cat >> %{buildroot}%{_root_sysconfdir}/rpm/macros.%{scl_name_base}-scldevel << E
 %%scl_%{scl_name_base}_core_gem_home %{ondemand_core_gem_home}
 %%scl_%{scl_name_base}_apps_gem_home %{ondemand_apps_gem_home}
 EOF
+
+%if 0%{?rhel} == 10
+%post -n ondemand-ruby
+/usr/sbin/alternatives --install /usr/bin/ruby ruby /usr/bin/ruby%{ruby_version} 40 \
+  --slave /usr/bin/gem gem /usr/bin/gem%{ruby_version} \
+  --slave /usr/bin/bundle bundle /usr/bin/bundle%{ruby_version} \
+  --slave /usr/bin/bundler bundler /usr/bin/bundler%{ruby_version} \
+  --slave /usr/bin/irb irb /usr/bin/irb%{ruby_version} \
+  --slave /usr/bin/rake rake /usr/bin/rake%{ruby_version} \
+  --slave /usr/bin/rdoc rdoc /usr/bin/rdoc%{ruby_version} \
+  --slave /usr/bin/ri ri /usr/bin/ri%{ruby_version}
+%endif
+
+%if 0%{?rhel} == 10
+%post -n ondemand-nodejs
+/usr/sbin/alternatives --install /usr/bin/node node /usr/bin/node-%{nodejs_version} 40 \
+  --slave /usr/bin/npm npm /usr/bin/npm-%{nodejs_version} \
+  --slave /usr/bin/npx npx /usr/bin/npx-%{nodejs_version}
+%endif
+
+%if 0%{?rhel} == 10
+%postun -n ondemand-ruby
+if [ $1 -eq 0 ] ; then
+    /usr/sbin/alternatives --remove-all ruby
+fi
+%endif
+
+%if 0%{?rhel} == 10
+%postun -n ondemand-nodejs
+if [ $1 -eq 0 ] ; then
+    /usr/sbin/alternatives --remove-all node
+fi
+%endif
 
 %files
 %scl_files

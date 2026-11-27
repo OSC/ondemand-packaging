@@ -18,7 +18,6 @@ jobs:
       matrix:
         os: [ubuntu-22.04]
         dist:
-          - el8
           - el9
           - el10
           - ubuntu-24.04
@@ -74,7 +73,6 @@ jobs:
       matrix:
         os: [ubuntu-22.04]
         dist:
-          - el8
           - el9
           - el10
           - amzn2023
@@ -84,7 +82,6 @@ jobs:
           - ppc64le
         package:
           - ondemand-release
-          - ondemand-release-latest
           - ondemand-runtime
           - passenger
           - ondemand_exporter
@@ -104,13 +101,9 @@ jobs:
           - arch: aarch64
             package: ondemand-release
           - arch: aarch64
-            package: ondemand-release-latest
-          - arch: aarch64
             package: ondemand-compute
           - arch: ppc64le
             package: ondemand-release
-          - arch: ppc64le
-            package: ondemand-release-latest
           - arch: ppc64le
             package: ondemand-compute
           # Times out because very slow
@@ -190,13 +183,10 @@ jobs:
           - aarch64
         package:
           - ondemand-release
-          - ondemand-release-latest
           - passenger
         exclude:
           - arch: aarch64
             package: ondemand-release
-          - arch: aarch64
-            package: ondemand-release-latest
     runs-on: ${{ matrix.os }}
     name: Package test package=${{ matrix.package }} dist=${{ matrix.dist }} arch=${{ matrix.arch }}
     steps:
@@ -252,7 +242,6 @@ jobs:
       matrix:
         os: [ubuntu-22.04]
         dist:
-          - el8
           - el9
           - el10
           - ubuntu-24.04
@@ -267,10 +256,6 @@ jobs:
         package:
           - ondemand
         include:
-          - dist: el8
-            arch: x86_64
-            os: ubuntu-22.04
-            package: bc_osc_rstudio_server
           - dist: el9
             arch: x86_64
             os: ubuntu-22.04
@@ -325,17 +310,13 @@ jobs:
       - name: Build ${{ matrix.package }} package
         if: matrix.arch == 'x86_64'
         run: |
-          # have to use docker for el8 packaging.
-          if [[ "${{ matrix.dist }}" == "el8" ]]; then
-            unset CONTAINER_RT
-          fi
           if [[ "${{ matrix.package }}" == bc_osc* ]]; then
             unset CONTAINER_RT
           fi
           if [[ "${{ matrix.dist }}" == "debian-13" || "${{ matrix.dist }}" == "ubuntu-26.04" ]]; then
             export OOD_PACKAGING_CONTAINER_FLAGS="--privileged"
           fi
-          ./bin/ood_packaging -w ./tmp/work -o ./tmp/output -d ${{ matrix.dist }} -a ${{ matrix.arch }} -V v4.2.0 -T --debug $(pwd)/tmp/${{ matrix.package }}
+          ./bin/ood_packaging -w ./tmp/work -o ./tmp/output -d ${{ matrix.dist }} -a ${{ matrix.arch }} -V v4.3.0 -T --debug $(pwd)/tmp/${{ matrix.package }}
         env:
           OOD_PACKAGING_DEBUG: 'true'
           CONTAINER_RT: 'podman'
@@ -359,14 +340,10 @@ jobs:
             apt update -y
             apt install -y docker-ce
           run: |
-            # have to use docker for el8 packaging.
-            if [[ "${{ matrix.dist }}" == "el8" ]]; then
-              unset CONTAINER_RT
-            fi
             git config --global --add safe.directory $GITHUB_WORKSPACE
             bundle install
             git config --global --add safe.directory $GITHUB_WORKSPACE/tmp/${{ matrix.package }}
-            ./bin/ood_packaging -w ./tmp/work -o ./tmp/output -d ${{ matrix.dist }} -a ${{ matrix.arch }} -V v4.2.0 -T --debug $(pwd)/tmp/${{ matrix.package }}
+            ./bin/ood_packaging -w ./tmp/work -o ./tmp/output -d ${{ matrix.dist }} -a ${{ matrix.arch }} -V v4.3.0 -T --debug $(pwd)/tmp/${{ matrix.package }}
           env: |
             OOD_PACKAGING_DEBUG: 'true'
             CONTAINER_RT: 'podman'

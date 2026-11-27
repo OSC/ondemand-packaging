@@ -58,7 +58,7 @@ ood_package -w /tmp/work -o /tmp/output -d $DIST -V <VERSION HERE>
 
 ## Create build box image
 
-Set `$DIST` to one of the supported dist values like `el8`
+Set `$DIST` to one of the supported dist values like `el10`
 
 **NOTE: The official build images are created automatically upon a new release**
 
@@ -81,8 +81,8 @@ If the ood_packaging `output_dir` was `/tmp/output` then the following command w
 Build release RPMs:
 
 ```
-rake ood_packaging:package:ondemand-release[el8]
-rake ood_packaging:package:ondemand-release[ubuntu-20.04]
+rake ood_packaging:package:ondemand-release[el10]
+rake ood_packaging:package:ondemand-release[ubuntu-26.04]
 ```
 
 Release RPMs:
@@ -96,7 +96,7 @@ Release RPMs:
 Build RPMs for compute:
 
 ```
-rake ood_packaging:package:ondemand-compute[el8]
+rake ood_packaging:package:ondemand-compute[el10]
 ```
 
 Release RPMs:

@@ -10,7 +10,6 @@ class OodPackaging::BuildBox
   include FileUtils
 
   BASE_IMAGES = {
-    'el8'          => 'almalinux:8',
     'el9'          => 'almalinux:9',
     'el10'         => 'almalinux:10',
     'ubuntu-24.04' => 'ubuntu:24.04',
@@ -69,9 +68,13 @@ class OodPackaging::BuildBox
     true
   end
 
-  def legacy_gpg?
-    return true if ['el8'].include?(dist)
+  def needs_altermatives?
+    return true if ['el10'].include?(dist)
 
+    false
+  end
+
+  def legacy_gpg?
     false
   end
 

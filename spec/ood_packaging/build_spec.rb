@@ -9,7 +9,7 @@ describe OodPackaging::Build do
   let(:spec_file) { File.join(tmp, 'package.spec') }
   let(:work_dir) { File.join(tmp, 'work') }
   let(:package_dir) { File.join(work_dir, 'ondemand-0.0.1') }
-  let(:dist) { 'el8' }
+  let(:dist) { 'el10' }
   let(:arch) { 'x86_64' }
   let(:version) { 'v0.0.1-2' }
   let(:build) { described_class.new }
@@ -22,7 +22,7 @@ describe OodPackaging::Build do
     ENV['GPG_NAME'] = 'GPG'
     FileUtils.mkdir_p(work_dir)
     FileUtils.mkdir_p(package_dir)
-    allow(build).to receive(:dist).and_return('el8')
+    allow(build).to receive(:dist).and_return('el10')
     allow(build).to receive(:package).and_return('ondemand')
     allow(build).to receive(:spec_file).and_return(spec_file)
     allow(build).to receive(:work_dir).and_return(work_dir)
@@ -37,14 +37,14 @@ describe OodPackaging::Build do
 
   describe 'output_dir' do
     it 'uses arch' do
-      expect(build.output_dir).to eq('/output/el8-x86_64')
+      expect(build.output_dir).to eq('/output/el10-x86_64')
     end
 
     context 'when aarch64' do
       let(:arch) { 'aarch64' }
 
       it 'uses aarch64 arch' do
-        expect(build.output_dir).to eq('/output/el8-aarch64')
+        expect(build.output_dir).to eq('/output/el10-aarch64')
       end
     end
   end
@@ -114,7 +114,7 @@ describe OodPackaging::Build do
   end
 
   describe 'install_dependencies!' do
-    context 'when installing on EL8' do
+    context 'when installing on el10' do
       it 'installs RPM dependencies using DNF' do
         expected_cmd = [
           'sudo', '-E', 'dnf', 'builddep', '-y',

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe OodPackaging::BuildBox do
-  let(:dist) { 'el8' }
+  let(:dist) { 'el10' }
   let(:arch) { 'x86_64' }
   let(:build_box) { described_class.new(dist: dist, arch: arch) }
 
@@ -24,11 +24,11 @@ describe OodPackaging::BuildBox do
       allow(build_box).to receive(:build_gem)
     end
 
-    context 'when building for el8' do
-      it 'executes el8 build command' do
+    context 'when building for el10' do
+      it 'executes el10 build command' do
         expected_cmd = [
           'docker buildx build', '--platform linux/amd64',
-          "--tag openondemand/ood-buildbox-el8-x86_64:#{OodPackaging::VERSION}",
+          "--tag openondemand/ood-buildbox-el10-x86_64:#{OodPackaging::VERSION}",
           '--output', 'type=docker', '-f /tmp/dockerfile /fake-builddir'
         ]
         expect(build_box).to receive(:sh).with(expected_cmd.join(' '))
@@ -56,7 +56,7 @@ describe OodPackaging::BuildBox do
       it 'executes aarch64 build command' do
         expected_cmd = [
           'docker buildx build', '--platform linux/arm64',
-          "--tag openondemand/ood-buildbox-el8-aarch64:#{OodPackaging::VERSION}",
+          "--tag openondemand/ood-buildbox-el10-aarch64:#{OodPackaging::VERSION}",
           '--output', 'type=docker', '-f /tmp/dockerfile /fake-builddir'
         ]
         expect(build_box).to receive(:sh).with(expected_cmd.join(' '))
@@ -68,7 +68,7 @@ describe OodPackaging::BuildBox do
   describe 'push!' do
     it 'executeses push image command' do
       expect(build_box).to receive(:sh).with(
-        "docker push openondemand/ood-buildbox-el8-x86_64:#{OodPackaging::VERSION}"
+        "docker push openondemand/ood-buildbox-el10-x86_64:#{OodPackaging::VERSION}"
       )
       build_box.push!
     end
@@ -77,7 +77,7 @@ describe OodPackaging::BuildBox do
   describe 'pull!' do
     it 'executeses pull image command' do
       expect(build_box).to receive(:sh).with(
-        "docker pull openondemand/ood-buildbox-el8-x86_64:#{OodPackaging::VERSION}"
+        "docker pull openondemand/ood-buildbox-el10-x86_64:#{OodPackaging::VERSION}"
       )
       build_box.pull!
     end
@@ -86,7 +86,7 @@ describe OodPackaging::BuildBox do
   describe 'save!' do
     it 'executeses push image command' do
       expect(build_box).to receive(:sh).with(
-        "docker save openondemand/ood-buildbox-el8-x86_64:#{OodPackaging::VERSION} | gzip > /tmp/image.tar.gz"
+        "docker save openondemand/ood-buildbox-el10-x86_64:#{OodPackaging::VERSION} | gzip > /tmp/image.tar.gz"
       )
       build_box.save!('/tmp/image.tar.gz')
     end

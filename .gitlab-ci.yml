@@ -19,7 +19,7 @@ stages:
 variables:
   GIT_STRATEGY: clone
   GIT_DEPTH: 0
-  OOD_STAGING_REPO: '4.2'
+  OOD_STAGING_REPO: '4.3'
   OOD_PACKAGING_DEBUG: 'true'
   OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand-sha512.sec
   OOD_PACKAGING_GPG_PASSPHRASE: /systems/osc_certs/gpg/ondemand/.gpgpass
@@ -36,9 +36,6 @@ build-image:
     - bundle exec rake ood_packaging:buildbox:build
   parallel:
     matrix:
-      - OOD_PACKAGING_DIST: [el8]
-        OOD_PACKAGING_ARCH: [x86_64, aarch64, ppc64le]
-        OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
       - OOD_PACKAGING_DIST: [el9, el10]
         OOD_PACKAGING_ARCH: [x86_64, aarch64, ppc64le]
       - OOD_PACKAGING_DIST: [ubuntu-24.04, ubuntu-26.04, debian-12, debian-13]
@@ -52,34 +49,11 @@ build-ondemand-release:
     # Re-enable once Gitlab instance using plugin to integrate with Github
     # - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
     - if: '$CI_COMMIT_BRANCH !~ /^(main|[0-9]\.[0-9])$/ && $CI_COMMIT_TAG == null'
-    - if: '$CI_COMMIT_TAG =~ /^ondemand-release-/ && $CI_COMMIT_TAG !~ /^ondemand-release-latest-/'
+    - if: '$CI_COMMIT_TAG =~ /^ondemand-release-/'
   script:
     - bundle exec rake ood_packaging:package:ondemand-release
   parallel:
     matrix:
-      - OOD_PACKAGING_DIST: [el8]
-        OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
-      - OOD_PACKAGING_DIST: [el9, el10, amzn2023]
-      - OOD_PACKAGING_DIST: [ubuntu-24.04, ubuntu-26.04]
-      - OOD_PACKAGING_DIST: [debian-12, debian-13]
-  artifacts:
-    paths:
-      - tmp/output
-    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
-
-build-ondemand-release-latest:
-  stage: build
-  rules:
-    # Re-enable once Gitlab instance using plugin to integrate with Github
-    # - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
-    - if: '$CI_COMMIT_BRANCH !~ /^(main|[0-9]\.[0-9])$/ && $CI_COMMIT_TAG == null'
-    - if: '$CI_COMMIT_TAG =~ /^ondemand-release-latest-/'
-  script:
-    - bundle exec rake ood_packaging:package:ondemand-release-latest
-  parallel:
-    matrix:
-      - OOD_PACKAGING_DIST: [el8]
-        OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
       - OOD_PACKAGING_DIST: [el9, el10, amzn2023]
       - OOD_PACKAGING_DIST: [ubuntu-24.04, ubuntu-26.04]
       - OOD_PACKAGING_DIST: [debian-12, debian-13]
@@ -99,9 +73,6 @@ build-ondemand-runtime:
     - bundle exec rake ood_packaging:package:ondemand-runtime
   parallel:
     matrix:
-      - OOD_PACKAGING_DIST: [el8]
-        OOD_PACKAGING_ARCH: [x86_64, aarch64, ppc64le]
-        OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
       - OOD_PACKAGING_DIST: [el9, el10]
         OOD_PACKAGING_ARCH: [x86_64, aarch64, ppc64le]
       - OOD_PACKAGING_DIST: [amzn2023]
@@ -140,9 +111,6 @@ build-passenger:
     - bundle exec rake ood_packaging:package:passenger[$DIST]
   parallel:
     matrix:
-      - OOD_PACKAGING_DIST: [el8]
-        OOD_PACKAGING_ARCH: [x86_64, aarch64, ppc64le]
-        OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
       - OOD_PACKAGING_DIST: [el9]
         OOD_PACKAGING_ARCH: [x86_64, aarch64, ppc64le]
       # el10 aarch64 builds are timing out so skip those builds
@@ -171,9 +139,6 @@ build-ondemand_exporter:
     - bundle exec rake ood_packaging:package:ondemand_exporter[$DIST]
   parallel:
     matrix:
-      - OOD_PACKAGING_DIST: [el8]
-        OOD_PACKAGING_ARCH: [x86_64, aarch64, ppc64le]
-        OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
       - OOD_PACKAGING_DIST: [el9, el10]
         OOD_PACKAGING_ARCH: [x86_64, aarch64, ppc64le]
       - OOD_PACKAGING_DIST: [amzn2023]
@@ -196,8 +161,6 @@ build-ondemand-compute:
     - cp -r tmp/output/$OOD_PACKAGING_DIST-x86_64 tmp/output/$OOD_PACKAGING_DIST-ppc64le
   parallel:
     matrix:
-      - OOD_PACKAGING_DIST: [el8]
-        OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
       - OOD_PACKAGING_DIST: [el9, el10, amzn2023]
   artifacts:
     paths:
@@ -215,9 +178,6 @@ build-python-websockify:
     - bundle exec rake ood_packaging:package:python-websockify[$DIST]
   parallel:
     matrix:
-      - OOD_PACKAGING_DIST: [el8]
-        OOD_PACKAGING_ARCH: [x86_64, aarch64, ppc64le]
-        OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
       - OOD_PACKAGING_DIST: [el9, el10]
         OOD_PACKAGING_ARCH: [x86_64, aarch64, ppc64le]
       - OOD_PACKAGING_DIST: [amzn2023]
@@ -238,9 +198,6 @@ build-turbovnc:
     - bundle exec rake ood_packaging:package:turbovnc
   parallel:
     matrix:
-      - OOD_PACKAGING_DIST: [el8]
-        OOD_PACKAGING_ARCH: [x86_64, aarch64, ppc64le]
-        OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand.sec
       - OOD_PACKAGING_DIST: [el9, el10]
         OOD_PACKAGING_ARCH: [x86_64, aarch64, ppc64le]
       - OOD_PACKAGING_DIST: [amzn2023]
@@ -261,8 +218,6 @@ rm-image:
   allow_failure: true
   parallel:
     matrix:
-      - OOD_PACKAGING_DIST: [el8]
-        OOD_PACKAGING_ARCH: [x86_64, aarch64, ppc64le]
       - OOD_PACKAGING_DIST: [el9, el10]
         OOD_PACKAGING_ARCH: [x86_64, aarch64, ppc64le]
       - OOD_PACKAGING_DIST: [ubuntu-24.04, ubuntu-26.04, debian-12, debian-13]
