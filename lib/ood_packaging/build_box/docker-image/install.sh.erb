@@ -93,6 +93,10 @@ alternatives --install /usr/bin/ruby ruby /usr/bin/ruby<%= ruby_version %> 40 \
 alternatives --install /usr/bin/node node /usr/bin/node-<%= nodejs_version %> 40 \
   --slave /usr/bin/npm npm /usr/bin/npm-<%= nodejs_version %> \
   --slave /usr/bin/npx npx /usr/bin/npx-<%= nodejs_version %>
+
+# Work around node-gyp not being found due to yarn lookig in
+# /usr/lib/node_modules
+ln -s /usr/lib/node_modules_24 /usr/lib/node_modules
 <% end -%>
 
 header "Install ood_packaging gem"
