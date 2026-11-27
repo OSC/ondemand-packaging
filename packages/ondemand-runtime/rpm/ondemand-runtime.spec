@@ -83,11 +83,11 @@ Requires: sqlite-devel
 Requires: %{ruby}
 Requires: %{ruby}-devel
 Requires: sqlite-devel
-Obsoletes: ruby
-Obsoletes: rubygem-bundler
-Obsoletes: rubygems
-Requires(post):   %{_sbindir}/alternatives
-Requires(postun): %{_sbindir}/alternatives
+Obsoletes: ruby >= 3.3, ruby < 3.4
+Obsoletes: rubygem-bundler  >= 2.5, rubygem-bundler < 2.6
+Obsoletes: rubygems >= 3.5, rubygems < 3.6
+Requires(post):   alternatives
+Requires(postun): alternatives
 %endif
 %if 0%{?amzn} == 2023
 Requires: %{ruby}
@@ -111,10 +111,10 @@ Summary: Meta package for pulling in SCL nodejs %{nodejs}
 %if 0%{?rhel} == 10
 Requires: %{nodejs} >= 1:24.0, %{nodejs} < 1:25.0
 Requires: %{npm}
-Obsoletes: nodejs
-Obsoletes: nodejs-npm
-Requires(post):   %{_sbindir}/alternatives
-Requires(postun): %{_sbindir}/alternatives
+Obsoletes: nodejs >= 1:22.0, nodejs < 1:23.0
+Obsoletes: nodejs-npm >= 1:10.9, nodejs-npm < 1:10.10
+Requires(post):   alternatives
+Requires(postun): alternatives
 %endif
 %if 0%{?rhel} == 9
 Requires: %{nodejs} >= 1:24.0, %{nodejs} < 1:25.0
@@ -202,7 +202,7 @@ EOF
 
 %if 0%{?rhel} == 10
 %post -n ondemand-ruby
-%{_sbindir}/alternatives --install /usr/bin/ruby ruby /usr/bin/ruby%{ruby_version} 40 \
+/usr/sbin/alternatives --install /usr/bin/ruby ruby /usr/bin/ruby%{ruby_version} 40 \
   --slave /usr/bin/gem gem /usr/bin/gem%{ruby_version} \
   --slave /usr/bin/bundle bundle /usr/bin/bundle%{ruby_version} \
   --slave /usr/bin/bundler bundler /usr/bin/bundler%{ruby_version} \
@@ -214,7 +214,7 @@ EOF
 
 %if 0%{?rhel} == 10
 %post -n ondemand-nodejs
-%{_sbindir}/alternatives --install /usr/bin/node node /usr/bin/node-%{nodejs_version} 40 \
+/usr/sbin/alternatives --install /usr/bin/node node /usr/bin/node-%{nodejs_version} 40 \
   --slave /usr/bin/npm npm /usr/bin/npm-%{nodejs_version} \
   --slave /usr/bin/npx npx /usr/bin/npx-%{nodejs_version}
 %endif
@@ -222,14 +222,14 @@ EOF
 %if 0%{?rhel} == 10
 %postun -n ondemand-ruby
 if [ $1 -eq 0 ] ; then
-    %{_sbindir}/alternatives --remove-all ruby
+    /usr/sbin/alternatives --remove-all ruby
 fi
 %endif
 
 %if 0%{?rhel} == 10
 %postun -n ondemand-nodejs
 if [ $1 -eq 0 ] ; then
-    %{_sbindir}/alternatives --remove-all node
+    /usr/sbin/alternatives --remove-all node
 fi
 %endif
 
