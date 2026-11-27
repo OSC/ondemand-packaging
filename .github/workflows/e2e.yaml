@@ -306,11 +306,7 @@ jobs:
       - name: Clone ${{ matrix.package }}
         run: |
           mkdir -p ./tmp
-          BRANCH=""
-          if [[ "${{ matrix.package }}" == "ondemand" ]]; then
-            BRANCH="-b prep-4.3"
-          fi
-          git clone $BRANCH https://github.com/OSC/${{ matrix.package }}.git ./tmp/${{ matrix.package }}
+          git clone https://github.com/OSC/${{ matrix.package }}.git ./tmp/${{ matrix.package }}
       - name: Build ${{ matrix.package }} package
         if: matrix.arch == 'x86_64'
         run: |
