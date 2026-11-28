@@ -5,19 +5,23 @@ on:
     branches: [main]
   pull_request:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   unit-tests:
     strategy:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest"]
-        ruby: ["3.2.2", "3.3.8", 4.0.6]
+        ruby: ["3.2", "3.3", "4.0.6"]
         bundler: ["2.5.23"]
     runs-on: ${{ matrix.os }}
     name: Unit tests
     steps:
       - name: Checkout ${{ github.sha	}}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Setup Ruby ${{ matrix.ruby }} using Bundler ${{ matrix.bundler }}
         uses: ruby/setup-ruby@v1
         with:

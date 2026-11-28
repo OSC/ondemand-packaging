@@ -13,12 +13,13 @@ stages:
   - image
   - build
   - cleanup
+  - prune
   - deploy
 
 variables:
   GIT_STRATEGY: clone
   GIT_DEPTH: 0
-  OOD_BUILD_REPO: '4.2'
+  OOD_STAGING_REPO: '4.2'
   OOD_PACKAGING_DEBUG: 'true'
   OOD_PACKAGING_GPG_PRIVATE_KEY: /systems/osc_certs/gpg/ondemand/ondemand-sha512.sec
   OOD_PACKAGING_GPG_PASSPHRASE: /systems/osc_certs/gpg/ondemand/.gpgpass
@@ -256,8 +257,8 @@ rm-image:
   rules:
     - if: '$CI_COMMIT_BRANCH !~ /^(main|[0-9]\.[0-9])$/ && $CI_COMMIT_TAG == null'
   script:
-    - 'bundle exec rake ood_packaging:buildbox:rm || true'
-    - docker image prune -f
+    - bundle exec rake ood_packaging:buildbox:rm
+  allow_failure: true
   parallel:
     matrix:
       - OOD_PACKAGING_DIST: [el8]
@@ -269,42 +270,29 @@ rm-image:
       - OOD_PACKAGING_DIST: [amzn2023]
         OOD_PACKAGING_ARCH: [x86_64, aarch64]
 
-package-deploy-latest:
-  stage: deploy
+image-prune:
+  stage: prune
+  when: always
   rules:
-    - if: $CI_COMMIT_TAG && $CI_COMMIT_TAG !~ /v[0-9].+/ && $CI_COMMIT_TAG !~ /ondemand-release|turbovnc|python-websockify|ondemand-compute/
+    - if: '$CI_COMMIT_BRANCH !~ /^(main|[0-9]\.[0-9])$/ && $CI_COMMIT_TAG == null'
   script:
-    - ./release.py --debug --pkey /systems/osc_certs/ssh/ondemand-packaging/id_rsa -c main ./tmp/output/*
+    - docker image prune -f
+    - docker buildx prune -f
+  allow_failure: true
 
 package-deploy-staging:
   stage: deploy
   rules:
     - if: $CI_COMMIT_TAG && $CI_COMMIT_TAG !~ /v[0-9].+/ && $CI_COMMIT_TAG !~ /ondemand-release|turbovnc|python-websockify|ondemand-compute/
   script:
-    - ./release.py --debug --pkey /systems/osc_certs/ssh/ondemand-packaging/id_rsa -c staging -r $OOD_BUILD_REPO ./tmp/output/*
+    - ./release.py --debug --pkey /systems/osc_certs/ssh/ondemand-packaging/id_rsa -c staging -r $OOD_STAGING_REPO ./tmp/output/*
 
 package-deploy-staging-release:
   stage: deploy
   rules:
     - if: '$CI_COMMIT_TAG =~ /^ondemand-release/'
   script:
-    - ./release.py --debug --pkey /systems/osc_certs/ssh/ondemand-packaging/id_rsa -c staging-release -r $OOD_BUILD_REPO ./tmp/output/*
-
-package-deploy-release:
-  stage: deploy
-  rules:
-    - if: '$CI_COMMIT_TAG =~ /^ondemand-release/'
-  script:
-    - ./release.py --debug --pkey /systems/osc_certs/ssh/ondemand-packaging/id_rsa -c release ./tmp/output/*
-
-package-deploy-latest-compute:
-  stage: deploy
-  rules:
-    - if: '$CI_COMMIT_TAG =~ /^turbovnc-/'
-    - if: '$CI_COMMIT_TAG =~ /^python-websockify-/'
-    - if: '$CI_COMMIT_TAG =~ /^ondemand-compute-/'
-  script:
-    - ./release.py --debug --pkey /systems/osc_certs/ssh/ondemand-packaging/id_rsa -c compute ./tmp/output/*
+    - ./release.py --debug --pkey /systems/osc_certs/ssh/ondemand-packaging/id_rsa -c staging-release -r $OOD_STAGING_REPO ./tmp/output/*
 
 package-deploy-staging-compute:
   stage: deploy
@@ -313,4 +301,4 @@ package-deploy-staging-compute:
     - if: '$CI_COMMIT_TAG =~ /^python-websockify-/'
     - if: '$CI_COMMIT_TAG =~ /^ondemand-compute-/'
   script:
-    - ./release.py --debug --pkey /systems/osc_certs/ssh/ondemand-packaging/id_rsa -c staging-compute -r $OOD_BUILD_REPO ./tmp/output/*
+    - ./release.py --debug --pkey /systems/osc_certs/ssh/ondemand-packaging/id_rsa -c staging-compute -r $OOD_STAGING_REPO ./tmp/output/*

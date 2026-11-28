@@ -63,7 +63,7 @@ module OodPackaging::Utils
   end
 
   def ondemand_rpm_repo_username
-    ENV['OOD_REPO_USERNAME'] || 'osc'
+    ENV['OOD_REPO_USERNAME'] || 'osc-ci'
   end
 
   def ruby_version
